@@ -1,32 +1,27 @@
-" Enable syntax highlighting
-syntax on
-
-" Enable basic autoindenting
+" set UTF-8 encoding
+set enc=utf-8
+set fenc=utf-8
+set termencoding=utf-8
+" disable vi compatibility (emulation of old bugs)
+set nocompatible
+" use indentation of previous line
 set autoindent
-
-" Set tabs to 2 spaces
-set tabstop=2 
-
-" Set shift to 2 spaces
-set shiftwidth=2
-
-" Make tabs all spaces
-set expandtab
-
-" Set the fold method to indent
-set foldmethod=indent
-
-" Set the fold level
-set foldlevel=99
-
-" Enable line numbers
-set nu
-
-" Enable filetype plugins
-filetype plugin on
-
-" Show a line under the cursor's current line
-set cursorline
-
-" Show matching pairs for [] {} and ()
+" use intelligent indentation for C
+set smartindent
+" configure tabwidth and insert spaces instead of tabs
+set tabstop=2        " tab width is 4 spaces
+set shiftwidth=2     " indent also with 4 spaces
+set expandtab        " expand tabs to spaces
+" wrap lines at 120 chars. 80 is somewhat antiquated with nowadays displays.
+set textwidth=80
+" turn syntax highlighting on
+set t_Co=256
+syntax on
+" turn line numbers on
+set number
+" highlight matching braces
 set showmatch
+" intelligent comments
+set comments=sl:/*,mb:\ *,elx:\ */
+
+colo molokai
