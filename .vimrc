@@ -15,7 +15,7 @@ set splitbelow
 set splitright
 
 set t_Co=256
-colorscheme monokai
+colorscheme alduin
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=0 guibg=lightgrey
