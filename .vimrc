@@ -1,3 +1,7 @@
+set undofile
+set undodir=~/.vim/undo
+
+set nocompatible
 syntax on
 
 set autoindent
@@ -15,7 +19,7 @@ set splitbelow
 set splitright
 
 set t_Co=256
-colorscheme alduin
+colorscheme solarized
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=0 guibg=lightgrey
