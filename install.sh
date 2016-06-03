@@ -1,4 +1,8 @@
+# Copy vim configs
 cp .vimrc ~/.vimrc
-mkdir -p ~/.vim/colors/
-cp *.vim ~/.vim/colors/
+
+# Copy vimlang plugin
+cp -rf .vim ~/
+
+# For undo history
 mkdir -p ~/.vim/undo
