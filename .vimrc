@@ -18,6 +18,7 @@ set cursorline
 set splitbelow
 set splitright
 
+set t_co=256
 set background=dark
 colorscheme solarized
 
