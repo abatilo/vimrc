@@ -18,8 +18,8 @@ set cursorline
 set splitbelow
 set splitright
 
-set t_Co=256
-colorscheme alduin
+set background=dark
+colorscheme solarized
 
 set colorcolumn=100
 highlight ColorColumn ctermbg=0 guibg=lightgrey
