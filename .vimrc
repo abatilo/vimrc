@@ -1,3 +1,9 @@
+inoremap jk <Esc>
+au! FileType python setl nosmartindent
+au FocusGained,BufEnter * :silent! !
+au FocusLost,WinLeave * :silent! w
+
+set autoread
 set undofile
 set undodir=~/.vim/undo
 
@@ -18,7 +24,6 @@ set cursorline
 set splitbelow
 set splitright
 
-set t_co=256
 set background=dark
 colorscheme solarized
 
