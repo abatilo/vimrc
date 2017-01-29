@@ -32,7 +32,12 @@ set splitbelow
 set splitright
 
 set background=dark
-colorscheme solarized
+colorscheme alduin
 
 set colorcolumn=100
 highlight ColorColumn ctermbg=0 guibg=lightgrey
+
+if executable("ag")
+    set grepprg=ag\ --nogroup\ --nocolor
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
