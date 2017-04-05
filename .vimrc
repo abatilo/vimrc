@@ -82,10 +82,6 @@ set cursorline
 set splitbelow
 set splitright
 
-set background=dark
-colorscheme zenburn
-let g:airline_theme='zenburn'
-
 set colorcolumn=100
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
