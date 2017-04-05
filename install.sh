@@ -11,3 +11,4 @@ vim +PluginInstall +qall
 echo "set background=dark" >> ~/.vimrc
 echo "colorscheme zenburn" >> ~/.vimrc
 echo "let g:airline_theme='zenburn'" >> ~/.vimrc
+echo "highlight ColorColumn ctermbg=0 guibg=lightgrey" >> ~/.vimrc

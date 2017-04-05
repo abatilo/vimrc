@@ -71,8 +71,8 @@ set foldnestmax=6
 nnoremap j gj
 nnoremap k gk
 
-set tabstop=3
-set shiftwidth=3
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set backspace=indent,eol,start
 
@@ -83,7 +83,6 @@ set splitbelow
 set splitright
 
 set colorcolumn=100
-highlight ColorColumn ctermbg=0 guibg=lightgrey
 
 if executable("ag")
     set grepprg=ag\ --nogroup\ --nocolor
