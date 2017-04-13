@@ -19,6 +19,14 @@ Plugin 'vim-scripts/DoxygenToolkit.vim'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 
+" Rename
+" http://stackoverflow.com/questions/597687/changing-variable-names-in-vim
+
+" Replaces all in current enclosing scope, only use this when the variable is defined in the same scope
+nnoremap r [{V%::s/<C-R>///g<Left><Left>
+" Jumps to definition of the variable and performs replace. Must be used on a usage of the variable, not on the definition
+nnoremap gr gd[{V%::s/<C-R>///g<Left><Left>
+
 let g:ctrlp_match_window = 'bottom,order:ttb'
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_working_path_mode = 0
