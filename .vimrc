@@ -15,6 +15,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-scripts/DoxygenToolkit.vim'
+Plugin 'godlygeek/tabular'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -69,8 +70,8 @@ set hlsearch
 
 nnoremap <leader><space> :nohlsearch<CR>
 set foldmethod=indent
-set foldlevelstart=0
-set foldnestmax=6
+set foldlevelstart=1
+set foldnestmax=20
 
 " move vertically by visual line
 nnoremap j gj
