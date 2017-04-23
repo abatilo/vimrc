@@ -13,8 +13,4 @@ vim +PluginInstall +qall
 
 # Below is added to the .vimrc so that we don't get issues
 # with trying to set the colorscheme before it's been installed
-echo "" >> ~/.vimrc
-echo "set background=dark" >> ~/.vimrc
-echo "colorscheme zenburn" >> ~/.vimrc
-echo "let g:airline_theme='zenburn'" >> ~/.vimrc
-echo "highlight ColorColumn ctermbg=0 guibg=lightgrey" >> ~/.vimrc
+echo "colorscheme lucario" >> ~/.vimrc
