@@ -1,4 +1,5 @@
 set nocompatible
+filetype off
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -19,6 +20,7 @@ Plugin 'vim-scripts/DoxygenToolkit.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
+filetype plugin indent on 
 
 let g:xcode_project_file = "/Users/aaronbatilo/Desktop/JoshServer/Josh 2.0.xcodeproj"
 let g:xcode_default_scheme = 'Josh\ 2.0'
@@ -39,7 +41,6 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 
 " Easier than reaching for escape
 inoremap jk <Esc>
-au! FileType python setl nosmartindent
 
 " Store file history
 set autoread
@@ -58,8 +59,6 @@ set hlsearch
 
 nnoremap <leader><space> :nohlsearch<CR>
 set foldmethod=indent
-set foldlevelstart=1
-set foldnestmax=20
 
 " move vertically by visual line
 nnoremap j gj
