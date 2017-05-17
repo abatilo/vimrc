@@ -51,6 +51,7 @@ syntax enable
 
 set autoindent
 set smartindent
+set breakindent
 set lazyredraw
 set showmatch
 
@@ -70,6 +71,7 @@ set expandtab
 set backspace=indent,eol,start
 
 set number
+set relativenumber
 set cursorline
 
 set splitbelow
