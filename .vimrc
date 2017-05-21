@@ -7,6 +7,7 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ajh17/VimCompletesMe'
+Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'gfontenot/vim-xcode'
 Plugin 'godlygeek/tabular'
