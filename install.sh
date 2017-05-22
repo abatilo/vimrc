@@ -13,5 +13,5 @@ vim +PluginInstall +qall
 
 # Below is added to the .vimrc so that we don't get issues
 # with trying to set the colorscheme before it's been installed
-echo "colorscheme flattened_dark" >> ~/.vimrc
+echo "colorscheme solarized8_dark_high" >> ~/.vimrc
 echo "let g:airline_theme='solarized'" >> ~/.vimrc
