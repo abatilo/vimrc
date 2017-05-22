@@ -25,7 +25,7 @@ call vundle#end()            " required
 filetype plugin indent on
 
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
-autocmd BufWritePre * %s/\s\+$//e
+command! FixTrail %s/\s\+$//e
 
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
