@@ -27,9 +27,6 @@ filetype plugin indent on
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 
-let g:xcode_project_file = "/Users/aaronbatilo/Desktop/JoshServer/Josh 2.0.xcodeproj"
-let g:xcode_default_scheme = 'Josh\ 2.0'
-
 " create ctags easily
 command! MakeTags !ctags -R .
 
@@ -92,12 +89,14 @@ set background=dark
 set termguicolors
 
 " https://superuser.com/questions/194715/how-to-make-vim-settings-computer-dependent-in-vimrc
-if has("unix")
+if has("mac")
    set notermguicolors
 endif
 
-" Work laptop
-if $HOSTNAME == "robin"
+" https://stackoverflow.com/questions/1056699/same-vimrc-two-different-computers
+if hostname() == "robin" " Work laptop
    set tabstop=3
    set shiftwidth=3
+   let g:xcode_project_file = "/Users/aaronbatilo/Desktop/JoshServer/Josh 2.0.xcodeproj"
+   let g:xcode_default_scheme = 'Josh\ 2.0'
 endif
