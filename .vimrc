@@ -90,3 +90,14 @@ endif
 
 set background=dark
 set termguicolors
+
+" https://superuser.com/questions/194715/how-to-make-vim-settings-computer-dependent-in-vimrc
+if has("unix")
+   set notermguicolors
+endif
+
+" Work laptop
+if $HOSTNAME == "robin"
+   set tabstop=3
+   set shiftwidth=3
+endif
