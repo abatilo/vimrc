@@ -22,7 +22,10 @@ Plugin 'vim-scripts/DoxygenToolkit.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
-filetype plugin indent on 
+filetype plugin indent on
+
+set list
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 
 let g:xcode_project_file = "/Users/aaronbatilo/Desktop/JoshServer/Josh 2.0.xcodeproj"
 let g:xcode_default_scheme = 'Josh\ 2.0'
@@ -33,7 +36,7 @@ command! MakeTags !ctags -R .
 " save session
 nnoremap <leader>s :mksession!<CR>
 
-" Make it easy to move lines up and down 
+" Make it easy to move lines up and down
 nnoremap <C-j> :m .+1<CR>
 nnoremap <C-k> :m .-2<CR>
 inoremap <C-j> <Esc>:m .+1<CR>
