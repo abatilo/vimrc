@@ -28,8 +28,10 @@ filetype plugin indent on
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
 command! FixTrail %s/\s\+$//e
 
-" Map Tweet to be PosttoTwitter
+" Post a tweet
 command! Tweet :PosttoTwitter
+" View recent tweets
+command! Timeline :FriendsTwitter
 
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
