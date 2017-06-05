@@ -16,6 +16,7 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
+Plugin 'twitvim/twitvim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-scripts/DoxygenToolkit.vim'
@@ -26,6 +27,9 @@ filetype plugin indent on
 
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
 command! FixTrail %s/\s\+$//e
+
+" Map Tweet to be PosttoTwitter
+command! Tweet :PosttoTwitter
 
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
