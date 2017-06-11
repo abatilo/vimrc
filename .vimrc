@@ -23,6 +23,7 @@ Plugin 'vim-scripts/DoxygenToolkit.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
+
 filetype plugin indent on
 
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
@@ -40,7 +41,10 @@ set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 command! MakeTags !ctags -R .
 
 " save session
-nnoremap <leader>s :mksession!<CR>
+nnoremap <leader>s :mksession ~/.vim/session.vim<CR>
+
+" Let enter accept the highlighted selection in the autocomplete popup
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Make it easy to move lines up and down
 nnoremap <C-j> :m .+1<CR>
