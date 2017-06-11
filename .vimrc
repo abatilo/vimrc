@@ -40,8 +40,8 @@ set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 " create ctags easily
 command! MakeTags !ctags -R .
 
-" save session
-nnoremap <leader>s :mksession ~/.vim/session.vim<CR>
+" Saves session and closes all buffers
+nnoremap <leader>s :mksession! ~/.vim/session.vim<CR>:xa<CR>
 
 " Let enter accept the highlighted selection in the autocomplete popup
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
