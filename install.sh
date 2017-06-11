@@ -15,3 +15,7 @@ vim +PluginInstall +qall
 # with trying to set the colorscheme before it's been installed
 echo "colorscheme solarized8_dark_high" >> ~/.vimrc
 echo "let g:airline_theme='solarized'" >> ~/.vimrc
+
+# Add an alias for opening a default session file
+grep "alias vis=" ~/.bashrc || echo "alias vis=`vi -S ~/.vim/session.vim`" >> ~/.bashrc
+grep "alias vims=" ~/.bashrc || echo "alias vims=`vi -S ~/.vim/session.vim`" >> ~/.bashrc
