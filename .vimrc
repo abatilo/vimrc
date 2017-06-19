@@ -109,7 +109,7 @@ if has("mac")
 endif
 
 " https://stackoverflow.com/questions/1056699/same-vimrc-two-different-computers
-if hostname() == "robin" " Work laptop
+if hostname() == "Josh Server pok-emonm-aster-aaron-b:dev" " Work laptop
    set tabstop=3
    set shiftwidth=3
    let g:xcode_project_file = "/Users/aaronbatilo/Desktop/JoshServer/Josh 2.0.xcodeproj"
