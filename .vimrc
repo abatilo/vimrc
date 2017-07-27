@@ -78,7 +78,6 @@ set expandtab
 set backspace=indent,eol,start
 
 set number
-set cursorline
 
 set splitbelow
 set splitright
