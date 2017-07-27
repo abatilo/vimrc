@@ -9,17 +9,12 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'ajh17/VimCompletesMe'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'gfontenot/vim-xcode'
 Plugin 'godlygeek/tabular'
-Plugin 'lifepillar/vim-solarized8'
 Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
-Plugin 'twitvim/twitvim'
 Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'vim-scripts/DoxygenToolkit.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -28,11 +23,6 @@ filetype plugin indent on
 
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
 command! FixTrail %s/\s\+$//e
-
-" Post a tweet
-command! Tweet :PosttoTwitter
-" View recent tweets
-command! Timeline :FriendsTwitter
 
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
@@ -94,24 +84,9 @@ set splitbelow
 set splitright
 
 set colorcolumn=100
+highlight ColorColumn ctermbg=0
 
 if executable("ag")
     set grepprg=ag\ --nogroup\ --nocolor
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-endif
-
-set background=dark
-set termguicolors
-
-" https://superuser.com/questions/194715/how-to-make-vim-settings-computer-dependent-in-vimrc
-if has("mac")
-   set notermguicolors
-endif
-
-" https://stackoverflow.com/questions/1056699/same-vimrc-two-different-computers
-if hostname() == "Josh Server pok-emonm-aster-aaron-b:dev" " Work laptop
-   set tabstop=3
-   set shiftwidth=3
-   let g:xcode_project_file = "/Users/aaronbatilo/Desktop/JoshServer/Josh 2.0.xcodeproj"
-   let g:xcode_default_scheme = 'Josh\ 2.0'
 endif
