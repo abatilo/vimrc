@@ -9,12 +9,14 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'ajh17/VimCompletesMe'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'flazz/vim-colorschemes'
 Plugin 'godlygeek/tabular'
 Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -83,6 +85,7 @@ set splitbelow
 set splitright
 
 set colorcolumn=100
+colorscheme zenburn
 highlight ColorColumn ctermbg=0
 
 if executable("ag")
