@@ -64,6 +64,7 @@ set showmatch
 
 set incsearch
 set hlsearch
+set cursorline
 
 nnoremap <leader><space> :nohlsearch<CR>
 set foldmethod=indent
