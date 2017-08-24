@@ -16,3 +16,6 @@ grep -q "alias vis=" ~/.bashrc || echo "alias vis='vi -S ~/.vim/session.vim'" >>
 grep -q "alias vims=" ~/.bashrc || echo "alias vims='vi -S ~/.vim/session.vim'" >> ~/.bashrc
 
 echo "Install tmux then run the tmux.sh"
+
+# Too lazy to document this right now
+# https://evertpot.com/osx-tmux-vim-copy-paste-clipboard/
