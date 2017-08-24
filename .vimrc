@@ -12,6 +12,7 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'godlygeek/tabular'
 Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
@@ -74,6 +75,8 @@ set foldnestmax=10      " 10 nested fold max
 " move vertically by visual line
 nnoremap j gj
 nnoremap k gk
+
+map <C-n> :NERDTreeToggle<CR>
 
 set tabstop=2
 set shiftwidth=2
