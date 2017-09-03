@@ -5,13 +5,14 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
+Plugin 'artur-shaik/vim-javacomplete2'
+Plugin 'Yggdroot/indentLine'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ajh17/VimCompletesMe'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'godlygeek/tabular'
-Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
@@ -96,3 +97,16 @@ if executable("ag")
     set grepprg=ag\ --nogroup\ --nocolor
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 endif
+
+" Indent line setting
+let g:indentLine_char = '|'
+
+" JavaComplete2
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
+autocmd BufWritePre *.java call OptimizeImports()
+function OptimizeImports()
+  JCimportsAddMissing
+  JCimportsRemoveUnused
+endfunction
+nmap <C-i> :JCgenerateAbstractMethods<CR>
+imap <C-i> :JCgenerateAbstractMethods<CR>
