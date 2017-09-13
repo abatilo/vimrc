@@ -1,5 +1,6 @@
 #!/bin/sh
 # Install tmux package manager
+rm -rf ~/.tmux/plugins/tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # Move the tmux config file to where it will be looked for
