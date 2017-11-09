@@ -1,8 +1,8 @@
 # Delete old stuff
 rm -rf ~/.vimrc ~/.vim
 
-# Copy vim configs
-cp .vimrc ~/.vimrc
+# Link vim configs
+ln -s "$PWD/.vimrc ~/.vimrc
 
 # For undo history
 mkdir -p ~/.vim/undo
