@@ -2,7 +2,7 @@
 rm -rf ~/.vimrc ~/.vim
 
 # Link vim configs
-ln -s "$PWD/.vimrc ~/.vimrc
+ln -s "$PWD/.vimrc" ~/.vimrc
 
 # For undo history
 mkdir -p ~/.vim/undo
