@@ -19,7 +19,6 @@ Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'wakatime/vim-wakatime'
-Plugin 'yuttie/comfortable-motion.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
