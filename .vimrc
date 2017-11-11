@@ -19,6 +19,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'wakatime/vim-wakatime'
+Plugin 'artur-shaik/vim-javacomplete2'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -115,3 +116,13 @@ if &term =~ '256color'
   " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
   set t_ut=
 endif
+
+" JavaComplete2
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
+autocmd BufWritePre *.java call OptimizeImports()
+function OptimizeImports()
+  JCimportsAddMissing
+  JCimportsRemoveUnused
+endfunction
+nmap <C-i> :JCgenerateAbstractMethods<CR>
+imap <C-i> :JCgenerateAbstractMethods<CR>
