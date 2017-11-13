@@ -8,18 +8,21 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'AlessandroYorba/Alduin'
 Plugin 'Yggdroot/indentLine'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'airblade/vim-rooter'
 Plugin 'ajh17/VimCompletesMe'
+Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'godlygeek/tabular'
+Plugin 'jiangmiao/auto-pairs'
 Plugin 'scrooloose/nerdtree'
+Plugin 'tfnico/vim-gradle'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'wakatime/vim-wakatime'
-Plugin 'artur-shaik/vim-javacomplete2'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -126,3 +129,9 @@ function OptimizeImports()
 endfunction
 nmap <C-i> :JCgenerateAbstractMethods<CR>
 imap <C-i> :JCgenerateAbstractMethods<CR>
+
+" Set compiler to gradlew
+au FileType java compiler gradlew
+
+" Set a line for 80 columns
+set colorcolumn=80
