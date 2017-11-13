@@ -124,7 +124,6 @@ endif
 
 " JavaComplete2
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
-autocmd BufWritePre *.java call OptimizeImports()
 function OptimizeImports()
   JCimportsAddMissing
   JCimportsRemoveUnused
