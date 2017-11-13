@@ -4,6 +4,9 @@ rm -rf ~/.vimrc ~/.vim
 # Link vim configs
 ln -s "$PWD/.vimrc" ~/.vimrc
 
+# ctags configs
+ln -s "$PWD/.ctags" ~/.ctags
+
 # For undo history
 mkdir -p ~/.vim/undo
 
