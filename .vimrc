@@ -102,7 +102,9 @@ let g:indentLine_char = '|'
 command! FixTrail %s/\s\+$//e
 
 " create ctags easily
-command! MakeTags !ctags -R .
+command! MakeTags !ctags -R -f ~/.tags .
+set tags=~/.tags
+
 " Saves session and closes all buffers
 nnoremap <leader>s :mksession! ~/.vim/session.vim<CR>:xa<CR>
 
