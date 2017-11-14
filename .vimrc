@@ -1,4 +1,3 @@
-set nocompatible
 filetype off
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -26,17 +25,26 @@ Plugin 'wakatime/vim-wakatime'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
-filetype indent on
+
+set autoindent
+filetype plugin indent on
 
 colorscheme alduin
-syntax on
+if !has('g:syntax_on')|syntax enable|endif
 
-" Tab settings
+" Set a line for 80 columns
+set colorcolumn=80
+
+" https://www.reddit.com/r/vim/wiki/tabstop
+" 2. Set 'tabstop' and 'shiftwidth' to whatever you prefer and use
+"    'expandtab'.  This way you will always insert spaces.  The
+"    formatting will never be messed up when 'tabstop' is changed.
 set tabstop=2
 set shiftwidth=2
 set expandtab
 
 " Let us backspace on indents
+" http://vim.wikia.com/wiki/Backspace_and_delete_problems#Backspace_key_won.27t_move_from_current_line
 set backspace=indent,eol,start
 
 " Line numbers
@@ -67,9 +75,6 @@ set incsearch
 set hlsearch
 nnoremap <leader><space> :nohlsearch<CR>
 
-" Only draw when we need to
-set lazyredraw
-
 set foldmethod=indent
 set foldlevelstart=10   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
@@ -87,7 +92,7 @@ nnoremap j gj
 nnoremap k gk
 
 " Open NERDTree
-map <C-n> :NERDTreeToggle<CR>
+noremap <C-n> :NERDTreeToggle<CR>
 
 " Use ripgrep
 if executable("rg")
@@ -123,16 +128,19 @@ if &term =~ '256color'
 endif
 
 " JavaComplete2
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
-function OptimizeImports()
+augroup JavaComplete2
+  autocmd!
+  autocmd FileType java setlocal omnifunc=javacomplete#Complete
+augroup END
+function OptimizeImports() abort
   JCimportsAddMissing
   JCimportsRemoveUnused
 endfunction
-nmap <C-i> :JCgenerateAbstractMethods<CR>
-imap <C-i> :JCgenerateAbstractMethods<CR>
+nnoremap <C-i> :JCgenerateAbstractMethods<CR>
+inoremap <C-i> :JCgenerateAbstractMethods<CR>
 
 " Set compiler to gradlew
-au FileType java compiler gradlew
-
-" Set a line for 80 columns
-set colorcolumn=80
+augroup GradlewCompiler
+  autocmd!
+  autocmd FileType java compiler gradlew
+augroup END
