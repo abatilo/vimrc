@@ -136,8 +136,9 @@ function OptimizeImports() abort
   JCimportsAddMissing
   JCimportsRemoveUnused
 endfunction
-nnoremap <C-i> :JCgenerateAbstractMethods<CR>
-inoremap <C-i> :JCgenerateAbstractMethods<CR>
+noremap <C-o> :call OptimizeImports()<CR>
+noremap <C-i> :JCgenerateAbstractMethods<CR>
+let g:JavaComplete_GradleExecutable = 'gradle'
 
 " Set compiler to gradlew
 augroup GradlewCompiler
