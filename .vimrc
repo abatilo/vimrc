@@ -138,7 +138,7 @@ function OptimizeImports() abort
 endfunction
 noremap <C-o> :call OptimizeImports()<CR>
 noremap <C-i> :JCgenerateAbstractMethods<CR>
-let g:JavaComplete_GradleExecutable = 'gradle'
+let g:JavaComplete_GradleExecutable = 'gradlew'
 
 " Set compiler to gradlew
 augroup GradlewCompiler
