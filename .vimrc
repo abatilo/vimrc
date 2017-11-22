@@ -4,7 +4,6 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'AlessandroYorba/Alduin'
 Plugin 'Yggdroot/indentLine'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'airblade/vim-rooter'
@@ -13,6 +12,7 @@ Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'godlygeek/tabular'
+Plugin 'romainl/flattened'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tfnico/vim-gradle'
 Plugin 'tpope/vim-commentary'
@@ -28,7 +28,7 @@ call vundle#end()            " required
 set autoindent
 filetype plugin indent on
 
-colorscheme alduin
+colorscheme flattened_dark
 if !has('g:syntax_on')|syntax enable|endif
 
 " Set a line for 80 columns
