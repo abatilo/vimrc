@@ -1,14 +1,17 @@
 # Delete old stuff
 rm -rf ~/.vimrc ~/.vim
 
+# For undo history
+mkdir -p ~/.vim/undo
+
 # Link vim configs
 ln -s "$PWD/.vimrc" ~/.vimrc
 
 # ctags configs
 ln -s "$PWD/.ctags" ~/.ctags
 
-# For undo history
-mkdir -p ~/.vim/undo
+# Install ripport configs
+ln -s "$PWD/ripport" ~/.vim/ripport
 
 # Install plugins
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim

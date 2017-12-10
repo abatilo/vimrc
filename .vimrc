@@ -126,18 +126,15 @@ if &term =~ '256color'
   set t_ut=
 endif
 
+" Import highlighted word
+noremap <C-o> :read !~/.vim/ripport <cword><CR>
+
 " JavaComplete2
 augroup JavaComplete2
   autocmd!
   autocmd FileType java setlocal omnifunc=javacomplete#Complete
 augroup END
-function OptimizeImports() abort
-  JCimportsAddMissing
-  JCimportsRemoveUnused
-endfunction
-noremap <C-o> :call OptimizeImports()<CR>
 noremap <C-i> :JCgenerateAbstractMethods<CR>
-let g:JavaComplete_GradleExecutable = 'gradlew'
 
 " Set compiler to gradlew
 augroup GradlewCompiler
