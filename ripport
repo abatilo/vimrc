@@ -8,7 +8,7 @@ find_root() {
 
   if [ "`pwd`" = '/' ];
   then
-    echo "No .git repo was found"
+    echo "// No .git repo was found"
     exit 1
   fi
 }
@@ -18,32 +18,34 @@ check_rg_installed() {
 }
 
 find_in_current_repo() {
-  check_rg_installed
-  if [ $? = 0 ];
-  then
-    rg -e "import .*\\.$1;" --no-filename --no-heading -N --no-messages | \
-      sort | uniq -c | sort -nr | head -n1 | tr -s ' ' | cut -d ' ' -f 3-
-  else
-    grep "import .*\\.$1;" -Rh | sort | uniq -c | sort -nr | head -n1 | \
-      tr -s ' ' | cut -d ' ' -f 3-
-  fi
+  find_root
+  rg -e "import .*\\.$1;" -tjava --no-filename --no-heading -N --no-messages | \
+    sort | uniq -c | sort -nr | head -n1 | tr -s ' ' | cut -d ' ' -f 3-
+}
+
+find_in_home_dir() {
+  rg -e "import .*\\.$1;" ~ -tjava --no-filename --no-heading -N \
+    --no-messages | sort | uniq -c | sort -nr | head -n1 | \
+    tr -s ' ' | cut -d ' ' -f 3-
 }
 
 find_in_gradle_cache() {
-  check_rg_installed
-  if [ $? = 0 ];
-  then
-    rg -e "import .*\\.$1;" ~/.gradle --no-filename --no-heading -N \
-      --no-messages --text | sort | uniq -c | sort -nr | head -n1 | \
-      tr -s ' ' | cut -d ' ' -f 3-
-  else
-    grep "import .*\\.$1;" ~/.gradle -Rah | sort | uniq -c | sort -nr | \
-      head -n1 | tr -s ' ' | cut -d ' ' -f 3-
-  fi
+  rg -e "import .*\\.$1;" ~/.gradle -tjava --no-filename --no-heading -N \
+    --no-messages --text | sort | uniq -c | sort -nr | head -n1 | \
+    tr -s ' ' | cut -d ' ' -f 3-
 }
 
-find_root
+check_rg_installed
+if [ $? != 0 ];
+then
+  echo "// ripgrep not installed"
+fi
+
 output="`find_in_current_repo $1`"
+if [ -z "$output" ]
+then
+  output="`find_in_home_dir $1`"
+fi
 if [ -z "$output" ]
 then
   output="`find_in_gradle_cache $1`"
