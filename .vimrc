@@ -29,6 +29,13 @@ set autoindent
 filetype plugin indent on
 
 colorscheme alduin
+" Darker background
+let g:alduin_Shout_Dragon_Aspect = 1
+" Dark red highlight
+let g:alduin_Shout_Fire_Breath = 1
+" Underline instead of block the matching paren
+let g:alduin_Shout_Aura_Whisper = 1
+
 if !has('g:syntax_on')|syntax enable|endif
 
 " Set a line for 80 columns
