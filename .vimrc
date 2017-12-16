@@ -79,8 +79,8 @@ set hlsearch
 nnoremap <leader><space> :nohlsearch<CR>
 
 set foldmethod=indent
-set foldlevelstart=10   " open most folds by default
-set foldnestmax=10      " 10 nested fold max
+" Collapse all methods by default
+set foldlevelstart=1
 
 " Make it easy to move lines up and down
 nnoremap <C-j> :m .+1<CR>
