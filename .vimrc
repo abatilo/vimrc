@@ -94,7 +94,7 @@ inoremap <C-k> <Esc>:m .-2<CR>
 vnoremap <C-j> :m '>+1<CR>gv=gv
 vnoremap <C-k> :m '<-2<CR>gv=gv
 
-" move vertically by visual line
+" Move vertically by visual line
 nnoremap j gj
 nnoremap k gk
 
@@ -113,7 +113,7 @@ let g:indentLine_char = '|'
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
 command! FixTrail %s/\s\+$//e
 
-" create ctags easily
+" Create ctags easily
 command! MakeTags !ctags -R -f ~/.tags .
 set tags=~/.tags
 
