@@ -30,7 +30,7 @@ find_in_home_dir() {
 }
 
 find_in_gradle_cache() {
-  rg -e "import .*\\.$1;" ~/.gradle -tjava --no-filename --no-heading -N \
+  rg -e "import .*\\.$1;" ~/.gradle --type-add 'jar:*.jar' -tjar -tjava --no-filename --no-heading -N \
     --no-messages --text | sort | uniq -c | sort -nr | head -n1 | \
     tr -s ' ' | cut -d ' ' -f 3-
 }

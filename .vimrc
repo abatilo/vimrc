@@ -111,6 +111,7 @@ command! FixTrail %s/\s\+$//e
 
 " Create ctags easily
 command! MakeTags !ctags -R -f ~/.tags .
+noremap <leader>t :!ctags -R -f ~/.tags .<CR>
 set tags=~/.tags
 
 " Saves session and closes all buffers
