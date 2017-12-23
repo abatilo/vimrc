@@ -8,7 +8,6 @@ Plugin 'AlessandroYorba/Alduin'
 Plugin 'Yggdroot/indentLine'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'airblade/vim-rooter'
-Plugin 'ajh17/VimCompletesMe'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -20,8 +19,16 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'vim-scripts/AutoComplPop'
 Plugin 'wakatime/vim-wakatime'
+
+if !has('nvim')
+  Plugin 'ajh17/VimCompletesMe'
+  Plugin 'vim-scripts/AutoComplPop'
+endif
+
+if has('nvim')
+  Plugin 'Shougo/deoplete.nvim'
+endif
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -140,6 +147,20 @@ augroup JavaComplete2
   autocmd FileType java setlocal omnifunc=javacomplete#Complete
 augroup END
 noremap <C-i> :JCgenerateAbstractMethods<CR>
+
+if has('nvim')
+  let g:deoplete#enable_at_startup = 1
+  let g:deoplete#enable_ignore_case = 1
+  let g:deoplete#file#enable_buffer_path = 1
+
+  " Use tab and shift-tab to scroll up and down in auto complete window
+  inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+  " Auto selects matching options
+  set completeopt+=longest
+  set completeopt+=noinsert
+endif
 
 " Set compiler to gradlew
 augroup GradlewCompiler
