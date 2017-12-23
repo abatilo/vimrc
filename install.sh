@@ -1,5 +1,5 @@
 # Delete old stuff
-rm -rf ~/.vimrc ~/.vim
+rm -rf ~/.vimrc ~/.vim ~/.config/nvim
 
 # For undo history
 mkdir -p ~/.vim/undo
@@ -13,9 +13,14 @@ ln -s "$PWD/.ctags" ~/.ctags
 # Install ripport configs
 ln -s "$PWD/ripport" ~/.vim/ripport
 
+# Create nvim directory
+mkdir -p "$HOME/.config/nvim"
+ln -s "$PWD/.vimrc" "$HOME/.config/nvim/init.vim"
+
 # Install plugins
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 echo | vim +PluginInstall +qall
+echo | nvim +PluginInstall +qall
 
 # Add an alias for opening a default session file
 grep -q "set -o vi" ~/.bashrc || echo "set -o vi" >> ~/.bashrc
@@ -28,9 +33,11 @@ then
   echo "" >> ~/.zshrc
   grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
   grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >> ~/.zshrc
-  grep -q "alias vis=" ~/.zshrc || echo "alias vis='vi -S ~/.vim/session.vim'" >> ~/.zshrc
-  grep -q "alias vims=" ~/.zshrc || echo "alias vims='vi -S ~/.vim/session.vim'" >> ~/.zshrc
-  grep -q "export EDITOR=vim" ~/.zshrc || echo "export EDITOR=vim" >> ~/.zshrc
+  grep -q "alias vis=" ~/.zshrc || echo "alias vis='nvim -S ~/.vim/session.vim'" >> ~/.zshrc
+  grep -q "alias vims=" ~/.zshrc || echo "alias vims='nvim -S ~/.vim/session.vim'" >> ~/.zshrc
+  grep -q "alias vi=" ~/.zshrc || echo "alias vi='nvim'" >> ~/.zshrc
+  grep -q "alias vim=" ~/.zshrc || echo "alias vim='nvim'" >> ~/.zshrc
+  grep -q "export EDITOR=nvim" ~/.zshrc || echo "export EDITOR=nvim" >> ~/.zshrc
 fi
 
 echo "Install tmux then run the tmux.sh"
