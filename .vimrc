@@ -142,8 +142,15 @@ if &term =~ '256color'
   set t_ut=
 endif
 
-" Import highlighted word
-noremap <C-o> :read !~/.vim/ripport <cword><CR>
+function OptimizeImports()
+  JCimportsRemoveUnused
+  JCimportsSort
+endfunction
+" Try a smart import
+noremap <C-o> :JCimportAddSmart<CR>
+" If no smart import is available, use a brute force search
+noremap <C-l> :read !~/.vim/ripport <cword><CR>
+noremap <leader>e :call OptimizeImports()<CR>
 
 " JavaComplete2
 augroup JavaComplete2
