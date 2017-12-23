@@ -115,6 +115,10 @@ let g:indentLine_char = '|'
 
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces
 command! FixTrail %s/\s\+$//e
+augroup DeleteTrailingWhitespace
+  autocmd!
+  autocmd BufWritePre * :%s/\s\+$//e
+augroup END
 
 " Create ctags easily
 command! MakeTags !ctags -R -f ~/.tags .
