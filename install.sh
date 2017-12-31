@@ -17,6 +17,13 @@ ln -s "$PWD/ripport" ~/.vim/ripport
 mkdir -p "$HOME/.config/nvim"
 ln -s "$PWD/.vimrc" "$HOME/.config/nvim/init.vim"
 
+# Create link for git template
+mkdir -p "$HOME/.git_template"
+ln -s "$PWD/.git_template/template" "$HOME/.git_template/template"
+
+# Set git template dir
+git config --global init.templatedir '~/.git_template/template'
+
 # Install plugins
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 echo | vim +PluginInstall +qall
