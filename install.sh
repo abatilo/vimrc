@@ -28,6 +28,10 @@ git config --global init.templatedir '~/.git_template/template'
 git config --global user.name "Aaron"
 git config --global user.email "AaronBatilo@gmail.com"
 
+# Set a default global .gitignore
+ln -s "$PWD/.gitignore_global" "$HOME/.gitignore"
+git config --global core.excludesfile ~/.gitignore
+
 # Install plugins
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 echo | vim +PluginInstall +qall
