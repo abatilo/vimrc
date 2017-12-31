@@ -18,7 +18,9 @@ mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
 
 # Create link for git template
-mkdir -p ~/.git_template
+# ln will create a second nested symlink if the second param is a directory so
+# we check for its existence in this case to prevent this issue.
+mkdir -p "$PWD/.git_template" ~/.git_template
 if [ ! -d ~/.git_template/template ];
 then
   ln -s "$PWD/.git_template/template" ~/.git_template/template
