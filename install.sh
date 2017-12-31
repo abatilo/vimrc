@@ -24,6 +24,10 @@ ln -s "$PWD/.git_template/template" "$HOME/.git_template/template"
 # Set git template dir
 git config --global init.templatedir '~/.git_template/template'
 
+# Set user.name and user.email for git
+git config --global user.name "Aaron"
+git config --global user.email "AaronBatilo@gmail.com"
+
 # Install plugins
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 echo | vim +PluginInstall +qall
