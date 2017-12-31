@@ -121,8 +121,8 @@ augroup DeleteTrailingWhitespace
 augroup END
 
 " Create ctags easily
-command! MakeTags !ctags -R -f ~/.tags .
-noremap <leader>t :!ctags -R -f ~/.tags .<CR>
+command! MakeTags !ctags -R -f ~/.tags $PWD
+noremap <leader>t :!ctags -R -f ~/.tags $PWD<CR>
 set tags=~/.tags
 
 " Saves session and closes all buffers
