@@ -14,11 +14,11 @@ ln -s "$PWD/.ctags" ~/.ctags
 ln -s "$PWD/ripport" ~/.vim/ripport
 
 # Create nvim directory
-mkdir -p "$HOME/.config/nvim"
-ln -s "$PWD/.vimrc" "$HOME/.config/nvim/init.vim"
+mkdir -p ~/.config/nvim
+ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
 
 # Create link for git template
-mkdir -p "$HOME/.git_template"
+mkdir -p ~/.git_template
 if [ ! -d ~/.git_template/template ];
 then
   ln -s "$PWD/.git_template/template" ~/.git_template/template
@@ -32,7 +32,7 @@ git config --global user.name "Aaron"
 git config --global user.email "AaronBatilo@gmail.com"
 
 # Set a default global .gitignore
-ln -s "$PWD/.gitignore_global" "$HOME/.gitignore"
+ln -s "$PWD/.gitignore_global" ~/.gitignore
 git config --global core.excludesfile ~/.gitignore
 
 # Install plugins
@@ -46,7 +46,7 @@ grep -q "alias vis=" ~/.bashrc || echo "alias vis='vi -S ~/.vim/session.vim'" >>
 grep -q "alias vims=" ~/.bashrc || echo "alias vims='vi -S ~/.vim/session.vim'" >> ~/.bashrc
 grep -q "export EDITOR=vim" ~/.bashrc || echo "export EDITOR=vim" >> ~/.bashrc
 
-if [ -e "$HOME/.zshrc" ]
+if [ -e ~/.zshrc ]
 then
   echo "" >> ~/.zshrc
   grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
