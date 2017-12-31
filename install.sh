@@ -19,7 +19,10 @@ ln -s "$PWD/.vimrc" "$HOME/.config/nvim/init.vim"
 
 # Create link for git template
 mkdir -p "$HOME/.git_template"
-ln -s "$PWD/.git_template/template" "$HOME/.git_template/template"
+if [ ! -d ~/.git_template/template ];
+then
+  ln -s "$PWD/.git_template/template" ~/.git_template/template
+fi
 
 # Set git template dir
 git config --global init.templatedir '~/.git_template/template'
