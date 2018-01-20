@@ -86,8 +86,8 @@ set hlsearch
 nnoremap <leader><space> :nohlsearch<CR>
 
 set foldmethod=indent
-" Collapse all methods by default
-set foldlevelstart=1
+" Open all methods by default
+set foldlevelstart=10
 
 " Make it easy to move lines up and down
 nnoremap <C-j> :m .+1<CR>
