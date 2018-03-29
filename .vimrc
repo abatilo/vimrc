@@ -106,7 +106,7 @@ noremap <C-n> :NERDTreeToggle<CR>
 
 " Use ripgrep
 if executable("rg")
-    set grepprg=rg\ --color=never
+    set grepprg=rg\ --color=never\ --vimgrep
     let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
 endif
 
