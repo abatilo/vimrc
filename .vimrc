@@ -186,3 +186,9 @@ augroup END
 " Make it very easy to urldecode a file
 command! FullEncode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.quote_plus(l)) for l in sys.stdin]"
 command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.unquote_plus(l)) for l in sys.stdin]"
+
+" Settings for files written for Conga
+augroup CongaCodeStyle
+  autocmd!
+  autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
+augroup END
