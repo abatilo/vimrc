@@ -144,6 +144,7 @@ endif
 
 function OptimizeImports()
   JCimportsRemoveUnused
+  JCimportsAddMissing
   JCimportsSort
 endfunction
 " Try a smart import
