@@ -20,6 +20,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'wakatime/vim-wakatime'
+Plugin 'KabbAmine/zeavim.vim'
 
 if !has('nvim')
   Plugin 'ajh17/VimCompletesMe'
