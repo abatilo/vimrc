@@ -13,6 +13,9 @@ ln -s "$PWD/.ctags" ~/.ctags
 # Install ripport configs
 ln -s "$PWD/ripport" ~/.vim/ripport
 
+# Install UltiSnips custom snippers
+ln -s "$PWD/UltiSnips" ~/.vim/UltiSnips
+
 # Create nvim directory
 mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim

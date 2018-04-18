@@ -21,6 +21,8 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'wakatime/vim-wakatime'
 Plugin 'KabbAmine/zeavim.vim'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
 
 if !has('nvim')
   Plugin 'ajh17/VimCompletesMe'
@@ -143,7 +145,7 @@ if &term =~ '256color'
   set t_ut=
 endif
 
-function OptimizeImports()
+function! OptimizeImports()
   JCimportsRemoveUnused
   JCimportsAddMissing
   JCimportsSort
@@ -193,3 +195,9 @@ augroup CongaCodeStyle
   autocmd!
   autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
 augroup END
+
+" UltiSnips configurations
+let g:UltiSnipsExpandTrigger="<C-Space>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
