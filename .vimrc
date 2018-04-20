@@ -194,6 +194,7 @@ command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.u
 augroup CongaCodeStyle
   autocmd!
   autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
+  autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
 augroup END
 
 " UltiSnips configurations
