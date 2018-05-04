@@ -4,6 +4,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
+Plugin 'pbrisbin/vim-colors-off'
 Plugin 'AlessandroYorba/Alduin'
 Plugin 'Yggdroot/indentLine'
 Plugin 'airblade/vim-gitgutter'
@@ -39,7 +40,9 @@ call vundle#end()            " required
 set autoindent
 filetype plugin indent on
 
-colorscheme alduin
+colorscheme off
+set background=dark
+" colorscheme alduin
 " Underline instead of block the matching paren
 let g:alduin_Shout_Aura_Whisper = 1
 
