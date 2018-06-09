@@ -14,6 +14,7 @@ Plugin 'airblade/vim-rooter'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'davidhalter/jedi-vim'
 Plugin 'godlygeek/tabular'
 Plugin 'honza/vim-snippets'
 Plugin 'pbrisbin/vim-colors-off'
@@ -26,6 +27,7 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'w0rp/ale'
 Plugin 'wakatime/vim-wakatime'
+Plugin 'zchee/deoplete-jedi'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
