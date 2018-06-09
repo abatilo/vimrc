@@ -17,6 +17,7 @@ These setup scripts assume that the following are installed:
 - [universal-ctags](https://github.com/universal-ctags/ctags)
 - [pycodestyle](https://github.com/PyCQA/pycodestyle)
 - [gitlint](https://github.com/jorisroovers/gitlint)
+- [jq](https://stedolan.github.io/jq/)
 
 My workflow uses universal-ctags instead of exuberant-ctags since the latter is
 no longer maintained.

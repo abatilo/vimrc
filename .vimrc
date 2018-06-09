@@ -202,8 +202,15 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
 
+" ALE
 let g:ale_linters = {
 \  'python': ['pycodestyle'],
 \  'git': ['gitlint'],
+\  'java': [],
 \}
+
+" Integrate into airline
 let g:airline#extensions#ale#enabled = 1
+
+" Pop a buffer open with issues
+let g:ale_open_list = 1
