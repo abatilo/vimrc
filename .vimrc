@@ -154,6 +154,19 @@ noremap <C-o> :JCimportAddSmart<CR>
 noremap <C-l> :read !~/.vim/ripport <cword><CR>
 noremap <leader>e :call OptimizeImports()<CR>
 
+" ALE
+let g:ale_linters = {
+\  'python': ['pycodestyle'],
+\  'git': ['gitlint'],
+\  'java': [],
+\}
+
+" Integrate into airline
+let g:airline#extensions#ale#enabled = 1
+
+" Pop a buffer open with issues
+let g:ale_open_list = 1
+
 " JavaComplete2
 augroup JavaComplete2
   autocmd!
@@ -202,15 +215,8 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
 
-" ALE
-let g:ale_linters = {
-\  'python': ['pycodestyle'],
-\  'git': ['gitlint'],
-\  'java': [],
-\}
-
-" Integrate into airline
-let g:airline#extensions#ale#enabled = 1
-
-" Pop a buffer open with issues
-let g:ale_open_list = 1
+augroup SudokuRace
+  autocmd!
+  autocmd BufRead */sudoku-race/*.java let g:ale_linters.java = ['checkstyle']
+  autocmd BufRead */sudoku-race/*.java set colorcolumn=100
+augroup END
