@@ -4,8 +4,10 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'pbrisbin/vim-colors-off'
 Plugin 'AlessandroYorba/Alduin'
+Plugin 'KabbAmine/zeavim.vim'
+Plugin 'Shougo/deoplete.nvim'
+Plugin 'SirVer/ultisnips'
 Plugin 'Yggdroot/indentLine'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'airblade/vim-rooter'
@@ -13,6 +15,8 @@ Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'godlygeek/tabular'
+Plugin 'honza/vim-snippets'
+Plugin 'pbrisbin/vim-colors-off'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tfnico/vim-gradle'
 Plugin 'tpope/vim-commentary'
@@ -20,19 +24,8 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'w0rp/ale'
 Plugin 'wakatime/vim-wakatime'
-Plugin 'KabbAmine/zeavim.vim'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-
-if !has('nvim')
-  Plugin 'ajh17/VimCompletesMe'
-  Plugin 'vim-scripts/AutoComplPop'
-endif
-
-if has('nvim')
-  Plugin 'Shougo/deoplete.nvim'
-endif
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -198,6 +191,7 @@ augroup CongaCodeStyle
   autocmd!
   autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
+  autocmd BufRead */machinelearning/*.py set tabstop=4 shiftwidth=4 colorcolumn=120
 augroup END
 
 " UltiSnips configurations
@@ -205,3 +199,9 @@ let g:UltiSnipsExpandTrigger="<C-Space>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
+
+let g:ale_linters = {
+\  'python': ['pycodestyle'],
+\  'git': ['gitlint'],
+\}
+let g:airline#extensions#ale#enabled = 1
