@@ -167,6 +167,31 @@ let g:airline#extensions#ale#enabled = 1
 " Pop a buffer open with issues
 let g:ale_open_list = 1
 
+" UltiSnips configurations
+let g:UltiSnipsExpandTrigger="<C-Space>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
+
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_ignore_case = 1
+let g:deoplete#omni_patterns = {}
+let g:deoplete#sources = {}
+let g:deoplete#sources._ = []
+let g:deoplete#file#enable_buffer_path = 1
+
+" Use tab and shift-tab to scroll up and down in auto complete window
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Auto selects matching options
+set completeopt+=longest
+set completeopt+=noinsert
+
+" Make it very easy to urldecode a file
+command! FullEncode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.quote_plus(l)) for l in sys.stdin]"
+command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.unquote_plus(l)) for l in sys.stdin]"
+
 " JavaComplete2
 augroup JavaComplete2
   autocmd!
@@ -174,32 +199,11 @@ augroup JavaComplete2
 augroup END
 noremap <C-i> :JCgenerateAbstractMethods<CR>
 
-if has('nvim')
-  let g:deoplete#enable_at_startup = 1
-  let g:deoplete#enable_ignore_case = 1
-  let g:deoplete#omni_patterns = {}
-  let g:deoplete#sources = {}
-  let g:deoplete#sources._ = []
-  let g:deoplete#file#enable_buffer_path = 1
-
-  " Use tab and shift-tab to scroll up and down in auto complete window
-  inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-  " Auto selects matching options
-  set completeopt+=longest
-  set completeopt+=noinsert
-endif
-
 " Set compiler to gradlew
 augroup GradlewCompiler
   autocmd!
   autocmd FileType java compiler gradlew
 augroup END
-
-" Make it very easy to urldecode a file
-command! FullEncode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.quote_plus(l)) for l in sys.stdin]"
-command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.unquote_plus(l)) for l in sys.stdin]"
 
 " Settings for files written for Conga
 augroup CongaCodeStyle
@@ -207,16 +211,12 @@ augroup CongaCodeStyle
   autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.py set tabstop=4 shiftwidth=4 colorcolumn=120
+  autocmd BufRead */machinelearning/*.py let g:ale_python_pycodestyle_options = "--max-line-length=120"
 augroup END
-
-" UltiSnips configurations
-let g:UltiSnipsExpandTrigger="<C-Space>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
 
 augroup SudokuRace
   autocmd!
   autocmd BufRead */sudoku-race/*.java let g:ale_linters.java = ['checkstyle']
+  autocmd BufRead */sudoku-race/*.java let g:ale_java_checkstyle_options = "-c backend/config/checkstyle/google_checks.xml"
   autocmd BufRead */sudoku-race/*.java set colorcolumn=100
 augroup END
