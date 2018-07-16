@@ -18,6 +18,7 @@ Plugin 'davidhalter/jedi-vim'
 Plugin 'godlygeek/tabular'
 Plugin 'honza/vim-snippets'
 Plugin 'pbrisbin/vim-colors-off'
+Plugin 'rizzatti/dash.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tfnico/vim-gradle'
 Plugin 'tpope/vim-commentary'
@@ -192,6 +193,14 @@ set completeopt+=noinsert
 command! FullEncode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.quote_plus(l)) for l in sys.stdin]"
 command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.unquote_plus(l)) for l in sys.stdin]"
 
+" Use Dash while on Mac
+if has("unix")
+  let s:uname = system("uname")
+  if s:uname == "Darwin\n"
+    nnoremap <leader>x :Dash<CR>
+  endif
+endif
+
 " JavaComplete2
 augroup JavaComplete2
   autocmd!
@@ -211,7 +220,7 @@ augroup CongaCodeStyle
   autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.py set tabstop=4 shiftwidth=4 colorcolumn=120
-  autocmd BufRead */machinelearning/*.py let g:ale_python_pycodestyle_options = "--max-line-length=120"
+  autocmd BufRead */machinelearning/*.py let g:ale_python_flake8_options = "--max-line-length=120 --import-order-style pep8"
 augroup END
 
 augroup SudokuRace
