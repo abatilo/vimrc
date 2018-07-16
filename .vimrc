@@ -35,7 +35,7 @@ call vundle#end()            " required
 set autoindent
 filetype plugin indent on
 
-colorscheme off
+colorscheme alduin
 set background=dark
 " colorscheme alduin
 " Underline instead of block the matching paren
@@ -118,7 +118,7 @@ let g:indentLine_char = '|'
 command! FixTrail %s/\s\+$//e
 augroup DeleteTrailingWhitespace
   autocmd!
-  autocmd BufWritePre * :%s/\s\+$//e
+  " autocmd BufWritePre * :%s/\s\+$//e
 augroup END
 
 " Create ctags easily
@@ -156,7 +156,7 @@ noremap <leader>e :call OptimizeImports()<CR>
 
 " ALE
 let g:ale_linters = {
-\  'python': ['pycodestyle'],
+\  'python': ['flake8'],
 \  'git': ['gitlint'],
 \  'java': [],
 \}
