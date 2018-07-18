@@ -119,7 +119,7 @@ let g:indentLine_char = '|'
 command! FixTrail %s/\s\+$//e
 augroup DeleteTrailingWhitespace
   autocmd!
-  " autocmd BufWritePre * :%s/\s\+$//e
+  autocmd BufWritePre * :%s/\s\+$//e
 augroup END
 
 " Create ctags easily
@@ -169,10 +169,11 @@ let g:airline#extensions#ale#enabled = 1
 let g:ale_open_list = 1
 
 " UltiSnips configurations
-let g:UltiSnipsExpandTrigger="<C-Space>"
+let g:UltiSnipsExpandTrigger="<Space><Space>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
+let g:ultisnips_python_quoting_style = "single"
 
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_ignore_case = 1
@@ -201,6 +202,7 @@ if has("unix")
   endif
 endif
 
+let g:JavaComplete_EnableDefaultMappings = 1
 " JavaComplete2
 augroup JavaComplete2
   autocmd!
@@ -225,7 +227,5 @@ augroup END
 
 augroup SudokuRace
   autocmd!
-  autocmd BufRead */sudoku-race/*.java let g:ale_linters.java = ['checkstyle']
-  autocmd BufRead */sudoku-race/*.java let g:ale_java_checkstyle_options = "-c backend/config/checkstyle/google_checks.xml"
-  autocmd BufRead */sudoku-race/*.java set colorcolumn=100
+  autocmd BufRead */sudoku-race/*.py let g:ale_python_flake8_options = "--import-order-style pep8"
 augroup END
