@@ -1,44 +1,35 @@
-filetype off
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
+call plug#begin('~/.local/share/nvim/plugged')
 
-Plugin 'AlessandroYorba/Alduin'
-Plugin 'KabbAmine/zeavim.vim'
-Plugin 'Shougo/deoplete.nvim'
-Plugin 'SirVer/ultisnips'
-Plugin 'Yggdroot/indentLine'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'airblade/vim-rooter'
-Plugin 'artur-shaik/vim-javacomplete2'
-Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'davidhalter/jedi-vim'
-Plugin 'godlygeek/tabular'
-Plugin 'honza/vim-snippets'
-Plugin 'pbrisbin/vim-colors-off'
-Plugin 'rizzatti/dash.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'tfnico/vim-gradle'
-Plugin 'tpope/vim-commentary'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'w0rp/ale'
-Plugin 'wakatime/vim-wakatime'
-Plugin 'zchee/deoplete-jedi'
+Plug 'AlessandroYorba/Alduin'
+Plug 'KabbAmine/zeavim.vim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'SirVer/ultisnips'
+Plug 'Yggdroot/indentLine'
+Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-rooter'
+Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+Plug 'godlygeek/tabular'
+Plug 'honza/vim-snippets'
+Plug 'rizzatti/dash.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'tfnico/vim-gradle'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
+Plug 'wakatime/vim-wakatime'
+Plug 'zchee/deoplete-jedi', { 'for': 'python' }
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
+" Initialize plugin system
+call plug#end()
 
-set autoindent
-filetype plugin indent on
-
-colorscheme alduin
 set background=dark
-" colorscheme alduin
+colorscheme alduin
 " Underline instead of block the matching paren
 let g:alduin_Shout_Aura_Whisper = 1
 
@@ -165,9 +156,6 @@ let g:ale_linters = {
 " Integrate into airline
 let g:airline#extensions#ale#enabled = 1
 
-" Pop a buffer open with issues
-let g:ale_open_list = 1
-
 " UltiSnips configurations
 let g:UltiSnipsExpandTrigger="<Space><Space>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -202,7 +190,7 @@ if has("unix")
   endif
 endif
 
-let g:JavaComplete_EnableDefaultMappings = 1
+let g:JavaComplete_EnableDefaultMappings = 0
 " JavaComplete2
 augroup JavaComplete2
   autocmd!

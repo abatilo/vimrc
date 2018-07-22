@@ -1,5 +1,5 @@
 # Delete old stuff
-rm -rf ~/.vimrc ~/.vim ~/.config/nvim
+rm -rf ~/.vimrc ~/.vim ~/.config/nvim ~/.local/shared/nvim
 
 # For undo history
 mkdir -p ~/.vim/undo
@@ -41,9 +41,9 @@ ln -s "$PWD/.gitignore_global" ~/.gitignore
 git config --global core.excludesfile ~/.gitignore
 
 # Install plugins
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-echo | vim +PluginInstall +qall
-echo | nvim +PluginInstall +qall
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+echo | nvim +PlugInstall +qall
 
 # Add an alias for opening a default session file
 grep -q "set -o vi" ~/.bashrc || echo "set -o vi" >> ~/.bashrc
@@ -63,7 +63,7 @@ then
   grep -q "export EDITOR=nvim" ~/.zshrc || echo "export EDITOR=nvim" >> ~/.zshrc
 
   grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
-  grep -q "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
+  grep -q "export FZF_DEFAULT_COMMAND=" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
   grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' >> ~/.zshrc
   grep -q "ctrlp() { </dev/tty vim -c CtrlP }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c CtrlP }" >> ~/.zshrc
   grep -q "zle -N ctrlp" ~/.zshrc || echo "zle -N ctrlp" >> ~/.zshrc
