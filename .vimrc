@@ -28,6 +28,8 @@ Plug 'zchee/deoplete-jedi', { 'for': 'python' }
 " Initialize plugin system
 call plug#end()
 
+let g:python3_host_prog = 'python3'
+
 set background=dark
 colorscheme alduin
 " Underline instead of block the matching paren

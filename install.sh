@@ -1,5 +1,5 @@
 # Delete old stuff
-rm -rf ~/.vimrc ~/.vim ~/.config/nvim ~/.local/shared/nvim
+rm -rf ~/.vimrc ~/.vim ~/.config/nvim ~/.local/share/nvim
 
 # For undo history
 mkdir -p ~/.vim/undo
@@ -19,18 +19,6 @@ ln -s "$PWD/UltiSnips" ~/.vim/UltiSnips
 # Create nvim directory
 mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
-
-# Create link for git template
-# ln will create a second nested symlink if the second param is a directory so
-# we check for its existence in this case to prevent this issue.
-mkdir -p "$PWD/.git_template" ~/.git_template
-if [ ! -d ~/.git_template/template ];
-then
-  ln -s "$PWD/.git_template/template" ~/.git_template/template
-fi
-
-# Set git template dir
-git config --global init.templatedir '~/.git_template/template'
 
 # Set user.name and user.email for git
 git config --global user.name "Aaron"
