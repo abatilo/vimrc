@@ -1,21 +1,16 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 Plug 'AlessandroYorba/Alduin'
-Plug 'KabbAmine/zeavim.vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
-Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'godlygeek/tabular'
 Plug 'honza/vim-snippets'
-Plug 'rizzatti/dash.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'tfnico/vim-gradle'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -23,12 +18,35 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'wakatime/vim-wakatime'
+
+" Java specific
+Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
+Plug 'tfnico/vim-gradle', { 'for': 'java' }
+
+" Python specific
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'zchee/deoplete-jedi', { 'for': 'python' }
+
+" C# specific
+Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
+
+if has('unix')
+  if !has('macunix')
+    Plug 'KabbAmine/zeavim.vim'
+  else
+    Plug 'rizzatti/dash.vim'
+    nnoremap <leader>z :Dash<CR>
+  endif
+endif
 
 " Initialize plugin system
 call plug#end()
 
 let g:python3_host_prog = 'python3'
+
+if has('macunix')
+  let g:OmniSharp_server_use_mono = 1
+endif
 
 set background=dark
 colorscheme alduin
@@ -153,6 +171,7 @@ let g:ale_linters = {
 \  'python': ['flake8'],
 \  'git': ['gitlint'],
 \  'java': [],
+\  'cs': ['OmniSharp'],
 \}
 
 " Integrate into airline
@@ -184,14 +203,6 @@ set completeopt+=noinsert
 command! FullEncode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.quote_plus(l)) for l in sys.stdin]"
 command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.unquote_plus(l)) for l in sys.stdin]"
 
-" Use Dash while on Mac
-if has("unix")
-  let s:uname = system("uname")
-  if s:uname == "Darwin\n"
-    nnoremap <leader>x :Dash<CR>
-  endif
-endif
-
 let g:JavaComplete_EnableDefaultMappings = 0
 " JavaComplete2
 augroup JavaComplete2
@@ -212,6 +223,7 @@ augroup CongaCodeStyle
   autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.py set tabstop=4 shiftwidth=4 colorcolumn=120
+  autocmd BufRead */machinelearning/*.cs set tabstop=4 shiftwidth=4
   autocmd BufRead */machinelearning/*.py let g:ale_python_flake8_options = "--max-line-length=120 --import-order-style pep8"
 augroup END
 
