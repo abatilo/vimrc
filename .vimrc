@@ -18,6 +18,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'wakatime/vim-wakatime'
+Plug 'sheerun/vim-polyglot'
 
 " Java specific
 Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
@@ -28,7 +29,7 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'zchee/deoplete-jedi', { 'for': 'python' }
 
 " C# specific
-Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
+Plug 'OmniSharp/omnisharp-vim'
 
 if has('unix')
   if !has('macunix')
@@ -130,7 +131,8 @@ let g:indentLine_char = '|'
 command! FixTrail %s/\s\+$//e
 augroup DeleteTrailingWhitespace
   autocmd!
-  autocmd BufWritePre * :%s/\s\+$//e
+  autocmd BufReadPost * :%s/\s\+$//e
+  autocmd BufReadPost * :%s/$//e
 augroup END
 
 " Create ctags easily
@@ -172,6 +174,8 @@ let g:ale_linters = {
 \  'git': ['gitlint'],
 \  'java': [],
 \  'cs': ['OmniSharp'],
+\  'javascript': [],
+\  'typescript': [],
 \}
 
 " Integrate into airline
@@ -224,8 +228,12 @@ augroup CongaCodeStyle
   autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
   autocmd BufRead */machinelearning/*.py set tabstop=4 shiftwidth=4 colorcolumn=120
   autocmd BufRead */machinelearning/*.cs set tabstop=4 shiftwidth=4
+  autocmd BufRead *.cs set tabstop=4 shiftwidth=4
+  autocmd BufRead *.ts set tabstop=2 shiftwidth=2
+  autocmd BufRead *.tsx set tabstop=2 shiftwidth=2
   autocmd BufRead */machinelearning/*.py let g:ale_python_flake8_options = "--max-line-length=120 --import-order-style pep8"
 augroup END
+
 
 augroup SudokuRace
   autocmd!
