@@ -79,6 +79,11 @@ set incsearch
 set hlsearch
 nnoremap <leader><space> :nohlsearch<CR>
 
+" Store temporary files in a central spot
+set backup
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+
 set foldmethod=indent
 " Open all methods by default
 set foldlevelstart=10
