@@ -1,35 +1,21 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 Plug 'AlessandroYorba/Alduin'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'SirVer/ultisnips'
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'godlygeek/tabular'
-Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree'
+Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'w0rp/ale'
+Plug 'vim-scripts/AutoComplPop'
 Plug 'wakatime/vim-wakatime'
-Plug 'sheerun/vim-polyglot'
-
-" Java specific
-Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
-Plug 'tfnico/vim-gradle', { 'for': 'java' }
-
-" Python specific
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-Plug 'zchee/deoplete-jedi', { 'for': 'python' }
-
-" C# specific
-Plug 'OmniSharp/omnisharp-vim'
 
 if has('unix')
   if !has('macunix')
@@ -42,12 +28,6 @@ endif
 
 " Initialize plugin system
 call plug#end()
-
-let g:python3_host_prog = 'python3'
-
-if has('macunix')
-  let g:OmniSharp_server_use_mono = 1
-endif
 
 set background=dark
 colorscheme alduin
@@ -157,43 +137,8 @@ if &term =~ '256color'
   set t_ut=
 endif
 
-function! OptimizeImports()
-  JCimportsRemoveUnused
-  JCimportsAddMissing
-  JCimportsSort
-endfunction
-" Try a smart import
-noremap <C-o> :JCimportAddSmart<CR>
 " If no smart import is available, use a brute force search
 noremap <C-l> :read !~/.vim/ripport <cword><CR>
-noremap <leader>e :call OptimizeImports()<CR>
-
-" ALE
-let g:ale_linters = {
-\  'python': ['flake8'],
-\  'git': ['gitlint'],
-\  'java': [],
-\  'cs': ['OmniSharp'],
-\  'javascript': [],
-\  'typescript': [],
-\}
-
-" Integrate into airline
-let g:airline#extensions#ale#enabled = 1
-
-" UltiSnips configurations
-let g:UltiSnipsExpandTrigger="<Space><Space>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips', 'UltiSnips']
-let g:ultisnips_python_quoting_style = "single"
-
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_ignore_case = 1
-let g:deoplete#omni_patterns = {}
-let g:deoplete#sources = {}
-let g:deoplete#sources._ = []
-let g:deoplete#file#enable_buffer_path = 1
 
 " Use tab and shift-tab to scroll up and down in auto complete window
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -202,24 +147,6 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 " Auto selects matching options
 set completeopt+=longest
 set completeopt+=noinsert
-
-" Make it very easy to urldecode a file
-command! FullEncode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.quote_plus(l)) for l in sys.stdin]"
-command! FullDecode %!python -c "import sys,urllib as ul; [sys.stdout.write(ul.unquote_plus(l)) for l in sys.stdin]"
-
-let g:JavaComplete_EnableDefaultMappings = 0
-" JavaComplete2
-augroup JavaComplete2
-  autocmd!
-  autocmd FileType java setlocal omnifunc=javacomplete#Complete
-augroup END
-noremap <C-i> :JCgenerateAbstractMethods<CR>
-
-" Set compiler to gradlew
-augroup GradlewCompiler
-  autocmd!
-  autocmd FileType java compiler gradlew
-augroup END
 
 " Settings for files written for Conga
 augroup CongaCodeStyle
@@ -231,9 +158,7 @@ augroup CongaCodeStyle
   autocmd BufRead *.cs set tabstop=4 shiftwidth=4
   autocmd BufRead *.ts set tabstop=2 shiftwidth=2
   autocmd BufRead *.tsx set tabstop=2 shiftwidth=2
-  autocmd BufRead */machinelearning/*.py let g:ale_python_flake8_options = "--max-line-length=120 --import-order-style pep8"
 augroup END
-
 
 augroup SudokuRace
   autocmd!
