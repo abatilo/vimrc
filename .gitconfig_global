@@ -5,8 +5,10 @@
   excludesfile = /home/aaron/.gitignore
 [alias]
   st = status
-  aa = commit -v
-  co = commit -v
+  aa = add -A
+  caa = commit --all --verbose
+  cap = commit --patch --verbose
+  co = commit --verbose
   rem = rebase -i master
   red = rebase -i develop
   di = diff
