@@ -1,5 +1,13 @@
 [user]
-	name = Aaron
-	email = AaronBatilo@gmail.com
+  name = Aaron
+  email = AaronBatilo@gmail.com
 [core]
-	excludesfile = /home/aaron/.gitignore
+  excludesfile = /home/aaron/.gitignore
+[alias]
+  st = status
+  aa = commit -v
+  co = commit -v
+  rem = rebase -i master
+  red = rebase -i develop
+  di = diff
+  dc = diff --cached
