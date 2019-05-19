@@ -58,6 +58,12 @@ set number
 set splitbelow
 set splitright
 
+" Shortcuts for resizing splits
+nnoremap <c-w><s-h> :vertical resize +5<cr>
+nnoremap <c-w><s-l> :vertical resize -5<cr>
+nnoremap <c-w><s-j> :resize -5<cr>
+nnoremap <c-w><s-k> :resize +5<cr>
+
 " Display whitespace characters
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
