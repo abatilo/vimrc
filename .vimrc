@@ -159,8 +159,3 @@ augroup CongaCodeStyle
   autocmd BufRead *.ts set tabstop=2 shiftwidth=2
   autocmd BufRead *.tsx set tabstop=2 shiftwidth=2
 augroup END
-
-augroup SudokuRace
-  autocmd!
-  autocmd BufRead */sudoku-race/*.py let g:ale_python_flake8_options = "--import-order-style pep8"
-augroup END

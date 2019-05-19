@@ -13,20 +13,15 @@ ln -s "$PWD/.ctags" ~/.ctags
 # Install ripport configs
 ln -s "$PWD/ripport" ~/.vim/ripport
 
-# Install UltiSnips custom snippers
-ln -s "$PWD/UltiSnips" ~/.vim/UltiSnips
-
 # Create nvim directory
 mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
 
-# Set user.name and user.email for git
-git config --global user.name "Aaron"
-git config --global user.email "AaronBatilo@gmail.com"
+# Set a default global .gitconfig
+ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 
 # Set a default global .gitignore
 ln -s "$PWD/.gitignore_global" ~/.gitignore
-git config --global core.excludesfile ~/.gitignore
 
 # Install plugins
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
