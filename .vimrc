@@ -77,7 +77,10 @@ set incsearch
 
 " Keep searched text highligted
 set hlsearch
-nnoremap <leader><space> :nohlsearch<CR>
+nnoremap <CR> :nohlsearch<CR>
+
+" Ignore casing in searches
+set ignorecase smartcase
 
 " Store temporary files in a central spot
 set backup
