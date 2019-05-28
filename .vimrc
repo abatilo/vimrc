@@ -7,6 +7,7 @@ Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'godlygeek/tabular'
+Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
@@ -125,8 +126,8 @@ let g:indentLine_char = '|'
 command! FixTrail %s/\s\+$//e
 augroup DeleteTrailingWhitespace
   autocmd!
-  autocmd BufReadPost * :%s/\s\+$//e
-  autocmd BufReadPost * :%s/$//e
+  autocmd BufWritePost * :%s/\s\+$//e
+  autocmd BufWritePost * :%s/$//e
 augroup END
 
 " Create ctags easily
