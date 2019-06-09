@@ -6,8 +6,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'godlygeek/tabular'
-Plug 'jiangmiao/auto-pairs'
+Plug 'lifepillar/vim-mucomplete'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
@@ -15,7 +16,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/AutoComplPop'
 Plug 'wakatime/vim-wakatime'
 
 if has('unix')
@@ -37,17 +37,6 @@ let g:alduin_Shout_Aura_Whisper = 1
 
 if !has('g:syntax_on')|syntax enable|endif
 
-" Set a line for 80 columns
-set colorcolumn=80
-
-" https://www.reddit.com/r/vim/wiki/tabstop
-" 2. Set 'tabstop' and 'shiftwidth' to whatever you prefer and use
-"    'expandtab'.  This way you will always insert spaces.  The
-"    formatting will never be messed up when 'tabstop' is changed.
-set tabstop=2
-set shiftwidth=2
-set expandtab
-
 " Let us backspace on indents
 " http://vim.wikia.com/wiki/Backspace_and_delete_problems#Backspace_key_won.27t_move_from_current_line
 set backspace=indent,eol,start
@@ -58,12 +47,6 @@ set number
 " Set where splits will appear to
 set splitbelow
 set splitright
-
-" Shortcuts for resizing splits
-nnoremap <c-w><s-h> :vertical resize +5<cr>
-nnoremap <c-w><s-l> :vertical resize -5<cr>
-nnoremap <c-w><s-j> :resize -5<cr>
-nnoremap <c-w><s-k> :resize +5<cr>
 
 " Display whitespace characters
 set list
@@ -84,7 +67,7 @@ set incsearch
 
 " Keep searched text highligted
 set hlsearch
-nnoremap <CR> :nohlsearch<CR>
+nnoremap <leader><CR> :nohlsearch<CR>
 
 " Ignore casing in searches
 set ignorecase smartcase
@@ -98,13 +81,13 @@ set foldmethod=indent
 " Open all methods by default
 set foldlevelstart=10
 
-" Make it easy to move lines up and down
-nnoremap <C-j> :m .+1<CR>
-nnoremap <C-k> :m .-2<CR>
-inoremap <C-j> <Esc>:m .+1<CR>
-inoremap <C-k> <Esc>:m .-2<CR>
-vnoremap <C-j> :m '>+1<CR>gv=gv
-vnoremap <C-k> :m '<-2<CR>gv=gv
+let g:mucomplete#enable_auto_at_startup = 1
+
+" Auto selects matching options
+set completeopt=menuone,preview,noinsert
+
+" Let enter accept the highlighted selection in the autocomplete popup
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Move vertically by visual line
 nnoremap j gj
@@ -115,31 +98,17 @@ noremap <C-n> :NERDTreeToggle<CR>
 
 " Use ripgrep
 if executable("rg")
-    set grepprg=rg\ --color=never\ --vimgrep
-    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+    set grepprg=rg\ --color=never\ --smart-case\ --vimgrep
+    let g:ctrlp_user_command = 'rg %s --files --no-ignore --hidden --smart-case --follow --glob "!{.git,node_modules}/*" --color=never 2> /dev/null'
 endif
 
 " Indent line setting
 let g:indentLine_char = '|'
 
-" http://vim.wikia.com/wiki/Remove_unwanted_spaces
-command! FixTrail %s/\s\+$//e
-augroup DeleteTrailingWhitespace
-  autocmd!
-  autocmd BufWritePost * :%s/\s\+$//e
-  autocmd BufWritePost * :%s/$//e
-augroup END
-
 " Create ctags easily
 command! MakeTags !ctags -R -f ~/.tags $PWD
 noremap <leader>t :!ctags -R -f ~/.tags $PWD<CR>
 set tags=~/.tags
-
-" Saves session and closes all buffers
-nnoremap <leader>s :mksession! ~/.vim/session.vim<CR>:xa<CR>
-
-" Let enter accept the highlighted selection in the autocomplete popup
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Easier than reaching for escape
 inoremap jk <Esc>
@@ -155,22 +124,5 @@ endif
 " If no smart import is available, use a brute force search
 noremap <C-l> :read !~/.vim/ripport <cword><CR>
 
-" Use tab and shift-tab to scroll up and down in auto complete window
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Auto selects matching options
-set completeopt+=longest
-set completeopt+=noinsert
-
-" Settings for files written for Conga
-augroup CongaCodeStyle
-  autocmd!
-  autocmd BufRead */machinelearning/*.java set tabstop=4 shiftwidth=4 colorcolumn=160
-  autocmd BufRead */machinelearning/*.scala set tabstop=4 shiftwidth=4 colorcolumn=160
-  autocmd BufRead */machinelearning/*.py set tabstop=4 shiftwidth=4 colorcolumn=120
-  autocmd BufRead */machinelearning/*.cs set tabstop=4 shiftwidth=4
-  autocmd BufRead *.cs set tabstop=4 shiftwidth=4
-  autocmd BufRead *.ts set tabstop=2 shiftwidth=2
-  autocmd BufRead *.tsx set tabstop=2 shiftwidth=2
-augroup END
+" So that editorconfig plays nicely with fugitive
+let g:EditorConfig_exclude_patterns = ['fugitive://.\*']

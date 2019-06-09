@@ -23,6 +23,9 @@ ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 # Set a default global .gitignore
 ln -s "$PWD/.gitignore_global" ~/.gitignore
 
+# Install a default global .editorconfig
+ln -s "$PWD/.editorconfig_global" ~/.editorconfig
+
 # Install plugins
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
