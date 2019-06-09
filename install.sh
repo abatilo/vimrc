@@ -26,6 +26,10 @@ ln -s "$PWD/.gitignore_global" ~/.gitignore
 # Install a default global .editorconfig
 ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 
+" Copy alacritty config
+mkdir -p ~/.config/alacritty/
+ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
+
 # Install plugins
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim

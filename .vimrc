@@ -1,11 +1,11 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'pbrisbin/vim-colors-off'
 Plug 'AlessandroYorba/Alduin'
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
+Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'godlygeek/tabular'
@@ -31,8 +31,11 @@ endif
 " Initialize plugin system
 call plug#end()
 
+let g:python_host_prog = '~/.pyenv/versions/neovim2/bin/python'
+let g:python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
+
 set background=dark
-colorscheme off
+colorscheme base16-grayscale-dark
 " Underline instead of block the matching paren
 let g:alduin_Shout_Aura_Whisper = 1
 
