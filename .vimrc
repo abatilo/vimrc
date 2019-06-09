@@ -1,5 +1,6 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
+Plug 'pbrisbin/vim-colors-off'
 Plug 'AlessandroYorba/Alduin'
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
@@ -31,7 +32,7 @@ endif
 call plug#end()
 
 set background=dark
-colorscheme alduin
+colorscheme off
 " Underline instead of block the matching paren
 let g:alduin_Shout_Aura_Whisper = 1
 
@@ -113,12 +114,11 @@ set tags=~/.tags
 " Easier than reaching for escape
 inoremap jk <Esc>
 
-" https://sunaku.github.io/vim-256color-bce.html
-if &term =~ '256color'
-  " disable Background Color Erase (BCE) so that color schemes
-  " render properly when inside 256-color tmux and GNU screen.
-  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-  set t_ut=
+" https://github.com/jwilm/alacritty/issues/109
+if exists('+termguicolors')
+  let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
 endif
 
 " If no smart import is available, use a brute force search
