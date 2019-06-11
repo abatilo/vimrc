@@ -9,6 +9,9 @@ insert_final_newline = true
 max_line_length = 88
 trim_trailing_whitespace = true
 
+[COMMIT_EDITMSG]
+max_line_length = 72
+
 [Makefile]
 indent_style = tab
 
