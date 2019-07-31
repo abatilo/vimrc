@@ -13,3 +13,5 @@
   red = rebase -i develop
   di = diff
   dc = diff --cached
+[push]
+  default = simple
