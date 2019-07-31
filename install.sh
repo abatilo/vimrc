@@ -26,7 +26,7 @@ ln -s "$PWD/.gitignore_global" ~/.gitignore
 # Install a default global .editorconfig
 ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 
-" Copy alacritty config
+# Copy alacritty config
 mkdir -p ~/.config/alacritty/
 ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
 
