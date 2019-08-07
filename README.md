@@ -16,6 +16,16 @@ Or on macOS install regular [brew](https://brew.sh/):
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
+Install [alacritty](https://github.com/jwilm/alacritty):
+```
+add-apt-repository ppa:mmstick76/alacritty
+sudo apt-get install -yq alacritty
+
+OR
+
+brew cask install alacritty
+```
+
 As my setup becomes more advanced, some things aren't all installed by the
 scripts here. (For now)
 
