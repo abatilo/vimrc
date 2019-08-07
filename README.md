@@ -33,6 +33,22 @@ scripts here. (For now)
 brew install neovim tmux rg jq fzf httpie pyenv pyenv-virtualenv
 ```
 
+Install python neovim package for neovim to use:
+```
+pyenv install 2.7.16
+pyenv install 3.7.4
+
+pyenv virtualenv 2.7.16 neovim2
+pyenv virtualenv 3.7.4 neovim3
+
+pyenv activate neovim2
+pip install neovim
+
+pyenv activate neovim3
+pip install neovim
+```
+
+
 These setup scripts assume that the following are installed:
 - [neovim](https://neovim.io/)
 - [tmux](https://github.com/tmux/tmux/wiki)
