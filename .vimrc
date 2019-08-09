@@ -110,6 +110,8 @@ endif
 " Indent line setting
 let g:indentLine_char = '|'
 
+noremap <leader>i :set conceallevel=0<CR>
+
 " Create ctags easily
 command! MakeTags !ctags -R -f ~/.tags $PWD
 noremap <leader>t :!ctags -R -f ~/.tags $PWD<CR>
