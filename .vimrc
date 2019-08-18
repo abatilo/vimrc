@@ -12,7 +12,6 @@ Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
-Plug 'lifepillar/vim-mucomplete'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
@@ -112,8 +111,6 @@ endif
 " Indent line setting
 let g:indentLine_char = '|'
 
-noremap <leader>i :set conceallevel=0<CR>
-
 " Create ctags easily
 command! MakeTags !ctags -R -f ~/.tags $PWD
 noremap <leader>t :!ctags -R -f ~/.tags $PWD<CR>
@@ -134,3 +131,9 @@ noremap <C-l> :read !~/.vim/ripport <cword><CR>
 
 " So that editorconfig plays nicely with fugitive
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
+
+" Do both formatting and handling imports
+let g:go_fmt_command = "goimports"
+
+" Run all static analysis on save
+let g:go_metalinter_autosave = 1
