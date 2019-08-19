@@ -56,7 +56,7 @@ set splitright
 
 " Display whitespace characters
 set list
-set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+set listchars=tab:\ \ ,extends:›,precedes:‹,nbsp:·,trail:·,eol:¬
 
 " Store file history
 set undofile
