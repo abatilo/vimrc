@@ -36,6 +36,14 @@ OR
 brew cask install alacritty
 ```
 
+Install powerline fonts:
+```
+cd /tmp
+git clone git@github.com:powerline/fonts.git
+cd fonts
+./install.sh
+```
+
 As my setup becomes more advanced, some things aren't all installed by the
 scripts here. (For now)
 
