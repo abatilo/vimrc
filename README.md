@@ -16,9 +16,19 @@ Or on macOS install regular [brew](https://brew.sh/):
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
+Install zsh:
+```
+https://github.com/robbyrussell/oh-my-zsh/wiki/Installing-ZSH#install-and-set-up-zsh-as-default
+```
+
+Install [oh-my-zsh]():
+```
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+```
+
 Install [alacritty](https://github.com/jwilm/alacritty):
 ```
-add-apt-repository ppa:mmstick76/alacritty
+sudo add-apt-repository ppa:mmstick76/alacritty
 sudo apt-get install -yq alacritty
 
 OR
@@ -31,6 +41,13 @@ scripts here. (For now)
 
 ```
 brew install neovim tmux rg jq fzf httpie pyenv pyenv-virtualenv
+```
+
+Install python build dependencies:
+```
+sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
 ```
 
 Install python neovim package for neovim to use:
