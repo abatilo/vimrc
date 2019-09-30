@@ -6,6 +6,11 @@ development machine.
 
 ## Prerequisites
 
+Install git
+```
+sudo apt-get install -yq git
+```
+
 Install [LinuxBrew](https://docs.brew.sh/Homebrew-on-Linux):
 ```
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
