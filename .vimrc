@@ -8,14 +8,17 @@ Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
+Plug 'leafgarland/typescript-vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -37,7 +40,8 @@ let g:python_host_prog = '~/.pyenv/versions/neovim2/bin/python'
 let g:python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
 
 set background=dark
-colorscheme base16-grayscale-dark
+" colorscheme base16-grayscale-dark
+colorscheme alduin
 " Underline instead of block the matching paren
 let g:alduin_Shout_Aura_Whisper = 1
 
@@ -56,7 +60,7 @@ set splitright
 
 " Display whitespace characters
 set list
-set listchars=tab:\ \ ,extends:›,precedes:‹,nbsp:·,trail:·,eol:¬
+set listchars=tab:\ \ ,extends:›,precedes:‹,nbsp:·,trail:·
 
 " Store file history
 set undofile
@@ -80,8 +84,8 @@ set ignorecase smartcase
 
 " Store temporary files in a central spot
 set backup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set backupdir=/tmp
+set directory=/tmp
 
 set foldmethod=indent
 " Open all methods by default
@@ -133,7 +137,38 @@ noremap <C-l> :read !~/.vim/ripport <cword><CR>
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
 " Do both formatting and handling imports
-let g:go_fmt_command = "goimports"
+let g:go_metalinter_autosave=1
 
-" Run all static analysis on save
-let g:go_metalinter_autosave = 1
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" coc.nvim settings
+command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 FMT :call CocAction('format')
+
+augroup Always
+  autocmd!
+  autocmd BufWritePre * :OR
+  autocmd BufWritePre * :FMT
+augroup END
+
+let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint"]
+let mapleader = "\<Space>"
+nmap <leader>n  <Plug>(coc-diagnostic-next)
+nmap <leader>a  <Plug>(coc-codeaction)
+nmap <leader>f  <Plug>(coc-fix-current)
+
+" Better display for messages
+set cmdheight=2
+
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" always show signcolumns
+set signcolumn=yes
