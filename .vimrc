@@ -1,14 +1,13 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 Plug 'AlessandroYorba/Alduin'
-Plug 'RRethy/vim-illuminate'
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
@@ -38,6 +37,8 @@ call plug#end()
 
 let g:python_host_prog = '~/.pyenv/versions/neovim2/bin/python'
 let g:python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
+
+let mapleader = "\<Space>"
 
 set background=dark
 " colorscheme base16-grayscale-dark
@@ -91,8 +92,6 @@ set foldmethod=indent
 " Open all methods by default
 set foldlevelstart=10
 
-let g:mucomplete#enable_auto_at_startup = 1
-
 " Auto selects matching options
 set completeopt=menuone,preview,noinsert
 
@@ -115,11 +114,6 @@ endif
 " Indent line setting
 let g:indentLine_char = '|'
 
-" Create ctags easily
-command! MakeTags !ctags -R -f ~/.tags $PWD
-noremap <leader>t :!ctags -R -f ~/.tags $PWD<CR>
-set tags=~/.tags
-
 " Easier than reaching for escape
 inoremap jk <Esc>
 
@@ -136,7 +130,11 @@ noremap <C-l> :read !~/.vim/ripport <cword><CR>
 " So that editorconfig plays nicely with fugitive
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
-" Do both formatting and handling imports
+" Disable some vim-go defaults and let coc.nvim do it
+let g:go_def_mapping_enabled = 0
+let g:go_fmt_autosave = 0
+
+" Check for comments
 let g:go_metalinter_autosave=1
 
 " Remap keys for gotos
@@ -145,20 +143,13 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" coc.nvim settings
-command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
-command! -nargs=0 FMT :call CocAction('format')
+" Declare the coc extensiosn to be installed and managed
+let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight"]
 
-augroup Always
-  autocmd!
-  autocmd BufWritePre * :OR
-  autocmd BufWritePre * :FMT
-augroup END
-
-let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint"]
-let mapleader = "\<Space>"
+" Declare some coc bindings
 nmap <leader>n  <Plug>(coc-diagnostic-next)
-nmap <leader>a  <Plug>(coc-codeaction)
+nmap <leader>p  <Plug>(coc-diagnostic-prev)
+nmap <leader>ca  <Plug>(coc-codeaction)
 nmap <leader>f  <Plug>(coc-fix-current)
 
 " Better display for messages
@@ -167,8 +158,23 @@ set cmdheight=2
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
 
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
+" autocmd section
 
-" always show signcolumns
-set signcolumn=yes
+augroup General
+  autocmd!
+  " Highlight symbol under cursor on CursorHold
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+augroup END
+
+" Auto format and auto import golang code
+augroup Go
+  autocmd!
+  autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+  autocmd BufWritePre *.go :call CocAction('format')
+augroup END
+
+" Auto file format for typescript and react files
+augroup TypeScript
+  autocmd!
+  autocmd BufWritePre *.{ts,tsx} :CocCommand prettier.formatFile
+augroup END
