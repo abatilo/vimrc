@@ -132,19 +132,13 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
 " Disable some vim-go defaults and let coc.nvim do it
 let g:go_def_mapping_enabled = 0
-let g:go_fmt_autosave = 0
 
-" Check for comments
+" vim-go
+let g:go_fmt_command = "goimports"
 let g:go_metalinter_autosave=1
 
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
 " Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight"]
+let g:coc_global_extensions = ["coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight"]
 
 " Declare some coc bindings
 nmap <leader>n  <Plug>(coc-diagnostic-next)
@@ -176,5 +170,10 @@ augroup END
 " Auto file format for typescript and react files
 augroup TypeScript
   autocmd!
+
+  " Remap keys for gotos
+  autocmd FileType *.{ts,tsx} nmap <silent> gd <Plug>(coc-definition)
+
+  " Auto format
   autocmd BufWritePre *.{ts,tsx} :CocCommand prettier.formatFile
 augroup END
