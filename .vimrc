@@ -130,15 +130,17 @@ noremap <C-l> :read !~/.vim/ripport <cword><CR>
 " So that editorconfig plays nicely with fugitive
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
-" Disable some vim-go defaults and let coc.nvim do it
-let g:go_def_mapping_enabled = 0
-
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_metalinter_autosave=1
 
 " Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = ["coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight"]
+let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight"]
+
+" Disable some vim-go defaults and let coc.nvim do it
+let g:go_def_mapping_enabled = 0
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
 
 " Declare some coc bindings
 nmap <leader>n  <Plug>(coc-diagnostic-next)
@@ -154,26 +156,12 @@ set updatetime=300
 
 " autocmd section
 
-augroup General
-  autocmd!
-  " Highlight symbol under cursor on CursorHold
-  autocmd CursorHold * silent call CocActionAsync('highlight')
-augroup END
-
-" Auto format and auto import golang code
-augroup Go
-  autocmd!
-  autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
-  autocmd BufWritePre *.go :call CocAction('format')
-augroup END
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Auto file format for typescript and react files
 augroup TypeScript
   autocmd!
-
-  " Remap keys for gotos
-  autocmd FileType *.{ts,tsx} nmap <silent> gd <Plug>(coc-definition)
-
-  " Auto format
   autocmd BufWritePre *.{ts,tsx} :CocCommand prettier.formatFile
+  autocmd BufWritePre *.{ts,tsx} :call CocAction('runCommand', 'editor.action.organizeImport')
 augroup END
