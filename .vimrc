@@ -132,10 +132,10 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
 " vim-go
 let g:go_fmt_command = "goimports"
-let g:go_metalinter_autosave=1
+let g:go_rename_command = "gopls"
 
 " Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight"]
+let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight", "coc-yaml", "coc-tailwindcss"]
 
 " Disable some vim-go defaults and let coc.nvim do it
 let g:go_def_mapping_enabled = 0
@@ -159,9 +159,14 @@ set updatetime=300
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" Auto file format for typescript and react files
+" Auto file format for javascript, typescript and react files
 augroup TypeScript
   autocmd!
-  autocmd BufWritePre *.{ts,tsx} :CocCommand prettier.formatFile
-  autocmd BufWritePre *.{ts,tsx} :call CocAction('runCommand', 'editor.action.organizeImport')
+  autocmd BufWritePre *.{js,jsx,ts,tsx} :CocCommand prettier.formatFile
+augroup END
+
+" Auto file format for yaml files
+augroup YAML
+  autocmd!
+  autocmd BufWritePre *.{yml,yaml} :CocCommand prettier.formatFile
 augroup END
