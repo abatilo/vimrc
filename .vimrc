@@ -1,17 +1,19 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'AlessandroYorba/Alduin'
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dense-analysis/ale'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
+Plug 'hashivim/vim-terraform'
+Plug 'honza/vim-snippets'
 Plug 'leafgarland/typescript-vim'
+Plug 'neoclide/coc-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
@@ -20,7 +22,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'wakatime/vim-wakatime'
 
 if has('unix')
@@ -41,10 +42,7 @@ let g:python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
 let mapleader = "\<Space>"
 
 set background=dark
-" colorscheme base16-grayscale-dark
-colorscheme alduin
-" Underline instead of block the matching paren
-let g:alduin_Shout_Aura_Whisper = 1
+colorscheme dracula
 
 if !has('g:syntax_on')|syntax enable|endif
 
@@ -134,11 +132,22 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 let g:go_fmt_command = "goimports"
 let g:go_rename_command = "gopls"
 
+" vim-terraform
+let g:terraform_fmt_on_save=0
+
 " Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight", "coc-yaml", "coc-tailwindcss"]
+let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight", "coc-yaml", "coc-tailwindcss", "coc-snippets"]
+
+" coc-snippets
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
 
 " Disable some vim-go defaults and let coc.nvim do it
 let g:go_def_mapping_enabled = 0
+
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 
