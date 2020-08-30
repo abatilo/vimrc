@@ -53,59 +53,22 @@ As my setup becomes more advanced, some things aren't all installed by the
 scripts here. (For now)
 
 ```
-brew install neovim tmux rg jq fzf httpie pyenv pyenv-virtualenv
-```
-
-Install python build dependencies:
-```
-sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+brew install neovim tmux rg jq fzf httpie
 ```
 
 Install python neovim package for neovim to use:
 ```
-pyenv install 2.7.16
-pyenv install 3.7.4
-
-pyenv virtualenv 2.7.16 neovim2
-pyenv virtualenv 3.7.4 neovim3
-
-pyenv activate neovim2
 pip install neovim
-
-pyenv activate neovim3
-pip install neovim
+pip3 install neovim
 ```
-
 
 These setup scripts assume that the following are installed:
-- [neovim](https://neovim.io/)
-- [tmux](https://github.com/tmux/tmux/wiki)
 - [git](https://git-scm.com/)
-- [ripgrep](https://github.com/BurntSushi/ripgrep)
-- [universal-ctags](https://github.com/universal-ctags/ctags)
 - [jq](https://stedolan.github.io/jq/)
+- [neovim](https://neovim.io/)
 - [powerline fonts](https://github.com/powerline/fonts)
-
-Additional tooling that's useful:
-```
-brew install terraform kops awscli kubernetes-helm helmfile
-```
-
-My workflow uses universal-ctags instead of exuberant-ctags since the latter is
-no longer maintained.
-
-Since universal-ctags is not available through brew or apt, here are some quick
-instructions for how to install universal-ctags:
-```
-git clone https://github.com/universal-ctags/ctags.git
-cd ctags
-./autogen.sh
-./configure
-make
-sudo make install
-```
+- [ripgrep](https://github.com/BurntSushi/ripgrep)
+- [tmux](https://github.com/tmux/tmux/wiki)
 
 ## Setup
 Run the following command:

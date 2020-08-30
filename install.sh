@@ -7,12 +7,6 @@ mkdir -p ~/.vim/undo
 # Link vim configs
 ln -s "$PWD/.vimrc" ~/.vimrc
 
-# ctags configs
-ln -s "$PWD/.ctags" ~/.ctags
-
-# Install ripport configs
-ln -s "$PWD/ripport" ~/.vim/ripport
-
 # Create nvim directory
 mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim

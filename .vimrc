@@ -5,6 +5,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'danilamihailov/beacon.nvim'
 Plug 'dense-analysis/ale'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'editorconfig/editorconfig-vim'
@@ -121,9 +122,6 @@ if exists('+termguicolors')
   let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
-
-" If no smart import is available, use a brute force search
-noremap <C-l> :read !~/.vim/ripport <cword><CR>
 
 " So that editorconfig plays nicely with fugitive
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
