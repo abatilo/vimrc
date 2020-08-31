@@ -12,7 +12,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
 Plug 'hashivim/vim-terraform'
-Plug 'honza/vim-snippets'
 Plug 'leafgarland/typescript-vim'
 Plug 'neoclide/coc-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -129,6 +128,8 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_rename_command = "gopls"
+let g:go_auto_type_info = 1
+let g:go_addtags_transform = "camelcase"
 
 " vim-terraform
 let g:terraform_fmt_on_save=0
@@ -159,7 +160,7 @@ nmap <leader>f  <Plug>(coc-fix-current)
 set cmdheight=2
 
 " You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
+set updatetime=100
 
 " autocmd section
 

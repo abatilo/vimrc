@@ -6,10 +6,12 @@ mkdir -p ~/.vim/undo
 
 # Link vim configs
 ln -s "$PWD/.vimrc" ~/.vimrc
+ln -s "$PWD/coc-settings.json" ~/.vim/coc-settings.json
 
 # Create nvim directory
 mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
+ln -s "$PWD/coc-settings.json" ~/.config/nvim/coc-settings.json
 
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
