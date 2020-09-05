@@ -132,10 +132,10 @@ let g:go_auto_type_info = 1
 let g:go_addtags_transform = "camelcase"
 
 " vim-terraform
-let g:terraform_fmt_on_save=0
+let g:terraform_fmt_on_save=1
 
 " Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-eslint", "coc-prettier", "coc-highlight", "coc-yaml", "coc-tailwindcss", "coc-snippets"]
+let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-prettier", "coc-highlight", "coc-yaml", "coc-tailwindcss", "coc-snippets"]
 
 " coc-snippets
 let g:coc_snippet_next = '<c-j>'
@@ -166,15 +166,3 @@ set updatetime=100
 
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Auto file format for javascript, typescript and react files
-augroup TypeScript
-  autocmd!
-  autocmd BufWritePre *.{js,jsx,ts,tsx} :CocCommand prettier.formatFile
-augroup END
-
-" Auto file format for yaml files
-augroup YAML
-  autocmd!
-  autocmd BufWritePre *.{yml,yaml} :CocCommand prettier.formatFile
-augroup END

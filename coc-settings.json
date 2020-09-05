@@ -1,4 +1,6 @@
 {
+  "coc.preferences.formatOnSaveFiletypes": ["*"],
+  "prettier.eslintIntegration": true,
   "snippets.ultisnips.directories": [
     "UltiSnips",
     "gosnippets/UltiSnips"
