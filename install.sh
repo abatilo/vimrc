@@ -8,6 +8,9 @@ mkdir -p ~/.vim/undo
 ln -s "$PWD/.vimrc" ~/.vimrc
 ln -s "$PWD/coc-settings.json" ~/.vim/coc-settings.json
 
+# Link asdf global versions
+ln -s "$PWD/.tool-versions" ~/.tool-versions
+
 # Create nvim directory
 mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim

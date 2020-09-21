@@ -36,12 +36,11 @@ endif
 " Initialize plugin system
 call plug#end()
 
-let g:python_host_prog = '~/.pyenv/versions/neovim2/bin/python'
-let g:python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
+let g:python_host_prog = '~/.asdf/shims/python2'
+let g:python3_host_prog = '~/.asdf/shims/python'
 
 let mapleader = "\<Space>"
 
-set background=dark
 colorscheme dracula
 
 if !has('g:syntax_on')|syntax enable|endif
@@ -135,7 +134,15 @@ let g:go_addtags_transform = "camelcase"
 let g:terraform_fmt_on_save=1
 
 " Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = ["coc-go", "coc-tsserver", "coc-json", "coc-prettier", "coc-highlight", "coc-yaml", "coc-tailwindcss", "coc-snippets"]
+let g:coc_global_extensions = [
+      \"coc-go",
+      \"coc-json",
+      \"coc-prettier",
+      \"coc-snippets",
+      \"coc-tailwindcss",
+      \"coc-tsserver",
+      \"coc-yaml",
+      \]
 
 " coc-snippets
 let g:coc_snippet_next = '<c-j>'
@@ -161,8 +168,3 @@ set cmdheight=2
 
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=100
-
-" autocmd section
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
