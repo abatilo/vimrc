@@ -1,9 +1,10 @@
-github-cli 0.11.1
+github-cli 1.1.0
 golang 1.15
 helm 3.1.0
 httpie-go 0.6.0
-java adopt-openjdk-8u262-b10_openj9-0.21.0
+java adoptopenjdk-8.0.265+1.openj9-0.21.0
 k3d 3.0.0
 kind 0.8.1
 nodejs 14.3.0
 python 3.8.5 2.7.16
+kubectl 1.19.1
