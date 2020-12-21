@@ -8,3 +8,4 @@ kind 0.8.1
 nodejs 14.3.0
 python 3.8.5 2.7.16
 kubectl 1.19.1
+hadolint v1.19.0

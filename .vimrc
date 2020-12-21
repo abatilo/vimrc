@@ -23,6 +23,8 @@ Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'wakatime/vim-wakatime'
+Plug 'sjl/gundo.vim'
+Plug 'ianks/vim-tsx'
 
 if has('unix')
   if !has('macunix')
@@ -142,6 +144,7 @@ let g:coc_global_extensions = [
       \"coc-tailwindcss",
       \"coc-tsserver",
       \"coc-yaml",
+      \"coc-pyright",
       \]
 
 " coc-snippets
