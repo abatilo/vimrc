@@ -1,6 +1,5 @@
 {
   "coc.preferences.formatOnSaveFiletypes": ["*"],
-  "prettier.eslintIntegration": true,
   "snippets.ultisnips.directories": ["gosnippets/UltiSnips"],
   "python.formatting.provider": "black"
 }
