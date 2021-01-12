@@ -17,6 +17,7 @@ Plug 'neoclide/coc-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
+Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
@@ -36,8 +37,8 @@ endif
 " Initialize plugin system
 call plug#end()
 
-let g:python_host_prog = '~/.asdf/shims/python2'
-let g:python3_host_prog = '~/.asdf/shims/python'
+let g:python_host_prog = '~/.asdf/installs/python/2.7.16/bin/python'
+let g:python3_host_prog = '~/.asdf/installs/python/3.8.5/bin/python'
 
 let mapleader = "\<Space>"
 
@@ -168,3 +169,7 @@ set cmdheight=2
 
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=100
+
+tnoremap <Esc><Esc> <C-\><C-n>
+nnoremap n nzz
+nnoremap N Nzz
