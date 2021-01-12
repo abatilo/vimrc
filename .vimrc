@@ -52,6 +52,7 @@ if !has('g:syntax_on')|syntax enable|endif
 set backspace=indent,eol,start
 
 " Line numbers
+set number
 set relativenumber
 
 " Set where splits will appear to
