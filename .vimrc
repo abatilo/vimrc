@@ -173,6 +173,9 @@ set cmdheight=2
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=100
 
+" Exit insert mode while in the terminal
 tnoremap <Esc><Esc> <C-\><C-n>
+
+" Center the search results when jumping between results
 nnoremap n nzz
 nnoremap N Nzz
