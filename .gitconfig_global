@@ -14,4 +14,4 @@
   di = diff
   dc = diff --cached
 [push]
-  default = simple
+	default = simple

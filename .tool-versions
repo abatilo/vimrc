@@ -1,16 +1,17 @@
-github-cli 0.11.1
+github-cli 1.1.0
 golang 1.15
+grpcurl 1.7.0
+hadolint v1.19.0
 helm 3.1.1
 httpie-go 0.6.0
-java adopt-openjdk-8u262-b10_openj9-0.21.0
+java adoptopenjdk-8.0.265+1.openj9-0.21.0
 k3d 3.0.0
-kind 0.8.1
-nodejs 14.3.0
-python 3.8.5 2.7.16
 k9s 0.22.1
-terraform 0.12.18
-yarn 1.22.0
-kubectl 1.11.6
-grpcurl 1.7.0
+kind 0.8.1
+kubectl 1.19.1
+nodejs 14.3.0
 protoc 3.13.0
 pulumi 2.16.2
+python 3.8.5 2.7.16
+terraform 0.12.18
+yarn 1.22.0

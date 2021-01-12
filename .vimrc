@@ -12,6 +12,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
 Plug 'hashivim/vim-terraform'
+Plug 'ianks/vim-tsx'
 Plug 'leafgarland/typescript-vim'
 Plug 'neoclide/coc-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -143,6 +144,7 @@ let g:coc_global_extensions = [
       \"coc-tailwindcss",
       \"coc-tsserver",
       \"coc-yaml",
+      \"coc-pyright",
       \]
 
 " coc-snippets
