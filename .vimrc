@@ -3,6 +3,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
+Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'danilamihailov/beacon.nvim'
 Plug 'dense-analysis/ale'
@@ -12,6 +13,8 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
 Plug 'hashivim/vim-terraform'
 Plug 'ianks/vim-tsx'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'neoclide/coc-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -24,8 +27,6 @@ Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'wakatime/vim-wakatime'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
 
 if has('unix')
   if !has('macunix')
@@ -114,6 +115,9 @@ function! s:find_git_root()
 endfunction
 command! ProjectFiles execute 'FZF' s:find_git_root()
 nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
+
+" Quickly fuzzy search through the outline of the current file with coc
+nnoremap <silent> <C-o> :<C-u>CocFzfList outline<CR>
 
 " Indent line setting
 let g:indentLine_char = '|'
