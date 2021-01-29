@@ -4,7 +4,6 @@ Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'danilamihailov/beacon.nvim'
 Plug 'dense-analysis/ale'
 Plug 'dracula/vim', { 'as': 'dracula' }
@@ -25,6 +24,8 @@ Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'wakatime/vim-wakatime'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 if has('unix')
   if !has('macunix')
@@ -105,11 +106,14 @@ nnoremap k gk
 " Open NERDTree
 noremap <C-n> :NERDTreeToggle<CR>
 
-" Use ripgrep
-if executable("rg")
-    set grepprg=rg\ --color=never\ --smart-case\ --vimgrep
-    let g:ctrlp_user_command = 'rg %s --files --no-ignore --hidden --smart-case --follow --glob "!{.git,node_modules}/*" --color=never 2> /dev/null'
-endif
+" Use fzf instead of ctrlp
+" fzf only searches from your current directory, so let's make it start from
+" the root of the project
+function! s:find_git_root()
+  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+endfunction
+command! ProjectFiles execute 'FZF' s:find_git_root()
+nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
 
 " Indent line setting
 let g:indentLine_char = '|'
