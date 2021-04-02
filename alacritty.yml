@@ -2,7 +2,7 @@
 font:
   size: 14
   normal:
-    family: "Inconsolata for Powerline"
+    family: "Inconsolata-dz for Powerline"
 
   # Thin stroke font rendering (macOS only)
   use_thin_strokes: true

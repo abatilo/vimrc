@@ -27,6 +27,7 @@ Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'wakatime/vim-wakatime'
+Plug 'rhysd/git-messenger.vim'
 
 if has('unix')
   if !has('macunix')
@@ -117,7 +118,7 @@ command! ProjectFiles execute 'FZF' s:find_git_root()
 nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
 
 " Quickly fuzzy search through the outline of the current file with coc
-nnoremap <silent> <C-o> :<C-u>CocFzfList outline<CR>
+nnoremap <silent> <C-l> :<C-u>CocFzfList outline<CR>
 
 " Indent line setting
 let g:indentLine_char = '|'
