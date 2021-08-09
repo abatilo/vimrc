@@ -108,14 +108,8 @@ nnoremap k gk
 " Open NERDTree
 noremap <C-n> :NERDTreeToggle<CR>
 
-" Use fzf instead of ctrlp
-" fzf only searches from your current directory, so let's make it start from
-" the root of the project
-function! s:find_git_root()
-  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
-command! ProjectFiles execute 'FZF' s:find_git_root()
-nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
+" Use fzf.vim instead of ctrlp
+nnoremap <silent> <C-p> :<C-u>GFiles<CR>
 
 " Quickly fuzzy search through the outline of the current file with coc
 nnoremap <silent> <C-l> :<C-u>CocFzfList outline<CR>

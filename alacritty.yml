@@ -1,6 +1,6 @@
 # Font configuration (changes require restart)
 font:
-  size: 14
+  size: 24
   normal:
     family: "Inconsolata-dz for Powerline"
 

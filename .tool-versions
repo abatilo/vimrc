@@ -1,4 +1,4 @@
-github-cli 1.7.0
+github-cli 1.12.1
 golang 1.15
 grpcurl 1.7.0
 hadolint v1.19.0
@@ -13,5 +13,8 @@ nodejs 12.20.1
 protoc 3.13.0
 pulumi 2.16.2
 python 3.8.5 2.7.16
-terraform 0.12.18
+terraform 0.15.5
 yarn 1.22.10
+poetry 1.1.5
+dasel 1.14.1
+rust 1.51.0

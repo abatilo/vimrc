@@ -54,7 +54,7 @@ then
   grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
   grep -q "export FZF_DEFAULT_COMMAND=" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
   grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' >> ~/.zshrc
-  grep -q "ctrlp() { </dev/tty vim -c CtrlP }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c CtrlP }" >> ~/.zshrc
+  grep -q "ctrlp() { </dev/tty vim -c Files }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c Files }" >> ~/.zshrc
   grep -q "zle -N ctrlp" ~/.zshrc || echo "zle -N ctrlp" >> ~/.zshrc
   grep -q "bindkey \"^p\" ctrlp" ~/.zshrc || echo "bindkey \"^p\" ctrlp" >> ~/.zshrc
 
