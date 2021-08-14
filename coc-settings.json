@@ -10,6 +10,5 @@
     }
   },
   "coc.preferences.formatOnSaveFiletypes": ["*"],
-  "snippets.ultisnips.directories": ["gosnippets/UltiSnips"],
   "python.formatting.provider": "black"
 }

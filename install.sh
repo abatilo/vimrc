@@ -4,17 +4,14 @@ rm -rf ~/.vimrc ~/.vim ~/.config/nvim ~/.local/share/nvim
 # For undo history
 mkdir -p ~/.vim/undo
 
-# Link vim configs
+# Create nvim directory
+mkdir -p ~/.config/nvim
 ln -s "$PWD/.vimrc" ~/.vimrc
-ln -s "$PWD/coc-settings.json" ~/.vim/coc-settings.json
+ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
+ln -s "$PWD/coc-settings.json" ~/.config/nvim/coc-settings.json
 
 # Link asdf global versions
 ln -s "$PWD/.tool-versions" ~/.tool-versions
-
-# Create nvim directory
-mkdir -p ~/.config/nvim
-ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
-ln -s "$PWD/coc-settings.json" ~/.config/nvim/coc-settings.json
 
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
@@ -35,10 +32,6 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 echo | nvim +PlugInstall +qall
 
 # Add an alias for opening a default session file
-grep -q "set -o vi" ~/.bashrc || echo "set -o vi" >> ~/.bashrc
-grep -q "alias vis=" ~/.bashrc || echo "alias vis='vi -S ~/.vim/session.vim'" >> ~/.bashrc
-grep -q "alias vims=" ~/.bashrc || echo "alias vims='vi -S ~/.vim/session.vim'" >> ~/.bashrc
-grep -q "export EDITOR=vim" ~/.bashrc || echo "export EDITOR=vim" >> ~/.bashrc
 
 if [ -e ~/.zshrc ]
 then
@@ -54,7 +47,7 @@ then
   grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
   grep -q "export FZF_DEFAULT_COMMAND=" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
   grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' >> ~/.zshrc
-  grep -q "ctrlp() { </dev/tty vim -c Files }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c Files }" >> ~/.zshrc
+  grep -q "ctrlp() { </dev/tty vim -c ProjectFiles }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c ProjectFiles }" >> ~/.zshrc
   grep -q "zle -N ctrlp" ~/.zshrc || echo "zle -N ctrlp" >> ~/.zshrc
   grep -q "bindkey \"^p\" ctrlp" ~/.zshrc || echo "bindkey \"^p\" ctrlp" >> ~/.zshrc
 

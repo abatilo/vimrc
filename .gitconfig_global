@@ -1,6 +1,7 @@
 [user]
   name = Aaron
   email = AaronBatilo@gmail.com
+	signingkey = E2319529D074FDB6
 [core]
   excludesfile = /home/aaron/.gitignore
 [alias]
@@ -15,3 +16,10 @@
   dc = diff --cached
 [push]
 	default = simple
+[init]
+	defaultBranch = main
+[credential "https://github.com"]
+	helper = 
+	helper = ! auth git-credential
+[commit]
+	gpgsign = true

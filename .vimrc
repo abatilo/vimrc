@@ -1,45 +1,40 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'Yggdroot/indentLine'
-Plug 'airblade/vim-gitgutter'
-Plug 'airblade/vim-rooter'
-Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
-Plug 'bronson/vim-trailing-whitespace'
-Plug 'danilamihailov/beacon.nvim'
-Plug 'dense-analysis/ale'
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'editorconfig/editorconfig-vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'godlygeek/tabular'
-Plug 'hashivim/vim-terraform'
-Plug 'ianks/vim-tsx'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'leafgarland/typescript-vim'
-Plug 'neoclide/coc-snippets'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot'
-Plug 'sjl/gundo.vim'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rhubarb'
-Plug 'tpope/vim-surround'
-Plug 'vim-airline/vim-airline'
-Plug 'wakatime/vim-wakatime'
-Plug 'rhysd/git-messenger.vim'
-
-if has('unix')
-  if !has('macunix')
-    Plug 'KabbAmine/zeavim.vim'
-  else
-    Plug 'rizzatti/dash.vim'
-    nnoremap <leader>z :Dash<CR>
-  endif
-endif
+Plug 'airblade/vim-gitgutter'                               " Show diff icons in gutter
+Plug 'airblade/vim-rooter'                                  " Set project root based on git directory
+Plug 'antoinemadec/coc-fzf', {'branch': 'release'}          " Integrate fzf to search through coc options
+Plug 'dense-analysis/ale'                                   " Highlight linting errors
+Plug 'dracula/vim', { 'as': 'dracula' }                     " colorscheme
+Plug 'editorconfig/editorconfig-vim'                        " Set project specific formatting requirements
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }          " golang niceties
+Plug 'godlygeek/tabular'                                    " Make it easy to align columns
+Plug 'hashivim/vim-terraform'                               " Auto format terraform
+Plug 'junegunn/fzf'                                         " Setup fzf
+Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
+Plug 'lukas-reineke/indent-blankline.nvim'                  " Add indent guides
+Plug 'neoclide/coc.nvim', {'branch': 'release'}             " Add completion
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Add syntax tree parsing
+Plug 'preservim/nerdtree'                                   " Project tree view
+Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
+Plug 'tpope/vim-fugitive'                                   " Integrate git into vim
+Plug 'tpope/vim-rhubarb'                                    " Jump to selected lines in GitHub
+Plug 'tpope/vim-surround'                                   " Manipulate surrounding text like wrapping or deleting quotes
+Plug 'vim-airline/vim-airline'                              " Nice to look at status line
+Plug 'wakatime/vim-wakatime'                                " Track my time
 
 " Initialize plugin system
 call plug#end()
+
+lua << EOF
+-- Configure treesitter to do parse tree based syntax highlighting and
+-- indentation
+local ts = require 'nvim-treesitter.configs'
+ts.setup {
+	ensure_installed = 'maintained',
+	highlight = { enable = true },
+	indent = { enabled = true }
+}
+EOF
 
 let g:python_host_prog = '~/.asdf/installs/python/2.7.16/bin/python'
 let g:python3_host_prog = '~/.asdf/installs/python/3.8.5/bin/python'
@@ -47,8 +42,6 @@ let g:python3_host_prog = '~/.asdf/installs/python/3.8.5/bin/python'
 let mapleader = "\<Space>"
 
 colorscheme dracula
-
-if !has('g:syntax_on')|syntax enable|endif
 
 " Let us backspace on indents
 " http://vim.wikia.com/wiki/Backspace_and_delete_problems#Backspace_key_won.27t_move_from_current_line
@@ -108,24 +101,23 @@ nnoremap k gk
 " Open NERDTree
 noremap <C-n> :NERDTreeToggle<CR>
 
-" Use fzf.vim instead of ctrlp
-nnoremap <silent> <C-p> :<C-u>GFiles<CR>
+" Use fzf instead of ctrlp
+" fzf only searches from your current directory, so let's make it start from
+" the root of the project
+function! s:find_git_root()
+  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+endfunction
+command! ProjectFiles execute 'Files' s:find_git_root()
+nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
 
 " Quickly fuzzy search through the outline of the current file with coc
 nnoremap <silent> <C-l> :<C-u>CocFzfList outline<CR>
 
-" Indent line setting
-let g:indentLine_char = '|'
-
 " Easier than reaching for escape
 inoremap jk <Esc>
 
-" https://github.com/jwilm/alacritty/issues/109
-if exists('+termguicolors')
-  let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
+" Simulate true colors
+set termguicolors
 
 " So that editorconfig plays nicely with fugitive
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
@@ -141,34 +133,15 @@ let g:terraform_fmt_on_save=1
 
 " Declare the coc extensiosn to be installed and managed
 let g:coc_global_extensions = [
-      \"coc-go",
+      \"coc-diagnostic",
+      \"coc-docker",
       \"coc-json",
       \"coc-prettier",
-      \"coc-snippets",
+      \"coc-pyright",
       \"coc-tailwindcss",
       \"coc-tsserver",
       \"coc-yaml",
-      \"coc-pyright",
       \]
-
-" coc-snippets
-let g:coc_snippet_next = '<c-j>'
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-" Disable some vim-go defaults and let coc.nvim do it
-let g:go_def_mapping_enabled = 0
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-
-" Declare some coc bindings
-nmap <leader>n  <Plug>(coc-diagnostic-next)
-nmap <leader>p  <Plug>(coc-diagnostic-prev)
-nmap <leader>ca  <Plug>(coc-codeaction)
-nmap <leader>f  <Plug>(coc-fix-current)
 
 " Better display for messages
 set cmdheight=2
@@ -182,3 +155,6 @@ tnoremap <Esc><Esc> <C-\><C-n>
 " Center the search results when jumping between results
 nnoremap n nzz
 nnoremap N Nzz
+
+" Highlight trailing whitespace like an error
+match errorMsg /\s\+$/
