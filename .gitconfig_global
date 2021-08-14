@@ -19,7 +19,6 @@
 [init]
 	defaultBranch = main
 [credential "https://github.com"]
-	helper = 
 	helper = ! auth git-credential
 [commit]
 	gpgsign = true
