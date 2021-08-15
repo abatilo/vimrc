@@ -1,14 +1,4 @@
 {
-  // https://github.com/hashicorp/terraform-ls/blob/1836a2c6bf29bffd855ad0c4d031119904adfe3e/docs/USAGE.md
-  "languageserver": {
-    "terraform": {
-      "command": "terraform-ls",
-      "args": ["serve"],
-      "filetypes": ["terraform", "tf"],
-      "initializationOptions": {},
-      "settings": {}
-    }
-  },
   "coc.preferences.formatOnSaveFiletypes": ["*"],
   "python.formatting.provider": "black"
 }

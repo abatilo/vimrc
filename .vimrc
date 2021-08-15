@@ -34,6 +34,11 @@ ts.setup {
 	highlight = { enable = true },
 	indent = { enabled = true }
 }
+-- Needed until this gets fixed. Otherwise blank lines will mysteriously also
+-- be highlighted
+-- https://github.com/lukas-reineke/indent-blankline.nvim/issues/93
+vim.wo.colorcolumn = "99999"
+vim.g.indent_blankline_use_treesitter = true
 EOF
 
 let g:python_host_prog = '~/.asdf/installs/python/2.7.16/bin/python'
