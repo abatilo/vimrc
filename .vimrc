@@ -2,17 +2,13 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 Plug 'airblade/vim-gitgutter'                               " Show diff icons in gutter
 Plug 'airblade/vim-rooter'                                  " Set project root based on git directory
-Plug 'antoinemadec/coc-fzf', {'branch': 'release'}          " Integrate fzf to search through coc options
-Plug 'dense-analysis/ale'                                   " Highlight linting errors
 Plug 'dracula/vim', { 'as': 'dracula' }                     " colorscheme
 Plug 'editorconfig/editorconfig-vim'                        " Set project specific formatting requirements
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }          " golang niceties
 Plug 'godlygeek/tabular'                                    " Make it easy to align columns
-Plug 'hashivim/vim-terraform'                               " Auto format terraform
 Plug 'junegunn/fzf'                                         " Setup fzf
 Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
 Plug 'lukas-reineke/indent-blankline.nvim'                  " Add indent guides
-Plug 'neoclide/coc.nvim', {'branch': 'release'}             " Add completion
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Add syntax tree parsing
 Plug 'preservim/nerdtree'                                   " Project tree view
 Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
@@ -28,27 +24,14 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'pwntester/octo.nvim'           " Embedded GitHub UI
 Plug 'kyazdani42/nvim-web-devicons'  " Nice UI icons
 
+" Completion
+Plug 'neovim/nvim-lspconfig'
+Plug 'kabouzeid/nvim-lspinstall'
+Plug 'hrsh7th/nvim-compe'
+
 " Initialize plugin system
 call plug#end()
 
-lua << EOF
--- Configure treesitter to do parse tree based syntax highlighting and
--- indentation
-local ts = require 'nvim-treesitter.configs'
-ts.setup {
-	ensure_installed = 'maintained',
-	highlight = { enable = true },
-	indent = { enabled = true }
-}
-
-require"octo".setup()
-
--- Needed until this gets fixed. Otherwise blank lines will mysteriously also
--- be highlighted
--- https://github.com/lukas-reineke/indent-blankline.nvim/issues/93
-vim.wo.colorcolumn = "99999"
-vim.g.indent_blankline_use_treesitter = true
-EOF
 
 let g:python_host_prog = '~/.asdf/installs/python/2.7.16/bin/python'
 let g:python3_host_prog = '~/.asdf/installs/python/3.8.5/bin/python'
@@ -98,15 +81,20 @@ set backup
 set backupdir=/tmp
 set directory=/tmp
 
-set foldmethod=indent
-" Open all methods by default
-set foldlevelstart=10
+" Let treesitter handle folding
+" https://github.com/nvim-treesitter/nvim-treesitter/tree/460a26ef3218057a544b3fd6697e979e6bad648d#available-modules
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set foldlevel=10
 
-" Auto selects matching options
-set completeopt=menuone,preview,noinsert
+" Configures completion menu behavior
+" https://github.com/hrsh7th/nvim-compe/tree/cfbcd727d97958943c0d94e8a8126abe27294ad3#prerequisite
+set completeopt=menuone,noselect
 
-" Let enter accept the highlighted selection in the autocomplete popup
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Intercept pressing enter when nvim-compe menu is open so that we don't
+" insert a newline
+" https://github.com/hrsh7th/nvim-compe/tree/cfbcd727d97958943c0d94e8a8126abe27294ad3#mappings
+inoremap <silent><expr> <CR> compe#confirm('<CR>')
 
 " Move vertically by visual line
 nnoremap j gj
@@ -124,9 +112,6 @@ endfunction
 command! ProjectFiles execute 'Files' s:find_git_root()
 nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
 
-" Quickly fuzzy search through the outline of the current file with coc
-nnoremap <silent> <C-l> :<C-u>CocFzfList outline<CR>
-
 " Easier than reaching for escape
 inoremap jk <Esc>
 
@@ -138,29 +123,9 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
 " vim-go
 let g:go_fmt_command = "goimports"
-let g:go_rename_command = "gopls"
-let g:go_auto_type_info = 1
 let g:go_addtags_transform = "camelcase"
 
-" vim-terraform
-let g:terraform_fmt_on_save=1
-
-" Declare the coc extensiosn to be installed and managed
-let g:coc_global_extensions = [
-      \"coc-diagnostic",
-      \"coc-docker",
-      \"coc-json",
-      \"coc-prettier",
-      \"coc-pyright",
-      \"coc-tailwindcss",
-      \"coc-tsserver",
-      \"coc-yaml",
-      \]
-
-" Better display for messages
-set cmdheight=2
-
-" You will have bad experience for diagnostic messages when it's default 4000.
+" Controls how quickly things like gitgutter updates happen
 set updatetime=100
 
 " Exit insert mode while in the terminal
@@ -172,3 +137,160 @@ nnoremap N Nzz
 
 " Highlight trailing whitespace like an error
 match errorMsg /\s\+$/
+
+"""
+" Below is configuration in Lua for Neovim 0.5 and above features
+"""
+
+lua << EOF
+-- Configure treesitter to do parse tree based syntax highlighting and
+-- indentation
+local ts = require 'nvim-treesitter.configs'
+ts.setup {
+  -- Install all maintained language parsers
+	ensure_installed = 'maintained',
+	highlight = { enable = true },
+	indent = { enabled = true }
+}
+
+-- Instantiates octo.nvim for embedded to vim GitHub reviews
+require"octo".setup()
+
+-- Needed until the below issue gets fixed. Otherwise blank lines will
+-- mysteriously also be highlighted
+-- https://github.com/lukas-reineke/indent-blankline.nvim/issues/93
+vim.wo.colorcolumn = "99999"
+vim.g.indent_blankline_use_treesitter = true
+
+-- keymaps
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+
+  -- Set some keybinds conditional on server capabilities
+  if client.resolved_capabilities.document_formatting then
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+    vim.api.nvim_exec([[
+augroup autoFormat
+  autocmd! * <buffer>
+  autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
+augroup END
+    ]], false)
+
+  elseif client.resolved_capabilities.document_range_formatting then
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+  end
+
+  -- Set autocommands conditional on server_capabilities
+  if client.resolved_capabilities.document_highlight then
+    vim.api.nvim_exec([[
+    augroup lsp_document_highlight
+    autocmd! * <buffer>
+    autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+    autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+    augroup END
+    ]], false)
+  end
+end
+
+-- config that activates keymaps and enables snippet support
+local function make_config()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+  return {
+    -- enable snippet support
+    capabilities = capabilities,
+    -- map buffer local keybindings when the language server attaches
+    on_attach = on_attach,
+  }
+end
+
+-- Define a function to register each language's language server with neovim's
+-- language server client.
+-- Based on:
+-- https://github.com/kabouzeid/nvim-lspinstall/wiki/Home/16cd58d4e8488359780897a97db3e3d0667f12a7
+local function setup_servers()
+  require'lspinstall'.setup()
+
+  -- get all installed servers
+  local servers = require'lspinstall'.installed_servers()
+  -- ... and add manually installed servers
+  -- These will have to be installed one at a time whenever you setup a new computer via:
+  -- :LspInstall $name
+  table.insert(servers, "bash")
+  table.insert(servers, "dockerfile")
+  table.insert(servers, "go")
+  table.insert(servers, "json")
+  table.insert(servers, "python")
+  table.insert(servers, "tailwindcss")
+  table.insert(servers, "terraform")
+  table.insert(servers, "typescript")
+  table.insert(servers, "vim")
+  table.insert(servers, "yaml")
+
+  for _, server in pairs(servers) do
+    local config = make_config()
+    require'lspconfig'[server].setup(config)
+  end
+end
+
+setup_servers()
+
+-- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
+require'lspinstall'.post_install_hook = function ()
+  setup_servers() -- reload installed servers
+  vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
+end
+
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = {
+    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
+    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
+    max_width = 120,
+    min_width = 60,
+    max_height = math.floor(vim.o.lines * 0.3),
+    min_height = 1,
+  };
+
+  source = {
+    path = true;
+    buffer = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    vsnip = true;
+    ultisnips = true;
+    luasnip = true;
+  };
+}
+EOF
