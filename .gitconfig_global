@@ -21,4 +21,4 @@
 [credential "https://github.com"]
 	helper = ! auth git-credential
 [commit]
-	gpgsign = true
+	gpgsign = false
