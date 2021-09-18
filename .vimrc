@@ -136,8 +136,12 @@ local ts = require 'nvim-treesitter.configs'
 ts.setup {
   -- Install all maintained language parsers
 	ensure_installed = 'maintained',
-	highlight = { enable = true },
-	indent = { enabled = true }
+	highlight = {
+    enable = true
+  },
+	indent = {
+    enable = true
+  },
 }
 
 -- keymaps
