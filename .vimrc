@@ -222,6 +222,7 @@ local function setup_servers()
   -- These will have to be installed one at a time whenever you setup a new computer via:
   -- :LspInstall $name
   table.insert(servers, "bash")
+  table.insert(servers, "diagnosticls")
   table.insert(servers, "dockerfile")
   table.insert(servers, "go")
   table.insert(servers, "json")
