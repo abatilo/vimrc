@@ -1,37 +1,32 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'Yggdroot/indentLine'                                  " Add indent guides
-Plug 'airblade/vim-gitgutter'                               " Show diff icons in gutter
-Plug 'airblade/vim-rooter'                                  " Set project root based on git directory
-Plug 'dracula/vim', { 'as': 'dracula' }                     " colorscheme
-Plug 'editorconfig/editorconfig-vim'                        " Set project specific formatting requirements
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }          " golang niceties
-Plug 'godlygeek/tabular'                                    " Make it easy to align columns
-Plug 'junegunn/fzf'                                         " Setup fzf
-Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Add syntax tree parsing
-Plug 'preservim/nerdtree'                                   " Project tree view
-Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
-Plug 'tpope/vim-fugitive'                                   " Integrate git into vim
-Plug 'tpope/vim-rhubarb'                                    " Jump to selected lines in GitHub
-Plug 'tpope/vim-surround'                                   " Manipulate surrounding text like wrapping or deleting quotes
-Plug 'vim-airline/vim-airline'                              " Nice to look at status line
-Plug 'wakatime/vim-wakatime'                                " Track my time
-
-" Completion
-Plug 'neovim/nvim-lspconfig'
-Plug 'kabouzeid/nvim-lspinstall'
-
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/nvim-cmp'
-
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-calc'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-vsnip'
-
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+Plug 'Yggdroot/indentLine'                                    " Add indent guides
+Plug 'airblade/vim-gitgutter'                                 " Show diff icons in gutter
+Plug 'airblade/vim-rooter'                                    " Set project root based on git directory
+Plug 'dracula/vim', { 'as': 'dracula' }                       " colorscheme
+Plug 'editorconfig/editorconfig-vim'                          " Set project specific formatting requirements
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }            " golang niceties
+Plug 'glacambre/firenvim', {'do':{ _ -> firenvim#install(0)}} " Replace textarea in chrome with embedded neovim
+Plug 'godlygeek/tabular'                                      " Make it easy to align columns
+Plug 'hrsh7th/cmp-buffer'                                     " Buffer based completion source
+Plug 'hrsh7th/cmp-calc'                                       " Replace math expressions with evaluated value
+Plug 'hrsh7th/cmp-nvim-lsp'                                   " Use the LSP client as a completion source
+Plug 'hrsh7th/cmp-path'                                       " Get file from filesystem
+Plug 'hrsh7th/cmp-vsnip'                                      " Integrate with vsnip
+Plug 'hrsh7th/nvim-cmp'                                       " Auto complete plugin
+Plug 'hrsh7th/vim-vsnip'                                      " Snippet engine for auto complete
+Plug 'junegunn/fzf'                                           " Setup fzf
+Plug 'junegunn/fzf.vim'                                       " Setup vim specific features with fzf
+Plug 'kabouzeid/nvim-lspinstall'                              " Make it easy to install lsp servers
+Plug 'neovim/nvim-lspconfig'                                  " Make built in lsp client configurable
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}   " Add syntax tree parsing
+Plug 'preservim/nerdtree'                                     " Project tree view
+Plug 'tpope/vim-commentary'                                   " Add bindings for commenting files
+Plug 'tpope/vim-fugitive'                                     " Integrate git into vim
+Plug 'tpope/vim-rhubarb'                                      " Jump to selected lines in GitHub
+Plug 'tpope/vim-surround'                                     " Manipulate surrounding text like wrapping or deleting quotes
+Plug 'vim-airline/vim-airline'                                " Nice to look at status line
+Plug 'wakatime/vim-wakatime'                                  " Track my time
 
 " Initialize plugin system
 call plug#end()
