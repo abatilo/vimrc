@@ -1,5 +1,6 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
+Plug 'Yggdroot/indentLine'                                  " Add indent guides
 Plug 'airblade/vim-gitgutter'                               " Show diff icons in gutter
 Plug 'airblade/vim-rooter'                                  " Set project root based on git directory
 Plug 'dracula/vim', { 'as': 'dracula' }                     " colorscheme
@@ -8,7 +9,6 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }          " golang niceties
 Plug 'godlygeek/tabular'                                    " Make it easy to align columns
 Plug 'junegunn/fzf'                                         " Setup fzf
 Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
-Plug 'lukas-reineke/indent-blankline.nvim'                  " Add indent guides
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Add syntax tree parsing
 Plug 'preservim/nerdtree'                                   " Project tree view
 Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
@@ -42,6 +42,9 @@ colorscheme dracula
 " Let us backspace on indents
 " http://vim.wikia.com/wiki/Backspace_and_delete_problems#Backspace_key_won.27t_move_from_current_line
 set backspace=indent,eol,start
+
+" Custom indentLine character
+let g:indentLine_char = '|'
 
 " Line numbers
 set number
@@ -145,12 +148,6 @@ ts.setup {
 
 -- Instantiates octo.nvim for embedded to vim GitHub reviews
 require"octo".setup()
-
--- Needed until the below issue gets fixed. Otherwise blank lines will
--- mysteriously also be highlighted
--- https://github.com/lukas-reineke/indent-blankline.nvim/issues/93
-vim.wo.colorcolumn = "99999"
-vim.g.indent_blankline_use_treesitter = true
 
 -- keymaps
 local on_attach = function(client, bufnr)
