@@ -18,12 +18,6 @@ Plug 'tpope/vim-surround'                                   " Manipulate surroun
 Plug 'vim-airline/vim-airline'                              " Nice to look at status line
 Plug 'wakatime/vim-wakatime'                                " Track my time
 
-" Plugins still being evaluated
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'pwntester/octo.nvim'           " Embedded GitHub UI
-Plug 'kyazdani42/nvim-web-devicons'  " Nice UI icons
-
 " Completion
 Plug 'neovim/nvim-lspconfig'
 Plug 'kabouzeid/nvim-lspinstall'
@@ -145,9 +139,6 @@ ts.setup {
 	highlight = { enable = true },
 	indent = { enabled = true }
 }
-
--- Instantiates octo.nvim for embedded to vim GitHub reviews
-require"octo".setup()
 
 -- keymaps
 local on_attach = function(client, bufnr)
