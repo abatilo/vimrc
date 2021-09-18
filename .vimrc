@@ -22,9 +22,17 @@ Plug 'wakatime/vim-wakatime'                                " Track my time
 Plug 'neovim/nvim-lspconfig'
 Plug 'kabouzeid/nvim-lspinstall'
 
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/nvim-cmp'
+
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-calc'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-vsnip'
+
 " Initialize plugin system
 call plug#end()
-
 
 let g:python_host_prog = '~/.asdf/installs/python/2.7.16/bin/python'
 let g:python3_host_prog = '~/.asdf/installs/python/3.8.5/bin/python'
@@ -125,6 +133,9 @@ nnoremap N Nzz
 " Highlight trailing whitespace like an error
 match errorMsg /\s\+$/
 
+" Improve completion menu experience with nvim-cmp
+set completeopt=menu,menuone,noselect
+
 """
 " Below is configuration in Lua for Neovim 0.5 and above features
 """
@@ -196,6 +207,7 @@ end
 local function make_config()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities.textDocument.completion.completionItem.snippetSupport = true
+  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
   return {
     -- enable snippet support
     capabilities = capabilities,
@@ -241,5 +253,27 @@ require'lspinstall'.post_install_hook = function ()
   setup_servers() -- reload installed servers
   vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
 end
+
+-- Setup nvim-cmp.
+local cmp = require'cmp'
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  },
+  sources = {
+    { name = 'buffer' },
+    { name = 'calc' },
+    { name = 'nvim_lsp' },
+    { name = 'path' },
+    { name = 'vsnip' },
+  }
+})
 
 EOF
