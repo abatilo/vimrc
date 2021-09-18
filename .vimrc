@@ -27,7 +27,6 @@ Plug 'kyazdani42/nvim-web-devicons'  " Nice UI icons
 " Completion
 Plug 'neovim/nvim-lspconfig'
 Plug 'kabouzeid/nvim-lspinstall'
-Plug 'hrsh7th/nvim-compe'
 
 " Initialize plugin system
 call plug#end()
@@ -86,15 +85,6 @@ set directory=/tmp
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 set foldlevel=10
-
-" Configures completion menu behavior
-" https://github.com/hrsh7th/nvim-compe/tree/cfbcd727d97958943c0d94e8a8126abe27294ad3#prerequisite
-set completeopt=menuone,noselect
-
-" Intercept pressing enter when nvim-compe menu is open so that we don't
-" insert a newline
-" https://github.com/hrsh7th/nvim-compe/tree/cfbcd727d97958943c0d94e8a8126abe27294ad3#mappings
-inoremap <silent><expr> <CR> compe#confirm('<CR>')
 
 " Move vertically by visual line
 nnoremap j gj
@@ -260,37 +250,4 @@ require'lspinstall'.post_install_hook = function ()
   vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
 end
 
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  resolve_timeout = 800;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = {
-    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-    max_width = 120,
-    min_width = 60,
-    max_height = math.floor(vim.o.lines * 0.3),
-    min_height = 1,
-  };
-
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    luasnip = true;
-  };
-}
 EOF
