@@ -21,6 +21,7 @@ Plug 'kabouzeid/nvim-lspinstall'                              " Make it easy to 
 Plug 'neovim/nvim-lspconfig'                                  " Make built in lsp client configurable
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}   " Add syntax tree parsing
 Plug 'preservim/nerdtree'                                     " Project tree view
+Plug 'rafamadriz/friendly-snippets'                           " Cross language collection of snippets
 Plug 'tpope/vim-commentary'                                   " Add bindings for commenting files
 Plug 'tpope/vim-fugitive'                                     " Integrate git into vim
 Plug 'tpope/vim-rhubarb'                                      " Jump to selected lines in GitHub
@@ -132,6 +133,12 @@ match errorMsg /\s\+$/
 
 " Improve completion menu experience with nvim-cmp
 set completeopt=menu,menuone,noselect
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
 """
 " Below is configuration in Lua for Neovim 0.5 and above features
