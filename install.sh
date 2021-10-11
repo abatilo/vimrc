@@ -42,7 +42,7 @@ then
   grep -q "alias vims=" ~/.zshrc || echo "alias vims='nvim -S ~/.vim/session.vim'" >> ~/.zshrc
   grep -q "alias vi=" ~/.zshrc || echo "alias vi='nvim'" >> ~/.zshrc
   grep -q "alias vim=" ~/.zshrc || echo "alias vim='nvim'" >> ~/.zshrc
-  grep -q "alias jot=" ~/.zshrc || echo "alias jot='vi ~/abatilo/journal/$(date +%Y)/$(date +%m)/$(date +%d).md'" >> ~/.zshrc
+  grep -q "alias jot=" ~/.zshrc || echo "alias jot='pushd ~/abatilo/journal && vi ~/abatilo/journal/$(date +%Y)/$(date +%m)/$(date +%d).md && popd'" >> ~/.zshrc
   grep -q "export EDITOR=nvim" ~/.zshrc || echo "export EDITOR=nvim" >> ~/.zshrc
 
   grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
