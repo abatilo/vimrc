@@ -25,3 +25,6 @@ indent_size = 4
 
 [*.go]
 indent_style = tab
+
+[*.tsx,*.ts]
+indent_size = 2

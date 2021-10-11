@@ -29,6 +29,9 @@ Plug 'tpope/vim-surround'                                     " Manipulate surro
 Plug 'vim-airline/vim-airline'                                " Nice to look at status line
 Plug 'wakatime/vim-wakatime'                                  " Track my time
 
+" Codex / GitHub Copilot
+Plug 'tom-doerr/vim_codex'
+
 " Initialize plugin system
 call plug#end()
 
@@ -140,6 +143,24 @@ smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
+function! AutoCommit()
+  call system('git rev-parse --git-dir > /dev/null 2>&1')
+  if v:shell_error
+    return
+  endif
+  let message = 'Updated ' . expand('%:.')
+  call system('git add ' . expand('%:p'))
+  call system('git commit -m ' . shellescape(message, 1))
+  call system('git pull --rebase')
+  call system('git push')
+endfun
+
+augroup AutoCommitNotes
+  autocmd!
+  autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
+  autocmd BufWritePost */abatilo/journal/**.md call AutoCommit()
+augroup END
+
 """
 " Below is configuration in Lua for Neovim 0.5 and above features
 """
@@ -184,12 +205,12 @@ local on_attach = function(client, bufnr)
   if client.resolved_capabilities.document_formatting then
     buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
-    vim.api.nvim_exec([[
-augroup autoFormat
-  autocmd! * <buffer>
-  autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
-augroup END
-    ]], false)
+--     vim.api.nvim_exec([[
+-- augroup autoFormat
+--   autocmd! * <buffer>
+--   autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
+-- augroup END
+--     ]], false)
 
   elseif client.resolved_capabilities.document_range_formatting then
     buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
