@@ -154,7 +154,7 @@ endfun
 augroup AutoCommitNotes
   autocmd!
   autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
-  autocmd BufWritePost */abatilo/journal/**.md call AutoCommit()
+  autocmd BufWritePost */abatilo/notes/**.md call AutoCommit()
 augroup END
 
 """
