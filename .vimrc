@@ -6,7 +6,6 @@ Plug 'airblade/vim-rooter'                                    " Set project root
 Plug 'dracula/vim', { 'as': 'dracula' }                       " colorscheme
 Plug 'editorconfig/editorconfig-vim'                          " Set project specific formatting requirements
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }            " golang niceties
-Plug 'glacambre/firenvim', {'do':{ _ -> firenvim#install(0)}} " Replace textarea in chrome with embedded neovim
 Plug 'godlygeek/tabular'                                      " Make it easy to align columns
 Plug 'hrsh7th/cmp-buffer'                                     " Buffer based completion source
 Plug 'hrsh7th/cmp-calc'                                       " Replace math expressions with evaluated value
