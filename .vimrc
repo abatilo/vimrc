@@ -1,35 +1,32 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'Yggdroot/indentLine'                                    " Add indent guides
-Plug 'airblade/vim-gitgutter'                                 " Show diff icons in gutter
-Plug 'airblade/vim-rooter'                                    " Set project root based on git directory
-Plug 'dracula/vim', { 'as': 'dracula' }                       " colorscheme
-Plug 'editorconfig/editorconfig-vim'                          " Set project specific formatting requirements
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }            " golang niceties
-Plug 'godlygeek/tabular'                                      " Make it easy to align columns
-Plug 'hrsh7th/cmp-buffer'                                     " Buffer based completion source
-Plug 'hrsh7th/cmp-calc'                                       " Replace math expressions with evaluated value
-Plug 'hrsh7th/cmp-nvim-lsp'                                   " Use the LSP client as a completion source
-Plug 'hrsh7th/cmp-path'                                       " Get file from filesystem
-Plug 'hrsh7th/cmp-vsnip'                                      " Integrate with vsnip
-Plug 'hrsh7th/nvim-cmp'                                       " Auto complete plugin
-Plug 'hrsh7th/vim-vsnip'                                      " Snippet engine for auto complete
-Plug 'junegunn/fzf'                                           " Setup fzf
-Plug 'junegunn/fzf.vim'                                       " Setup vim specific features with fzf
-Plug 'kabouzeid/nvim-lspinstall'                              " Make it easy to install lsp servers
-Plug 'neovim/nvim-lspconfig'                                  " Make built in lsp client configurable
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}   " Add syntax tree parsing
-Plug 'preservim/nerdtree'                                     " Project tree view
-Plug 'rafamadriz/friendly-snippets'                           " Cross language collection of snippets
-Plug 'tpope/vim-commentary'                                   " Add bindings for commenting files
-Plug 'tpope/vim-fugitive'                                     " Integrate git into vim
-Plug 'tpope/vim-rhubarb'                                      " Jump to selected lines in GitHub
-Plug 'tpope/vim-surround'                                     " Manipulate surrounding text like wrapping or deleting quotes
-Plug 'vim-airline/vim-airline'                                " Nice to look at status line
-Plug 'wakatime/vim-wakatime'                                  " Track my time
-
-" Codex / GitHub Copilot
-Plug 'tom-doerr/vim_codex'
+Plug 'Yggdroot/indentLine'                                  " Add indent guides
+Plug 'airblade/vim-gitgutter'                               " Show diff icons in gutter
+Plug 'airblade/vim-rooter'                                  " Set project root based on git directory
+Plug 'dracula/vim', { 'as': 'dracula' }                     " colorscheme
+Plug 'editorconfig/editorconfig-vim'                        " Set project specific formatting requirements
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }          " golang niceties
+Plug 'godlygeek/tabular'                                    " Make it easy to align columns
+Plug 'hrsh7th/cmp-buffer'                                   " Buffer based completion source
+Plug 'hrsh7th/cmp-calc'                                     " Replace math expressions with evaluated value
+Plug 'hrsh7th/cmp-nvim-lsp'                                 " Use the LSP client as a completion source
+Plug 'hrsh7th/cmp-path'                                     " Get file from filesystem
+Plug 'hrsh7th/cmp-vsnip'                                    " Integrate with vsnip
+Plug 'hrsh7th/nvim-cmp'                                     " Auto complete plugin
+Plug 'hrsh7th/vim-vsnip'                                    " Snippet engine for auto complete
+Plug 'junegunn/fzf'                                         " Setup fzf
+Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
+Plug 'neovim/nvim-lspconfig'                                " Make built in lsp client configurable
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Add syntax tree parsing
+Plug 'preservim/nerdtree'                                   " Project tree view
+Plug 'rafamadriz/friendly-snippets'                         " Cross language collection of snippets
+Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
+Plug 'tpope/vim-fugitive'                                   " Integrate git into vim
+Plug 'tpope/vim-rhubarb'                                    " Jump to selected lines in GitHub
+Plug 'tpope/vim-surround'                                   " Manipulate surrounding text like wrapping or deleting quotes
+Plug 'vim-airline/vim-airline'                              " Nice to look at status line
+Plug 'wakatime/vim-wakatime'                                " Track my time
+Plug 'williamboman/nvim-lsp-installer'                      " Install LSP servers
 
 " Initialize plugin system
 call plug#end()
@@ -225,57 +222,6 @@ local on_attach = function(client, bufnr)
     augroup END
     ]], false)
   end
-end
-
--- config that activates keymaps and enables snippet support
-local function make_config()
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  return {
-    -- enable snippet support
-    capabilities = capabilities,
-    -- map buffer local keybindings when the language server attaches
-    on_attach = on_attach,
-  }
-end
-
--- Define a function to register each language's language server with neovim's
--- language server client.
--- Based on:
--- https://github.com/kabouzeid/nvim-lspinstall/wiki/Home/16cd58d4e8488359780897a97db3e3d0667f12a7
-local function setup_servers()
-  require'lspinstall'.setup()
-
-  -- get all installed servers
-  local servers = require'lspinstall'.installed_servers()
-  -- ... and add manually installed servers
-  -- These will have to be installed one at a time whenever you setup a new computer via:
-  -- :LspInstall $name
-  table.insert(servers, "bash")
-  table.insert(servers, "diagnosticls")
-  table.insert(servers, "dockerfile")
-  table.insert(servers, "go")
-  table.insert(servers, "json")
-  table.insert(servers, "python")
-  table.insert(servers, "tailwindcss")
-  table.insert(servers, "terraform")
-  table.insert(servers, "typescript")
-  table.insert(servers, "vim")
-  table.insert(servers, "yaml")
-
-  for _, server in pairs(servers) do
-    local config = make_config()
-    require'lspconfig'[server].setup(config)
-  end
-end
-
-setup_servers()
-
--- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
-require'lspinstall'.post_install_hook = function ()
-  setup_servers() -- reload installed servers
-  vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
 end
 
 -- Setup nvim-cmp.
