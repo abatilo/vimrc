@@ -272,6 +272,10 @@ cmp.setup({
     { name = 'path' },
     { name = 'calc' },
   },
+  experimental = {
+    native_menu = false,
+    ghost_text = true,
+  },
 })
 
 EOF
