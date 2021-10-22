@@ -130,9 +130,6 @@ nnoremap N Nzz
 " Highlight trailing whitespace like an error
 match errorMsg /\s\+$/
 
-" Improve completion menu experience with nvim-cmp
-set completeopt=menu,menuone,noselect
-
 " Jump forward or backward
 imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
@@ -256,6 +253,9 @@ end)
 local cmp = require'cmp'
 
 cmp.setup({
+  completion = {
+    completeopt = 'menu,menuone,noinsert',
+  },
   snippet = {
     expand = function(args)
       vim.fn["vsnip#anonymous"](args.body)
