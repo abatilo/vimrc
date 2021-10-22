@@ -266,12 +266,12 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
   },
   sources = {
-    { name = 'buffer' },
-    { name = 'calc' },
-    { name = 'nvim_lsp' },
-    { name = 'path' },
     { name = 'vsnip' },
-  }
+    { name = 'nvim_lsp' },
+    { name = 'buffer', keyword_length = 4 },
+    { name = 'path' },
+    { name = 'calc' },
+  },
 })
 
 EOF
