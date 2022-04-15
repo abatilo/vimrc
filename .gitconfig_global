@@ -1,24 +1,16 @@
 [user]
   name = Aaron
   email = AaronBatilo@gmail.com
-	signingkey = E2319529D074FDB6
 [core]
   excludesfile = /home/aaron/.gitignore
 [alias]
   st = status
   aa = add -A
-  caa = commit --all --verbose
-  cap = commit --patch --verbose
   co = commit --verbose
-  rem = rebase -i master
-  red = rebase -i develop
-  di = diff
-  dc = diff --cached
+  pra = pull --rebase --autostash
 [push]
 	default = simple
 [init]
 	defaultBranch = main
 [credential "https://github.com"]
 	helper = ! auth git-credential
-[commit]
-	gpgsign = false
