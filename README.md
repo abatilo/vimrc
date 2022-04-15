@@ -8,7 +8,7 @@ development machine.
 
 Install git
 ```
-sudo apt-get install -yq git
+sudo apt-get install -yq git libncurses5-dev libncursesw5-dev
 ```
 
 Install [LinuxBrew](https://docs.brew.sh/Homebrew-on-Linux):
