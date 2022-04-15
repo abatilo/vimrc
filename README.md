@@ -51,6 +51,9 @@ cd fonts
 Install asdf:
 https://github.com/ohmyzsh/ohmyzsh/tree/eb00b95d26e8f264af80f508d50ac32e50619027/plugins/asdf
 
+Install fzf:
+https://github.com/junegunn/fzf/tree/a0b42e6538092dc6dea9f918a7a74c9408e44d4c#using-git
+
 ## Setup
 Run the following command:
 `./install.sh`
