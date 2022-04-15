@@ -48,27 +48,8 @@ git clone https://github.com/powerline/fonts.git
 cd fonts
 ./install.sh
 ```
-
-As my setup becomes more advanced, some things aren't all installed by the
-scripts here. (For now)
-
-```
-brew install neovim tmux rg jq fzf httpie
-```
-
-Install python neovim package for neovim to use:
-```
-pip install neovim
-pip3 install neovim
-```
-
-These setup scripts assume that the following are installed:
-- [git](https://git-scm.com/)
-- [jq](https://stedolan.github.io/jq/)
-- [neovim](https://neovim.io/)
-- [powerline fonts](https://github.com/powerline/fonts)
-- [ripgrep](https://github.com/BurntSushi/ripgrep)
-- [tmux](https://github.com/tmux/tmux/wiki)
+Install asdf:
+https://github.com/ohmyzsh/ohmyzsh/tree/eb00b95d26e8f264af80f508d50ac32e50619027/plugins/asdf
 
 ## Setup
 Run the following command:
