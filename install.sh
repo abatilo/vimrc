@@ -33,33 +33,27 @@ echo | nvim +PlugInstall +qall
 
 # Add an alias for opening a default session file
 
-if [ -e ~/.zshrc ]
-then
-  echo "" >> ~/.zshrc
-  grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
-  grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >> ~/.zshrc
-  grep -q "alias vis=" ~/.zshrc || echo "alias vis='nvim -S ~/.vim/session.vim'" >> ~/.zshrc
-  grep -q "alias vims=" ~/.zshrc || echo "alias vims='nvim -S ~/.vim/session.vim'" >> ~/.zshrc
-  grep -q "alias vi=" ~/.zshrc || echo "alias vi='nvim'" >> ~/.zshrc
-  grep -q "alias vim=" ~/.zshrc || echo "alias vim='nvim'" >> ~/.zshrc
-  grep -q "alias jot=" ~/.zshrc || echo 'alias jot=\'pushd ~/abatilo/notes && vi ~/abatilo/notes/$(date +%Y)/$(date +%m)/$(date +%d)/index.md && popd\'' >> ~/.zshrc
-  grep -q "export EDITOR=nvim" ~/.zshrc || echo "export EDITOR=nvim" >> ~/.zshrc
+echo "" >> ~/.zshrc
+grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
+grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >> ~/.zshrc
+grep -q "alias vi=" ~/.zshrc || echo "alias vi='nvim'" >> ~/.zshrc
+grep -q "alias vim=" ~/.zshrc || echo "alias vim='nvim'" >> ~/.zshrc
+grep -q "export EDITOR=nvim" ~/.zshrc || echo "export EDITOR=nvim" >> ~/.zshrc
 
-  grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
-  grep -q "export FZF_DEFAULT_COMMAND=" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
-  grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' >> ~/.zshrc
-  grep -q "ctrlp() { </dev/tty vim -c ProjectFiles }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c ProjectFiles }" >> ~/.zshrc
-  grep -q "zle -N ctrlp" ~/.zshrc || echo "zle -N ctrlp" >> ~/.zshrc
-  grep -q "bindkey \"^p\" ctrlp" ~/.zshrc || echo "bindkey \"^p\" ctrlp" >> ~/.zshrc
-  grep -q "ctrlj() { </dev/tty vim -c ProjectFiles ~/abatilo/notes }" ~/.zshrc || echo "ctrlj() { </dev/tty vim -c ProjectFiles ~/abatilo/notes }" >> ~/.zshrc
-  grep -q "zle -N ctrlj" ~/.zshrc || echo "zle -N ctrlj" >> ~/.zshrc
-  grep -q "bindkey \"^j\" ctrlj" ~/.zshrc || echo "bindkey \"^j\" ctrlj" >> ~/.zshrc
+grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
+grep -q "export FZF_DEFAULT_COMMAND=" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
+grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' >> ~/.zshrc
+grep -q "ctrlp() { </dev/tty vim -c ProjectFiles }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c ProjectFiles }" >> ~/.zshrc
+grep -q "zle -N ctrlp" ~/.zshrc || echo "zle -N ctrlp" >> ~/.zshrc
+grep -q "bindkey \"^p\" ctrlp" ~/.zshrc || echo "bindkey \"^p\" ctrlp" >> ~/.zshrc
+grep -q "ctrlj() { </dev/tty vim -c ProjectFiles ~/abatilo/notes }" ~/.zshrc || echo "ctrlj() { </dev/tty vim -c ProjectFiles ~/abatilo/notes }" >> ~/.zshrc
+grep -q "zle -N ctrlj" ~/.zshrc || echo "zle -N ctrlj" >> ~/.zshrc
+grep -q "bindkey \"^j\" ctrlj" ~/.zshrc || echo "bindkey \"^j\" ctrlj" >> ~/.zshrc
 
-  grep -q "# Set 'infinite' zsh history" ~/.zshrc || echo "# Set 'infinite' zsh history" >> ~/.zshrc
-  grep -q "HISTFILE=~/.zsh_history" ~/.zshrc || echo "HISTFILE=~/.zsh_history" >> ~/.zshrc
-  grep -q "HISTSIZE=999999999" ~/.zshrc || echo "HISTSIZE=999999999" >> ~/.zshrc
-  grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >> ~/.zshrc
-fi
+grep -q "# Set 'infinite' zsh history" ~/.zshrc || echo "# Set 'infinite' zsh history" >> ~/.zshrc
+grep -q "HISTFILE=~/.zsh_history" ~/.zshrc || echo "HISTFILE=~/.zsh_history" >> ~/.zshrc
+grep -q "HISTSIZE=999999999" ~/.zshrc || echo "HISTSIZE=999999999" >> ~/.zshrc
+grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >> ~/.zshrc
 
 echo "Install tmux then run the tmux.sh"
 
