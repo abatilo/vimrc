@@ -28,6 +28,8 @@ Plug 'vim-airline/vim-airline'                              " Nice to look at st
 Plug 'wakatime/vim-wakatime'                                " Track my time
 Plug 'williamboman/nvim-lsp-installer'                      " Install LSP servers
 
+Plug 'github/copilot.vim'
+
 " Initialize plugin system
 call plug#end()
 
@@ -198,12 +200,12 @@ local on_attach = function(client, bufnr)
   if client.resolved_capabilities.document_formatting then
     buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
---     vim.api.nvim_exec([[
--- augroup autoFormat
---   autocmd! * <buffer>
---   autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
--- augroup END
---     ]], false)
+    vim.api.nvim_exec([[
+augroup autoFormat
+  autocmd! * <buffer>
+  autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
+augroup END
+    ]], false)
 
   elseif client.resolved_capabilities.document_range_formatting then
     buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
@@ -264,6 +266,8 @@ cmp.setup({
   mapping = {
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i','c'}),
+    ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i','c'}),
   },
   sources = {
     { name = 'vsnip' },
@@ -274,7 +278,7 @@ cmp.setup({
   },
   experimental = {
     native_menu = false,
-    ghost_text = true,
+    -- ghost_text = true,
   },
 })
 
