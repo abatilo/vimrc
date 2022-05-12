@@ -27,6 +27,7 @@ Plug 'tpope/vim-surround'                                   " Manipulate surroun
 Plug 'vim-airline/vim-airline'                              " Nice to look at status line
 Plug 'wakatime/vim-wakatime'                                " Track my time
 Plug 'williamboman/nvim-lsp-installer'                      " Install LSP servers
+Plug 'lukas-reineke/lsp-format.nvim'                        " Format code on save
 
 Plug 'github/copilot.vim'
 
@@ -138,24 +139,6 @@ smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
-function! AutoCommit()
-  call system('git rev-parse --git-dir > /dev/null 2>&1')
-  if v:shell_error
-    return
-  endif
-  let message = 'Updated ' . expand('%:.')
-  call system('git add ' . expand('%:p'))
-  call system('git commit -m ' . shellescape(message, 1))
-  call system('git pull --rebase')
-  call system('git push')
-endfun
-
-augroup AutoCommitNotes
-  autocmd!
-  autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
-  autocmd BufWritePost */abatilo/notes/**.md call AutoCommit()
-augroup END
-
 """
 " Below is configuration in Lua for Neovim 0.5 and above features
 """
@@ -174,6 +157,9 @@ ts.setup {
     enable = true
   },
 }
+
+-- Configure formatter on lsp
+require("lsp-format").setup {}
 
 -- keymaps
 local on_attach = function(client, bufnr)
@@ -196,60 +182,27 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
-  -- Set some keybinds conditional on server capabilities
-  if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-
-    vim.api.nvim_exec([[
-augroup autoFormat
-  autocmd! * <buffer>
-  autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
-augroup END
-    ]], false)
-
-  elseif client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
-  end
-
-  -- Set autocommands conditional on server_capabilities
-  if client.resolved_capabilities.document_highlight then
-    vim.api.nvim_exec([[
-    augroup lsp_document_highlight
-      autocmd! * <buffer>
-      autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-      autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-    augroup END
-    ]], false)
-  end
+  require("lsp-format").on_attach(client)
 end
 
--- config that activates keymaps and enables snippet support
-local function make_config()
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  return {
-    -- enable snippet support
-    capabilities = capabilities,
-    -- map buffer local keybindings when the language server attaches
-    on_attach = on_attach,
-  }
-end
-
-local lsp_installer = require("nvim-lsp-installer")
-
-lsp_installer.on_server_ready(function(server)
-    local opts = make_config()
-
-    -- (optional) Customize the options passed to the server
-    -- if server.name == "tsserver" then
-    --     opts.root_dir = function() ... end
-    -- end
-
-    -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
-    server:setup(opts)
-    vim.cmd [[ do User LspAttachBuffers ]]
-end)
+local servers = {
+  "bashls",
+  "diagnosticls",
+  "dockerls",
+  "golangci_lint_ls",
+  "gopls",
+  "jsonls",
+  "pyright",
+  "tailwindcss",
+  "terraformls",
+  "tflint",
+  "tsserver",
+  "vimls",
+  "yamlls",
+}
+require("nvim-lsp-installer").setup {
+  ensure_installed = lsps
+}
 
 -- Setup nvim-cmp.
 local cmp = require'cmp'
@@ -278,8 +231,20 @@ cmp.setup({
   },
   experimental = {
     native_menu = false,
-    -- ghost_text = true,
   },
 })
+
+-- Setup lspconfig.
+local lspconfig = require("lspconfig")
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+for _, lsp in pairs(servers) do
+  require('lspconfig')[lsp].setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+  }
+end
 
 EOF
