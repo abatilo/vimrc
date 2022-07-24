@@ -26,7 +26,8 @@ Plug 'tpope/vim-rhubarb'                                    " Jump to selected l
 Plug 'tpope/vim-surround'                                   " Manipulate surrounding text like wrapping or deleting quotes
 Plug 'vim-airline/vim-airline'                              " Nice to look at status line
 Plug 'wakatime/vim-wakatime'                                " Track my time
-Plug 'williamboman/nvim-lsp-installer'                      " Install LSP servers
+Plug 'williamboman/mason.nvim'                              " Install LSP servers
+Plug 'williamboman/mason-lspconfig.nvim'                    " For mason + lspconfig
 Plug 'lukas-reineke/lsp-format.nvim'                        " Format code on save
 
 Plug 'github/copilot.vim'
@@ -200,8 +201,10 @@ local servers = {
   "vimls",
   "yamlls",
 }
-require("nvim-lsp-installer").setup {
-  ensure_installed = lsps
+require("mason").setup {}
+require("mason-lspconfig").setup {
+  ensure_installed = servers,
+  automatic_installation = true
 }
 
 -- Setup nvim-cmp.
