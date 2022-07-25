@@ -41,13 +41,7 @@ OR
 brew cask install alacritty
 ```
 
-Install powerline fonts:
-```
-cd /tmp
-git clone https://github.com/powerline/fonts.git
-cd fonts
-./install.sh
-```
+Install [icon patched Inconsolate](https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Inconsolata.zip)
 
 Install asdf:
 https://github.com/ohmyzsh/ohmyzsh/tree/eb00b95d26e8f264af80f508d50ac32e50619027/plugins/asdf

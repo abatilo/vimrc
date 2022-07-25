@@ -10,10 +10,14 @@ require('packer').startup(function()
   use { 'wakatime/vim-wakatime' }       -- Track stats for wakatime.com
 
   -- Plugins that require .setup to be called
-  use { 'kylechui/nvim-surround' }                                   -- Manipulate around selected text
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }       -- Add language aware parsing
-  use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' } -- <leader>gy to put GitHub URL into clipboard
-
+  use { 'numToStr/Comment.nvim' }                                                                -- Comment helper
+  use { 'lewis6991/gitsigns.nvim', }                                                             -- Git gutter helper
+  use { 'kylechui/nvim-surround' }                                                               -- Manipulate around selected text
+  use { 'lukas-reineke/indent-blankline.nvim' }                                                  -- Indent markers
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }                                   -- Add language aware parsing
+  use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }                             -- <leader>gy to put GitHub URL into clipboard
+  use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } } -- Status line
+  use { 'kyazdani42/nvim-tree.lua', requires = { 'kyazdani42/nvim-web-devicons' } }              -- Tree file viewer
   use { 'ahmedkhalf/project.nvim' }                                                              -- Set project root
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = {{'nvim-lua/plenary.nvim'}} } -- Fuzzy finder
 
@@ -24,9 +28,13 @@ require('packer').startup(function()
   use { 'williamboman/mason-lspconfig.nvim' } -- For mason + lspconfig
 
   use { 'hrsh7th/nvim-cmp' }     -- Completion
+  use { 'hrsh7th/vim-vsnip' }    -- Snippet engine
+  use { 'hrsh7th/cmp-vsnip' }    -- Snippet completion
   use { 'hrsh7th/cmp-nvim-lsp' } -- Completion lsp source
   use { 'hrsh7th/cmp-buffer' }   -- Completion buffer source
   use { 'hrsh7th/cmp-path' }     -- Completion path source
+
+  use { 'github/copilot.vim' } -- GitHub Copilot completion
 end)
 
 -- Set colorscheme
@@ -67,6 +75,13 @@ vim.keymap.set('n', '<leader><CR>', '<cmd>nohlsearch<CR>')
 -- Keep long term undo history
 vim.opt.undofile = true
 
+-- Give more space for displaying messages.
+vim.opt.cmdheight = 2
+
+-- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+-- delays and poor user experience.
+vim.opt.updatetime = 50
+
 -- Move vertically by visual line.
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
@@ -86,7 +101,13 @@ vim.opt.foldlevel = 10
 
 -- Plugin configuration
 
+require('Comment').setup()
+require('gitsigns').setup()
 require('nvim-surround').setup()
+require('indent_blankline').setup({
+  show_current_context = true,
+  show_current_context_start = true,
+})
 
 require('nvim-treesitter.configs').setup({
   ensure_installed = 'all',
@@ -106,6 +127,9 @@ require('gitlinker').setup({
   mappings = "<leader>gy"
 })
 
+require('lualine').setup()
+vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeToggle<CR>')
+require('nvim-tree').setup()
 require('project_nvim').setup()
 
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
@@ -134,7 +158,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
-  require("lsp-format").on_attach(client)
+  require('lsp-format').on_attach(client)
 end
 
 local function config(_config)
@@ -159,3 +183,28 @@ require("mason-lspconfig").setup {
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup(config())
 end
+
+-- Setup nvim-cmp.
+local cmp = require'cmp'
+cmp.setup({
+  completion = {
+    completeopt = 'menu,menuone,noinsert',
+  },
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+    end,
+  },
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i','c'}),
+    ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i','c'}),
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+    { name = 'buffer', keyword_length = 4 },
+    { name = 'path' },
+  },
+})
