@@ -3,10 +3,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'Yggdroot/indentLine'                                  " Add indent guides
 Plug 'airblade/vim-gitgutter'                               " Show diff icons in gutter
 Plug 'airblade/vim-rooter'                                  " Set project root based on git directory
-Plug 'dracula/vim', { 'as': 'dracula' }                     " colorscheme
-Plug 'editorconfig/editorconfig-vim'                        " Set project specific formatting requirements
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }          " golang niceties
-Plug 'godlygeek/tabular'                                    " Make it easy to align columns
 Plug 'hrsh7th/cmp-buffer'                                   " Buffer based completion source
 Plug 'hrsh7th/cmp-calc'                                     " Replace math expressions with evaluated value
 Plug 'hrsh7th/cmp-nvim-lsp'                                 " Use the LSP client as a completion source
@@ -17,15 +14,10 @@ Plug 'hrsh7th/vim-vsnip'                                    " Snippet engine for
 Plug 'junegunn/fzf'                                         " Setup fzf
 Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
 Plug 'neovim/nvim-lspconfig'                                " Make built in lsp client configurable
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Add syntax tree parsing
 Plug 'preservim/nerdtree'                                   " Project tree view
 Plug 'rafamadriz/friendly-snippets'                         " Cross language collection of snippets
 Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
-Plug 'tpope/vim-fugitive'                                   " Integrate git into vim
-Plug 'tpope/vim-rhubarb'                                    " Jump to selected lines in GitHub
-Plug 'tpope/vim-surround'                                   " Manipulate surrounding text like wrapping or deleting quotes
 Plug 'vim-airline/vim-airline'                              " Nice to look at status line
-Plug 'wakatime/vim-wakatime'                                " Track my time
 Plug 'williamboman/mason.nvim'                              " Install LSP servers
 Plug 'williamboman/mason-lspconfig.nvim'                    " For mason + lspconfig
 Plug 'lukas-reineke/lsp-format.nvim'                        " Format code on save
@@ -53,12 +45,6 @@ set listchars=tab:\ \ ,extends:›,precedes:‹,nbsp:·,trail:·
 set backup
 set backupdir=/tmp
 set directory=/tmp
-
-" Let treesitter handle folding
-" https://github.com/nvim-treesitter/nvim-treesitter/tree/460a26ef3218057a544b3fd6697e979e6bad648d#available-modules
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
-set foldlevel=10
 
 " Open NERDTree
 noremap <C-n> :NERDTreeToggle<CR>

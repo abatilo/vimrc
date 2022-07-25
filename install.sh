@@ -11,6 +11,9 @@ ln -s "$PWD/.tool-versions" ~/.tool-versions
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 
+# Install a default global .editorconfig
+ln -s "$PWD/.editorconfig_global" ~/.editorconfig
+
 # Copy alacritty config
 mkdir -p ~/.config/alacritty/
 ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
