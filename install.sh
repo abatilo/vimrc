@@ -1,13 +1,9 @@
 # Delete old stuff
 rm -rf ~/.vimrc ~/.vim ~/.config/nvim ~/.local/share/nvim
 
-# For undo history
-mkdir -p ~/.vim/undo
-
 # Create nvim directory
-mkdir -p ~/.config/nvim
-ln -s "$PWD/.vimrc" ~/.vimrc
-ln -s "$PWD/.vimrc" ~/.config/nvim/init.vim
+mkdir -p ~/.config/
+ln -s "$PWD/nvim/" ~/.config/nvim
 
 # Link asdf global versions
 ln -s "$PWD/.tool-versions" ~/.tool-versions
@@ -15,20 +11,14 @@ ln -s "$PWD/.tool-versions" ~/.tool-versions
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 
-# Set a default global .gitignore
-ln -s "$PWD/.gitignore_global" ~/.gitignore
-
-# Install a default global .editorconfig
-ln -s "$PWD/.editorconfig_global" ~/.editorconfig
-
 # Copy alacritty config
 mkdir -p ~/.config/alacritty/
 ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
 
 # Install plugins
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-echo | nvim +PlugInstall +qall
+git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim \
+	|| echo "packer already cloned"
+echo | nvim +PackerSync +qall
 
 # Add an alias for opening a default session file
 
@@ -42,17 +32,13 @@ grep -q "export EDITOR=nvim" ~/.zshrc || echo "export EDITOR=nvim" >> ~/.zshrc
 grep -q "# Use ripgrep for fzf" ~/.zshrc || echo "# Use ripgrep for fzf" >> ~/.zshrc
 grep -q "export FZF_DEFAULT_COMMAND=" ~/.zshrc || echo "export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g \"!{.git,node_modules}/*\" 2> /dev/null'" >> ~/.zshrc
 grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' >> ~/.zshrc
-grep -q "ctrlp() { </dev/tty vim -c ProjectFiles }" ~/.zshrc || echo "ctrlp() { </dev/tty vim -c ProjectFiles }" >> ~/.zshrc
-grep -q "zle -N ctrlp" ~/.zshrc || echo "zle -N ctrlp" >> ~/.zshrc
-grep -q "bindkey \"^p\" ctrlp" ~/.zshrc || echo "bindkey \"^p\" ctrlp" >> ~/.zshrc
-grep -q "ctrlj() { </dev/tty vim -c ProjectFiles ~/abatilo/notes }" ~/.zshrc || echo "ctrlj() { </dev/tty vim -c ProjectFiles ~/abatilo/notes }" >> ~/.zshrc
-grep -q "zle -N ctrlj" ~/.zshrc || echo "zle -N ctrlj" >> ~/.zshrc
-grep -q "bindkey \"^j\" ctrlj" ~/.zshrc || echo "bindkey \"^j\" ctrlj" >> ~/.zshrc
 
 grep -q "# Set 'infinite' zsh history" ~/.zshrc || echo "# Set 'infinite' zsh history" >> ~/.zshrc
 grep -q "HISTFILE=~/.zsh_history" ~/.zshrc || echo "HISTFILE=~/.zsh_history" >> ~/.zshrc
 grep -q "HISTSIZE=999999999" ~/.zshrc || echo "HISTSIZE=999999999" >> ~/.zshrc
 grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >> ~/.zshrc
+grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >> ~/.zshrc
+
 
 echo "Install tmux then run the tmux.sh"
 

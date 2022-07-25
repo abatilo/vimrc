@@ -26,7 +26,7 @@ Install zsh:
 https://github.com/robbyrussell/oh-my-zsh/wiki/Installing-ZSH#install-and-set-up-zsh-as-default
 ```
 
-Install [oh-my-zsh]():
+Install [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh):
 ```
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 ```
@@ -48,6 +48,7 @@ git clone https://github.com/powerline/fonts.git
 cd fonts
 ./install.sh
 ```
+
 Install asdf:
 https://github.com/ohmyzsh/ohmyzsh/tree/eb00b95d26e8f264af80f508d50ac32e50619027/plugins/asdf
 

@@ -38,10 +38,6 @@ call plug#end()
 let g:python_host_prog = '~/.asdf/installs/python/2.7.16/bin/python'
 let g:python3_host_prog = '~/.asdf/installs/python/3.8.5/bin/python'
 
-let mapleader = "\<Space>"
-
-colorscheme dracula
-
 " Let us backspace on indents
 " http://vim.wikia.com/wiki/Backspace_and_delete_problems#Backspace_key_won.27t_move_from_current_line
 set backspace=indent,eol,start
@@ -49,37 +45,9 @@ set backspace=indent,eol,start
 " Custom indentLine character
 let g:indentLine_char = '|'
 
-" Line numbers
-set number
-set relativenumber
-
-" Set where splits will appear to
-set splitbelow
-set splitright
-
 " Display whitespace characters
 set list
 set listchars=tab:\ \ ,extends:›,precedes:‹,nbsp:·,trail:·
-
-" Store file history
-set undofile
-set undodir=~/.vim/undo
-
-" Highlight the matching character pair
-set showmatch
-
-" Highlight the current line
-set cursorline
-
-" Highlight while I type a search
-set incsearch
-
-" Keep searched text highligted
-set hlsearch
-nnoremap <leader><CR> :nohlsearch<CR>
-
-" Ignore casing in searches
-set ignorecase smartcase
 
 " Store temporary files in a central spot
 set backup
@@ -91,10 +59,6 @@ set directory=/tmp
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 set foldlevel=10
-
-" Move vertically by visual line
-nnoremap j gj
-nnoremap k gk
 
 " Open NERDTree
 noremap <C-n> :NERDTreeToggle<CR>
@@ -108,12 +72,6 @@ endfunction
 command! ProjectFiles execute 'Files' s:find_git_root()
 nnoremap <silent> <C-p> :<C-u>ProjectFiles<CR>
 
-" Easier than reaching for escape
-inoremap jk <Esc>
-
-" Simulate true colors
-set termguicolors
-
 " So that editorconfig plays nicely with fugitive
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*']
 
@@ -126,10 +84,6 @@ set updatetime=100
 
 " Exit insert mode while in the terminal
 tnoremap <Esc><Esc> <C-\><C-n>
-
-" Center the search results when jumping between results
-nnoremap n nzz
-nnoremap N Nzz
 
 " Highlight trailing whitespace like an error
 match errorMsg /\s\+$/
