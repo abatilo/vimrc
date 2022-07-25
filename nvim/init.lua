@@ -18,6 +18,8 @@ require('packer').startup(function()
   use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }                             -- <leader>gy to put GitHub URL into clipboard
   use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } } -- Status line
   use { 'kyazdani42/nvim-tree.lua', requires = { 'kyazdani42/nvim-web-devicons' } }              -- Tree file viewer
+
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }                               -- Telescope sorting and matching with fzf
   use { 'ahmedkhalf/project.nvim' }                                                              -- Set project root
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = {{'nvim-lua/plenary.nvim'}} } -- Fuzzy finder
 
@@ -136,6 +138,7 @@ vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('i', '<C-P>', '<cmd>Telescope git_files<CR>')
 vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
 require('telescope').setup()
+require('telescope').load_extension('fzf')
 
 require('lsp-format').setup()
 
@@ -169,8 +172,14 @@ local function config(_config)
 end
 
 local servers = {
+  "bashls",
   "diagnosticls",
+  "dockerls",
   "gopls",
+  "html",
+  "jsonls",
+  "pyright",
+  "tailwindcss",
   "terraformls",
   "tsserver",
   "yamlls",
