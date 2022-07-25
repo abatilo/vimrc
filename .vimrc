@@ -13,14 +13,10 @@ Plug 'hrsh7th/nvim-cmp'                                     " Auto complete plug
 Plug 'hrsh7th/vim-vsnip'                                    " Snippet engine for auto complete
 Plug 'junegunn/fzf'                                         " Setup fzf
 Plug 'junegunn/fzf.vim'                                     " Setup vim specific features with fzf
-Plug 'neovim/nvim-lspconfig'                                " Make built in lsp client configurable
 Plug 'preservim/nerdtree'                                   " Project tree view
 Plug 'rafamadriz/friendly-snippets'                         " Cross language collection of snippets
 Plug 'tpope/vim-commentary'                                 " Add bindings for commenting files
 Plug 'vim-airline/vim-airline'                              " Nice to look at status line
-Plug 'williamboman/mason.nvim'                              " Install LSP servers
-Plug 'williamboman/mason-lspconfig.nvim'                    " For mason + lspconfig
-Plug 'lukas-reineke/lsp-format.nvim'                        " Format code on save
 
 Plug 'github/copilot.vim'
 
@@ -85,68 +81,6 @@ smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 """
 
 lua << EOF
--- Configure treesitter to do parse tree based syntax highlighting and
--- indentation
-local ts = require 'nvim-treesitter.configs'
-ts.setup {
-  -- Install all maintained language parsers
-	ensure_installed = 'all',
-	highlight = {
-    enable = true
-  },
-	indent = {
-    enable = true
-  },
-}
-
--- Configure formatter on lsp
-require("lsp-format").setup {}
-
--- keymaps
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-
-  require("lsp-format").on_attach(client)
-end
-
-local servers = {
-  "bashls",
-  "diagnosticls",
-  "dockerls",
-  "golangci_lint_ls",
-  "gopls",
-  "jsonls",
-  "pyright",
-  "tailwindcss",
-  "terraformls",
-  "tflint",
-  "tsserver",
-  "vimls",
-  "yamlls",
-}
-require("mason").setup {}
-require("mason-lspconfig").setup {
-  ensure_installed = servers,
-  automatic_installation = true
-}
-
 -- Setup nvim-cmp.
 local cmp = require'cmp'
 
@@ -176,18 +110,5 @@ cmp.setup({
     native_menu = false,
   },
 })
-
--- Setup lspconfig.
-local lspconfig = require("lspconfig")
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-for _, lsp in pairs(servers) do
-  require('lspconfig')[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }
-end
 
 EOF

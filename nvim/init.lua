@@ -13,6 +13,20 @@ require('packer').startup(function()
   use { 'kylechui/nvim-surround' }                                   -- Manipulate around selected text
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }       -- Add language aware parsing
   use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' } -- <leader>gy to put GitHub URL into clipboard
+
+  use { 'ahmedkhalf/project.nvim' }                                                              -- Set project root
+  use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = {{'nvim-lua/plenary.nvim'}} } -- Fuzzy finder
+
+  use { 'neovim/nvim-lspconfig' }         -- Configure LSP
+  use { 'lukas-reineke/lsp-format.nvim' } -- Auto format code
+
+  use { 'williamboman/mason.nvim' }           -- Install LSP servers
+  use { 'williamboman/mason-lspconfig.nvim' } -- For mason + lspconfig
+
+  use { 'hrsh7th/nvim-cmp' }     -- Completion
+  use { 'hrsh7th/cmp-nvim-lsp' } -- Completion lsp source
+  use { 'hrsh7th/cmp-buffer' }   -- Completion buffer source
+  use { 'hrsh7th/cmp-path' }     -- Completion path source
 end)
 
 -- Set colorscheme
@@ -75,8 +89,7 @@ vim.opt.foldlevel = 10
 require('nvim-surround').setup()
 
 require('nvim-treesitter.configs').setup({
-  -- Lazily install treesitter parser when buffers are loaded
-  auto_install = true,
+  ensure_installed = 'all',
   highlight = {
     enable = true,
   },
@@ -92,3 +105,57 @@ require('gitlinker').setup({
   },
   mappings = "<leader>gy"
 })
+
+require('project_nvim').setup()
+
+vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
+vim.keymap.set('i', '<C-P>', '<cmd>Telescope git_files<CR>')
+vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
+require('telescope').setup()
+
+require('lsp-format').setup()
+
+-- keymaps
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+
+  require("lsp-format").on_attach(client)
+end
+
+local function config(_config)
+	return vim.tbl_deep_extend("force", {
+		capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+		on_attach = on_attach,
+	}, _config or {})
+end
+
+local servers = {
+  "diagnosticls",
+  "gopls",
+  "terraformls",
+  "tsserver",
+  "yamlls",
+}
+require("mason").setup {}
+require("mason-lspconfig").setup {
+  ensure_installed = servers,
+}
+
+for _, lsp in pairs(servers) do
+  require('lspconfig')[lsp].setup(config())
+end
