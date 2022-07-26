@@ -1,5 +1,16 @@
 # Delete old stuff
-rm -rf ~/.vimrc ~/.vim ~/.config/nvim ~/.local/share/nvim
+rm -rf \
+  ~/.config/alacritty/alacritty.yml \
+  ~/.config/nvim \
+  ~/.editorconfig \
+  ~/.gitconfig \
+  ~/.gitignore \
+  ~/.local/share/nvim \
+  ~/.tmux.conf \
+  ~/.tmux/ \
+  ~/.tool-versions \
+  ~/.vim \
+  ~/.vimrc
 
 # Create nvim directory
 mkdir -p ~/.config/
@@ -41,7 +52,6 @@ grep -q "HISTFILE=~/.zsh_history" ~/.zshrc || echo "HISTFILE=~/.zsh_history" >> 
 grep -q "HISTSIZE=999999999" ~/.zshrc || echo "HISTSIZE=999999999" >> ~/.zshrc
 grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >> ~/.zshrc
 grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >> ~/.zshrc
-
 
 echo "Install tmux then run the tmux.sh"
 
