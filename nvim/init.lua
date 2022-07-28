@@ -8,6 +8,7 @@ require('packer').startup(function()
   use { 'godlygeek/tabular' }           -- Make it easy to align text by column
   use { 'gpanders/editorconfig.nvim' }  -- .editorconfig file support
   use { 'wakatime/vim-wakatime' }       -- Track stats for wakatime.com
+  use { 'rhysd/git-messenger.vim' }     -- Git commit messages in popup
 
   -- Plugins that require .setup to be called
   use { 'numToStr/Comment.nvim' }                                                                -- Comment helper
@@ -135,6 +136,9 @@ require('nvim-tree').setup()
 require('project_nvim').setup()
 
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
+vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
+vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
+vim.keymap.set('n', '<leader>rg', '<cmd>Telescope live_grep<CR>')
 vim.keymap.set('i', '<C-P>', '<cmd>Telescope git_files<CR>')
 vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
 require('telescope').setup()
