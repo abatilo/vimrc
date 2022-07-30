@@ -40,6 +40,15 @@ require('packer').startup(function()
   use { 'williamboman/mason.nvim' }           -- Install LSP servers
   use { 'williamboman/mason-lspconfig.nvim' } -- For mason + lspconfig
 
+  use { -- GitHub UI within neovim
+    'pwntester/octo.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'kyazdani42/nvim-web-devicons',
+    }
+  }
+
   use { 'hrsh7th/nvim-cmp' }     -- Completion
   use { 'hrsh7th/vim-vsnip' }    -- Snippet engine
   use { 'hrsh7th/cmp-vsnip' }    -- Snippet completion
@@ -111,6 +120,9 @@ vim.keymap.set('n', 'N', 'Nzz')
 vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.foldlevel = 10
+
+-- Exit insert mode while in the terminal
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
 
 -- Plugin configuration
 
@@ -287,3 +299,5 @@ cmp.setup({
     { name = 'path' },
   },
 })
+
+require("octo").setup()
