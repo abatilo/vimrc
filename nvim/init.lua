@@ -29,6 +29,14 @@ require('packer').startup(function()
   use { 'lukas-reineke/lsp-format.nvim' }   -- Auto format code
   use { 'jose-elias-alvarez/null-ls.nvim' } -- Null language server for additional LSP config
 
+  use { -- treesitter based refactoring code actions
+    "ThePrimeagen/refactoring.nvim",
+    requires = {
+      {"nvim-lua/plenary.nvim"},
+      {"nvim-treesitter/nvim-treesitter"}
+    }
+  }
+
   use { 'williamboman/mason.nvim' }           -- Install LSP servers
   use { 'williamboman/mason-lspconfig.nvim' } -- For mason + lspconfig
 
@@ -39,7 +47,7 @@ require('packer').startup(function()
   use { 'hrsh7th/cmp-buffer' }   -- Completion buffer source
   use { 'hrsh7th/cmp-path' }     -- Completion path source
 
-  use { 'github/copilot.vim' } -- GitHub Copilot completion
+  use { 'github/copilot.vim' }  -- GitHub Copilot completion
 end)
 
 -- Set colorscheme
@@ -141,6 +149,7 @@ vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>rg', '<cmd>Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+vim.keymap.set('v', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 vim.keymap.set('i', '<C-P>', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<C-P>', '<cmd>Telescope find_files hidden=true<CR>')
 require('telescope').setup()
@@ -165,6 +174,17 @@ require("null-ls").setup({
   -- Available sources:
   -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/47c04991af80b6acdf08a5db057908b52f4d0699/doc/BUILTINS.md
   sources = {
+    -- General
+    require("null-ls").builtins.code_actions.refactoring,
+    require("null-ls").builtins.diagnostics.actionlint,
+    require("null-ls").builtins.diagnostics.gitlint,
+    require("null-ls").builtins.diagnostics.hadolint,
+    require("null-ls").builtins.diagnostics.trail_space,
+    require("null-ls").builtins.diagnostics.vale.with({
+      extra_filetypes = { "txt", "text" },
+      extra_args = { "--config="..os.getenv("HOME").."/.config/nvim/.vale.ini" },
+    }),
+
     -- Go
     require("null-ls").builtins.diagnostics.golangci_lint,
     require("null-ls").builtins.diagnostics.staticcheck,
