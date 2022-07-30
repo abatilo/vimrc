@@ -4,11 +4,12 @@ require('packer').startup(function()
   use { 'wbthomason/packer.nvim' } -- Packer can manage itself
 
   -- No .setup() needed
-  use { 'dracula/vim', as = 'dracula' } -- Color scheme
-  use { 'godlygeek/tabular' }           -- Make it easy to align text by column
-  use { 'gpanders/editorconfig.nvim' }  -- .editorconfig file support
-  use { 'wakatime/vim-wakatime' }       -- Track stats for wakatime.com
-  use { 'rhysd/git-messenger.vim' }     -- Git commit messages in popup
+  use { 'dracula/vim', as = 'dracula' }              -- Color scheme
+  use { 'godlygeek/tabular' }                        -- Make it easy to align text by column
+  use { 'gpanders/editorconfig.nvim' }               -- .editorconfig file support
+  use { 'wakatime/vim-wakatime' }                    -- Track stats for wakatime.com
+  use { 'rhysd/git-messenger.vim' }                  -- Git commit messages in popup
+  use { 'fatih/vim-go', run = ":GoInstallBinaries" } -- Go support
 
   -- Plugins that require .setup to be called
   use { 'numToStr/Comment.nvim' }                                                                -- Comment helper
@@ -24,8 +25,9 @@ require('packer').startup(function()
   use { 'ahmedkhalf/project.nvim' }                                                              -- Set project root
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = {{'nvim-lua/plenary.nvim'}} } -- Fuzzy finder
 
-  use { 'neovim/nvim-lspconfig' }         -- Configure LSP
-  use { 'lukas-reineke/lsp-format.nvim' } -- Auto format code
+  use { 'neovim/nvim-lspconfig' }           -- Configure LSP
+  use { 'lukas-reineke/lsp-format.nvim' }   -- Auto format code
+  use { 'jose-elias-alvarez/null-ls.nvim' } -- Null language server for additional LSP config
 
   use { 'williamboman/mason.nvim' }           -- Install LSP servers
   use { 'williamboman/mason-lspconfig.nvim' } -- For mason + lspconfig
@@ -144,7 +146,46 @@ vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
 require('telescope').setup()
 require('telescope').load_extension('fzf')
 
-require('lsp-format').setup()
+require('lsp-format').setup({
+  sync = true,
+})
+
+local lsp_formatting = function(bufnr)
+  -- vim.lsp.buf.format is only available in 0.8.0+ which at time of writing is
+  -- not released yet. Install from asdf-neovim nightly
+  vim.lsp.buf.format({
+    filter = function(client)
+      -- Only format using null-ls instead of built in LSP formatter
+      return client.name == "null-ls"
+    end,
+    bufnr = bufnr,
+  })
+end
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+require("null-ls").setup({
+  -- Available sources:
+  -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/47c04991af80b6acdf08a5db057908b52f4d0699/doc/BUILTINS.md
+  sources = {
+    require("null-ls").builtins.diagnostics.golangci_lint,
+    require("null-ls").builtins.diagnostics.staticcheck,
+    require("null-ls").builtins.formatting.gofumpt,
+    require("null-ls").builtins.formatting.goimports,
+    require("null-ls").builtins.formatting.golines,
+  },
+  -- you can reuse a shared lspconfig on_attach callback here
+  on_attach = function(client, bufnr)
+    if client.supports_method("textDocument/formatting") then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          lsp_formatting(bufnr)
+        end,
+      })
+    end
+  end,
+})
 
 -- keymaps
 local on_attach = function(client, bufnr)
