@@ -165,11 +165,17 @@ require("null-ls").setup({
   -- Available sources:
   -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/47c04991af80b6acdf08a5db057908b52f4d0699/doc/BUILTINS.md
   sources = {
+    -- Go
     require("null-ls").builtins.diagnostics.golangci_lint,
     require("null-ls").builtins.diagnostics.staticcheck,
     require("null-ls").builtins.formatting.gofumpt,
     require("null-ls").builtins.formatting.goimports,
     require("null-ls").builtins.formatting.golines,
+
+    -- Python
+    require("null-ls").builtins.diagnostics.mypy,
+    require("null-ls").builtins.formatting.black,
+    require("null-ls").builtins.formatting.isort,
   },
   -- you can reuse a shared lspconfig on_attach callback here
   on_attach = function(client, bufnr)
