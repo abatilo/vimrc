@@ -20,9 +20,9 @@ require('packer').startup(function()
   use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }                             -- <leader>gy to put GitHub URL into clipboard
   use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } } -- Status line
   use { 'kyazdani42/nvim-tree.lua', requires = { 'kyazdani42/nvim-web-devicons' } }              -- Tree file viewer
-
-  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }                               -- Telescope sorting and matching with fzf
   use { 'ahmedkhalf/project.nvim' }                                                              -- Set project root
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }                               -- Telescope sorting and matching with fzf
+  use {'nvim-telescope/telescope-ui-select.nvim' }                                               -- Replace native vim select UI with telescope's
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = {{'nvim-lua/plenary.nvim'}} } -- Fuzzy finder
 
   use { 'neovim/nvim-lspconfig' }           -- Configure LSP
@@ -139,16 +139,15 @@ require('project_nvim').setup()
 
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
-vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>rg', '<cmd>Telescope live_grep<CR>')
-vim.keymap.set('i', '<C-P>', '<cmd>Telescope git_files<CR>')
-vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
+vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+vim.keymap.set('i', '<C-P>', '<cmd>Telescope find_files hidden=true<CR>')
+vim.keymap.set('n', '<C-P>', '<cmd>Telescope find_files hidden=true<CR>')
 require('telescope').setup()
 require('telescope').load_extension('fzf')
+require("telescope").load_extension("ui-select")
 
-require('lsp-format').setup({
-  sync = true,
-})
+require('lsp-format').setup({})
 
 local lsp_formatting = function(bufnr)
   -- vim.lsp.buf.format is only available in 0.8.0+ which at time of writing is
