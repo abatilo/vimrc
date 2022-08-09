@@ -38,7 +38,7 @@ sudo apt-get install -yq alacritty
 
 OR
 
-brew cask install alacritty
+brew install --cask alacritty
 ```
 
 Install [icon patched Inconsolate](https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Inconsolata.zip)
