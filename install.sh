@@ -16,9 +16,6 @@ rm -rf \
 mkdir -p ~/.config/
 ln -s "$PWD/nvim/" ~/.config/nvim
 
-# Link asdf global versions
-ln -s "$PWD/.tool-versions" ~/.tool-versions
-
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 
