@@ -48,7 +48,7 @@ grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'exp
 
 grep -q "# Set 'infinite' zsh history" ~/.zshrc || echo "# Set 'infinite' zsh history" >> ~/.zshrc
 grep -q "HISTFILE=~/.zsh_history" ~/.zshrc || echo "HISTFILE=~/.zsh_history" >> ~/.zshrc
-grep -q "HISTSIZE=999999999" ~/.zshrc || echo "HISTSIZE=999999999" >> ~/.zshrc
+grep -q "HISTSIZE=100000" ~/.zshrc || echo "HISTSIZE=100000" >> ~/.zshrc
 grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >> ~/.zshrc
 grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >> ~/.zshrc
 
