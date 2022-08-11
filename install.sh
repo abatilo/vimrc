@@ -29,9 +29,11 @@ ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
 # Install plugins
 git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim \
 	|| echo "packer already cloned"
-echo | nvim +PackerSync +qall
 
-# Add an alias for opening a default session file
+# This doesn't install everything like it did with the previous plugin manager,
+# plus it seems normal that the Sync will fail a few times while things are
+# installed. It might be because of interdependencies?
+# echo | nvim +PackerSync +qall
 
 echo "" >> ~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
