@@ -52,6 +52,9 @@ grep -q "HISTSIZE=100000" ~/.zshrc || echo "HISTSIZE=100000" >> ~/.zshrc
 grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >> ~/.zshrc
 grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >> ~/.zshrc
 
+grep -q "octo()" ~/.zshrc || echo "octo() { vim -c \"Octo pr edit \$1\" }" >> ~/.zshrc
+grep -q "export PAGER=" ~/.zshrc || echo "export PAGER=" >> ~/.zshrc
+
 echo "Install tmux then run the tmux.sh"
 
 # Too lazy to document this right now
