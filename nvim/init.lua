@@ -20,7 +20,7 @@ require('packer').startup(function()
   use { 'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim' }                             -- <leader>gy to put GitHub URL into clipboard
   use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } } -- Status line
   use { 'kyazdani42/nvim-tree.lua', requires = { 'kyazdani42/nvim-web-devicons' } }              -- Tree file viewer
-  use { 'ahmedkhalf/project.nvim' }                                                              -- Set project root
+  use { 'airblade/vim-rooter' }                                                                  -- Set project root
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }                               -- Telescope sorting and matching with fzf
   use {'nvim-telescope/telescope-ui-select.nvim' }                                               -- Replace native vim select UI with telescope's
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = {{'nvim-lua/plenary.nvim'}} } -- Fuzzy finder
@@ -155,9 +155,9 @@ require('gitlinker').setup({
 require('lualine').setup()
 vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeToggle<CR>')
 require('nvim-tree').setup()
-require('project_nvim').setup()
 
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
+vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>rg', '<cmd>Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
