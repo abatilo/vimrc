@@ -37,8 +37,9 @@ require('packer').startup(function()
     }
   }
 
-  use { 'williamboman/mason.nvim' }           -- Install LSP servers
-  use { 'williamboman/mason-lspconfig.nvim' } -- For mason + lspconfig
+  use { 'williamboman/mason.nvim' }                   -- Install LSP servers
+  use { 'williamboman/mason-lspconfig.nvim' }         -- For mason + lspconfig
+  use { 'WhoIsSethDaniel/mason-tool-installer.nvim' } -- For declaratively installing mason tools
 
   use { -- GitHub UI within neovim
     'pwntester/octo.nvim',
@@ -266,9 +267,40 @@ local servers = {
   "tsserver",
   "yamlls",
 }
+
+local mason_tools = {
+  "actionlint",
+  "bash-language-server",
+  "black",
+  "diagnostic-languageserver",
+  "dockerfile-language-server",
+  "gitlint",
+  "gofumpt",
+  "golangci-lint",
+  "golines",
+  "gopls",
+  "hadolint",
+  "html-lsp",
+  "isort",
+  "json-lsp",
+  "mypy",
+  "pyright",
+  "sqlfluff",
+  "staticcheck",
+  "tailwindcss-language-server",
+  "terraform-ls",
+  "typescript-language-server",
+  "vale",
+  "vim-language-server",
+  "yaml-language-server",
+}
+
 require("mason").setup {}
 require("mason-lspconfig").setup {
   ensure_installed = servers,
+}
+require("mason-tool-installer").setup {
+  ensure_installed = mason_tools,
 }
 
 for _, lsp in pairs(servers) do
