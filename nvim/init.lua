@@ -6,7 +6,7 @@ require('packer').startup(function()
   -- No .setup() needed
   use { 'dracula/vim', as = 'dracula' }              -- Color scheme
   use { 'godlygeek/tabular' }                        -- Make it easy to align text by column
-  use { 'gpanders/editorconfig.nvim' }               -- .editorconfig file support
+  use { 'editorconfig/editorconfig-vim' }            -- .editorconfig file support
   use { 'wakatime/vim-wakatime' }                    -- Track stats for wakatime.com
   use { 'rhysd/git-messenger.vim' }                  -- Git commit messages in popup
   use { 'fatih/vim-go', run = ":GoInstallBinaries" } -- Go support
@@ -193,10 +193,6 @@ require("null-ls").setup({
     require("null-ls").builtins.diagnostics.gitlint,
     require("null-ls").builtins.diagnostics.hadolint,
     require("null-ls").builtins.diagnostics.trail_space,
-    require("null-ls").builtins.diagnostics.vale.with({
-      extra_filetypes = { "txt", "text" },
-      extra_args = { "--config="..os.getenv("HOME").."/.config/nvim/.vale.ini" },
-    }),
 
     -- Go
     require("null-ls").builtins.diagnostics.golangci_lint,
@@ -290,7 +286,6 @@ local mason_tools = {
   "tailwindcss-language-server",
   "terraform-ls",
   "typescript-language-server",
-  "vale",
   "vim-language-server",
   "yaml-language-server",
 }
