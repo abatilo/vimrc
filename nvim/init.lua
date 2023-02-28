@@ -41,6 +41,7 @@ require('packer').startup(function()
   use { 'williamboman/mason-lspconfig.nvim' }         -- For mason + lspconfig
   use { 'WhoIsSethDaniel/mason-tool-installer.nvim' } -- For declaratively installing mason tools
 
+  use { 'kyazdani42/nvim-web-devicons' } -- Icons
   use { -- GitHub UI within neovim
     'pwntester/octo.nvim',
     requires = {
@@ -281,7 +282,6 @@ local mason_tools = {
   "json-lsp",
   "mypy",
   "pyright",
-  "sqlfluff",
   "staticcheck",
   "tailwindcss-language-server",
   "terraform-ls",
