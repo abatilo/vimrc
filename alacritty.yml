@@ -4,9 +4,6 @@ font:
   normal:
     family: "Inconsolata Nerd Font Mono"
 
-  # Thin stroke font rendering (macOS only)
-  use_thin_strokes: true
-
 # Live config reload (changes require restart)
 live_config_reload: true
 
