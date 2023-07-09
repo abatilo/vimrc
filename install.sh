@@ -24,7 +24,7 @@ ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 
 # Copy alacritty config
 mkdir -p ~/.config/alacritty/
-ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
+ln -s "$PWD/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
 # Install plugins
 git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim \
