@@ -131,10 +131,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
 require('Comment').setup()
 require('gitsigns').setup()
 require('nvim-surround').setup()
-require('ibl').setup({
-  show_current_context = true,
-  show_current_context_start = true,
-})
+require('ibl').setup()
 
 require('nvim-treesitter.configs').setup({
   ensure_installed = 'all',
