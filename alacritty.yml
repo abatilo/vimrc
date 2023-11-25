@@ -1,6 +1,6 @@
 # Font configuration (changes require restart)
 font:
-  size: 28
+  size: 26
   normal:
     family: "Inconsolata Nerd Font Mono"
 
