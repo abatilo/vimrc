@@ -49,6 +49,12 @@ https://github.com/ohmyzsh/ohmyzsh/tree/eb00b95d26e8f264af80f508d50ac32e50619027
 Install fzf:
 https://github.com/junegunn/fzf/tree/a0b42e6538092dc6dea9f918a7a74c9408e44d4c#using-git
 
+## MacOS Only
+Disable font smoothing so that your letters stop looking as fat:
+```
+defaults -currentHost write -g AppleFontSmoothing -int 0
+```
+
 ## Setup
 Run the following command:
 `./install.sh`
