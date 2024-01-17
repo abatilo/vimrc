@@ -29,14 +29,6 @@ require('packer').startup(function()
   use { 'lukas-reineke/lsp-format.nvim' }   -- Auto format code
   use { 'jose-elias-alvarez/null-ls.nvim' } -- Null language server for additional LSP config
 
-  use { -- treesitter based refactoring code actions
-    "ThePrimeagen/refactoring.nvim",
-    requires = {
-      {"nvim-lua/plenary.nvim"},
-      {"nvim-treesitter/nvim-treesitter"}
-    }
-  }
-
   use { 'williamboman/mason.nvim' }                   -- Install LSP servers
   use { 'williamboman/mason-lspconfig.nvim' }         -- For mason + lspconfig
   use { 'WhoIsSethDaniel/mason-tool-installer.nvim' } -- For declaratively installing mason tools
@@ -186,7 +178,6 @@ require("null-ls").setup({
   -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/47c04991af80b6acdf08a5db057908b52f4d0699/doc/BUILTINS.md
   sources = {
     -- General
-    require("null-ls").builtins.code_actions.refactoring,
     require("null-ls").builtins.diagnostics.actionlint,
     require("null-ls").builtins.diagnostics.gitlint,
     require("null-ls").builtins.diagnostics.hadolint,
