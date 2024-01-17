@@ -28,15 +28,6 @@ ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
 # Version 0.13 and later uses a toml file
 ln -s "$PWD/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
-# Install plugins
-git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim \
-	|| echo "packer already cloned"
-
-# This doesn't install everything like it did with the previous plugin manager,
-# plus it seems normal that the Sync will fail a few times while things are
-# installed. It might be because of interdependencies?
-# echo | nvim +PackerSync +qall
-
 echo "" >> ~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
 grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >> ~/.zshrc
