@@ -16,8 +16,7 @@ vim.g.mapleader = " "
 
 require("lazy").setup({
   { -- Color scheme
-    'dracula/vim',
-    name='dracula',
+    dir="~/.config/nvim/dracula_pro",
   },
   { -- Make it easy to align text by column
     'godlygeek/tabular',
@@ -340,7 +339,7 @@ require("lazy").setup({
 })
 
 -- Set colorscheme
-vim.cmd("colorscheme dracula")
+vim.cmd("colorscheme dracula_pro")
 
 -- Line numbers
 vim.opt.number = true

@@ -25,8 +25,8 @@ ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 # Copy alacritty config
 mkdir -p ~/.config/alacritty/
 ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
-# Version 0.13 and later uses a toml file
-ln -s "$PWD/alacritty.toml" ~/.config/alacritty/alacritty.toml
+
+git clone https://github.com/abatilo/dracula_pro.git ~/.config/nvim/dracula_pro
 
 echo "" >> ~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
