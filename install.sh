@@ -25,12 +25,8 @@ ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 # Copy alacritty config
 mkdir -p ~/.config/alacritty/
 ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
-
-# Install zsh theme
-mkdir -p ~/.oh-my-zsh/themes/
-ln -s "$PWD/modified-dracula-pro.zsh-theme" ~/.oh-my-zsh/themes/dracula-pro.zsh-theme
-
-git clone https://github.com/abatilo/dracula_pro.git ~/.config/nvim/dracula_pro
+# Version 0.13 and later uses a toml file
+ln -s "$PWD/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
 echo "" >> ~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >> ~/.zshrc
