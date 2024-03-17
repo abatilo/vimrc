@@ -319,6 +319,7 @@ require("lazy").setup({
         "pyright",
         "staticcheck",
         "tailwindcss-language-server",
+        "templ",
         "terraform-ls",
         "typescript-language-server",
         "vim-language-server",
@@ -348,6 +349,7 @@ require("lazy").setup({
 
 -- Set colorscheme
 vim.cmd("colorscheme dracula")
+vim.filetype.add({ extension = { templ = "templ" } })
 
 -- Line numbers
 vim.opt.number = true
