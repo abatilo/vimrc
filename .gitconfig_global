@@ -14,8 +14,10 @@
 [init]
 	defaultBranch = main
 [credential "https://github.com"]
+	helper =
 	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
+	helper =
 	helper = !gh auth git-credential
 [pull]
 	rebase = true
@@ -28,6 +30,10 @@
 	verbose = true
 [rebase]
 	rebase = true
+	updateRefs = true
 
 [includeIf "gitdir:~/work/"]
   path = ~/.work.gitconfig
+
+[includeIf "gitdir:~/inflectionai/"]
+  path = ~/.inflectionai.gitconfig
