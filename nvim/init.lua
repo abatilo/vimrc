@@ -173,7 +173,6 @@ require("lazy").setup({
           require("null-ls").builtins.formatting.golines,
 
           -- Python
-          require("null-ls").builtins.diagnostics.mypy,
           require("null-ls").builtins.formatting.black,
           require("null-ls").builtins.formatting.isort,
         },
@@ -318,7 +317,6 @@ require("lazy").setup({
         "htmx-lsp",
         "isort",
         "json-lsp",
-        "mypy",
         "pyright",
         "staticcheck",
         "tailwindcss-language-server",
