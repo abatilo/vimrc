@@ -38,12 +38,6 @@ require("lazy").setup({
     'fatih/vim-go',
     build=":GoInstallBinaries",
   },
-  { -- Comment helper
-    'numToStr/Comment.nvim',
-    config = function()
-      require('Comment').setup()
-    end
-  },
   { -- Git gutter helper
     'lewis6991/gitsigns.nvim',
     config = function()
