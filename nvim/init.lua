@@ -240,6 +240,7 @@ require("lazy").setup({
         "jsonls",
         "pyright",
         "templ",
+        "rust_analyzer",
         "tailwindcss",
         "terraformls",
         "tsserver",
