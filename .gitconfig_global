@@ -37,3 +37,5 @@
 
 [includeIf "gitdir:~/inflectionai/"]
   path = ~/.inflectionai.gitconfig
+[submodule]
+	recurse = true
