@@ -135,7 +135,7 @@ require("lazy").setup({
     end
   },
   { -- Null language server for additional LSP config
-    'jose-elias-alvarez/null-ls.nvim',
+    'nvimtools/none-ls.nvim',
     config = function()
       local lsp_formatting = function(bufnr)
         -- vim.lsp.buf.format is only available in 0.8.0+ which at time of writing is
