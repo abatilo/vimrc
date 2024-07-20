@@ -1,0 +1,32 @@
+{
+  "Class": {
+    "prefix": [
+      "pod"
+    ],
+    "body": [
+      "---",
+      "apiVersion: v1",
+      "kind: Pod",
+      "metadata:",
+      "\tname: ${1:pod-name}",
+      "spec:",
+      "\trestartPolicy: Never",
+      "\tcontainers:",
+      "\t- name: ${1}",
+      "\t\timage: \"${2:ubuntu:22.04}\"",
+      "\t\tcommand: [\"/bin/bash\"]",
+      "\t\targs:",
+      "\t\t- \"-c\"",
+      "\t\t- |",
+      "\t\t\t${3:tail -f /dev/null}",
+      "\t\tresources:",
+      "\t\t\trequests:",
+      "\t\t\t\tcpu: \"1\"",
+      "\t\t\t\tmemory: \"1Gi\"",
+      "\t\t\tlimits:",
+      "\t\t\t\tcpu: \"1\"",
+      "\t\t\t\tmemory: \"1Gi\""
+    ],
+    "description": "A simple Kubernetes pod"
+  }
+}

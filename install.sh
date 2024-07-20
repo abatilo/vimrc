@@ -16,6 +16,8 @@ rm -rf \
 mkdir -p ~/.config/
 ln -s "$PWD/nvim/" ~/.config/nvim
 
+ln -s "$PWD/.vsnip/" ~/.vsnip
+
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 
