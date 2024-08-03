@@ -345,6 +345,9 @@ require("lazy").setup({
   },
 })
 
+-- Decide where the root of a project is
+vim.g.rooter_patterns = {'.git'}
+
 -- Set colorscheme
 vim.cmd("colorscheme dracula")
 vim.filetype.add({ extension = { templ = "templ" } })
