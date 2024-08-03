@@ -270,6 +270,7 @@ require("lazy").setup({
           ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i','c'}),
         },
         sources = {
+          { name = "copilot" },
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
           { name = 'buffer', keyword_length = 4 },
@@ -341,8 +342,21 @@ require("lazy").setup({
     end
   },
   { -- GitHub Copilot completion
-    'github/copilot.vim'
+    'zbirenbaum/copilot.lua',
+    event = "VeryLazy",
+    config = function()
+      require('copilot').setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      })
+    end
   },
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function ()
+      require("copilot_cmp").setup()
+    end
+  }
 })
 
 -- Decide where the root of a project is
