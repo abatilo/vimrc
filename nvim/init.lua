@@ -312,6 +312,7 @@ require("lazy").setup({
         "pyright",
         "staticcheck",
         "tailwindcss-language-server",
+        "templ",
         "terraform-ls",
         "typescript-language-server",
         "vim-language-server",
