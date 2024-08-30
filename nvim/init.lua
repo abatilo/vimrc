@@ -344,10 +344,26 @@ require("lazy").setup({
     end,
   },
   {
-    "zbirenbaum/copilot-cmp",
-    config = function ()
-      require("copilot_cmp").setup()
-    end
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    build = "make",
+    opts = {
+      -- add any opts here
+    },
+    dependencies = {
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below is optional, make sure to setup it properly if you have lazy=true
+      {
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
   }
 })
 
@@ -396,6 +412,12 @@ vim.opt.cmdheight = 2
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
 vim.opt.updatetime = 50
+
+-- views can only be fully collapsed with the global statusline
+vim.opt.laststatus = 3
+-- Default splitting will cause your main splits to jump when opening an edgebar.
+-- To prevent this, set `splitkeep` to either `screen` or `topline`.
+vim.opt.splitkeep = "screen"
 
 -- Move vertically by visual line.
 vim.keymap.set('n', 'j', 'gj')
