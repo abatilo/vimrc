@@ -267,7 +267,7 @@ require("lazy").setup({
           ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i','c'}),
         },
         sources = {
-          { name = "copilot" },
+          { name = 'supermaven' },
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
           { name = 'buffer', keyword_length = 4 },
@@ -336,15 +336,11 @@ require("lazy").setup({
       })
     end
   },
-  { -- GitHub Copilot completion
-    'zbirenbaum/copilot.lua',
-    event = "VeryLazy",
+  {
+    "supermaven-inc/supermaven-nvim",
     config = function()
-      require('copilot').setup({
-        suggestion = { enabled = false },
-        panel = { enabled = false },
-      })
-    end
+      require("supermaven-nvim").setup({})
+    end,
   },
   {
     "zbirenbaum/copilot-cmp",
