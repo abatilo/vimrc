@@ -16,8 +16,7 @@ vim.g.mapleader = " "
 
 require("lazy").setup({
   { -- Color scheme
-    'dracula/vim',
-    name='dracula',
+    'Mofiqul/dracula.nvim',
   },
   { -- Make it easy to align text by column
     'godlygeek/tabular',
@@ -221,7 +220,7 @@ require("lazy").setup({
         return vim.tbl_deep_extend("force", {
           capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
           on_attach = on_attach,
-          }, _config or {})
+        }, _config or {})
       end
 
       local servers = {
@@ -312,7 +311,6 @@ require("lazy").setup({
         "pyright",
         "staticcheck",
         "tailwindcss-language-server",
-        "templ",
         "terraform-ls",
         "typescript-language-server",
         "vim-language-server",
@@ -344,47 +342,57 @@ require("lazy").setup({
     end,
   },
   {
-  "yetone/avante.nvim",
-  event = "VeryLazy",
-  lazy = false,
-  opts = {
-    -- add any opts here
-  },
-  build = ":AvanteBuild", -- This is optional, recommended tho. Also note that this will block the startup for a bit since we are compiling bindings in Rust.
-  dependencies = {
-    "stevearc/dressing.nvim",
-    "nvim-lua/plenary.nvim",
-    "MunifTanjim/nui.nvim",
-    --- The below dependencies are optional,
-    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-    "zbirenbaum/copilot.lua", -- for providers='copilot'
-    {
-      -- support for image pasting
-      "HakonHarnes/img-clip.nvim",
-      event = "VeryLazy",
-      opts = {
-        -- recommended settings
-        default = {
-          embed_image_as_base64 = false,
-          prompt_for_file_name = false,
-          drag_and_drop = {
-            insert_mode = true,
-          },
-          -- required for Windows users
-          use_absolute_path = true,
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    lazy = false,
+    version = false, -- set this if you want to always pull the latest change
+    opts = {
+      -- add any opts here
+      highlights = {
+        ---@type AvanteConflictHighlights
+        diff = {
+          current = "DiffText",
+          incoming = "DiffAdd",
         },
       },
     },
-    {
-      -- Make sure to setup it properly if you have lazy=true
-      'MeanderingProgrammer/render-markdown.nvim',
-      opts = {
-        file_types = { "markdown", "Avante" },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
       },
-      ft = { "markdown", "Avante" },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
     },
-  },
-}
+  }
 })
 
 -- Decide where the root of a project is
@@ -392,7 +400,6 @@ vim.g.rooter_patterns = {'.git'}
 
 -- Set colorscheme
 vim.cmd("colorscheme dracula")
-vim.filetype.add({ extension = { templ = "templ" } })
 
 -- Line numbers
 vim.opt.number = true
