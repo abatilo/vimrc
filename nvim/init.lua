@@ -27,9 +27,6 @@ require("lazy").setup({
   { -- Track stats for wakatime.com
     'wakatime/vim-wakatime',
   },
-  { -- Git commit messages in popup
-    'rhysd/git-messenger.vim',
-  },
   { -- Set project root
     'airblade/vim-rooter',
   },
@@ -61,7 +58,59 @@ require("lazy").setup({
     config = function()
       require('nvim-treesitter.configs').setup(
         {
-          ensure_installed = 'all',
+          ensure_installed = {
+            "bash",
+            "c",
+            "c_sharp",
+            "comment",
+            "cpp",
+            "css",
+            "csv",
+            "diff",
+            "dockerfile",
+            "editorconfig",
+            "git_config",
+            "git_rebase",
+            "gitattributes",
+            "gitcommit",
+            "gitignore",
+            "go",
+            "go",
+            "gomod",
+            "gosum",
+            "gotmpl",
+            "gowork",
+            "hcl",
+            "helm",
+            "hjson",
+            "html",
+            "http",
+            "javascript",
+            "jq",
+            "json",
+            "json5",
+            "lua",
+            "make",
+            "markdown",
+            "markdown_inline",
+            "nginx",
+            "proto",
+            "python",
+            "regex",
+            "requirements",
+            "rust",
+            "sql",
+            "ssh_config",
+            "starlark",
+            "terraform",
+            "tmux",
+            "toml",
+            "tsv",
+            "tsx",
+            "typescript",
+            "xml",
+            "yaml",
+          },
           sync_install = true,
           highlight = {
             enable = true,
@@ -119,13 +168,6 @@ require("lazy").setup({
   },
   { -- Configure LSP
     'neovim/nvim-lspconfig'
-  },
-  { -- Show LSP signature in popup
-    "ray-x/lsp_signature.nvim",
-    event = "VeryLazy",
-    config = function()
-      require('lsp_signature').setup()
-    end
   },
   { -- Auto format code
     'lukas-reineke/lsp-format.nvim',
@@ -228,11 +270,15 @@ require("lazy").setup({
         "diagnosticls",
         "dockerls",
         "gopls",
+        "helm_ls",
         "html",
         "jsonls",
         "pyright",
+        "rust_analyzer",
+        "sqls",
         "tailwindcss",
         "terraformls",
+        "tflint",
         "ts_ls",
         "yamlls",
       }
@@ -309,9 +355,13 @@ require("lazy").setup({
         "isort",
         "json-lsp",
         "pyright",
+        "shellcheck",
+        "shfmt",
+        "sql-formatter",
         "staticcheck",
         "tailwindcss-language-server",
         "terraform-ls",
+        "tfsec",
         "typescript-language-server",
         "vim-language-server",
         "yaml-language-server",
@@ -346,16 +396,6 @@ require("lazy").setup({
     event = "VeryLazy",
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
-    opts = {
-      -- add any opts here
-      highlights = {
-        ---@type AvanteConflictHighlights
-        diff = {
-          current = "DiffText",
-          incoming = "DiffAdd",
-        },
-      },
-    },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
@@ -365,23 +405,10 @@ require("lazy").setup({
       "MunifTanjim/nui.nvim",
       --- The below dependencies are optional,
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
       {
         -- support for image pasting
         "HakonHarnes/img-clip.nvim",
         event = "VeryLazy",
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
       },
       {
         -- Make sure to set this up properly if you have lazy=true
@@ -465,9 +492,7 @@ vim.opt.foldlevel = 10
 
 -- Exit insert mode while in the terminal
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
-
 vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeToggle<CR>')
-
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
