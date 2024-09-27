@@ -396,6 +396,12 @@ require("lazy").setup({
     event = "VeryLazy",
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
+    opts = {
+      provider = "claude",
+      openai = {
+        model = "o1-mini",
+      },
+    },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
@@ -405,11 +411,6 @@ require("lazy").setup({
       "MunifTanjim/nui.nvim",
       --- The below dependencies are optional,
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      {
-        -- support for image pasting
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-      },
       {
         -- Make sure to set this up properly if you have lazy=true
         'MeanderingProgrammer/render-markdown.nvim',
@@ -421,6 +422,11 @@ require("lazy").setup({
     },
   }
 })
+
+vim.keymap.set('n', '<leader>ac', '<cmd>AvanteSwitchProvider claude<CR>')
+vim.keymap.set('i', '<leader>ac', '<cmd>AvanteSwitchProvider claude<CR>')
+vim.keymap.set('n', '<leader>ao', '<cmd>AvanteSwitchProvider openai<CR>')
+vim.keymap.set('i', '<leader>ao', '<cmd>AvanteSwitchProvider openai<CR>')
 
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
@@ -492,7 +498,9 @@ vim.opt.foldlevel = 10
 
 -- Exit insert mode while in the terminal
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
+
 vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeToggle<CR>')
+
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
