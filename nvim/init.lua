@@ -401,6 +401,37 @@ require("lazy").setup({
       openai = {
         model = "o1-mini",
       },
+      vendors = {
+      ---@type AvanteProvider
+      deepseek = {
+        endpoint = "https://deepseek.33ca82-shanks.coreweave.app/v1/chat/completions",
+        model = "deepseek-coder",
+        api_key_name = "DEEPSEEK_API_KEY",
+        parse_curl_args = function(opts, code_opts)
+          return {
+            url = opts.endpoint,
+            headers = {
+              ["Accept"] = "application/json",
+              ["Content-Type"] = "application/json",
+              ["Authorization"] = "Bearer " .. os.getenv(opts.api_key_name),
+            },
+            body = {
+              model = opts.model,
+              messages = { -- you can make your own message, but this is very advanced
+                { role = "system", content = code_opts.system_prompt },
+                { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
+              },
+              temperature = 0,
+              max_tokens = 4096,
+              stream = true, -- this will be set by default.
+            },
+          }
+        end,
+        parse_response_data = function(data_stream, event_state, opts)
+          require("avante.providers").openai.parse_response(data_stream, event_state, opts)
+        end,
+      },
+    }
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
@@ -427,6 +458,8 @@ vim.keymap.set('n', '<leader>ac', '<cmd>AvanteSwitchProvider claude<CR>')
 vim.keymap.set('i', '<leader>ac', '<cmd>AvanteSwitchProvider claude<CR>')
 vim.keymap.set('n', '<leader>ao', '<cmd>AvanteSwitchProvider openai<CR>')
 vim.keymap.set('i', '<leader>ao', '<cmd>AvanteSwitchProvider openai<CR>')
+vim.keymap.set('n', '<leader>ads', '<cmd>AvanteSwitchProvider deepseek<CR>')
+vim.keymap.set('i', '<leader>ads', '<cmd>AvanteSwitchProvider deepseek<CR>')
 
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
