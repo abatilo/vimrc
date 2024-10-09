@@ -406,14 +406,14 @@ require("lazy").setup({
       deepseek = {
         endpoint = "https://deepseek.33ca82-shanks.coreweave.app/v1/chat/completions",
         model = "deepseek-coder",
-        api_key_name = "DEEPSEEK_API_KEY",
+        api_key_name = "TGI_API_KEY",
         parse_curl_args = function(opts, code_opts)
           return {
             url = opts.endpoint,
             headers = {
               ["Accept"] = "application/json",
               ["Content-Type"] = "application/json",
-              ["Authorization"] = "Bearer " .. os.getenv(opts.api_key_name),
+              ["Authorization"] = "Basic " .. os.getenv(opts.api_key_name),
             },
             body = {
               model = opts.model,
@@ -422,7 +422,7 @@ require("lazy").setup({
                 { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
               },
               temperature = 0,
-              max_tokens = 4096,
+              max_tokens = 2048,
               stream = true, -- this will be set by default.
             },
           }
