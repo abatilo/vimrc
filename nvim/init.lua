@@ -454,13 +454,6 @@ require("lazy").setup({
   }
 })
 
-vim.keymap.set('n', '<leader>ac', '<cmd>AvanteSwitchProvider claude<CR>')
-vim.keymap.set('i', '<leader>ac', '<cmd>AvanteSwitchProvider claude<CR>')
-vim.keymap.set('n', '<leader>ao', '<cmd>AvanteSwitchProvider openai<CR>')
-vim.keymap.set('i', '<leader>ao', '<cmd>AvanteSwitchProvider openai<CR>')
-vim.keymap.set('n', '<leader>ads', '<cmd>AvanteSwitchProvider deepseek<CR>')
-vim.keymap.set('i', '<leader>ads', '<cmd>AvanteSwitchProvider deepseek<CR>')
-
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
 
