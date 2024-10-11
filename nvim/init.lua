@@ -405,7 +405,7 @@ require("lazy").setup({
     lazy = true,
     version = false, -- set this if you want to always pull the latest change
     opts = {
-      provider = "claude",
+      provider = "deepseek",
       openai = {
         model = "o1-mini",
       },
@@ -413,7 +413,7 @@ require("lazy").setup({
       ---@type AvanteProvider
         deepseek = {
           endpoint = "https://deepseek.33ca82-shanks.coreweave.app/v1/chat/completions",
-          model = "deepseek-coder",
+          model = "DeepSeek-V2.5",
           api_key_name = "TGI_API_KEY",
           parse_curl_args = function(opts, code_opts)
             return {
@@ -430,7 +430,7 @@ require("lazy").setup({
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
-                max_tokens = 7168,
+                max_tokens = 4096,
                 stream = true, -- this will be set by default.
               },
             }
