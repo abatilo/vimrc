@@ -421,13 +421,13 @@ require("lazy").setup({
         model = "o1-mini",
       },
       vendors = {
-        ---@type AvanteProvider
         deepseek = {
           endpoint = "https://inf.33ca82-shanks.coreweave.app/deepseek/v1/chat/completions",
           model = "DeepSeek-V2.5",
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
+            local abatilo = require("abatilo")
             return {
               url = opts.endpoint,
               headers = {
@@ -437,13 +437,13 @@ require("lazy").setup({
               },
               body = {
                 model = opts.model,
-                messages = { -- you can make your own message, but this is very advanced
-                  { role = "system", content = code_opts.system_prompt },
+                messages = {
+                  { role = "system", content = abatilo.system_prompt },
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
                 max_tokens = 8192,
-                stream = true, -- this will be set by default.
+                stream = true,
               },
             }
           end,
@@ -457,6 +457,7 @@ require("lazy").setup({
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
+            local abatilo = require("abatilo")
             return {
               url = opts.endpoint,
               headers = {
@@ -466,13 +467,13 @@ require("lazy").setup({
               },
               body = {
                 model = opts.model,
-                messages = { -- you can make your own message, but this is very advanced
-                  { role = "system", content = code_opts.system_prompt },
+                messages = {
+                  { role = "system", content = abatilo.system_prompt },
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
                 max_tokens = 8192,
-                stream = true, -- this will be set by default.
+                stream = true,
               },
             }
           end,
@@ -486,6 +487,7 @@ require("lazy").setup({
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
+            local abatilo = require("abatilo")
             return {
               url = opts.endpoint,
               headers = {
@@ -495,13 +497,13 @@ require("lazy").setup({
               },
               body = {
                 model = opts.model,
-                messages = { -- you can make your own message, but this is very advanced
-                  { role = "system", content = code_opts.system_prompt },
+                messages = {
+                  { role = "system", content = abatilo.system_prompt },
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
                 max_tokens = 8192,
-                stream = true, -- this will be set by default.
+                stream = true,
               },
             }
           end,
@@ -532,7 +534,7 @@ require("lazy").setup({
   }
 })
 
-require("abatilo")
+local abatilo = require("abatilo")
 
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
