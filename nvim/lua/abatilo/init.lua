@@ -10,7 +10,6 @@ vim.keymap.set('n', '<leader>asp', function()
       results = {
         "claude",
         "deepseek",
-        "deepseekollama",
         "dracarys",
         "openai",
         "qwen",
