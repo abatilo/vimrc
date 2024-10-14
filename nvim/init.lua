@@ -140,7 +140,18 @@ require("lazy").setup({
     event = "VeryLazy",
     dependencies={'kyazdani42/nvim-web-devicons'},
     config = function()
-      require('lualine').setup()
+      local function avante_provider()
+        local avante_config = require('avante.config')
+        return avante_config.provider or "No model specified"
+      end
+
+      require('lualine').setup({
+        sections = {
+          lualine_y = {
+            avante_provider,
+          }
+        }
+      })
     end
   },
   { -- Tree file viewer
@@ -405,7 +416,7 @@ require("lazy").setup({
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
-      provider = "qwen",
+      provider = "dracarys",
       openai = {
         model = "o1-mini",
       },
@@ -545,6 +556,8 @@ require("lazy").setup({
     },
   }
 })
+
+require("avantecustom")
 
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
