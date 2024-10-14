@@ -427,7 +427,6 @@ require("lazy").setup({
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
-            local abatilo = require("abatilo")
             return {
               url = opts.endpoint,
               headers = {
@@ -438,7 +437,7 @@ require("lazy").setup({
               body = {
                 model = opts.model,
                 messages = {
-                  { role = "system", content = abatilo.system_prompt },
+                  { role = "system", content = code_opts.system_prompt },
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
@@ -457,7 +456,6 @@ require("lazy").setup({
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
-            local abatilo = require("abatilo")
             return {
               url = opts.endpoint,
               headers = {
@@ -468,7 +466,7 @@ require("lazy").setup({
               body = {
                 model = opts.model,
                 messages = {
-                  { role = "system", content = abatilo.system_prompt },
+                  { role = "system", content = code_opts.system_prompt },
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
@@ -487,7 +485,6 @@ require("lazy").setup({
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
-            local abatilo = require("abatilo")
             return {
               url = opts.endpoint,
               headers = {
@@ -498,7 +495,7 @@ require("lazy").setup({
               body = {
                 model = opts.model,
                 messages = {
-                  { role = "system", content = abatilo.system_prompt },
+                  { role = "system", content = code_opts.system_prompt },
                   { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
                 },
                 temperature = 0,
@@ -534,7 +531,7 @@ require("lazy").setup({
   }
 })
 
-local abatilo = require("abatilo")
+require("abatilo")
 
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
