@@ -60,6 +60,7 @@ require("lazy").setup({
         {
           ensure_installed = {
             "bash",
+            "bicep",
             "c",
             "c_sharp",
             "comment",
@@ -283,6 +284,7 @@ require("lazy").setup({
 
       local servers = {
         "bashls",
+        "bicep",
         "diagnosticls",
         "dockerls",
         "gopls",
