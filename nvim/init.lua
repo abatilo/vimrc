@@ -293,7 +293,6 @@ require("lazy").setup({
         "jsonls",
         "pyright",
         "rust_analyzer",
-        "sqls",
         "tailwindcss",
         "terraformls",
         "tflint",
