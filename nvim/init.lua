@@ -138,7 +138,6 @@ require("lazy").setup({
   },
   { -- Status line
     'nvim-lualine/lualine.nvim',
-    event = "VeryLazy",
     dependencies={'kyazdani42/nvim-web-devicons'},
     config = function()
       local function avante_provider()
@@ -157,7 +156,6 @@ require("lazy").setup({
   },
   { -- Tree file viewer
     'kyazdani42/nvim-tree.lua',
-    event = "VeryLazy",
     dependencies={'kyazdani42/nvim-web-devicons'},
     config = function()
       require('nvim-tree').setup()
@@ -173,7 +171,6 @@ require("lazy").setup({
   { -- Fuzzy finder
     'nvim-telescope/telescope.nvim',
     branch='0.1.x',
-    event = "VeryLazy",
     dependencies={'nvim-lua/plenary.nvim'},
     config = function()
       require('telescope').setup()
@@ -192,7 +189,6 @@ require("lazy").setup({
   },
   { -- Null language server for additional LSP config
     'nvimtools/none-ls.nvim',
-    event = "VeryLazy",
     config = function()
       local lsp_formatting = function(bufnr)
         -- vim.lsp.buf.format is only available in 0.8.0+ which at time of writing is
@@ -251,7 +247,6 @@ require("lazy").setup({
   },
   { -- For mason + lspconfig
     'williamboman/mason-lspconfig.nvim',
-    event = "VeryLazy",
     config = function()
       -- keymaps
       local on_attach = function(client, bufnr)
@@ -311,7 +306,6 @@ require("lazy").setup({
   },
   { -- Completion
     'hrsh7th/nvim-cmp',
-    event = "VeryLazy",
     config = function()
       local cmp = require('cmp')
       cmp.setup({
@@ -356,7 +350,6 @@ require("lazy").setup({
   },
   { -- For declaratively installing mason tools
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    event = "VeryLazy",
     config = function()
       local mason_tools = {
         "actionlint",
@@ -406,14 +399,12 @@ require("lazy").setup({
   },
   {
     "supermaven-inc/supermaven-nvim",
-    event = "VeryLazy",
     config = function()
       require("supermaven-nvim").setup({})
     end,
   },
   {
     "yetone/avante.nvim",
-    event = "VeryLazy",
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
