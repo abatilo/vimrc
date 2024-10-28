@@ -3,7 +3,7 @@
   email = AaronBatilo@gmail.com
 	signingkey = ~/.ssh/id_ed25519.pub
 [core]
-  excludesfile = ~/.gitignore_global
+  excludesfile = ~/.gitignore
 [alias]
   st = status
   aa = add -A

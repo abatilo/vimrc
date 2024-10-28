@@ -21,6 +21,9 @@ ln -s "$PWD/.vsnip/" ~/.vsnip
 # Set a default global .gitconfig
 ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 
+# Set a default global .gitignore
+ln -s "$PWD/.gitignore_global" ~/.gitignore
+
 # Install a default global .editorconfig
 ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 
