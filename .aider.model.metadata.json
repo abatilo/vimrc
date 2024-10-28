@@ -1,0 +1,7 @@
+{
+  "openai/deepseek-v2.5": {
+    "max_tokens": 20922,
+    "max_input_tokens": 12800,
+    "max_output_tokens": 8192
+  }
+}
