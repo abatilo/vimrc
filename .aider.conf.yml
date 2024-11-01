@@ -1,3 +1,7 @@
-model: "openai/deepseek-v2.5"
-openai-api-base: "https://inf.33ca82-shanks.coreweave.app/ollama/v1"
+architect: true
+o1-preview: true
+editor-model: "claude-3-5-sonnet-20241022"
+
+# model: "openai/deepseek-v2.5"
+# openai-api-base: "https://inf.33ca82-shanks.coreweave.app/ollama/v1"
 dark-mode: true
