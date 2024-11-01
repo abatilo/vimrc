@@ -178,6 +178,11 @@ require("lazy").setup({
       require("telescope").load_extension("ui-select")
     end
   },
+  { -- Add some missing commentstrings
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
   { -- Configure LSP
     'neovim/nvim-lspconfig'
   },
