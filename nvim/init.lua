@@ -414,7 +414,7 @@ require("lazy").setup({
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
-      provider = "deepseek",
+      provider = "qwen",
       openai = {
         model = "o1-mini",
       },
@@ -479,7 +479,7 @@ require("lazy").setup({
         },
         qwen = {
           endpoint = "https://inf.33ca82-shanks.coreweave.app/ollama/v1/chat/completions",
-          model = "qwen2.5-coder:7b-instruct",
+          model = "qwen2.5-coder:32b",
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
