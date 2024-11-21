@@ -9,6 +9,7 @@
   aa = add -A
   co = commit
   pra = pull --rebase --autostash
+  pram = pull origin main --rebase --autostash
 [push]
 	default = current
 [init]
