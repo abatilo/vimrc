@@ -416,64 +416,6 @@ require("lazy").setup({
         model = "o1-mini",
       },
       vendors = {
-        deepseek = {
-          endpoint = "https://inf.33ca82-shanks.coreweave.app/deepseek/v1/chat/completions",
-          model = "DeepSeek-V2.5",
-          api_key_name = "TGI_API_KEY",
-          use_xml_format = true,
-          parse_curl_args = function(opts, code_opts)
-            return {
-              url = opts.endpoint,
-              headers = {
-                ["Accept"] = "application/json",
-                ["Content-Type"] = "application/json",
-                ["Authorization"] = "Basic " .. os.getenv(opts.api_key_name),
-              },
-              body = {
-                model = opts.model,
-                messages = {
-                  { role = "system", content = code_opts.system_prompt },
-                  { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
-                },
-                temperature = 0,
-                max_tokens = 8192,
-                stream = true,
-              },
-            }
-          end,
-          parse_response_data = function(data_stream, event_state, opts)
-            require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-          end,
-        },
-        dracarys = {
-          endpoint = "https://inf.33ca82-shanks.coreweave.app/dracarys/v1/chat/completions",
-          model = "Dracarys-72B-Instruct",
-          api_key_name = "TGI_API_KEY",
-          use_xml_format = true,
-          parse_curl_args = function(opts, code_opts)
-            return {
-              url = opts.endpoint,
-              headers = {
-                ["Accept"] = "application/json",
-                ["Content-Type"] = "application/json",
-                ["Authorization"] = "Basic " .. os.getenv(opts.api_key_name),
-              },
-              body = {
-                model = opts.model,
-                messages = {
-                  { role = "system", content = code_opts.system_prompt },
-                  { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
-                },
-                temperature = 0,
-                max_tokens = 8192,
-                stream = true,
-              },
-            }
-          end,
-          parse_response_data = function(data_stream, event_state, opts)
-            require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-          end,
-        },
         qwen = {
           endpoint = "https://inf.33ca82-shanks.coreweave.app/ollama/v1/chat/completions",
           model = "qwen2.5-coder:32b",
@@ -489,10 +431,7 @@ require("lazy").setup({
               },
               body = {
                 model = opts.model,
-                messages = {
-                  { role = "system", content = code_opts.system_prompt },
-                  { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
-                },
+                messages = require("avante.providers.openai").parse_messages(code_opts),
                 temperature = 0,
                 max_tokens = 8192,
                 stream = true,
