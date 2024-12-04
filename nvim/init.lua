@@ -21,9 +21,6 @@ require("lazy").setup({
   { -- Make it easy to align text by column
     'godlygeek/tabular',
   },
-  { -- .editorconfig file support
-    'editorconfig/editorconfig-vim',
-  },
   { -- Track stats for wakatime.com
     'wakatime/vim-wakatime',
   },
