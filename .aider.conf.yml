@@ -7,6 +7,9 @@ sonnet: true
 # openai-api-base: "https://inf.33ca82-shanks.coreweave.app/ollama/v1"
 dark-mode: true
 
+# Enable watching files for AI coding comments
+watch-files: true
+
 # Disable aider in commits
 attribute-author: false
 attribute-committer: false
