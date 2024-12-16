@@ -475,6 +475,7 @@ vim.cmd("colorscheme dracula")
 
 -- Line numbers
 vim.opt.number = true
+vim.opt.relativenumber = true
 
 -- Set where splits will appear to
 vim.opt.splitbelow = true
