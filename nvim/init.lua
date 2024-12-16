@@ -462,24 +462,6 @@ require("lazy").setup({
         ft = { "markdown", "Avante" },
       },
     },
-    {
-      "sphamba/smear-cursor.nvim",
-      config = function()
-        require("smear_cursor").setup({
-          cursor_color = "#ff8800",
-          stiffness = 0.4,
-          trailing_stiffness = 0.2,
-        })
-      end,
-    },
-    {
-      "karb94/neoscroll.nvim",
-      config = function ()
-        require('neoscroll').setup({
-          easing = "sine",
-        })
-      end
-    }
   }
 })
 
