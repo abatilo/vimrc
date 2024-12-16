@@ -6,3 +6,7 @@ sonnet: true
 # model: "openai/deepseek-v2.5"
 # openai-api-base: "https://inf.33ca82-shanks.coreweave.app/ollama/v1"
 dark-mode: true
+
+# Disable aider in commits
+attribute-author: false
+attribute-committer: false
