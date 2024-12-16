@@ -418,7 +418,7 @@ require("lazy").setup({
       vendors = {
         qwen = {
           endpoint = "https://inf.33ca82-shanks.coreweave.app/ollama/v1/chat/completions",
-          model = "qwen2.5-coder:32b",
+          model = "qwen2.5-coder:32b-instruct-q8_0",
           api_key_name = "TGI_API_KEY",
           use_xml_format = true,
           parse_curl_args = function(opts, code_opts)
