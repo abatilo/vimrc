@@ -326,7 +326,6 @@ require("lazy").setup({
           ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i','c'}),
         },
         sources = {
-          { name = 'supermaven' },
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
           { name = 'buffer', keyword_length = 4 },
@@ -398,12 +397,6 @@ require("lazy").setup({
         default_to_projects_v2 = true
       })
     end
-  },
-  {
-    "supermaven-inc/supermaven-nvim",
-    config = function()
-      require("supermaven-nvim").setup({})
-    end,
   },
   {
     "yetone/avante.nvim",
