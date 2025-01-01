@@ -136,20 +136,6 @@ require("lazy").setup({
   { -- Status line
     'nvim-lualine/lualine.nvim',
     dependencies={'kyazdani42/nvim-web-devicons'},
-    config = function()
-      local function avante_provider()
-        local avante_config = require('avante.config')
-        return avante_config.provider or "No model specified"
-      end
-
-      require('lualine').setup({
-        sections = {
-          lualine_y = {
-            avante_provider,
-          }
-        }
-      })
-    end
   },
   { -- Tree file viewer
     'kyazdani42/nvim-tree.lua',
@@ -398,64 +384,6 @@ require("lazy").setup({
       })
     end
   },
-  {
-    "yetone/avante.nvim",
-    event = "VeryLazy",
-    lazy = false,
-    version = false, -- set this if you want to always pull the latest change
-    opts = {
-      provider = "qwen",
-      openai = {
-        model = "o1-mini",
-      },
-      vendors = {
-        qwen = {
-          endpoint = "https://inf.33ca82-shanks.coreweave.app/ollama/v1/chat/completions",
-          model = "qwen2.5-coder:32b-instruct-q8_0",
-          api_key_name = "TGI_API_KEY",
-          use_xml_format = true,
-          parse_curl_args = function(opts, code_opts)
-            return {
-              url = opts.endpoint,
-              headers = {
-                ["Accept"] = "application/json",
-                ["Content-Type"] = "application/json",
-                ["Authorization"] = "Basic " .. os.getenv(opts.api_key_name),
-              },
-              body = {
-                model = opts.model,
-                messages = require("avante.providers.openai").parse_messages(code_opts),
-                temperature = 0,
-                max_tokens = 8192,
-                stream = true,
-              },
-            }
-          end,
-          parse_response_data = function(data_stream, event_state, opts)
-            require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-          end,
-        },
-      }
-    },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = "make",
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      --- The below dependencies are optional,
-      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { "markdown", "Avante" },
-        },
-        ft = { "markdown", "Avante" },
-      },
-    },
-  }
 })
 
 require("abatilo")
@@ -506,7 +434,7 @@ vim.opt.cmdheight = 2
 vim.opt.updatetime = 50
 
 -- views can only be fully collapsed with the global statusline
-vim.opt.laststatus = 3
+vim.opt.laststatus = 2
 -- Default splitting will cause your main splits to jump when opening an edgebar.
 -- To prevent this, set `splitkeep` to either `screen` or `topline`.
 vim.opt.splitkeep = "screen"
