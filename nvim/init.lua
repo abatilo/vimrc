@@ -13,6 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Set leader key, must be done before lazy
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 require("lazy").setup({
   { -- Color scheme
@@ -465,7 +466,5 @@ vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>rg', '<cmd>Telescope live_grep<CR>')
-vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-vim.keymap.set('v', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 vim.keymap.set('i', '<C-P>', '<cmd>Telescope git_files<CR>')
 vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
