@@ -392,8 +392,6 @@ require("lazy").setup({
   },
 })
 
-require("abatilo")
-
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
 
