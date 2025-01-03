@@ -136,11 +136,11 @@ require("lazy").setup({
   },
   { -- Status line
     'nvim-lualine/lualine.nvim',
-    dependencies={'kyazdani42/nvim-web-devicons'},
+    dependencies={'nvim-tree/nvim-web-devicons'},
   },
   { -- Tree file viewer
-    'kyazdani42/nvim-tree.lua',
-    dependencies={'kyazdani42/nvim-web-devicons'},
+    'nvim-tree/nvim-tree.lua',
+    dependencies={'nvim-tree/nvim-web-devicons'},
     config = function()
       require('nvim-tree').setup()
     end
@@ -377,7 +377,7 @@ require("lazy").setup({
     dependencies={
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
-      'kyazdani42/nvim-web-devicons',
+      'nvim-tree/nvim-web-devicons',
     },
     config = function()
       require('octo').setup({
