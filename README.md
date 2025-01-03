@@ -41,7 +41,7 @@ OR
 brew install --cask alacritty
 ```
 
-Install [icon patched Inconsolate](https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Inconsolata.zip)
+Install [icon patched Inconsolate](https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Inconsolata.zip)
 
 Install asdf:
 https://github.com/ohmyzsh/ohmyzsh/tree/eb00b95d26e8f264af80f508d50ac32e50619027/plugins/asdf
