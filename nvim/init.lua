@@ -373,7 +373,12 @@ require("lazy").setup({
     end
   },
   { -- GitHub UI within neovim
-    'pwntester/octo.nvim',
+
+    -- Switch back to upstream once this PR merges:
+    -- https://github.com/pwntester/octo.nvim/pull/777
+    -- 'pwntester/octo.nvim',
+    --
+    'abatilo/octo.nvim',
     dependencies={
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
