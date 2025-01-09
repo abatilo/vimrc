@@ -1,3 +1,5 @@
 theme = dracula
 font-family = Inconsolata Nerd Font Mono
 font-size = 24
+background = 282a36
+foreground = f8f8f2
