@@ -1,6 +1,5 @@
 # Delete old stuff
 rm -rf \
-  ~/.config/alacritty/alacritty.yml \
   ~/.config/nvim \
   ~/.editorconfig \
   ~/.gitconfig \
@@ -32,11 +31,8 @@ ln -s "$PWD/.aider.model.settings.yml" ~/.aider.model.settings.yml
 # Install a default global .editorconfig
 ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 
-# Copy alacritty config
-mkdir -p ~/.config/alacritty/
-ln -s "$PWD/alacritty.yml" ~/.config/alacritty/alacritty.yml
-# Version 0.13 and later uses a toml file
-ln -s "$PWD/alacritty.toml" ~/.config/alacritty/alacritty.toml
+mkdir -p ~/.config/ghostty
+ln -s "$PWD/ghostty_config" ~/.config/ghostty/config
 
 echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
