@@ -87,7 +87,6 @@ require("lazy").setup({
             "gitcommit",
             "gitignore",
             "go",
-            "go",
             "gomod",
             "gosum",
             "gotmpl",
