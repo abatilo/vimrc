@@ -51,7 +51,8 @@ require("lazy").setup({
     'folke/snacks.nvim',
     opts = {
       indent = {
-        enabled = true
+        enabled = true,
+        animate = { enabled = false },
       }
     },
   },
@@ -128,6 +129,7 @@ require("lazy").setup({
   },
   { -- <leader>gy to put GitHub URL into clipboard
     'ruifm/gitlinker.nvim',
+    event='VeryLazy',
     dependencies={'nvim-lua/plenary.nvim'},
     config = function()
       require('gitlinker').setup({
@@ -145,6 +147,7 @@ require("lazy").setup({
   },
   { -- Tree file viewer
     'nvim-tree/nvim-tree.lua',
+    event='VeryLazy',
     dependencies={'nvim-tree/nvim-web-devicons'},
     config = function()
       require('nvim-tree').setup()
@@ -152,6 +155,7 @@ require("lazy").setup({
   },
   { -- Telescope sorting and matching with fzf
     'nvim-telescope/telescope-fzf-native.nvim',
+    event='VeryLazy',
     build='make'
   },
   { -- Replace native vim select UI with telescope's
@@ -159,6 +163,7 @@ require("lazy").setup({
   },
   { -- Fuzzy finder
     'nvim-telescope/telescope.nvim',
+    event='VeryLazy',
     branch='0.1.x',
     dependencies={'nvim-lua/plenary.nvim'},
     config = function()
@@ -183,6 +188,7 @@ require("lazy").setup({
   },
   { -- Null language server for additional LSP config
     'nvimtools/none-ls.nvim',
+    event='VeryLazy',
     config = function()
       local lsp_formatting = function(bufnr)
         -- vim.lsp.buf.format is only available in 0.8.0+ which at time of writing is
@@ -379,6 +385,7 @@ require("lazy").setup({
   },
   { -- GitHub UI within neovim
     'pwntester/octo.nvim',
+    event='VeryLazy',
     dependencies={
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
