@@ -56,6 +56,13 @@ require("lazy").setup({
       }
     },
   },
+  { -- Make YAML easier
+    'cuducos/yaml.nvim',
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-telescope/telescope.nvim",
+    },
+  },
   { -- Add language aware parsing
     'nvim-treesitter/nvim-treesitter',
     build=':TSUpdate',
@@ -476,5 +483,7 @@ vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>rg', '<cmd>Telescope live_grep<CR>')
+vim.keymap.set('n', '<leader>yv', '<cmd>YAMLView<CR>')
+vim.keymap.set('n', '<leader>yt', '<cmd>YAMLTelescope<CR>')
 vim.keymap.set('i', '<C-P>', '<cmd>Telescope git_files<CR>')
 vim.keymap.set('n', '<C-P>', '<cmd>Telescope git_files<CR>')
