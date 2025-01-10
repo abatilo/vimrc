@@ -45,10 +45,12 @@ require("lazy").setup({
     end
   },
   { -- Indent markers
-    'lukas-reineke/indent-blankline.nvim',
-    config = function()
-      require('ibl').setup()
-    end
+    'folke/snacks.nvim',
+    opts = {
+      indent = {
+        enabled = true
+      }
+    },
   },
   { -- Add language aware parsing
     'nvim-treesitter/nvim-treesitter',
