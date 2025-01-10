@@ -58,6 +58,7 @@ require("lazy").setup({
   },
   { -- Make YAML easier
     'cuducos/yaml.nvim',
+    event='VeryLazy',
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-telescope/telescope.nvim",
@@ -247,12 +248,14 @@ require("lazy").setup({
   },
   { -- Install LSP servers
     'williamboman/mason.nvim',
+    event='VeryLazy',
     config = function()
       require("mason").setup()
     end
   },
   { -- For mason + lspconfig
     'williamboman/mason-lspconfig.nvim',
+    event='VeryLazy',
     config = function()
       -- keymaps
       local on_attach = function(client, bufnr)
