@@ -1,4 +1,5 @@
 title = " "
+macos-titlebar-proxy-icon = "hidden"
 theme = dracula
 font-family = Inconsolata Nerd Font Mono
 font-size = 24
