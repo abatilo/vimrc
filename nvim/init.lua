@@ -435,9 +435,6 @@ vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
--- Simulate 24-bit colors for dracula scheme
-vim.opt.termguicolors = true
-
 -- Keep searched text highlighted
 vim.opt.hlsearch = true
 -- Remap for clearing search highlight
