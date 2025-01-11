@@ -471,11 +471,7 @@ vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.foldlevel = 10
 
--- Exit insert mode while in the terminal
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
-
 vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeToggle<CR>')
-
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
