@@ -446,15 +446,10 @@ vim.keymap.set('n', '<leader><CR>', '<cmd>nohlsearch<CR>')
 -- Keep long term undo history
 vim.opt.undofile = true
 
--- Give more space for displaying messages.
-vim.opt.cmdheight = 2
-
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
 vim.opt.updatetime = 50
 
--- views can only be fully collapsed with the global statusline
-vim.opt.laststatus = 2
 -- Default splitting will cause your main splits to jump when opening an edgebar.
 -- To prevent this, set `splitkeep` to either `screen` or `topline`.
 vim.opt.splitkeep = "screen"
