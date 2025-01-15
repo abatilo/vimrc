@@ -401,7 +401,6 @@ require("lazy").setup({
     },
     config = function()
       require('octo').setup({
-        timeout = 60000,
         default_to_projects_v2 = true
       })
     end
