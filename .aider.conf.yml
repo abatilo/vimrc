@@ -6,6 +6,7 @@ sonnet: true
 # model: "openai/deepseek-v2.5"
 # openai-api-base: "https://inf.33ca82-shanks.coreweave.app/ollama/v1"
 vim: true
+git: false
 dark-mode: true
 check-update: false
 yes-always: true
