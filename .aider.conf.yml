@@ -1,10 +1,5 @@
-# architect: false
-# o1-preview: true
-# editor-model: "claude-3-5-sonnet-20241022"
 sonnet: true
 
-# model: "openai/deepseek-v2.5"
-# openai-api-base: "https://inf.33ca82-shanks.coreweave.app/ollama/v1"
 vim: true
 dark-mode: true
 check-update: false
