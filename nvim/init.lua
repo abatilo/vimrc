@@ -222,7 +222,7 @@ require("lazy").setup({
           -- Go
           require("null-ls").builtins.diagnostics.golangci_lint,
           require("null-ls").builtins.diagnostics.staticcheck,
-          require("null-ls").builtins.formatting.gofumpt,
+          require("null-ls").builtins.formatting.gofmt,
           require("null-ls").builtins.formatting.goimports,
           require("null-ls").builtins.formatting.golines,
 
@@ -366,7 +366,6 @@ require("lazy").setup({
         "diagnostic-languageserver",
         "dockerfile-language-server",
         "gitlint",
-        "gofumpt",
         "golangci-lint",
         "golines",
         "gopls",
