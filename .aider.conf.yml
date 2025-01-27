@@ -6,6 +6,10 @@ check-update: false
 yes-always: true
 suggest-shell-commands: false
 
+# Always keep file tree map small to keep context focused.
+# https://aider.chat/docs/troubleshooting/edit-errors.html
+map-tokens: 1024
+
 # Enable watching files for AI coding comments
 watch-files: true
 
