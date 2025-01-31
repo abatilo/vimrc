@@ -5,25 +5,20 @@ prSections:
 - title: My Pull Requests
   filters: is:open author:@me
   type: null
-- title: Involved
-  filters: is:open involves:@me -author:@me
-  type: null
 issuesSections:
-- title: My Issues
-  filters: is:open author:@me
 - title: Assigned
   filters: is:open assignee:@me
-- title: Involved
-  filters: is:open involves:@me -author:@me
+- title: My Issues
+  filters: is:open author:@me
 repo:
-  branchesRefetchIntervalSeconds: 30
-  prsRefetchIntervalSeconds: 60
+  branchesRefetchIntervalSeconds: 10
+  prsRefetchIntervalSeconds: 10
 defaults:
   preview:
     open: true
     width: 50
   prsLimit: 5
-  issuesLimit: 20
+  issuesLimit: 5
   view: prs
   layout:
     prs:
@@ -55,7 +50,7 @@ defaults:
       assignees:
         width: 20
         hidden: true
-  refetchIntervalMinutes: 30
+  refetchIntervalMinutes: 10
 keybindings:
   prs:
     - key: c
