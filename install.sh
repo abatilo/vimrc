@@ -34,6 +34,9 @@ ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 mkdir -p ~/.config/ghostty
 ln -s "$PWD/ghostty_config" ~/.config/ghostty/config
 
+mkdir -p ~/.config/gh-dash
+ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
+
 echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
 grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >>~/.zshrc
