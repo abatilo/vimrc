@@ -157,7 +157,11 @@ require("lazy").setup({
     event='VeryLazy',
     dependencies={'nvim-tree/nvim-web-devicons'},
     config = function()
-      require('nvim-tree').setup()
+      require('nvim-tree').setup({
+        filters = {
+          custom = {"^\\.git"}
+        }
+      })
     end
   },
   { -- Telescope sorting and matching with fzf
