@@ -160,6 +160,9 @@ require("lazy").setup({
       require('nvim-tree').setup({
         filters = {
           custom = {"^\\.git"}
+        },
+        live_filter = {
+          always_show_folders = false
         }
       })
     end
