@@ -205,8 +205,6 @@ require("lazy").setup({
     event='VeryLazy',
     config = function()
       local lsp_formatting = function(bufnr)
-        -- vim.lsp.buf.format is only available in 0.8.0+ which at time of writing is
-        -- not released yet. Install from asdf-neovim nightly
         vim.lsp.buf.format({
           filter = function(client)
             -- Only format using null-ls instead of built in LSP formatter
