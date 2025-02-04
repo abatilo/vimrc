@@ -473,7 +473,7 @@ vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.foldlevel = 10
 
-vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeToggle<CR>')
+vim.keymap.set('n', '<C-N>', '<cmd>NvimTreeFindFileToggle<CR>')
 vim.keymap.set('n', '<leader>te', '<cmd>Telescope<CR>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files hidden=true<CR>')
 vim.keymap.set('n', '<leader>fds', '<cmd>Telescope lsp_document_symbols<CR>')
