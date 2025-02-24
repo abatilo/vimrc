@@ -229,7 +229,6 @@ require("lazy").setup({
           require("null-ls").builtins.diagnostics.staticcheck,
           require("null-ls").builtins.formatting.gofmt,
           require("null-ls").builtins.formatting.goimports,
-          require("null-ls").builtins.formatting.golines,
 
           -- Python
           require("null-ls").builtins.formatting.black,
@@ -372,7 +371,6 @@ require("lazy").setup({
         "dockerfile-language-server",
         "gitlint",
         "golangci-lint",
-        "golines",
         "gopls",
         "hadolint",
         "html-lsp",
