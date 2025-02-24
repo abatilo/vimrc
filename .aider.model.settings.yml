@@ -1,5 +1,0 @@
-- extra_params:
-    max_tokens: 8192
-  name: openai/deepseek-v2.5
-  streaming: true
-  use_repo_map: true

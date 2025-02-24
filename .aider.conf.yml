@@ -1,4 +1,8 @@
-sonnet: true
+architect: true
+weak-model: "openai/gpt-4o-mini"
+editor-model: "openai/o3-mini"
+model: "openai/o3-mini"
+reasoning-effort: "high"
 
 vim: true
 dark-mode: true
