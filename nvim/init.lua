@@ -58,7 +58,7 @@ require("lazy").setup({
   },
   { -- Make YAML easier
     'cuducos/yaml.nvim',
-    event='VeryLazy',
+    ft = { "yaml" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-telescope/telescope.nvim",
