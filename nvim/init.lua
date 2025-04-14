@@ -17,7 +17,14 @@ vim.g.maplocalleader = " "
 
 require("lazy").setup({
   { -- Color scheme
+    -- https://github.com/pwntester/octo.nvim/issues/1056#issuecomment-2802949386
+    -- https://lazy.folke.io/spec/lazy_loading#-colorschemes
     'Mofiqul/dracula.nvim',
+    lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd([[colorscheme dracula]])
+		end,
   },
   { -- Make it easy to align text by column
     'godlygeek/tabular',
@@ -411,9 +418,6 @@ require("lazy").setup({
 
 -- Decide where the root of a project is
 vim.g.rooter_patterns = {'.git'}
-
--- Set colorscheme
-vim.cmd("colorscheme dracula")
 
 -- Line numbers
 vim.opt.number = true
