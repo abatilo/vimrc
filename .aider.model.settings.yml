@@ -1,17 +1,36 @@
-- name: anthropic/claude-3-7-sonnet-20250219
+- name: github/o3
+  streaming: false
   edit_format: diff
-  weak_model_name: anthropic/claude-3-5-haiku-20241022
+  weak_model_name: github/gpt-4.1-mini
   use_repo_map: true
-  examples_as_sys_msg: true
   use_temperature: false
-  extra_params:
-    extra_headers:
-      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
-    max_tokens: 64000
-    thinking:
-      type: enabled
-      # Adjust this number
-      budget_tokens: 32000
-  cache_control: true
-  editor_model_name: anthropic/claude-3-7-sonnet-20250219
+  editor_model_name: github/gpt-4.1
   editor_edit_format: editor-diff
+  system_prompt_prefix: "Formatting re-enabled. "
+  accepts_settings: ["reasoning_effort"]
+  examples_as_sys_msg: true
+
+- name: github/o4-mini
+  edit_format: diff
+  weak_model_name: github/gpt-4.1-mini
+  use_repo_map: true
+  use_temperature: false
+  editor_model_name: github/gpt-4.1
+  editor_edit_format: editor-diff
+  system_prompt_prefix: "Formatting re-enabled. "
+  accepts_settings: ["reasoning_effort"]
+  examples_as_sys_msg: true
+
+- name: github/gpt-4.1
+  edit_format: diff
+  weak_model_name: github/gpt-4.1-mini
+  use_repo_map: true
+  reminder: sys
+  examples_as_sys_msg: false
+  editor_model_name: github/gpt-4.1-mini
+
+- name: github/gpt-4.1-mini
+  edit_format: diff
+  use_repo_map: true
+  reminder: sys
+  examples_as_sys_msg: false

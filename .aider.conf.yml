@@ -1,14 +1,12 @@
-architect: true
-weak-model: "openai/gpt-4o-mini"
-editor-model: "openai/o3-mini"
-model: "openai/o3-mini"
-reasoning-effort: "high"
+# model: "gemini/gemini-2.5-pro-exp-03-25"
+model: "github/gpt-4.1"
 
 dark-mode: true
 check-update: false
 yes-always: true
 suggest-shell-commands: false
 vim: true
+restore-chat-history: true
 
 # Always keep file tree map small to keep context focused.
 # https://aider.chat/docs/troubleshooting/edit-errors.html
