@@ -1,6 +1,9 @@
 alias:
+  - "az:azure/gpt-4.1"
   - "gemini:gemini/gemini-2.5-pro-exp-03-25"
-model: "github/gpt-4.1"
+  - "gh:github/gpt-4.1"
+
+model: "az"
 
 dark-mode: true
 check-update: false
