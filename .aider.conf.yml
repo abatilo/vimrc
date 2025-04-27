@@ -3,7 +3,7 @@ alias:
   - "gemini:gemini/gemini-2.5-pro-exp-03-25"
   - "gh:github/gpt-4.1"
 
-model: "az"
+model: "gh"
 
 dark-mode: true
 check-update: false
@@ -11,7 +11,6 @@ yes-always: true
 suggest-shell-commands: false
 detect-urls: false
 vim: true
-restore-chat-history: true
 max-chat-history-tokens: 2000
 
 # Always keep file tree map small to keep context focused.
