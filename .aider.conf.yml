@@ -2,6 +2,7 @@ alias:
   - "az:azure/gpt-4.1"
   - "gemini:gemini/gemini-2.5-pro-exp-03-25"
   - "gh:github/gpt-4.1"
+  - "claude:bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
 
 model: "gh"
 
@@ -11,7 +12,6 @@ yes-always: true
 suggest-shell-commands: false
 detect-urls: false
 vim: true
-max-chat-history-tokens: 2000
 
 # Always keep file tree map small to keep context focused.
 # https://aider.chat/docs/troubleshooting/edit-errors.html
