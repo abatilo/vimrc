@@ -55,6 +55,7 @@ grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >>~/.zshrc
 grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >>~/.zshrc
 
 grep -q "octo()" ~/.zshrc || echo "octo() { vim -c \"Octo pr edit \$1\" }" >>~/.zshrc
+grep -q "ask()" ~/.zshrc || echo "ask() { gh models run gpt-4.1 \$1 }" >>~/.zshrc
 grep -q "export PAGER=" ~/.zshrc || echo "export PAGER=" >>~/.zshrc
 
 echo "Install tmux then run the tmux.sh"
