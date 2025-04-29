@@ -9,7 +9,7 @@
   aa = add -A
   co = commit
   pra = pull --rebase --autostash
-  pram = pull origin main --rebase --autostash
+  squish = "!f() { git rebase -i $(git merge-base origin/main HEAD); }; f"
 [push]
 	default = current
 [init]
