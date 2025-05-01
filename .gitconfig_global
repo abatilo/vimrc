@@ -5,10 +5,6 @@
 [core]
   excludesfile = ~/.gitignore
 [alias]
-  st = status
-  aa = add -A
-  co = commit
-  pra = pull --rebase --autostash
   squish = "!f() { git rebase -i $(git merge-base origin/main HEAD); }; f"
 [push]
 	default = current
