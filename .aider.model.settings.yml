@@ -37,6 +37,7 @@
 
 # Use openai provider for openai-compatible API server
 - name: openai/qwen3:30b-a3b
+  weak_model_name: github/gpt-4.1-mini
   edit_format: diff
   use_repo_map: true
   overeager: true
