@@ -22,5 +22,11 @@
     "max_output_tokens": 8000,
     "input_cost_per_token": 0.00000040,
     "output_cost_per_token": 0.00000160
+  },
+  "openai/qwen3:30b-a3b": {
+    "max_input_tokens": 24000,
+    "max_output_tokens": 8000,
+    "input_cost_per_token": 0.00000001,
+    "output_cost_per_token": 0.00000003
   }
 }
