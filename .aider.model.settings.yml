@@ -37,9 +37,27 @@
 
 # Use openai provider for openai-compatible API server
 - name: openai/qwen3:30b-a3b
-  weak_model_name: github/gpt-4.1-mini
-  edit_format: diff
+  weak_model_name: openai/qwen3:30b-a3b-no-think
+  edit_format: whole
   use_repo_map: true
-  overeager: true
+  overeager: false
   examples_as_sys_msg: true
+  extra_params:
+    temperature: 0.6
+    top_p: 0.95
+    top_k: 20
+    presence_penalty: 1.5
   reasoning_tag: think
+
+- name: openai/qwen3:30b-a3b-no-think
+  edit_format: whole
+  use_repo_map: true
+  overeager: false
+  examples_as_sys_msg: true
+  extra_params:
+    temperature: 0.7
+    top_p: 0.8
+    top_k: 20
+    presence_penalty: 1.5
+    chat_template_kwargs:
+      enable_thinking: false
