@@ -47,7 +47,6 @@
     top_p: 0.95
     top_k: 20
     presence_penalty: 1.5
-  reasoning_tag: think
 
 - name: openai/qwen3:30b-a3b-no-think
   edit_format: whole
