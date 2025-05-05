@@ -3,9 +3,10 @@ alias:
   - "gemini:gemini/gemini-2.5-pro-exp-03-25"
   - "gh:github/gpt-4.1"
   - "claude:bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-  - "qwen3:openai/qwen3:30b-a3b"
+  - "qwen3-30b-a3b:openai/qwen3:30b-a3b"
+  - "qwen3-235b-a22b:openai/qwen3:235b-a22b"
 
-model: "qwen3"
+model: "qwen3-30b-a3b"
 
 dark-mode: true
 check-update: false

@@ -34,5 +34,17 @@
     "max_output_tokens": 8192,
     "input_cost_per_token": 0.00000001,
     "output_cost_per_token": 0.00000003
+  },
+  "openai/qwen3:235b-a22b": {
+    "max_input_tokens": 32768,
+    "max_output_tokens": 8192,
+    "input_cost_per_token": 0.00000002,
+    "output_cost_per_token": 0.00000006
+  },
+  "openai/qwen3:235b-a22b-no-think": {
+    "max_input_tokens": 32768,
+    "max_output_tokens": 8192,
+    "input_cost_per_token": 0.00000002,
+    "output_cost_per_token": 0.00000006
   }
 }

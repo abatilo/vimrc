@@ -43,6 +43,8 @@
   overeager: false
   examples_as_sys_msg: true
   extra_params:
+    extra_headers:
+      Model: Qwen/Qwen3-30B-A3B-FP8
     temperature: 0.6
     top_p: 0.95
     top_k: 20
@@ -54,6 +56,38 @@
   overeager: false
   examples_as_sys_msg: true
   extra_params:
+    extra_headers:
+      Model: Qwen/Qwen3-30B-A3B-FP8
+    temperature: 0.7
+    top_p: 0.8
+    top_k: 20
+    presence_penalty: 1.5
+    chat_template_kwargs:
+      enable_thinking: false
+
+- name: openai/qwen3:235b-a22b
+  weak_model_name: openai/qwen3:30b-a3b-no-think
+  edit_format: whole
+  use_repo_map: true
+  overeager: false
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      Model: Qwen/Qwen3-235B-A22B-FP8
+    temperature: 0.6
+    top_p: 0.95
+    top_k: 20
+    presence_penalty: 1.5
+
+- name: openai/qwen3:235b-a22b-no-think
+  weak_model_name: openai/qwen3:30b-a3b-no-think
+  edit_format: whole
+  use_repo_map: true
+  overeager: false
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      Model: Qwen/Qwen3-235B-A22B-FP8
     temperature: 0.7
     top_p: 0.8
     top_k: 20
