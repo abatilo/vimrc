@@ -8,7 +8,7 @@ alias:
   - "qwen3-moe-big:openai/qwen3:235b-a22b"
   - "qwen3-moe-big-no-think:openai/qwen3:235b-a22b-no-think"
 
-model: "qwen3-moe-big-no-think"
+model: "gh"
 
 dark-mode: true
 check-update: false
