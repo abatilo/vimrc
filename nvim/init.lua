@@ -259,7 +259,8 @@ require("lazy").setup({
   },
   { -- Install LSP servers
     'williamboman/mason.nvim',
-    version = "^1",
+    -- last commit before v2.0.0
+    commit = "f74983e782b7394f5737df99f8823e196a23291d",
     event='VeryLazy',
     config = function()
       require("mason").setup()
