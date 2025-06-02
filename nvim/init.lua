@@ -374,6 +374,7 @@ require("lazy").setup({
         local mason_tools = {
           "actionlint",
           "bash-language-server",
+          "black",
           "diagnostic-languageserver",
           "dockerfile-language-server",
           "gh-actions-language-server",
