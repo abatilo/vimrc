@@ -1,3 +1,8 @@
+# AI tools
+.aider*
+CLAUDE.md
+.claude/
+
 # Editor files
 .*.swp
 .*.swo
@@ -31,6 +36,3 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# AI tools
-.aider*
