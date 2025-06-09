@@ -3,6 +3,8 @@ alias:
   - "gemini:gemini/gemini-2.5-pro-exp-03-25"
   - "gh:github/gpt-4.1"
   - "claude:bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+  - "opus4:bedrock/us.anthropic.claude-opus-4-20250514-v1:0"
+  - "sonnet4:bedrock/us.anthropic.claude-sonnet-4-20250514-v1:0"
   - "qwen3-moe-small:openai/qwen3:30b-a3b"
   - "qwen3-moe-small-no-think:openai/qwen3:30b-a3b-no-think"
   - "qwen3-moe-big:openai/qwen3:235b-a22b"
@@ -19,7 +21,7 @@ vim: true
 
 # Always keep file tree map small to keep context focused.
 # https://aider.chat/docs/troubleshooting/edit-errors.html
-map-tokens: 1000
+map-tokens: "1000"
 
 # Enable watching files for AI coding comments
 watch-files: true
