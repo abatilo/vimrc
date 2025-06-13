@@ -312,7 +312,6 @@ require("lazy").setup({
           "terraformls",
           "tflint",
           "ts_ls",
-          "ty",
           "yamlls",
         }
 
@@ -393,7 +392,6 @@ require("lazy").setup({
           "tailwindcss-language-server",
           "terraform-ls",
           "tfsec",
-          "ty",
           "typescript-language-server",
           "vim-language-server",
           "yaml-language-server",
