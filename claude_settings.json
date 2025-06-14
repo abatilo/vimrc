@@ -1,0 +1,27 @@
+{
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(./hack/:*)",
+      "Bash(cat:*)",
+      "Bash(cwebp:*)",
+      "Bash(find:*)",
+      "Bash(git:*)",
+      "Bash(go:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(mise:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(rg:*)",
+      "Bash(rm:*)",
+      "Bash(sed:*)",
+      "Bash(terraform:*)",
+      "Bash(yarn:*)",
+      "WebFetch(domain:*)",
+      "mcp__context7__:*",
+      "mcp__deepwiki__:*"
+    ],
+    "deny": []
+  }
+}

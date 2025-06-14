@@ -40,6 +40,7 @@ ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 # Set up Claude Code configuration
 mkdir -p ~/.claude
 ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
+ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
 
 echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
