@@ -42,6 +42,16 @@ mkdir -p ~/.claude
 ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
 ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
 
+# Merge MCP servers from mcps.json into ~/.claude.json
+if [ -f ~/.claude.json ]; then
+    # File exists, merge mcpServers (mcps.json takes precedence for conflicts) and sort keys
+    jq -s '.[0] * {"mcpServers": .[1].mcpServers} | .mcpServers |= (to_entries | sort_by(.key) | from_entries)' ~/.claude.json "$PWD/mcps.json" > ~/.claude.json.tmp
+    mv ~/.claude.json.tmp ~/.claude.json
+else
+    # File doesn't exist, create it with mcpServers from mcps.json and sort keys
+    jq '.mcpServers |= (to_entries | sort_by(.key) | from_entries)' "$PWD/mcps.json" > ~/.claude.json
+fi
+
 echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
 grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >>~/.zshrc

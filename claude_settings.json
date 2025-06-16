@@ -19,8 +19,12 @@
       "Bash(terraform:*)",
       "Bash(yarn:*)",
       "WebFetch(domain:*)",
-      "mcp__context7__:*",
-      "mcp__deepwiki__:*"
+      "mcp__context7",
+      "mcp__deepwiki",
+      "mcp__kubernetes",
+      "mcp__papyrus",
+      "mcp__playwright",
+      "mcp__sequential-thinking"
     ],
     "deny": []
   }
