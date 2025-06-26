@@ -4,6 +4,9 @@ CLAUDE.md
 CLAUDE.local.md
 .claude/
 
+GEMINI.md
+.gemini/
+
 # Editor files
 .*.swp
 .*.swo
