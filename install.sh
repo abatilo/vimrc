@@ -40,7 +40,6 @@ ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 # Set up Claude Code configuration
 mkdir -p ~/.claude
 ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
-ln -s "$PWD/CLAUDE_global.md" ~/.gemini/GEMINI.md
 ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
 
 # Merge MCP servers from mcps.json into ~/.claude.json
@@ -48,9 +47,6 @@ if [ -f ~/.claude.json ]; then
   # File exists, merge mcpServers (mcps.json takes precedence for conflicts) and sort keys
   jq -s '.[0] * {"mcpServers": .[1].mcpServers} | .mcpServers |= (to_entries | sort_by(.key) | from_entries)' ~/.claude.json "$PWD/mcps.json" >~/.claude.json.tmp
   mv ~/.claude.json.tmp ~/.claude.json
-
-  jq -s '.[0] * {"mcpServers": .[1].mcpServers} | .mcpServers |= (to_entries | sort_by(.key) | from_entries)' ~/.gemini/settings.json "$PWD/mcps.json" >~/.gemini/settings.json.tmp
-  mv ~/.gemini/settings.json.tmp ~/.gemini/settings.json
 else
   # File doesn't exist, create it with mcpServers from mcps.json and sort keys
   jq '.mcpServers |= (to_entries | sort_by(.key) | from_entries)' "$PWD/mcps.json" >~/.claude.json
