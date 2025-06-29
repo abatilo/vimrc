@@ -300,19 +300,19 @@ require("lazy").setup({
         end
 
         local servers = {
-          "bashls",
-          "diagnosticls",
-          "dockerls",
-          "gopls",
-          "helm_ls",
-          "html",
-          "jsonls",
-          "rust_analyzer",
-          "tailwindcss",
-          "terraformls",
-          "tflint",
-          "ts_ls",
-          "yamlls",
+          -- "bashls",
+          -- "diagnosticls",
+          -- "dockerls",
+          -- "gopls",
+          -- "helm_ls",
+          -- "html",
+          -- "jsonls",
+          -- "rust_analyzer",
+          -- "tailwindcss",
+          -- "terraformls",
+          -- "tflint",
+          -- "ts_ls",
+          -- "yamlls",
         }
 
         for _, lsp in pairs(servers) do
