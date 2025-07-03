@@ -15,8 +15,9 @@ make sure that things are right.
 
 ### CRUMBS
 
-Create a CRUMBS/ directory at the root of the repository. We will use this as a
-workspace to leave notes and discoveries while we explore the repository.
+Create a CRUMBS/ directory at the root of the repository. If it already exists,
+make sure to empty it. We will use this as a workspace to leave notes and
+discoveries while we explore the repository.
 
 ### Phases
 
