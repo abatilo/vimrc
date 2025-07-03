@@ -8,8 +8,10 @@ $ARGUMENTS
 Deep planning means we've been asked to spend extra time with thinking about how
 we're going to accomplish this task. That means that we should use every
 extended thinking tool and planning tool that we have access to, and we should
-plan for very thorough and specific steps for our todo list. This is a marathon,
-not a sprint. You should take your time to make sure that things are right.
+plan for very thorough and specific steps for our todo list. You should also be
+making heavy usage of deepwiki mcp whenever the changes might involve a 3rd
+party library. This is a marathon, not a sprint. You should take your time to
+make sure that things are right.
 
 ### CRUMBS
 
