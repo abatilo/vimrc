@@ -42,6 +42,7 @@ mkdir -p ~/.claude
 ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
 ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
 ln -s "$PWD/claude_commands" ~/.claude/commands
+ln -s "$PWD/agents" ~/.claude/agents
 
 # Merge MCP servers from mcps.json into ~/.claude.json
 if [ -f ~/.claude.json ]; then
