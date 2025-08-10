@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
-    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": true,
-    "MAX_THINKING_TOKENS": 31999
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
+    "MAX_THINKING_TOKENS": "31999"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
