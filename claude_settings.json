@@ -4,6 +4,10 @@
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
     "MAX_THINKING_TOKENS": "31999"
   },
+  "statusLine": {
+    "type": "command",
+    "command": "npx --yes ccusage statusline"
+  },
   "includeCoAuthoredBy": false,
   "permissions": {
     "defaultMode": "bypassPermissions",
