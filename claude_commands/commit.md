@@ -14,6 +14,8 @@ commits with unrelated changes.
 
 ## Git Commit Message Best Practices
 
+$ARGUMENTS
+
 Follow these seven rules for excellent commit messages:
 
 1. **Separate subject from body with a blank line** - Critical for readability
