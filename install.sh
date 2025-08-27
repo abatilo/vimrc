@@ -44,6 +44,18 @@ ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
 ln -s "$PWD/claude_commands" ~/.claude/commands
 ln -s "$PWD/agents" ~/.claude/agents
 
+# Set up codex cli configuration
+mkdir -p ~/.codex
+ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
+
+# Ensure Codex CLI config sets high reasoning effort
+CODEX_CONFIG_FILE=~/.codex/config.toml
+if [ -f "$CODEX_CONFIG_FILE" ]; then
+  grep -Fq 'model_reasoning_effort = "high"' "$CODEX_CONFIG_FILE" || echo 'model_reasoning_effort = "high"' >>"$CODEX_CONFIG_FILE"
+else
+  echo 'model_reasoning_effort = "high"' >"$CODEX_CONFIG_FILE"
+fi
+
 # Merge MCP servers from mcps.json into ~/.claude.json
 if [ -f ~/.claude.json ]; then
   # File exists, merge mcpServers (mcps.json takes precedence for conflicts) and sort keys
