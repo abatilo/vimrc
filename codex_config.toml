@@ -11,3 +11,12 @@ approval_policy = "never"
 [shell_environment_policy]
 inherit = "all"
 ignore_default_excludes = true
+
+[mcp_servers.deepwiki]
+command = "npx"
+args = ["mcp-remote", "https://mcp.deepwiki.com/mcp"]
+
+[mcp_servers.kubernetes]
+env = { ALLOW_ONLY_NON_DESTRUCTIVE_TOOLS = "true" }
+command = "npx"
+args = ["mcp-server-kubernetes"]
