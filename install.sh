@@ -23,10 +23,6 @@ ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 # Set a default global .gitignore
 ln -s "$PWD/.gitignore_global" ~/.gitignore
 
-# Set aidor files
-ln -s "$PWD/.aider.conf.yml" ~/.aider.conf.yml
-ln -s "$PWD/.aider.model.metadata.json" ~/.aider.model.metadata.json
-ln -s "$PWD/.aider.model.settings.yml" ~/.aider.model.settings.yml
 
 # Install a default global .editorconfig
 ln -s "$PWD/.editorconfig_global" ~/.editorconfig
