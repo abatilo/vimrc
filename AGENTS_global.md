@@ -12,6 +12,8 @@ reading more of the codebase.
 
 # Git instructions
 
+These instructions are for when you're explicitly asked to commit changes.
+
 Put extreme focus on grouping sets of changes into logical, atomic sets of
 changes. This might require partial commits! Write the commit messages in
 imperative voice. Capitalize the first letter of the commit subject. For the
@@ -52,3 +54,9 @@ Bad: `fixed stuff`
 
 Good: `Remove deprecated methods from UserService`
 Bad: `Changes`
+
+### Multiline
+
+When creating the `git commit -m` commands, do not escape the new lines inside
+of the `-m` text. We want the commit messages to actually wrap to a new line in
+git state.
