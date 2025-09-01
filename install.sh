@@ -37,27 +37,10 @@ ln -s "$PWD/ghostty_config" ~/.config/ghostty/config
 mkdir -p ~/.config/gh-dash
 ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 
-# Set up Claude Code configuration
-mkdir -p ~/.claude
-ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
-ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
-ln -s "$PWD/claude_commands" ~/.claude/commands
-ln -s "$PWD/agents" ~/.claude/agents
-
 # Set up codex cli configuration
 mkdir -p ~/.codex
 ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
 ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
-
-# Merge MCP servers from mcps.json into ~/.claude.json
-if [ -f ~/.claude.json ]; then
-  # File exists, merge mcpServers (mcps.json takes precedence for conflicts) and sort keys
-  jq -s '.[0] * {"mcpServers": .[1].mcpServers} | .mcpServers |= (to_entries | sort_by(.key) | from_entries)' ~/.claude.json "$PWD/mcps.json" >~/.claude.json.tmp
-  mv ~/.claude.json.tmp ~/.claude.json
-else
-  # File doesn't exist, create it with mcpServers from mcps.json and sort keys
-  jq '.mcpServers |= (to_entries | sort_by(.key) | from_entries)' "$PWD/mcps.json" >~/.claude.json
-fi
 
 echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
