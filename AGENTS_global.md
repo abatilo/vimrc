@@ -64,6 +64,42 @@ Bad: `Changes`
 
 ### Multiline
 
+<important>
+  <title>Multiline Commit Messages</title>
+  <summary>
+    Always use real newlines in commit messages. Do not use
+    escaped sequences like "\\n". Keep the subject to ~50 chars,
+    add a blank line, then write one or more paragraphs wrapped at
+    ~72 chars that explain the what and why.
+  </summary>
+  <checklist>
+    <item>Subject: imperative, capitalized, no period</item>
+    <item>Blank line between subject and body</item>
+    <item>Body: wrap at ~72 columns</item>
+    <item>Use real newlines; never "\\n" escapes</item>
+  </checklist>
+  <howto>
+    <preferred>
+      Run `git commit` to open your editor. Write the subject on the
+      first line, add a blank line, then the body paragraphs.
+    </preferred>
+    <cli>
+      If committing from the CLI, provide multiple `-m` flags so each
+      becomes its own paragraph:
+      `git commit -m "Subject" -m "First paragraph." -m "Second paragraph."`
+    </cli>
+    <amend>
+      If you accidentally used "\\n" escapes, fix it by amending and
+      rewriting the message with real newlines:
+      `git commit --amend`
+    </amend>
+    <verify>
+      Verify formatting before pushing:
+      `git show --no-patch --pretty=fuller` or `git log -1`.
+    </verify>
+  </howto>
+</important>
+
 When creating the `git commit -m` commands, do not escape the new lines inside
 of the `-m` text. We want the commit messages to actually wrap to a new line in
 git state.
