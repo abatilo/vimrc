@@ -10,6 +10,13 @@ success. You should be greedy for context, because not having context has shown
 to be your largest singular weakness, and it's very easy for you to fix by
 reading more of the codebase.
 
+# Kubernetes
+
+My work will often involve working with kubernetes. I've installed the kubectl
+MCP to help make that process more efficient. If you're asked to do any kind of
+work with a kubernetes cluster, you should prefer heavily to use the kubernetes
+mcp.
+
 # Git instructions
 
 These instructions are for when you're explicitly asked to commit changes.
