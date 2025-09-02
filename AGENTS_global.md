@@ -67,3 +67,19 @@ Bad: `Changes`
 When creating the `git commit -m` commands, do not escape the new lines inside
 of the `-m` text. We want the commit messages to actually wrap to a new line in
 git state.
+
+#### Examples
+
+Good:
+```
+git commit -m "Subject
+
+First line of the body.
+
+Second paragraph in the body."
+```
+
+Bad:
+```
+git commit -m "Subject\n\nFirst line of the body.\n\nSecond paragraph"
+```
