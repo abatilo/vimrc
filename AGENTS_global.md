@@ -1,46 +1,35 @@
-# Discovery and planning
+Developer: # Discovery and Planning
 
-When working on a code base, you're very meticulous about discovery and
-understanding. When crafting your TODO list, the very first or sometimes even
-several items in your TODO list should be centered around discovery,
-exploration, and context gathering for the problem at hand. You should lean
-towards reading too much to gather context instead of not having enough context.
-Reading code makes you more powerful and dependable, which is a huge factor to
-success. You should be greedy for context, because not having context has shown
-to be your largest singular weakness, and it's very easy for you to fix by
-reading more of the codebase.
+Begin with a concise checklist (3-7 bullets) of what you will do; keep items conceptual, not implementation-level. When working with a codebase, prioritize thorough discovery and understanding. When building your TODO list, ensure the first items focus on exploration and gathering context for the problem at hand. Favor reading and understanding more of the codebase rather than risking insufficient context. Being well-informed makes you more effective and reliable—a key contributor to success. Lack of context is a common and avoidable weakness that can be remedied simply by reading more of the codebase.
 
-# Kubernetes
+# Kubernetes Workflows
 
-My work will often involve working with kubernetes. I've installed the kubectl
-MCP to help make that process more efficient. If you're asked to do any kind of
-work with a kubernetes cluster, you should prefer heavily to use the kubernetes
-mcp.
+Much of the work will involve Kubernetes. The `kubectl-mcp` plugin is installed to streamline these processes. Prefer using `kubectl-mcp` whenever performing operations with a Kubernetes cluster. Before initiating significant Kubernetes operations, state the purpose and minimal required inputs.
 
-# Git instructions
+# Git Instructions
 
-These instructions are for when you're explicitly asked to commit changes.
+These guidelines apply when you are explicitly asked to commit changes.
 
-Put extreme focus on grouping sets of changes into logical, atomic sets of
-changes. This might require partial commits! Write the commit messages in
-imperative voice. Capitalize the first letter of the commit subject. For the
-commit body, focus on the reasons *WHY* a change might be made, along with
-summarizing the changes themselves.
+- Group related changes into logical, atomic commits—this may require partial commits.
+- Write commit messages in the imperative voice.
+- Capitalize the first letter of the commit subject.
+- In the commit body, focus on the reasons for the changes as well as a brief summary of the changes themselves.
+
+After each code edit or git operation, validate the result in 1-2 lines and proceed or self-correct if validation fails.
 
 ## Git Commit Message Best Practices
 
-Follow these seven rules for excellent commit messages:
+Follow these seven rules for effective commit messages:
 
-1. **Separate subject from body with a blank line** - Critical for readability
-2. **Limit subject line to 50 characters** - Forces concise summaries
-3. **Capitalize the subject line** - Consistent formatting
-4. **Do not end subject line with a period** - It's a title, not a sentence
-5. **Use imperative mood in subject** - "Add feature" not "Added feature"
-   - Test: Subject should complete "If applied, this commit will _____"
-6. **Wrap body at 72 characters** - Ensures readability in terminals
-7. **Use body to explain what and why vs. how** - Code shows how, commit explains why
+1. **Separate subject from body with a blank line** — Enhances readability.
+2. **Limit subject line to 50 characters** — Encourages concise summaries.
+3. **Capitalize the subject line** — Ensures consistent formatting.
+4. **Do not end subject line with a period** — It should act as a title, not a sentence.
+5. **Use imperative mood in subject** — e.g., "Add feature" not "Added feature". Your subject should complete the phrase "If applied, this commit will _____".
+6. **Wrap body at 72 characters** — Improves readability in terminals.
+7. **Explain what and why, not just how** — The code reflects the how; the commit message should clarify what changed and why.
 
-### Message Structure
+### Commit Message Structure
 ```
 <subject: concise summary, imperative, capitalized, no period>
 
@@ -49,11 +38,11 @@ Follow these seven rules for excellent commit messages:
 <footer: references to issues, breaking changes, etc.>
 ```
 
-### Key Principles
-- **Atomic commits**: Each commit should represent one logical change
-- **Context is king**: Explain WHY the change was made, not just what
-- **Future-proof**: Write for someone (including future you) reading this months later
-- **Consistency**: Maintain uniform style across the project
+### Principles
+- **Atomic commits:** Each commit should encapsulate a single logical change.
+- **Context matters:** Explain _why_ the change is made, not just _what_ changed.
+- **Future-proofing:** Write messages for future maintainers, including yourself.
+- **Consistency:** Adhere to a uniform style throughout the project.
 
 ### Examples
 Good: `Refactor subsystem X for readability`
@@ -62,50 +51,13 @@ Bad: `fixed stuff`
 Good: `Remove deprecated methods from UserService`
 Bad: `Changes`
 
-### Multiline
+### Multiline Commit Messages
 
 <important>
-  <title>Multiline Commit Messages</title>
-  <summary>
-    Always use real newlines in commit messages. Do not use
-    escaped sequences like "\\n". Keep the subject to ~50 chars,
-    add a blank line, then write one or more paragraphs wrapped at
-    ~72 chars that explain the what and why.
-  </summary>
-  <checklist>
-    <item>Subject: imperative, capitalized, no period</item>
-    <item>Blank line between subject and body</item>
-    <item>Body: wrap at ~72 columns</item>
-    <item>Use real newlines; never "\\n" escapes</item>
-  </checklist>
-  <howto>
-    <preferred>
-      Run `git commit` to open your editor. Write the subject on the
-      first line, add a blank line, then the body paragraphs.
-    </preferred>
-    <cli>
-      If committing from the CLI, provide multiple `-m` flags so each
-      becomes its own paragraph:
-      `git commit -m "Subject" -m "First paragraph." -m "Second paragraph."`
-    </cli>
-    <amend>
-      If you accidentally used "\\n" escapes, fix it by amending and
-      rewriting the message with real newlines:
-      `git commit --amend`
-    </amend>
-    <verify>
-      Verify formatting before pushing:
-      `git show --no-patch --pretty=fuller` or `git log -1`.
-    </verify>
-  </howto>
+When creating `git commit -m` commands, do not escape newlines inside the `-m` text. The commit message should naturally contain new lines for clear separation.
 </important>
 
-When creating the `git commit -m` commands, do not escape the new lines inside
-of the `-m` text. We want the commit messages to actually wrap to a new line in
-git state.
-
 #### Examples
-
 Good:
 ```
 git commit -m "Subject
