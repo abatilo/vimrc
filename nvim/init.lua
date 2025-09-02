@@ -81,7 +81,6 @@ require("lazy").setup({
           {
             ensure_installed = {
               "bash",
-              "bicep",
               "c",
               "c_sharp",
               "comment",
