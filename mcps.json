@@ -13,12 +13,6 @@
         "mcp-server-kubernetes"
       ]
     },
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
-    },
     "sequential-thinking": {
       "command": "npx",
       "args": [
