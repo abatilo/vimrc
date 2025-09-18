@@ -4,6 +4,7 @@
 	signingkey = ~/.ssh/id_ed25519.pub
 [core]
   excludesfile = ~/.gitignore
+  pager = less -FX
 [alias]
   squish = "!f() { git rebase -i $(git merge-base origin/main HEAD); }; f"
 [push]
