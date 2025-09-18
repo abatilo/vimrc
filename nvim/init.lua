@@ -312,7 +312,8 @@ require("lazy").setup({
         }
 
         for _, lsp in pairs(servers) do
-          require('lspconfig')[lsp].setup(config())
+          vim.lsp.config(lsp, config())
+          vim.lsp.enable(lsp)
         end
 
         require("mason-lspconfig").setup {
