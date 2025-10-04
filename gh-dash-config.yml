@@ -1,15 +1,15 @@
 prSections:
-- title: Needs My Review
-  filters: is:open review-requested:@me
-  type: null
-- title: My Pull Requests
-  filters: is:open author:@me
-  type: null
+  - title: Needs My Review
+    filters: is:open review-requested:@me
+    type: null
+  - title: My Pull Requests
+    filters: is:open author:@me
+    type: null
 issuesSections:
-- title: Assigned
-  filters: is:open assignee:@me
-- title: My Issues
-  filters: is:open author:@me
+  - title: Assigned
+    filters: is:open assignee:@me
+  - title: My Issues
+    filters: is:open author:@me
 repo:
   branchesRefetchIntervalSeconds: 10
   prsRefetchIntervalSeconds: 10
@@ -63,7 +63,7 @@ keybindings:
   issues: []
   branches: []
 repoPaths:
-  infinity-microsoft/*: ~/work/*
+  coreweave/*: ~/work/*
   mentallyanimated/*: ~/mentallyanimated/*
 theme:
   ui:
