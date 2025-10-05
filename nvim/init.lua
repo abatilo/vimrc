@@ -199,7 +199,37 @@ require("lazy").setup({
       opts = {},
     },
     { -- Configure LSP
-      'neovim/nvim-lspconfig'
+      'neovim/nvim-lspconfig',
+      config = function()
+        local group = vim.api.nvim_create_augroup('UserLspKeymaps', { clear = true })
+        vim.api.nvim_create_autocmd('LspAttach', {
+          group = group,
+          callback = function(event)
+            local client = vim.lsp.get_client_by_id(event.data.client_id)
+            if not client then
+              return
+            end
+
+            local opts = { buffer = event.buf, silent = true }
+            vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+            vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
+            vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+            vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+            vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+            vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+            vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+            vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+            vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+            vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+            vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+            local ok, lsp_format = pcall(require, 'lsp-format')
+            if ok then
+              lsp_format.on_attach(client, event.buf)
+            end
+          end,
+        })
+      end,
     },
     { -- Auto format code
       'lukas-reineke/lsp-format.nvim',
@@ -268,32 +298,9 @@ require("lazy").setup({
       'williamboman/mason-lspconfig.nvim',
       event='VeryLazy',
       config = function()
-        -- keymaps
-        local on_attach = function(client, bufnr)
-          local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-          local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-          -- Mappings.
-          local opts = { noremap=true, silent=true }
-          buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-          buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-          buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-          buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-          buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-          buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-          buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-          buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-          buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-          buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-          buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-
-          require('lsp-format').on_attach(client)
-        end
-
         local function config(_config)
           return vim.tbl_deep_extend("force", {
             capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-            on_attach = on_attach,
           }, _config or {})
         end
 
@@ -313,7 +320,6 @@ require("lazy").setup({
 
         for _, lsp in pairs(servers) do
           vim.lsp.config(lsp, config())
-          vim.lsp.enable(lsp)
         end
 
         require("mason-lspconfig").setup {
