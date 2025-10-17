@@ -4,15 +4,6 @@
       "type": "http",
       "url": "https://mcp.deepwiki.com/mcp"
     },
-    "kubernetes": {
-      "env": {
-        "ALLOW_ONLY_NON_DESTRUCTIVE_TOOLS": "true"
-      },
-      "command": "npx",
-      "args": [
-        "mcp-server-kubernetes"
-      ]
-    },
     "sequential-thinking": {
       "command": "npx",
       "args": [

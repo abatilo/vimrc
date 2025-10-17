@@ -17,7 +17,3 @@ ignore_default_excludes = true
 [mcp_servers.deepwiki]
 command = "npx"
 args = ["mcp-remote", "https://mcp.deepwiki.com/mcp"]
-
-[mcp_servers.kubernetes]
-command = "npx"
-args = ["mcp-server-kubernetes"]
