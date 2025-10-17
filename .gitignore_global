@@ -1,8 +1,9 @@
 # AI tools
 .aider*
-CLAUDE.md
-CLAUDE.local.md
+.beads/
 .claude/
+CLAUDE.local.md
+CLAUDE.md
 CRUMBS/
 
 GEMINI.md
