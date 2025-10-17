@@ -6,7 +6,6 @@
   },
   "includeCoAuthoredBy": false,
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(./hack/:*)",
       "Bash(cat:*)",
@@ -31,6 +30,8 @@
       "mcp__deepwiki",
       "mcp__sequential-thinking"
     ],
-    "deny": []
-  }
+    "deny": [],
+    "defaultMode": "bypassPermissions"
+  },
+  "alwaysThinkingEnabled": true
 }
