@@ -33,7 +33,6 @@
       "Bash(yarn:*)",
       "WebFetch(domain:*)",
       "mcp__deepwiki",
-      "mcp__kubernetes",
       "mcp__sequential-thinking"
     ],
     "deny": []
