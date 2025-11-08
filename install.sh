@@ -77,5 +77,10 @@ grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >>~/.zshr
 grep -q "octo()" ~/.zshrc || echo "octo() { vim -c \"Octo pr edit \$1\" }" >>~/.zshrc
 grep -q "ask()" ~/.zshrc || echo "ask() { gh models run gpt-4.1 \$1 }" >>~/.zshrc
 grep -q "export PAGER=" ~/.zshrc || echo "export PAGER=" >>~/.zshrc
+grep -q "tmpdir()" ~/.zshrc || cat <<'EOF' >>~/.zshrc
+tmpdir() {
+  pushd "$(mktemp -d)"
+}
+EOF
 
 echo "Install tmux then run the tmux.sh"
