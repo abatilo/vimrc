@@ -33,5 +33,6 @@
     "deny": [],
     "defaultMode": "bypassPermissions"
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "model": "sonnet[1m]"
 }

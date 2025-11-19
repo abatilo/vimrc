@@ -1,5 +1,5 @@
-model = "gpt-5.1-codex"
-model_reasoning_effort = "high"
+model = "gpt-5.1-codex-max"
+model_reasoning_effort = "xhigh"
 model_reasoning_summary = "detailed"
 model_verbosity = "high"
 file_opener = "none"
@@ -17,3 +17,7 @@ ignore_default_excludes = true
 [mcp_servers.deepwiki]
 command = "npx"
 args = ["mcp-remote", "https://mcp.deepwiki.com/mcp"]
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["@playwright/mcp@latest"]
