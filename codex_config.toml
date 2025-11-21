@@ -6,6 +6,7 @@ file_opener = "none"
 show_raw_agent_reasoning = true
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
+tool_output_token_limit = 25000
 
 [features]
 web_search_request = true
@@ -18,6 +19,6 @@ ignore_default_excludes = true
 command = "npx"
 args = ["mcp-remote", "https://mcp.deepwiki.com/mcp"]
 
-[mcp_servers.playwright]
-command = "npx"
-args = ["@playwright/mcp@latest"]
+# [mcp_servers.playwright]
+# command = "npx"
+# args = ["@playwright/mcp@latest"]
