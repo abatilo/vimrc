@@ -26,8 +26,7 @@
       "Bash(sed:*)",
       "Bash(terraform:*)",
       "Bash(yarn:*)",
-      "WebFetch(domain:*)",
-      "mcp__deepwiki"
+      "WebFetch(domain:*)"
     ],
     "deny": [],
     "defaultMode": "bypassPermissions"
