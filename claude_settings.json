@@ -6,6 +6,9 @@
   },
   "includeCoAuthoredBy": false,
   "permissions": {
+    "additionalDirectories": [
+      "/Users/abatilo/work"
+    ],
     "allow": [
       "Bash(./hack/:*)",
       "Bash(cat:*)",
