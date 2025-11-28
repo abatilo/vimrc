@@ -27,8 +27,7 @@
       "Bash(terraform:*)",
       "Bash(yarn:*)",
       "WebFetch(domain:*)",
-      "mcp__deepwiki",
-      "mcp__sequential-thinking"
+      "mcp__deepwiki"
     ],
     "deny": [],
     "defaultMode": "bypassPermissions"
