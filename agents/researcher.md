@@ -196,10 +196,24 @@ Based on research:
 
 ## Filing Follow-up Work
 
+**IMPORTANT**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
+```
+/skill beads
+```
+
 If research reveals necessary tasks:
 ```bash
 bd create "Implement: <finding>" -t task -p 2 \
   --acceptance "<specific verification criteria>" --json
 bd create "Investigate: <open question>" -t task -p 3 \
   --acceptance "<what constitutes a complete answer>" --json
+```
+
+When closing issues, always use comprehensive `--reason` values (see beads skill for template):
+```bash
+bd close <id> --reason "Completed: <summary>
+Verification: <how verified>
+Learnings: <key insights>
+Related: <new issues created>
+Files: <modified files>" --json
 ```

@@ -87,6 +87,11 @@ wc -l <file>
 
 ## Filing Discovered Issues
 
+**IMPORTANT**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
+```
+/skill beads
+```
+
 For each finding that requires action:
 ```bash
 bd create "<finding title>" -t bug -p <0-4 based on severity> \
@@ -96,3 +101,12 @@ bd create "<finding title>" -t bug -p <0-4 based on severity> \
 Critical findings = priority 0
 High findings = priority 1
 Medium findings = priority 2
+
+When closing issues, always use comprehensive `--reason` values (see beads skill for template):
+```bash
+bd close <id> --reason "Completed: <summary>
+Verification: <how verified>
+Learnings: <key insights>
+Related: <new issues created>
+Files: <modified files>" --json
+```

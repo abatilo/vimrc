@@ -64,6 +64,11 @@ When reporting completion:
 
 ## Discovering Additional Work
 
+**IMPORTANT**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
+```
+/skill beads
+```
+
 If you find bugs or necessary follow-up work during implementation:
 ```bash
 bd create "Found: <description>" -t bug -p 1 \
@@ -71,3 +76,12 @@ bd create "Found: <description>" -t bug -p 1 \
 ```
 
 Do NOT attempt to fix discovered issues unless explicitly asked. File them and continue with the assigned task.
+
+When closing issues, always use comprehensive `--reason` values (see beads skill for template):
+```bash
+bd close <id> --reason "Completed: <summary>
+Verification: <how verified>
+Learnings: <key insights>
+Related: <new issues created>
+Files: <modified files>" --json
+```

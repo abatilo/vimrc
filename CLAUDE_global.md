@@ -103,13 +103,19 @@ The session is NOT complete until `git push` succeeds.
 
 Track ALL work with beads. Never use TodoWrite or markdown TODOs.
 
+**IMPORTANT**: Before using any `bd` command, invoke the `beads` skill for comprehensive guidance:
+```
+/skill beads
+```
+The beads skill contains critical documentation for issue creation, closure reasons, and workflow best practices.
+
 ### Core Commands
 ```bash
 bd prime              # Recover context after compaction
 bd ready --json       # Find unblocked work
 bd create "Title" -t task -p 1 --acceptance "Criteria for done" --json  # Create work
 bd update <id> --status in_progress       # Claim work
-bd close <id> --reason "Done" --json      # Complete work
+bd close <id> --reason "<comprehensive reason - see beads skill>" --json  # Complete work
 bd sync               # Force immediate sync + push
 ```
 
