@@ -107,7 +107,7 @@ Track ALL work with beads. Never use TodoWrite or markdown TODOs.
 ```bash
 bd prime              # Recover context after compaction
 bd ready --json       # Find unblocked work
-bd create "Title" -t task -p 1 --json     # Create work
+bd create "Title" -t task -p 1 --acceptance "Criteria for done" --json  # Create work
 bd update <id> --status in_progress       # Claim work
 bd close <id> --reason "Done" --json      # Complete work
 bd sync               # Force immediate sync + push

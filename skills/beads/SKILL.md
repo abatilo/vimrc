@@ -66,11 +66,15 @@ When an issue is too large:
 # 1. Promote the original to an epic (if not already)
 bd update <original-id> -t epic --json
 
-# 2. Create atomic child tasks
-bd create "Step 1: Define API interface for X" -t task -p 1 --json
-bd create "Step 2: Implement core logic for X" -t task -p 1 --json
-bd create "Step 3: Add unit tests for X" -t task -p 1 --json
-bd create "Step 4: Wire up to existing system" -t task -p 1 --json
+# 2. Create atomic child tasks with acceptance criteria
+bd create "Step 1: Define API interface for X" -t task -p 1 \
+  --acceptance "Interface defined in types.go; reviewed" --json
+bd create "Step 2: Implement core logic for X" -t task -p 1 \
+  --acceptance "All methods implemented; unit tests pass" --json
+bd create "Step 3: Add unit tests for X" -t task -p 1 \
+  --acceptance ">80% coverage; edge cases covered" --json
+bd create "Step 4: Wire up to existing system" -t task -p 1 \
+  --acceptance "Integration test passes; no regressions" --json
 
 # 3. Set dependencies (each step depends on previous)
 bd dep add <step2-id> <step1-id>
@@ -245,17 +249,20 @@ bd show <id> --json          # Full issue details
 ### Creating Issues
 
 ```bash
-# Task with full context
-bd create "Implement user avatar upload" -t feature -p 1 --json
+# Task with full context and acceptance criteria
+bd create "Implement user avatar upload" -t feature -p 1 \
+  --acceptance "Avatar displays in header; supports PNG/JPG under 2MB" --json
 
 # Bug discovered during work
-bd create "Found: Memory leak in useEffect cleanup" -t bug -p 2 --json
+bd create "Found: Memory leak in useEffect cleanup" -t bug -p 2 \
+  --acceptance "No memory growth after 100 mount/unmount cycles" --json
 
 # Follow-up work
-bd create "Follow-up: Add rate limiting to avatar endpoint" -t task -p 3 --json
+bd create "Follow-up: Add rate limiting to avatar endpoint" -t task -p 3 \
+  --acceptance "Returns 429 after 10 requests/minute per user" --json
 ```
 
-**CRITICAL**: After `bd create`, immediately edit the issue to add the full description structure using `bd update <id> --description "..."` or by editing the issue file directly.
+**TIP**: Use `--acceptance` to define "done" criteria inline. For complex issues, also add full description structure using `bd update <id> --description "..."` or by editing the issue file directly.
 
 ### Updating Issues
 
@@ -319,7 +326,7 @@ bd update <id> --status in_progress --json
 bd update <id> --note "Session end: completed X, Y remains, next: Z"
 
 # 2. File any remaining work as new issues
-bd create "Follow-up: ..." -t task -p 2 --json
+bd create "Follow-up: ..." -t task -p 2 --acceptance "..." --json
 
 # 3. Close completed issues with verification
 bd close <id> --reason "Completed: [specific verification]" --json

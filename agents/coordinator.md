@@ -37,12 +37,16 @@ bd list --status=open --json # Review open issues
 ### When Decomposing Work
 ```bash
 # Create parent issue
-bd create "Implement feature X" -t feature -p 1 --json
+bd create "Implement feature X" -t feature -p 1 \
+  --acceptance "Feature works end-to-end; all child tasks complete" --json
 
-# Create child tasks
-bd create "Design API interface" -t task --json
-bd create "Implement core logic" -t task --json
-bd create "Add tests" -t task --json
+# Create child tasks with acceptance criteria
+bd create "Design API interface" -t task \
+  --acceptance "Interface defined and documented" --json
+bd create "Implement core logic" -t task \
+  --acceptance "All methods implemented; unit tests pass" --json
+bd create "Add tests" -t task \
+  --acceptance ">80% coverage; edge cases covered" --json
 
 # Set dependencies
 bd dep add <tests-id> <impl-id>    # Tests depend on implementation

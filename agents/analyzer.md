@@ -89,7 +89,8 @@ wc -l <file>
 
 For each finding that requires action:
 ```bash
-bd create "<finding title>" -t bug -p <0-4 based on severity> --json
+bd create "<finding title>" -t bug -p <0-4 based on severity> \
+  --acceptance "<how to verify the fix>" --json
 ```
 
 Critical findings = priority 0

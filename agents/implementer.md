@@ -66,7 +66,8 @@ When reporting completion:
 
 If you find bugs or necessary follow-up work during implementation:
 ```bash
-bd create "Found: <description>" -t bug -p 1 --json
+bd create "Found: <description>" -t bug -p 1 \
+  --acceptance "<how to verify the fix>" --json
 ```
 
 Do NOT attempt to fix discovered issues unless explicitly asked. File them and continue with the assigned task.

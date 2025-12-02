@@ -198,6 +198,8 @@ Based on research:
 
 If research reveals necessary tasks:
 ```bash
-bd create "Implement: <finding>" -t task -p 2 --json
-bd create "Investigate: <open question>" -t task -p 3 --json
+bd create "Implement: <finding>" -t task -p 2 \
+  --acceptance "<specific verification criteria>" --json
+bd create "Investigate: <open question>" -t task -p 3 \
+  --acceptance "<what constitutes a complete answer>" --json
 ```
