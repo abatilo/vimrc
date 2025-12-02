@@ -29,8 +29,116 @@ USE THIS SKILL AUTOMATICALLY when:
 | Starting a new session | `bd prime && bd ready --json` |
 | Completing any task | `bd close` with verification details |
 | Finding scope creep | `bd create` new issue, link as dependency |
+| Issue has >3 acceptance criteria | STOP: Decompose into atomic issues |
+| Thinking "first X, then Y, then Z" | STOP: Create separate issues for X, Y, Z |
+| Work would require multiple commits | STOP: One issue = one commit |
 
 **KEY PRINCIPLE**: Create issues as a side effect of thinking, not just when explicitly asked. If you're reasoning about work, that reasoning belongs in an issue.
+
+---
+
+## Issue Atomicity: The Decomposition Imperative
+
+### The One-Commit Test
+
+**Before starting any issue, ask: "Can this be completed in a single, focused commit?"**
+
+If no, the issue is too large. STOP and decompose it.
+
+### Signs an Issue Needs Decomposition
+
+IMMEDIATELY decompose when you notice:
+
+| Warning Sign | What It Means | Action |
+|--------------|---------------|--------|
+| Multiple acceptance criteria touch different files/systems | Issue conflates unrelated changes | Split by system boundary |
+| You're thinking "first I'll do X, then Y, then Z" | Sequential sub-tasks hidden in one issue | Create separate issues for X, Y, Z |
+| Description requires multiple "## sections" of work | Scope is an epic, not a task | Promote to epic, create child tasks |
+| Estimate exceeds ~30 minutes of focused work | Too much cognitive load for one unit | Break into smaller deliverables |
+| You want to commit partway through | Natural boundary discovered | That boundary = issue boundary |
+| "And also..." appears in your thinking | Scope creep detected | New issue for the "also" |
+
+### How to Decompose
+
+When an issue is too large:
+
+```bash
+# 1. Promote the original to an epic (if not already)
+bd update <original-id> -t epic --json
+
+# 2. Create atomic child tasks
+bd create "Step 1: Define API interface for X" -t task -p 1 --json
+bd create "Step 2: Implement core logic for X" -t task -p 1 --json
+bd create "Step 3: Add unit tests for X" -t task -p 1 --json
+bd create "Step 4: Wire up to existing system" -t task -p 1 --json
+
+# 3. Set dependencies (each step depends on previous)
+bd dep add <step2-id> <step1-id>
+bd dep add <step3-id> <step2-id>
+bd dep add <step4-id> <step3-id>
+
+# 4. Link children to parent epic
+bd dep add <step1-id> <epic-id> --type parent-child
+```
+
+### Decomposition Examples
+
+#### BAD: Monolithic Issue
+
+```
+Title: Implement user authentication
+
+## Acceptance Criteria
+- [ ] Add login form component
+- [ ] Create auth API endpoints
+- [ ] Implement JWT token handling
+- [ ] Add protected route middleware
+- [ ] Create user session storage
+- [ ] Add logout functionality
+- [ ] Write tests for all auth flows
+```
+
+**Why it fails**: 7 distinct pieces of work. Will take multiple sessions. Partial progress hard to track. If context is lost mid-way, unclear what's done.
+
+#### GOOD: Decomposed into Atomic Issues
+
+```
+Epic: Implement user authentication system
+├── Task: Create login form component (UI only, mock auth)
+├── Task: Implement /api/auth/login endpoint
+├── Task: Implement /api/auth/logout endpoint
+├── Task: Add JWT token service (sign, verify, refresh)
+├── Task: Create auth middleware for protected routes
+├── Task: Implement client-side token storage
+└── Task: Add auth integration tests
+
+Each task:
+- Completable in one commit
+- Independently testable
+- Clear done/not-done state
+- Self-contained context
+```
+
+### The Decomposition Reflex
+
+Train yourself to decompose automatically:
+
+1. **When receiving a request**: Before creating an issue, mentally break it into steps
+2. **When writing acceptance criteria**: If you write more than 3-4 criteria, decompose
+3. **When starting work**: If you think "this will take a while", decompose first
+4. **When context-switching**: If you can't finish before switching, decompose remaining work
+5. **When updating progress notes**: If notes describe multiple completed sub-tasks, those should have been separate issues
+
+### Atomic Issue Characteristics
+
+A properly-sized issue:
+
+- **Single responsibility**: Does ONE thing well
+- **Clear completion**: Unambiguous done state
+- **Independent verification**: Can be tested in isolation
+- **Focused context**: All relevant info fits in description
+- **Committable**: Results in exactly one logical commit
+- **Resumable**: If interrupted, can resume without re-reading everything
 
 ---
 
@@ -228,13 +336,15 @@ git status  # MUST show "up to date with origin"
 ## Critical Rules
 
 1. **PROACTIVE CREATION**: Create issues as you think, not just when asked
-2. **RICH DESCRIPTIONS**: Every issue must pass the context recovery test
-3. **ABSOLUTE PATHS**: Always use full file paths with line numbers
-4. **DECISION RATIONALE**: Document why, not just what
-5. **NEVER USE TodoWrite**: Use `bd create` for all work tracking
-6. **ALWAYS USE `--json`**: Enables programmatic parsing
-7. **SYNC AT SESSION END**: The plane is in the air until `git push` succeeds
-8. **LINK DISCOVERED WORK**: Use dependencies to maintain traceability
+2. **ATOMIC ISSUES**: One issue = one commit. Decompose larger work immediately
+3. **RICH DESCRIPTIONS**: Every issue must pass the context recovery test
+4. **ABSOLUTE PATHS**: Always use full file paths with line numbers
+5. **DECISION RATIONALE**: Document why, not just what
+6. **DECOMPOSE EARLY**: If >3 acceptance criteria, split before starting
+7. **NEVER USE TodoWrite**: Use `bd create` for all work tracking
+8. **ALWAYS USE `--json`**: Enables programmatic parsing
+9. **SYNC AT SESSION END**: The plane is in the air until `git push` succeeds
+10. **LINK DISCOVERED WORK**: Use dependencies to maintain traceability
 
 ---
 
@@ -270,3 +380,8 @@ git status  # MUST show "up to date with origin"
 | Batching issue creation | Context lost if interrupted | Create issues as you discover them |
 | Skipping progress notes | Session state lost | Update notes after each significant step |
 | Silent scope expansion | Work becomes untracked | Create new linked issues for new scope |
+| Monolithic issues | Partial progress lost on context loss | Decompose: one issue = one commit |
+| >3 acceptance criteria | Issue is actually multiple tasks | Split into atomic issues with dependencies |
+| "First X, then Y" in description | Hidden sequential tasks | Separate issues linked by dependencies |
+| Committing mid-issue | Issue scope was too large | Retroactively split, or decompose upfront |
+| Epic-sized "tasks" | Conflates planning with execution | Promote to epic, create child tasks |
