@@ -1,10 +1,11 @@
 ---
 name: beads
 description: |
-  Track work PROACTIVELY with beads issue tracker (bd). MUST BE USED for:
-  task decomposition, bug discovery, dependency management, and context
-  preservation across sessions. Creates rich, recoverable issue descriptions
-  that enable seamless session resumption after context compaction.
+  Track work with beads issue tracker. Auto-activates when using bd commands
+  (bd create, bd close, bd update, bd ready, bd prime, bd sync, bd show).
+  MUST BE USED for: task decomposition, bug discovery, dependency management,
+  issue closure with comprehensive --reason fields, and context preservation.
+  Contains templates for --reason field, acceptance criteria, and session protocols.
 allowed-tools:
   - Bash
   - Read

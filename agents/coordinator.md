@@ -74,14 +74,11 @@ bd ready --json  # Check next available work
 
 ## Work Tracking Rules
 
-**CRITICAL**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
-```
-/skill beads
-```
+The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
 
 1. Create a `bd` issue before delegating any task
 2. Update issue status when work begins
-3. Close issues with comprehensive `--reason` (see beads skill for template)
+3. Close issues with comprehensive `--reason` (beads skill has full template)
 4. Never use TodoWrite - always use `bd`
 
 ## Quality Standards

@@ -64,10 +64,7 @@ When reporting completion:
 
 ## Discovering Additional Work
 
-**IMPORTANT**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
-```
-/skill beads
-```
+The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
 
 If you find bugs or necessary follow-up work during implementation:
 ```bash

@@ -196,10 +196,7 @@ Based on research:
 
 ## Filing Follow-up Work
 
-**IMPORTANT**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
-```
-/skill beads
-```
+The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
 
 If research reveals necessary tasks:
 ```bash

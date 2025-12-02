@@ -103,11 +103,7 @@ The session is NOT complete until `git push` succeeds.
 
 Track ALL work with beads. Never use TodoWrite or markdown TODOs.
 
-**IMPORTANT**: Before using any `bd` command, invoke the `beads` skill for comprehensive guidance:
-```
-/skill beads
-```
-The beads skill contains critical documentation for issue creation, closure reasons, and workflow best practices.
+**IMPORTANT**: The `beads` skill auto-activates when using `bd` commands. It provides comprehensive guidance for issue creation, closure reasons, and workflow best practices. Always follow the beads skill documentation for `--reason` field templates.
 
 ### Core Commands
 ```bash

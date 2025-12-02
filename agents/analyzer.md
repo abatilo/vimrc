@@ -87,10 +87,7 @@ wc -l <file>
 
 ## Filing Discovered Issues
 
-**IMPORTANT**: Before using `bd` commands, invoke the beads skill for comprehensive guidance:
-```
-/skill beads
-```
+The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
 
 For each finding that requires action:
 ```bash
