@@ -3,8 +3,8 @@
 ## Context Management
 
 Your context window compacts automatically. Do not stop tasks early due to token concerns.
-Before compaction: save state to beads (`bd create` for pending work).
-After compaction: run `bd prime` then `bd ready --json` to recover context.
+Before compaction: save state to beads (`bd create` for pending work). **Use the beads skill** for proper issue creation.
+After compaction: run `bd prime` then `bd ready --json` to recover context. **Use the beads skill** for session recovery protocols.
 Complete tasks fully. Be persistent and autonomous.
 
 ## Execution Model: Coordinator + Task Agents
@@ -18,9 +18,9 @@ You operate as a **coordinator**. For complex work, delegate to specialized **ta
 - Simple, single-file changes -> handle directly
 
 ### Delegation Protocol
-1. Create a beads issue for the task: `bd create "Task title" -t task --json`
+1. Create a beads issue for the task: `bd create "Task title" -t task --json` — **Use the beads skill** for issue creation best practices
 2. Provide the agent with: context, scope, deliverables, constraints
-3. When agent returns: verify output, close issue: `bd close <id> --json`
+3. When agent returns: verify output, close issue: `bd close <id> --reason "..." --json` — **Use the beads skill** for comprehensive --reason template
 
 ### What You Handle Directly
 - Planning and decomposition
@@ -80,8 +80,8 @@ Each session must leave code production-ready:
 # 1. File remaining work as beads issues
 bd create "Follow-up: ..." -t task --json
 
-# 2. Close completed work
-bd close <id> --reason "Completed" --json
+# 2. Close completed work — Use the beads skill for --reason template
+bd close <id> --reason "Completed: <details>" --json
 
 # 3. Run quality validation
 # Lint, test, type-check as appropriate for project
@@ -103,15 +103,19 @@ The session is NOT complete until `git push` succeeds.
 
 Track ALL work with beads. Never use TodoWrite or markdown TODOs.
 
-**IMPORTANT**: The `beads` skill auto-activates when using `bd` commands. It provides comprehensive guidance for issue creation, closure reasons, and workflow best practices. Always follow the beads skill documentation for `--reason` field templates.
+<skill_requirement>
+**MANDATORY**: Use the beads skill for all work tracking with `bd` commands.
+The beads skill contains templates for --reason fields, acceptance criteria, and closure hygiene.
+</skill_requirement>
 
 ### Core Commands
 ```bash
+# Use the beads skill for best practices on each command
 bd prime              # Recover context after compaction
 bd ready --json       # Find unblocked work
 bd create "Title" -t task -p 1 --acceptance "Criteria for done" --json  # Create work
 bd update <id> --status in_progress       # Claim work
-bd close <id> --reason "<comprehensive reason - see beads skill>" --json  # Complete work
+bd close <id> --reason "<comprehensive reason>" --json  # Complete work (beads skill has template)
 bd sync               # Force immediate sync + push
 ```
 
@@ -125,7 +129,7 @@ For large projects, maintain structured feature requirements:
 
 ### Discovered Work
 
-When bugs or improvements are found during implementation:
+When bugs or improvements are found during implementation — **Use the beads skill** for issue creation:
 ```bash
 bd create "Found: <description>" -t bug -p <priority> --json
 ```

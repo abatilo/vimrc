@@ -87,9 +87,11 @@ wc -l <file>
 
 ## Filing Discovered Issues
 
-The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
+<skill_requirement>
+**MANDATORY**: Use the beads skill for all `bd` operations. It contains templates for --reason fields and issue creation best practices.
+</skill_requirement>
 
-For each finding that requires action:
+For each finding that requires action — **Use the beads skill** for issue creation:
 ```bash
 bd create "<finding title>" -t bug -p <0-4 based on severity> \
   --acceptance "<how to verify the fix>" --json
@@ -99,7 +101,7 @@ Critical findings = priority 0
 High findings = priority 1
 Medium findings = priority 2
 
-When closing issues, always use comprehensive `--reason` values (see beads skill for template):
+When closing issues — **Use the beads skill** for comprehensive `--reason` template:
 ```bash
 bd close <id> --reason "Completed: <summary>
 Verification: <how verified>

@@ -64,9 +64,11 @@ When reporting completion:
 
 ## Discovering Additional Work
 
-The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
+<skill_requirement>
+**MANDATORY**: Use the beads skill for all `bd` operations. It contains templates for --reason fields and issue creation best practices.
+</skill_requirement>
 
-If you find bugs or necessary follow-up work during implementation:
+If you find bugs or necessary follow-up work during implementation — **Use the beads skill** for issue creation:
 ```bash
 bd create "Found: <description>" -t bug -p 1 \
   --acceptance "<how to verify the fix>" --json
@@ -74,7 +76,7 @@ bd create "Found: <description>" -t bug -p 1 \
 
 Do NOT attempt to fix discovered issues unless explicitly asked. File them and continue with the assigned task.
 
-When closing issues, always use comprehensive `--reason` values (see beads skill for template):
+When closing issues — **Use the beads skill** for comprehensive `--reason` template:
 ```bash
 bd close <id> --reason "Completed: <summary>
 Verification: <how verified>

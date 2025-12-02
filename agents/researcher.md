@@ -196,9 +196,11 @@ Based on research:
 
 ## Filing Follow-up Work
 
-The `beads` skill auto-activates when using `bd` commands - follow its documentation for best practices.
+<skill_requirement>
+**MANDATORY**: Use the beads skill for all `bd` operations. It contains templates for --reason fields and issue creation best practices.
+</skill_requirement>
 
-If research reveals necessary tasks:
+If research reveals necessary tasks — **Use the beads skill** for issue creation:
 ```bash
 bd create "Implement: <finding>" -t task -p 2 \
   --acceptance "<specific verification criteria>" --json
@@ -206,7 +208,7 @@ bd create "Investigate: <open question>" -t task -p 3 \
   --acceptance "<what constitutes a complete answer>" --json
 ```
 
-When closing issues, always use comprehensive `--reason` values (see beads skill for template):
+When closing issues — **Use the beads skill** for comprehensive `--reason` template:
 ```bash
 bd close <id> --reason "Completed: <summary>
 Verification: <how verified>
