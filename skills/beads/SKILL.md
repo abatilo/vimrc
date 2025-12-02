@@ -280,12 +280,100 @@ bd update <id> -p 1 --json
 ### Closing Issues
 
 ```bash
-# ALWAYS include verification details
+# ALWAYS include comprehensive closure details
 bd close <id> --reason "Completed: all acceptance criteria met, verified
 with manual test and unit tests passing in CI" --json
 ```
 
 **Never close with just "Done"** - future sessions need to know HOW it was verified.
+
+#### The `--reason` Field: Comprehensive Closure Documentation
+
+The `--reason` field is your primary record for future context recovery. Treat it as a mini post-mortem that captures everything a future session needs to understand what happened.
+
+**Required Components for Every `--reason`:**
+
+| Component | Purpose | Example |
+|-----------|---------|---------|
+| **Work Summary** | What was actually done | "Implemented JWT refresh in authMiddleware.ts:67-89" |
+| **Verification** | How completion was confirmed | "Unit tests pass (12 new), manual test confirms 401→refresh→retry flow" |
+| **Key Learnings** | Insights gained during work | "Discovered axios interceptors don't await async handlers; used promise queue pattern" |
+| **Related Issues** | New issues created or discovered | "Created beads-047 for rate limiting follow-up; beads-048 for edge case handling" |
+| **Files Modified** | Changed files for git archaeology | "Modified: authMiddleware.ts, tokenService.ts; Added: tests/auth.test.ts" |
+
+**Template for `--reason` Field:**
+
+```
+Completed: [1-sentence summary of what was accomplished]
+
+Verification:
+- [How acceptance criteria were verified]
+- [Test results, manual testing performed]
+
+Learnings:
+- [Key insight or decision made during implementation]
+- [Gotchas discovered for future reference]
+
+Related work created:
+- [beads-XXX: follow-up task description]
+- [beads-YYY: discovered bug/edge case]
+
+Files: [list of modified/created files]
+```
+
+**Example: Good `--reason` Value:**
+
+```bash
+bd close beads-042 --reason "Completed: JWT token refresh on 401 response
+
+Verification:
+- All 4 acceptance criteria met
+- 12 new unit tests passing (auth.test.ts)
+- Manual test: expired token triggers refresh, original request retries successfully
+- Tested refresh failure → redirects to /login with return URL preserved
+
+Learnings:
+- Axios interceptors require promise queue for concurrent 401s (see tokenService.ts:45)
+- Response interceptor must return Promise.reject to propagate to catch blocks
+
+Related work created:
+- beads-047: Add rate limiting to refresh endpoint (discovered during load testing)
+- beads-048: Handle edge case when refresh token also expired (found in manual test)
+
+Files: authMiddleware.ts, tokenService.ts, tests/auth.test.ts (new)" --json
+```
+
+**Example: Bad `--reason` Values (Don't Do This):**
+
+| Bad Reason | Why It's Bad |
+|------------|--------------|
+| "Done" | Zero context for future sessions |
+| "Fixed" | Doesn't say what was fixed or how |
+| "Completed all acceptance criteria" | No verification proof |
+| "Tests pass" | Which tests? What was tested? |
+| "Implemented feature" | No learnings, no related work, no files |
+
+**Closure Scenarios and What to Include:**
+
+| Scenario | `--reason` Must Include |
+|----------|------------------------|
+| **Feature completed** | Implementation summary, test results, any follow-up work discovered |
+| **Bug fixed** | Root cause, fix description, regression test added, how verified |
+| **Research/investigation** | Findings summary, decisions made, issues created from findings |
+| **Deferred/won't do** | Why deferred, blocking factors, when to revisit, related issues |
+| **Duplicate** | Link to canonical issue, any unique info to merge |
+| **Can't reproduce** | Steps tried, environment details, when to revisit if reoccurs |
+
+**Hygiene Checklist Before Closing:**
+
+```
+[ ] All acceptance criteria explicitly addressed in --reason
+[ ] Verification method described (not just "tested")
+[ ] Key learnings documented (especially surprises/gotchas)
+[ ] Any follow-up issues created and linked in --reason
+[ ] File paths included for git archaeology
+[ ] If closing without completing: clear explanation why
+```
 
 ### Dependencies
 
@@ -328,8 +416,13 @@ bd update <id> --note "Session end: completed X, Y remains, next: Z"
 # 2. File any remaining work as new issues
 bd create "Follow-up: ..." -t task -p 2 --acceptance "..." --json
 
-# 3. Close completed issues with verification
-bd close <id> --reason "Completed: [specific verification]" --json
+# 3. Close completed issues with COMPREHENSIVE reason (see Closing Issues section above)
+bd close <id> --reason "Completed: [summary]
+
+Verification: [how verified]
+Learnings: [key insights]
+Related: [new issues created]
+Files: [modified files]" --json
 
 # 4. MANDATORY: Sync and push
 git add <changed-files>
@@ -337,6 +430,8 @@ bd sync
 git push
 git status  # MUST show "up to date with origin"
 ```
+
+**Remember**: The `--reason` field is your legacy to future sessions. Include work summary, verification details, learnings, related issues, and file paths. See the [Closing Issues](#closing-issues) section for the complete template and checklist.
 
 ---
 
@@ -383,7 +478,7 @@ git status  # MUST show "up to date with origin"
 |--------------|--------------|-----------------|
 | "Fix the bug" | No context for recovery | Describe what, where, and symptoms |
 | Relative paths | Break after directory changes | Use absolute paths with line numbers |
-| "Done" as close reason | No verification proof | Describe how completion was verified |
+| "Done" as close reason | No verification proof, learnings lost, no traceability | Use comprehensive template: summary, verification, learnings, related issues, files (see Closing Issues section) |
 | Batching issue creation | Context lost if interrupted | Create issues as you discover them |
 | Skipping progress notes | Session state lost | Update notes after each significant step |
 | Silent scope expansion | Work becomes untracked | Create new linked issues for new scope |
