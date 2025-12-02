@@ -1,11 +1,13 @@
 ---
 name: beads
 description: |
-  Track work with beads issue tracker. Auto-activates when using bd commands
-  (bd create, bd close, bd update, bd ready, bd prime, bd sync, bd show).
-  MUST BE USED for: task decomposition, bug discovery, dependency management,
-  issue closure with comprehensive --reason fields, and context preservation.
-  Contains templates for --reason field, acceptance criteria, and session protocols.
+  Track work with beads issue tracker using `bd` CLI. REQUIRED for ALL issue tracking operations.
+  Use when: creating issues (`bd create`), closing work (`bd close`), querying status (`bd ready`,
+  `bd list`, `bd show`), managing dependencies (`bd dep`), session recovery (`bd prime`), or
+  syncing (`bd sync`). Provides templates for --reason fields, acceptance criteria, atomic issue
+  decomposition patterns, and comprehensive closure documentation. Also use when: planning work,
+  discovering bugs mid-implementation, tracking progress, context recovery after compaction,
+  or ending a session. Keywords: issue, task, bug, feature, epic, work tracking, TODO, progress.
 allowed-tools:
   - Bash
   - Read

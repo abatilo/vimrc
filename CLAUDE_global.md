@@ -2,9 +2,18 @@
 
 ## Context Management
 
-Your context window compacts automatically. Do not stop tasks early due to token concerns.
-Before compaction: save state to beads (`bd create` for pending work). **Use the beads skill** for proper issue creation.
-After compaction: run `bd prime` then `bd ready --json` to recover context. **Use the beads skill** for session recovery protocols.
+<long_context_management>
+Your context window will be automatically compacted as it approaches its limit,
+allowing you to continue working indefinitely from where you left off.
+Therefore, do not stop tasks early due to token budget concerns. As you approach
+your token budget limit, save your current progress and state to memory before
+the context window refreshes. Always be as persistent and autonomous as possible
+and complete tasks fully, even if the end of your budget is approaching. Never
+artificially stop any task early regardless of the context remaining.
+</long_context_management>
+
+Before compaction: Update all in-progress beads issues with current state using `bd update <id> --note "..."`.
+After compaction: Run `bd prime` then `bd ready --json` to recover context.
 Complete tasks fully. Be persistent and autonomous.
 
 ## Execution Model: Coordinator + Task Agents
@@ -18,9 +27,10 @@ You operate as a **coordinator**. For complex work, delegate to specialized **ta
 - Simple, single-file changes -> handle directly
 
 ### Delegation Protocol
-1. Create a beads issue for the task: `bd create "Task title" -t task --json` — **Use the beads skill** for issue creation best practices
+1. Create a beads issue: `bd create "Task title" -t task --acceptance "Criteria" --json`
 2. Provide the agent with: context, scope, deliverables, constraints
-3. When agent returns: verify output, close issue: `bd close <id> --reason "..." --json` — **Use the beads skill** for comprehensive --reason template
+3. When agent returns: verify output, close issue with comprehensive reason:
+   `bd close <id> --reason "Completed: [summary]. Verification: [how tested]. Files: [paths]" --json`
 
 ### What You Handle Directly
 - Planning and decomposition
@@ -80,8 +90,8 @@ Each session must leave code production-ready:
 # 1. File remaining work as beads issues
 bd create "Follow-up: ..." -t task --json
 
-# 2. Close completed work — Use the beads skill for --reason template
-bd close <id> --reason "Completed: <details>" --json
+# 2. Close completed work with comprehensive --reason
+bd close <id> --reason "Completed: [summary]. Verification: [how tested]. Files: [paths]" --json
 
 # 3. Run quality validation
 # Lint, test, type-check as appropriate for project
@@ -103,21 +113,20 @@ The session is NOT complete until `git push` succeeds.
 
 Track ALL work with beads. Never use TodoWrite or markdown TODOs.
 
-<skill_requirement>
-**MANDATORY**: Use the beads skill for all work tracking with `bd` commands.
-The beads skill contains templates for --reason fields, acceptance criteria, and closure hygiene.
-</skill_requirement>
-
 ### Core Commands
 ```bash
-# Use the beads skill for best practices on each command
-bd prime              # Recover context after compaction
-bd ready --json       # Find unblocked work
-bd create "Title" -t task -p 1 --acceptance "Criteria for done" --json  # Create work
-bd update <id> --status in_progress       # Claim work
-bd close <id> --reason "<comprehensive reason>" --json  # Complete work (beads skill has template)
-bd sync               # Force immediate sync + push
+bd prime                                    # ALWAYS run first - recovers context
+bd ready --json                             # Find unblocked work
+bd create "Title" -t task --acceptance "Criteria" --json  # Create atomic issues
+bd update <id> --status in_progress         # Claim work
+bd close <id> --reason "Completed: [summary]. Verification: [tested]. Files: [paths]" --json
+bd sync                                     # Force immediate sync + push
 ```
+
+### Issue Quality Standards
+- **Atomic**: One issue = one commit. If >3 acceptance criteria, decompose first.
+- **Recoverable**: Could a fresh session continue using only this issue description?
+- **Comprehensive closures**: Include summary, verification method, and file paths in --reason.
 
 ### Feature Tracking
 
@@ -129,9 +138,9 @@ For large projects, maintain structured feature requirements:
 
 ### Discovered Work
 
-When bugs or improvements are found during implementation — **Use the beads skill** for issue creation:
+When bugs or improvements are found during implementation:
 ```bash
-bd create "Found: <description>" -t bug -p <priority> --json
+bd create "Found: <description>" -t bug -p <priority> --acceptance "How to verify fix" --json
 ```
 File it and continue. Do not fix unless explicitly in scope.
 
@@ -214,13 +223,3 @@ Use the `/commit` slash command or invoke the `git-commit` skill for all commits
 - Supports interactive staging for fine-grained control
 
 </implementation_principles>
-
-<long_context_management>
-Your context window will be automatically compacted as it approaches its limit,
-allowing you to continue working indefinitely from where you left off.
-Therefore, do not stop tasks early due to token budget concerns. As you approach
-your token budget limit, save your current progress and state to memory before
-the context window refreshes. Always be as persistent and autonomous as possible
-and complete tasks fully, even if the end of your budget is approaching. Never
-artificially stop any task early regardless of the context remaining.
-</long_context_management>
