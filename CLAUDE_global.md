@@ -1,3 +1,107 @@
+<issue_tracking>
+Issue and task tracking should be delegated to `bd` cli.
+
+<issue_ready_help>
+# TODO
+</issue_ready_help>
+
+<issue_ready>
+# TODO.
+</issue_ready>
+
+<issue_create>
+<issue_create_help>
+⇒  bd create --help
+Create a new issue (or multiple issues from markdown file)
+
+Usage:
+  bd create [title] [flags]
+
+Aliases:
+  create, new
+
+Flags:
+      --acceptance string      Acceptance criteria
+  -a, --assignee string        Assignee
+      --deps strings           Dependencies in format 'type:id' or 'id' (e.g., 'discovered-from:bd-20,blocks:bd-15' or 'bd-20')
+  -d, --description string     Issue description
+      --design string          Design notes
+      --external-ref string    External reference (e.g., 'gh-9', 'jira-ABC')
+  -f, --file string            Create multiple issues from markdown file
+      --force                  Force creation even if prefix doesn't match database prefix
+      --from-template string   Create issue from template (e.g., 'epic', 'bug', 'feature')
+  -h, --help                   help for create
+      --id string              Explicit issue ID (e.g., 'bd-42' for partitioning)
+  -l, --labels strings         Labels (comma-separated)
+      --parent string          Parent issue ID for hierarchical child (e.g., 'bd-a3f8e9')
+  -p, --priority string        Priority (0-4 or P0-P4, 0=highest) (default "2")
+      --repo string            Target repository for issue (overrides auto-routing)
+      --title string           Issue title (alternative to positional argument)
+  -t, --type string            Issue type (bug|feature|task|epic|chore) (default "task")
+</issue_create_help>
+
+When creating issues, the description is very important. It should be very
+verbose. Follow this template as closely as possible.
+
+```
+bd create --title "$TITLE" --description <<EOF
+
+# Description
+The description should be 1-4 sentences for what the change is and why the issue
+brings us closer to the goal that inspired the creation of the issue. List any
+considerations, comprosies, or trade-offs that might need to be made.
+
+# Relevant files and snippets
+This section should have a list of files that might be relevant and were taken
+during discovery and planning. Even better if you can copy exact snippets of
+relative code from the various files.
+
+# Additional sources
+If discovery was done with the repo-explore skill, list the repos that were
+explored. If any web searches were done, list them here for historic purposes.
+
+EOF
+```
+
+The title should be 50 characters or less. It should be concise and direct and
+written in imperative voice.
+
+</issue_create>
+
+<issue_show_help>
+# TODO
+</issue_show_help>
+
+<issue_show>
+# TODO
+</issue_show>
+
+<issue_update_help>
+# TODO
+</issue_update_help>
+
+<issue_update>
+# TODO
+</issue_update>
+
+<issue_close_help>
+# TODO
+</issue_close_help>
+
+<issue_close>
+# TODO. Be explicit about the `--reason` field.
+</issue_close>
+
+<issue_dep_help>
+# TODO
+</issue_dep_help>
+
+<issue_dep>
+# TODO. Be explicit about the `--reason` field.
+</issue_dep>
+
+</issue_tracking>
+
 <autonomous_agent_framework>
 
 ## Context Management
@@ -25,12 +129,6 @@ You operate as a **coordinator**. For complex work, delegate to specialized **ta
 - Code review or debugging -> `analyzer` agent
 - Research or documentation lookup -> `researcher` agent
 - Simple, single-file changes -> handle directly
-
-### Delegation Protocol
-1. Create a beads issue: `bd create "Task title" -t task --acceptance "Criteria" --json`
-2. Provide the agent with: context, scope, deliverables, constraints
-3. When agent returns: verify output, close issue with comprehensive reason:
-   `bd close <id> --reason "Completed: [summary]. Verification: [how tested]. Files: [paths]" --json`
 
 ### What You Handle Directly
 - Planning and decomposition
@@ -107,64 +205,7 @@ The session is NOT complete until `git push` succeeds.
 
 </session_protocol>
 
-<work_tracking>
-
-## Beads Issue Tracker
-
-Track ALL work with beads. Never use TodoWrite or markdown TODOs.
-
-### Core Commands
-```bash
-bd prime                                    # ALWAYS run first - recovers context
-bd ready --json                             # Find unblocked work
-bd create "Title" -t task --acceptance "Criteria" --json  # Create atomic issues
-bd update <id> --status in_progress         # Claim work
-bd close <id> --reason "Completed: [summary]. Verification: [tested]. Files: [paths]" --json
-bd sync                                     # Force immediate sync + push
-```
-
-### Issue Quality Standards
-- **Atomic**: One issue = one commit. If >3 acceptance criteria, decompose first.
-- **Recoverable**: Could a fresh session continue using only this issue description?
-- **Comprehensive closures**: Include summary, verification method, and file paths in --reason.
-
-### Feature Tracking
-
-For large projects, maintain structured feature requirements:
-- Create parent epic: `bd create "Feature X" -t epic --json`
-- Break into tasks with dependencies
-- Track pass/fail status via issue closure
-- Never remove or skip features - complete or explicitly defer
-
-### Discovered Work
-
-When bugs or improvements are found during implementation:
-```bash
-bd create "Found: <description>" -t bug -p <priority> --acceptance "How to verify fix" --json
-```
-File it and continue. Do not fix unless explicitly in scope.
-
-</work_tracking>
-
 <quality_control>
-
-## Verification Protocol
-
-Before marking any work complete:
-
-1. **Compile/Lint** - Code has no syntax errors
-2. **Tests Pass** - Existing tests still work
-3. **End-to-End Validation** - Feature works as user would experience it
-4. **No Regressions** - Basic functionality still operates correctly
-
-## Bug Prevention
-
-Start sessions by validating existing functionality:
-```bash
-# Run quick smoke test
-# Start dev server, verify core features work
-# Catch regressions BEFORE starting new work
-```
 
 ## Quality Gates
 
