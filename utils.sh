@@ -22,10 +22,7 @@ EOF
 bd-drain() {
   local label=""
   local prompt=""
-  local update_docs=true
   local logfile="/tmp/full-bd-drain-logs.json"
-  local rotate_logs=true
-  local quiet_thinking=false
 
   # Parse CLI arguments
   while [[ $# -gt 0 ]]; do
@@ -38,17 +35,12 @@ bd-drain() {
       logfile="$2"
       shift 2
       ;;
-    --quiet)
-      quiet_thinking=true
-      shift
-      ;;
     --help)
       echo "Usage: bd-drain [OPTIONS] [PROMPT]"
       echo ""
       echo "Options:"
       echo "  --label LABEL    Filter bd ready by label"
       echo "  --logfile PATH   Log file path (default: /tmp/full-bd-drain-logs.json)"
-      echo "  --quiet          Suppress thinking output"
       echo "  --help           Show this help"
       return 0
       ;;
@@ -59,8 +51,8 @@ bd-drain() {
     esac
   done
 
-  # Rotate logs if requested
-  if [[ "$rotate_logs" == true && -f "$logfile" ]]; then
+  # Rotate logs
+  if [[ -f "$logfile" ]]; then
     local backup="${logfile}.$(date +%Y%m%d-%H%M%S).bak"
     mv "$logfile" "$backup"
     echo "Rotated logs to: $backup"
@@ -105,7 +97,7 @@ bd-drain() {
 
     bd ready "${bd_args[@]}"
 
-    claude --continue --print --verbose --output-format=stream-json "$prompt" | tee -a "$logfile" | jq -r --argjson quiet "$([[ "$quiet_thinking" == true ]] && echo true || echo false)" '
+    claude --continue --print --verbose --output-format=stream-json "$prompt" | tee -a "$logfile" | jq -r '
 # System messages (init, hooks, compaction boundaries)
 if .type == "system" then
   if .subtype == "init" then
@@ -123,9 +115,7 @@ elif .type == "assistant" then
   if .type == "text" then
     .text
   elif .type == "thinking" then
-    if $quiet then empty
-    else "\u001b[2;3m💭 \(.thinking | split("\n")[0] | .[0:80])\u001b[0m..."
-    end
+    "\u001b[2;3m💭 \(.thinking | split("\n")[0] | .[0:80])\u001b[0m..."
   elif .type == "tool_use" then
     if .name == "Bash" then
       "\u001b[1;32m$ \(.input.command | split("\n")[0])\u001b[0m" +
@@ -160,9 +150,8 @@ else empty
 end
 '
 
-    if [[ "$update_docs" == true ]]; then
-      echo "\n=== Updating CLAUDE.md ==="
-      claude --continue --print --verbose --output-format=stream-json "Use up to 5 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" | tee -a "$logfile" | jq -r '
+    echo "\n=== Updating CLAUDE.md ==="
+    claude --continue --print --verbose --output-format=stream-json "Use up to 5 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" | tee -a "$logfile" | jq -r '
 if .type == "assistant" then
   .message.content[] |
   if .type == "text" then .text
@@ -179,8 +168,7 @@ elif .type == "result" then
 else empty
 end
 '
-      echo "=============\n\n"
-    fi
+    echo "=============\n\n"
   done
 
   local total_time=$((SECONDS - start_time))
