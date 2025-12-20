@@ -1,12 +1,54 @@
 <issue_tracking>
 Issue and task tracking should be delegated to `bd` cli.
 
+<issue_ready>
 <issue_ready_help>
-# TODO
+⇒  bd ready --help
+Show ready work (no blockers, open or in-progress)
+
+Usage:
+  bd ready [flags]
+
+Flags:
+  -a, --assignee string     Filter by assignee
+  -h, --help                help for ready
+  -l, --label strings       Filter by labels (AND: must have ALL). Can combine with --label-any
+      --label-any strings   Filter by labels (OR: must have AT LEAST ONE). Can combine with --label
+  -n, --limit int           Maximum issues to show (default 10)
+  -p, --priority int        Filter by priority
+  -s, --sort string         Sort policy: hybrid (default), priority, oldest (default "hybrid")
 </issue_ready_help>
 
-<issue_ready>
-# TODO.
+Use `bd ready` at the start of every session to find available work. Issues shown
+by `bd ready` have no blockers and are either open or in-progress.
+
+```bash
+# Find ready work
+bd ready --json
+
+# Filter by priority (0=critical, 1=high, 2=normal, 3=low)
+bd ready --priority 1 --json
+
+# Filter by assignee
+bd ready --assignee alice --json
+
+# Limit results
+bd ready --limit 5 --json
+```
+
+After finding ready work, select the highest-priority issue and mark it in-progress
+before beginning work:
+
+```bash
+bd ready --json
+bd update bd-xxx --status in_progress --json
+```
+
+If `bd ready` returns empty but issues exist, check for blockers:
+
+```bash
+bd blocked --json
+```
 </issue_ready>
 
 <issue_create>
@@ -44,8 +86,7 @@ When creating issues, the description is very important. It should be very
 verbose. Follow this template as closely as possible.
 
 ```
-bd create --title "$TITLE" --description <<EOF
-
+bd create --title "$TITLE" --description <<EOF --json
 # Description
 The description should be 1-4 sentences for what the change is and why the issue
 brings us closer to the goal that inspired the creation of the issue. List any
@@ -59,45 +100,234 @@ relative code from the various files.
 # Additional sources
 If discovery was done with the repo-explore skill, list the repos that were
 explored. If any web searches were done, list them here for historic purposes.
-
 EOF
 ```
 
 The title should be 50 characters or less. It should be concise and direct and
-written in imperative voice.
-
+written in imperative voice. Any and all work should be tracked with a new
+issue for history tracking.
 </issue_create>
 
+<issue_show>
 <issue_show_help>
-# TODO
+⇒  bd show --help
+Show issue details
+
+Usage:
+  bd show [id...] [flags]
+
+Flags:
+  -h, --help   help for show
+      --json   Output JSON format
 </issue_show_help>
 
-<issue_show>
-# TODO
+Use `bd show` to view full details of an issue, including notes, design, acceptance
+criteria, and dependencies. This is essential for understanding context before
+starting work or after compaction.
+
+```bash
+# Show single issue
+bd show bd-xxx --json
+
+# Show multiple issues
+bd show bd-xxx bd-yyy --json
+```
+
+After compaction, `bd show` is the primary way to recover context. The notes field
+should contain:
+- COMPLETED: What was finished
+- IN PROGRESS: Current state + next immediate step
+- BLOCKERS: What's preventing progress
+- KEY DECISIONS: Important context from discussions
+
+Always read the notes field first when resuming work on an in-progress issue.
 </issue_show>
 
+<issue_update>
 <issue_update_help>
-# TODO
+⇒  bd update --help
+Update one or more issues
+
+Usage:
+  bd update [id...] [flags]
+
+Flags:
+      --acceptance string      Acceptance criteria
+      --add-label strings      Add labels (repeatable)
+  -a, --assignee string        Assignee
+  -d, --description string     Issue description
+      --design string          Design notes
+      --external-ref string    External reference (e.g., 'gh-9', 'jira-ABC')
+  -h, --help                   help for update
+      --json                   Output JSON format
+      --notes string           Additional notes
+  -p, --priority string        Priority (0-4 or P0-P4, 0=highest)
+      --remove-label strings   Remove labels (repeatable)
+      --set-labels strings     Set labels, replacing all existing (repeatable)
+  -s, --status string          New status
+      --title string           New title
 </issue_update_help>
 
-<issue_update>
-# TODO
+Use `bd update` to modify issue fields during work. Key fields:
+
+- `--status`: Workflow state (open → in_progress → closed)
+- `--notes`: Session handoff information (COMPLETED/IN_PROGRESS/NEXT format)
+- `--design`: HOW to build (can change during implementation)
+- `--acceptance`: WHAT success looks like (should remain stable)
+- `--priority`: Urgency level (0=critical through 4=backlog)
+
+```bash
+# Claim work at session start
+bd update bd-xxx --status in_progress --json
+
+# Update notes at checkpoints (milestones, before compaction, at blockers)
+bd update bd-xxx --notes "COMPLETED: JWT auth with RS256.
+KEY DECISION: RS256 over HS256 per security review.
+IN PROGRESS: Password reset flow.
+NEXT: Implement rate limiting once expiry decided." --json
+
+# Update design as approach evolves
+bd update bd-xxx --design "Using Redis for persistence support" --json
+
+# Update priority if urgency changes
+bd update bd-xxx --priority 0 --json
+
+# Batch update multiple issues
+bd update bd-xxx bd-yyy --priority 1 --json
+```
+
+Update notes proactively at these checkpoints:
+- Token usage > 70%: checkpoint current state
+- Major milestone reached
+- Hit a blocker
+- Before asking user for input that might change direction
 </issue_update>
 
+<issue_close>
 <issue_close_help>
-# TODO
+⇒  bd close --help
+Close one or more issues
+
+Usage:
+  bd close [id...] [flags]
+
+Flags:
+  -h, --help            help for close
+      --json            Output JSON format
+  -r, --reason string   Reason for closing
 </issue_close_help>
 
-<issue_close>
-# TODO. Be explicit about the `--reason` field.
+Use `bd close` when work is complete. ALWAYS provide a `--reason` to document what
+was done and how it was verified. Closed issues remain in the database for history.
+
+The `--reason` should include:
+- Summary of what was accomplished
+- How it was verified (tests, manual testing, etc.)
+- Key files that were modified
+-
+
+```bash
+# Close with comprehensive reason
+bd close bd-xxx --reason <<EOF --json
+# Reason
+A description for what work was completed and why this satisfies the
+requirements.
+
+# What we learned
+Write about what we learned during closing this issue. Be detailed about any
+assumptions that were made that were wrong or any expectations and/or assertions
+that needed to be corrected. Write down any mistakes that were made during the
+implementation that lead to failed tests or failed implementations.
+
+# New issues created
+A bulleted list of issues that were created
+EOF
+
+# Close multiple related issues
+bd close bd-xxx bd-yyy bd-zzz --reason "Bulk close: Auth feature complete with tests" --json
+```
+
+Do NOT close an issue if:
+- Tests are failing
+- Implementation is partial
+- Unresolved errors exist
+- Required files or dependencies are missing
+
+If work cannot be completed, update notes with the blocker instead:
+
+```bash
+bd update bd-xxx --notes "BLOCKED: Waiting on user decision for token expiry" --json
+```
 </issue_close>
 
+<issue_dep>
 <issue_dep_help>
-# TODO
+⇒  bd dep --help
+Manage dependencies
+
+Usage:
+  bd dep [command]
+
+Available Commands:
+  add         Add a dependency
+  cycles      Detect dependency cycles
+  remove      Remove a dependency
+  tree        Show dependency tree
+
+⇒  bd dep add --help
+Add a dependency
+
+Usage:
+  bd dep add [issue-id] [depends-on-id] [flags]
+
+Flags:
+  -h, --help          help for add
+  -t, --type string   Dependency type (blocks|related|parent-child|discovered-from) (default "blocks")
 </issue_dep_help>
 
-<issue_dep>
-# TODO. Be explicit about the `--reason` field.
+Use `bd dep` to manage relationships between issues. Four dependency types exist:
+
+| Type | Purpose | Affects `bd ready`? |
+|------|---------|---------------------|
+| blocks | Hard blocker (A must complete before B starts) | Yes |
+| related | Soft link (issues are connected, no blocking) | No |
+| parent-child | Hierarchical (epic/subtask relationship) | No |
+| discovered-from | Provenance (B discovered while working on A) | No |
+
+Only `blocks` dependencies affect what work is ready.
+
+```bash
+# blocks: A must complete before B can start
+# Direction: from_id blocks to_id (prerequisite blocks dependent)
+bd dep add bd-setup bd-implementation --type blocks
+
+# related: soft connection, no blocking
+bd dep add bd-xxx bd-yyy --type related
+
+# parent-child: epic with subtasks
+bd dep add bd-epic bd-subtask --type parent-child
+
+# discovered-from: found new issue during work on another
+bd dep add bd-current bd-discovered --type discovered-from
+
+# View dependency tree
+bd dep tree bd-xxx
+
+# Detect circular dependencies
+bd dep cycles
+```
+
+When creating a discovered issue, prefer the combined command:
+
+```bash
+bd create "Found auth bug" -t bug -p 1 --deps discovered-from:bd-current --json
+```
+
+Common mistakes to avoid:
+- Using `blocks` for soft preferences (use `related` instead)
+- Wrong direction: `bd dep add A B` means A blocks B (A is prerequisite)
+- Using `discovered-from` for planned decomposition (use `parent-child`)
+- Over-using `blocks` (prevents parallel work)
 </issue_dep>
 
 </issue_tracking>
@@ -186,10 +416,9 @@ Each session must leave code production-ready:
 
 ```bash
 # 1. File remaining work as beads issues
-bd create "Follow-up: ..." -t task --json
+bd create "Follow-up: ..." --json
 
-# 2. Close completed work with comprehensive --reason
-bd close <id> --reason "Completed: [summary]. Verification: [how tested]. Files: [paths]" --json
+bd close <id> --reason "" --json
 
 # 3. Run quality validation
 # Lint, test, type-check as appropriate for project
