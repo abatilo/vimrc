@@ -86,8 +86,9 @@ bd-drain() {
     # Print time since previous iteration (skip for the very first one)
     if ((count > 0)); then
       local delta_since_last=$((now - last_time))
-      /Users/abatilo/abatilo/singlesms/singlesms "--- ${delta_since_last}s since previous iteration (currently on ${count})"
-      echo "--- ${delta_since_last}s since previous iteration ---"
+      local delta_minutes=$(awk "BEGIN {printf \"%.1f\", $delta_since_last/60}")
+      /Users/abatilo/abatilo/singlesms/singlesms "--- ${delta_minutes}m since previous iteration (currently on ${count})"
+      echo "--- ${delta_minutes}m since previous iteration ---"
     fi
 
     last_time=$now
@@ -172,7 +173,8 @@ end
   done
 
   local total_time=$((SECONDS - start_time))
-  local summary="Done after $count iterations (total time: ${total_time}s)"
+  local total_minutes=$(awk "BEGIN {printf \"%.1f\", $total_time/60}")
+  local summary="Done after $count iterations (total time: ${total_minutes}m)"
   /Users/abatilo/abatilo/singlesms/singlesms "$summary"
   echo "$summary"
   echo "Logs: $logfile"
