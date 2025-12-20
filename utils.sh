@@ -151,7 +151,7 @@ end
 '
 
     echo "\n=== Updating CLAUDE.md ==="
-    claude --continue --print --verbose --output-format=stream-json "Use up to 5 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" | tee -a "$logfile" | jq -r '
+    claude --continue --print --verbose --output-format=stream-json "Use up to 20 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" | tee -a "$logfile" | jq -r '
 if .type == "assistant" then
   .message.content[] |
   if .type == "text" then .text
