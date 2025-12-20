@@ -181,7 +181,7 @@ end
 
   # Show quick stats if log file exists
   if [[ -f "$logfile" ]]; then
-    local cost=$(jq -s '[.[] | select(.type == "result") | .total_cost_usd] | add // 0' "$logfile" 2>/dev/null)
+    local cost=$(jq -s '[.[] | select(.type == "result") | .total_cost_usd] | add // 0 | . * 100 | round / 100' "$logfile" 2>/dev/null)
     local turns=$(jq -s '[.[] | select(.type == "result") | .num_turns] | add // 0' "$logfile" 2>/dev/null)
     echo "Total cost: \$${cost:-0}  Turns: ${turns:-0}"
   fi
