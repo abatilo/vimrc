@@ -1,5 +1,71 @@
 #!/bin/bash
 
+# Comprehensive jq parser for claude streaming JSON output
+# Handles system messages, assistant messages (text, thinking, tool_use), and results
+_CLAUDE_STREAM_JQ='
+# System messages (init, hooks, compaction boundaries)
+if .type == "system" then
+  if .subtype == "init" then
+    "\n\u001b[1;36m═══ SESSION START ═══\u001b[0m\n  Model: \(.model)\n  Tools: \(.tools | length) available\n  MCPs: \(.mcp_servers | map(.name) | join(", "))"
+  elif .subtype == "compact_boundary" then
+    "\n\u001b[1;33m─── CONTEXT COMPACTED ───\u001b[0m"
+  elif .subtype == "hook_response" and .hook_name then
+    "\u001b[2m[hook:\(.hook_name)]\u001b[0m"
+  else empty
+  end
+
+# Assistant messages
+elif .type == "assistant" then
+  .message.content[] |
+  if .type == "text" then
+    .text
+  elif .type == "thinking" then
+    "\u001b[2;3m💭 \(.thinking | split("\n")[0] | .[0:80])\u001b[0m..."
+  elif .type == "tool_use" then
+    if .name == "Bash" then
+      "\u001b[1;32m$ \(.input.command | split("\n")[0])\u001b[0m" +
+      if .input.description then " \u001b[2m# \(.input.description)\u001b[0m" else "" end
+    elif .name == "Read" then
+      "\u001b[1;34m📄 Read: \(.input.file_path)\u001b[0m"
+    elif .name == "Edit" then
+      "\u001b[1;33m✏️  Edit: \(.input.file_path)\u001b[0m"
+    elif .name == "Write" then
+      "\u001b[1;35m📝 Write: \(.input.file_path)\u001b[0m"
+    elif .name == "Glob" then
+      "\u001b[1;36m🔍 Glob: \(.input.pattern)\u001b[0m"
+    elif .name == "Grep" then
+      "\u001b[1;36m🔎 Grep: \(.input.pattern)\u001b[0m"
+    elif .name == "Task" then
+      "\u001b[1;35m🚀 Agent[\(.input.subagent_type // "task")]: \(.input.description)\u001b[0m"
+    elif .name == "Skill" then
+      "\u001b[1;33m⚡ Skill: \(.input.skill)\u001b[0m"
+    elif .name == "TodoWrite" then
+      "\u001b[1;34m📋 Todos updated\u001b[0m"
+    else
+      "\u001b[1;37m🔧 \(.name)\u001b[0m"
+    end
+  else empty
+  end
+
+# Session result summary
+elif .type == "result" then
+  "\n\u001b[1;36m═══ SESSION END ═══\u001b[0m\n  Turns: \(.num_turns)  Duration: \((.duration_ms / 1000 / 60) | floor)m  Cost: $\(.total_cost_usd | . * 100 | round / 100)\n\u001b[2m\(.result // "" | split("\n") | .[0:5] | join("\n"))\u001b[0m"
+
+else empty
+end
+'
+
+# Run claude CLI with streaming output and pretty-print via jq
+# Usage: claude-stream <prompt> <logfile>
+claude-stream() {
+  local prompt="$1"
+  local logfile="$2"
+
+  claude --continue --print --verbose --output-format=stream-json "$prompt" | \
+    tee -a "$logfile" | \
+    jq -r "$_CLAUDE_STREAM_JQ"
+}
+
 bd-plan() {
   local title="$1"
   local extra="$2"
@@ -118,77 +184,10 @@ bd-drain() {
 
     bd ready "${bd_args[@]}"
 
-    claude --continue --print --verbose --output-format=stream-json "$prompt" | tee -a "$logfile" | jq -r '
-# System messages (init, hooks, compaction boundaries)
-if .type == "system" then
-  if .subtype == "init" then
-    "\n\u001b[1;36m═══ SESSION START ═══\u001b[0m\n  Model: \(.model)\n  Tools: \(.tools | length) available\n  MCPs: \(.mcp_servers | map(.name) | join(", "))"
-  elif .subtype == "compact_boundary" then
-    "\n\u001b[1;33m─── CONTEXT COMPACTED ───\u001b[0m"
-  elif .subtype == "hook_response" and .hook_name then
-    "\u001b[2m[hook:\(.hook_name)]\u001b[0m"
-  else empty
-  end
-
-# Assistant messages
-elif .type == "assistant" then
-  .message.content[] |
-  if .type == "text" then
-    .text
-  elif .type == "thinking" then
-    "\u001b[2;3m💭 \(.thinking | split("\n")[0] | .[0:80])\u001b[0m..."
-  elif .type == "tool_use" then
-    if .name == "Bash" then
-      "\u001b[1;32m$ \(.input.command | split("\n")[0])\u001b[0m" +
-      if .input.description then " \u001b[2m# \(.input.description)\u001b[0m" else "" end
-    elif .name == "Read" then
-      "\u001b[1;34m📄 Read: \(.input.file_path)\u001b[0m"
-    elif .name == "Edit" then
-      "\u001b[1;33m✏️  Edit: \(.input.file_path)\u001b[0m"
-    elif .name == "Write" then
-      "\u001b[1;35m📝 Write: \(.input.file_path)\u001b[0m"
-    elif .name == "Glob" then
-      "\u001b[1;36m🔍 Glob: \(.input.pattern)\u001b[0m"
-    elif .name == "Grep" then
-      "\u001b[1;36m🔎 Grep: \(.input.pattern)\u001b[0m"
-    elif .name == "Task" then
-      "\u001b[1;35m🚀 Agent[\(.input.subagent_type // "task")]: \(.input.description)\u001b[0m"
-    elif .name == "Skill" then
-      "\u001b[1;33m⚡ Skill: \(.input.skill)\u001b[0m"
-    elif .name == "TodoWrite" then
-      "\u001b[1;34m📋 Todos updated\u001b[0m"
-    else
-      "\u001b[1;37m🔧 \(.name)\u001b[0m"
-    end
-  else empty
-  end
-
-# Session result summary
-elif .type == "result" then
-  "\n\u001b[1;36m═══ SESSION END ═══\u001b[0m\n  Turns: \(.num_turns)  Duration: \((.duration_ms / 1000 / 60) | floor)m  Cost: $\(.total_cost_usd | . * 100 | round / 100)\n\u001b[2m\(.result // "" | split("\n") | .[0:5] | join("\n"))\u001b[0m"
-
-else empty
-end
-'
+    claude-stream "$prompt" "$logfile"
 
     printf "\n=== Updating CLAUDE.md ===\n"
-    claude --continue --print --verbose --output-format=stream-json "Use up to 20 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Delete any files or sections that are redundant and low signal. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" | tee -a "$logfile" | jq -r '
-if .type == "assistant" then
-  .message.content[] |
-  if .type == "text" then .text
-  elif .type == "tool_use" then
-    if .name == "Edit" then "\u001b[1;33m✏️  Edit: \(.input.file_path)\u001b[0m"
-    elif .name == "Write" then "\u001b[1;35m📝 Write: \(.input.file_path)\u001b[0m"
-    elif .name == "Task" then "\u001b[1;35m🚀 Agent[\(.input.subagent_type // "task")]: \(.input.description)\u001b[0m"
-    else empty
-    end
-  else empty
-  end
-elif .type == "result" then
-  "\n\u001b[1;36m═══ DOCS UPDATE COMPLETE ═══\u001b[0m  Cost: $\(.total_cost_usd | . * 100 | round / 100)"
-else empty
-end
-'
+    claude-stream "Use up to 20 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Delete any files or sections that are redundant and low signal. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" "$logfile"
     printf "=============\n\n"
   done
 
