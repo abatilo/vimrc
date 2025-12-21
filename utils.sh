@@ -93,9 +93,15 @@ bd-drain() {
     # Print time since previous iteration (skip for the very first one)
     if ((count > 0)); then
       local delta_since_last=$((now - last_time))
-      local delta_minutes=$(awk "BEGIN {printf \"%.1f\", $delta_since_last/60}")
-      /Users/abatilo/abatilo/singlesms/singlesms "--- ${delta_minutes}m since previous iteration (currently on ${count})"
-      echo "--- ${delta_minutes}m since previous iteration ---"
+      local delta_h=$((delta_since_last / 3600))
+      local delta_m=$(((delta_since_last % 3600) / 60))
+      local delta_s=$((delta_since_last % 60))
+      local delta_fmt=""
+      ((delta_h > 0)) && delta_fmt+="${delta_h}h "
+      ((delta_m > 0)) && delta_fmt+="${delta_m}m "
+      ((delta_s > 0 || delta_fmt == "")) && delta_fmt+="${delta_s}s"
+      delta_fmt="${delta_fmt% }"  # trim trailing space
+      echo "--- ${delta_fmt} since previous iteration ---"
     fi
 
     last_time=$now
@@ -180,8 +186,15 @@ end
   done
 
   local total_time=$((SECONDS - start_time))
-  local total_minutes=$(awk "BEGIN {printf \"%.1f\", $total_time/60}")
-  local summary="Done after $count iterations (total time: ${total_minutes}m)"
+  local total_h=$((total_time / 3600))
+  local total_m=$(((total_time % 3600) / 60))
+  local total_s=$((total_time % 60))
+  local total_fmt=""
+  ((total_h > 0)) && total_fmt+="${total_h}h "
+  ((total_m > 0)) && total_fmt+="${total_m}m "
+  ((total_s > 0 || total_fmt == "")) && total_fmt+="${total_s}s"
+  total_fmt="${total_fmt% }"  # trim trailing space
+  local summary="Done after $count iterations (total time: ${total_fmt})"
   /Users/abatilo/abatilo/singlesms/singlesms "$summary"
   echo "$summary"
   echo "Logs: $logfile"
