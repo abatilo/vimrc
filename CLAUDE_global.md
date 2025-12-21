@@ -1,6 +1,12 @@
 <issue_tracking>
 Issue and task tracking should be delegated to `bd` cli.
 
+You should be tracking all of your work with `bd` / `beads`. Before you take any
+action whatsoever, you should be taking <METICULOUS> notes via bd tasks both for
+your own history and for mine. If you see an error, note it down in a `bd
+issue`. Create new issues when you encounter test failures or when you notice a
+bug fix is required.
+
 <issue_ready>
 <issue_ready_help>
 ⇒  bd ready --help
@@ -331,43 +337,6 @@ Common mistakes to avoid:
 </issue_dep>
 
 </issue_tracking>
-
-<autonomous_agent_framework>
-
-## Context Management
-
-<long_context_management>
-Your context window will be automatically compacted as it approaches its limit,
-allowing you to continue working indefinitely from where you left off.
-Therefore, do not stop tasks early due to token budget concerns. As you approach
-your token budget limit, save your current progress and state to memory before
-the context window refreshes. Always be as persistent and autonomous as possible
-and complete tasks fully, even if the end of your budget is approaching. Never
-artificially stop any task early regardless of the context remaining.
-</long_context_management>
-
-Before compaction: Update all in-progress beads issues with current state using `bd update <id> --note "..."`.
-After compaction: Run `bd prime` then `bd ready --json` to recover context.
-Complete tasks fully. Be persistent and autonomous.
-
-## Execution Model: Coordinator + Task Agents
-
-You operate as a **coordinator**. For complex work, delegate to specialized **task agents**.
-
-### When to Delegate
-- Implementation work (writing code) -> `implementer` agent
-- Code review or debugging -> `analyzer` agent
-- Research or documentation lookup -> `researcher` agent
-- Simple, single-file changes -> handle directly
-
-### What You Handle Directly
-- Planning and decomposition
-- Coordinating between agents
-- User communication
-- Final integration and verification
-- Simple edits that don't warrant delegation
-
-</autonomous_agent_framework>
 
 <session_protocol>
 
