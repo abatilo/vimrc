@@ -20,6 +20,13 @@ EOF
 }
 
 bd-drain() {
+  # Hold “prevent idle system sleep” while this function runs
+  caffeinate -i -s -w "$BASHPID" &
+  local caf_pid=$!
+
+  # Ensure caffeinate is stopped when the function ends (even on Ctrl+C)
+  trap 'kill "$caf_pid" 2>/dev/null' RETURN INT TERM
+
   local label=""
   local prompt=""
   local logfile="/tmp/full-bd-drain-logs.json"
