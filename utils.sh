@@ -73,7 +73,7 @@ bd-drain() {
 
   # Build a sample command string for the default prompt
   local sample_cmd="bd ready --json"
-  if ((${#bd_args[@]} > 0)); then
+  if [[ ${#bd_args[@]} -gt 0 ]]; then
     # This will render like: bd ready --json -n 1 --label "some-label"
     sample_cmd+=" --label \"$label\""
   fi
