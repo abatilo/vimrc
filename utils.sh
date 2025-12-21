@@ -1,3 +1,5 @@
+#!/bin/bash
+
 bd-plan() {
   local title="$1"
   local extra="$2"
@@ -64,7 +66,8 @@ bd-drain() {
 
   # Rotate logs
   if [[ -f "$logfile" ]]; then
-    local backup="${logfile}.$(date +%Y%m%d-%H%M%S).bak"
+    local backup
+    backup="${logfile}.$(date +%Y%m%d-%H%M%S).bak"
     mv "$logfile" "$backup"
     echo "Rotated logs to: $backup"
   fi
@@ -83,7 +86,7 @@ bd-drain() {
   fi
 
   # Default prompt if none was provided
-  prompt="${prompt:-Run '$sample_cmd' then review your skills, mcps, and agents and then proceed with implementation. Remember that you have codex mcp as a that can check your work, give you ideas, or do exploration and discovery for you. You're on the hook for actually writing and implementing the code. As you encounter bugs or issues, don't forget to create new bd issues to investigate. Do not make the issues with a description for implementing. Issues that are newly discovered should be written with the exact context of what you were doing and the situation that encountered the problem, and write the description to explicitly ask @agent-Explore and @agent-Plan to first investigate and create NEW bd issues to execute the fixes and changes.}"
+  prompt="${prompt:-Run \"$sample_cmd\" then review your skills, mcps, and agents and then proceed with implementation. Remember that you have codex mcp as a that can check your work, give you ideas, or do exploration and discovery for you. You are on the hook for actually writing and implementing the code. As you encounter bugs or issues, do not forget to create new bd issues to investigate. Do not make the issues with a description for implementing. Issues that are newly discovered should be written with the exact context of what you were doing and the situation that encountered the problem, and write the description to explicitly ask @agent-Explore and @agent-Plan to first investigate and create NEW bd issues to execute the fixes and changes.}"
 
   local count=0
 
@@ -168,7 +171,7 @@ else empty
 end
 '
 
-    echo "\n=== Updating CLAUDE.md ==="
+    printf "\n=== Updating CLAUDE.md ===\n"
     claude --continue --print --verbose --output-format=stream-json "Use up to 20 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Delete any files or sections that are redundant and low signal. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" | tee -a "$logfile" | jq -r '
 if .type == "assistant" then
   .message.content[] |
@@ -186,7 +189,7 @@ elif .type == "result" then
 else empty
 end
 '
-    echo "=============\n\n"
+    printf "=============\n\n"
   done
 
   local total_time=$((SECONDS - start_time))
@@ -205,8 +208,10 @@ end
 
   # Show quick stats if log file exists
   if [[ -f "$logfile" ]]; then
-    local cost=$(jq -s '[.[] | select(.type == "result") | .total_cost_usd] | add // 0 | . * 100 | round / 100' "$logfile" 2>/dev/null)
-    local turns=$(jq -s '[.[] | select(.type == "result") | .num_turns] | add // 0' "$logfile" 2>/dev/null)
+    local cost
+    cost=$(jq -s '[.[] | select(.type == "result") | .total_cost_usd] | add // 0 | . * 100 | round / 100' "$logfile" 2>/dev/null)
+    local turns
+    turns=$(jq -s '[.[] | select(.type == "result") | .num_turns] | add // 0' "$logfile" 2>/dev/null)
     echo "Total cost: \$${cost:-0}  Turns: ${turns:-0}"
   fi
 }
