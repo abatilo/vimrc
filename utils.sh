@@ -91,13 +91,14 @@ EOF
     )"
 }
 
-bd-drain() {
-  # Hold “prevent idle system sleep” while this function runs
-  caffeinate -i -s -w "$BASHPID" &
+bd-drain() (
+  # Hold "prevent idle system sleep" while this function runs
+  local pid="${BASHPID:-$$}"
+  caffeinate -i -s -w "$pid" &
   local caf_pid=$!
 
   # Ensure caffeinate is stopped when the function ends (even on Ctrl+C)
-  trap 'kill "$caf_pid" 2>/dev/null' RETURN INT TERM
+  trap 'kill "$caf_pid" 2>/dev/null' EXIT INT TERM
 
   local label=""
   local prompt=""
@@ -213,4 +214,4 @@ bd-drain() {
     turns=$(jq -s '[.[] | select(.type == "result") | .num_turns] | add // 0' "$logfile" 2>/dev/null)
     echo "Total cost: \$${cost:-0}  Turns: ${turns:-0}"
   fi
-}
+)
