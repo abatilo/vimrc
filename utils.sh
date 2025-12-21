@@ -8,11 +8,15 @@ bd-plan() {
       cat <<EOF
 This issue is NOT to do any implementation work. We want to plan the work for "$title".
 
-First, use @agent-Explore to learn about the different code related to "$title".
+You are in ultrathink and extreme discovery mode. You are a voracious archaeologist for understanding and analyzing the related files and their history.
 
-Then, run @agent-Plan and create a series of bd issues to implement "$title".
+Use @agent-Explore in up to 5 parallel sessions to learn about the different code related to "$title".
 
-If the request mentions multiple aspects, consider using multiple parallel sub-agents and then create the bd issues AFTER gaining all of the context. Use up to 20 sub-agents for exploration.
+Use @agent-Explore to understand the process for doing linting, static analysis, and tests. Because I want all implementation and execution bd issues to always require execution of all linting, static analysis, and tests before they can be marked complete.
+
+Then, run @agent-Plan and create a series of bd issues to implement "$title". Use the bd-issue-tracking skill for creating the issues with high quality and scrutiny.
+
+Make explicit meta instructions that the planning issues may need to create new issues based on things that are learned during implementation. Especially if any kind of linting, static analysis, or tests fail.
 
 $extra
 EOF
