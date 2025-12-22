@@ -234,7 +234,7 @@ bd-drain() (
       local delta_fmt=""
       ((delta_h > 0)) && delta_fmt+="${delta_h}h "
       ((delta_m > 0)) && delta_fmt+="${delta_m}m "
-      ((delta_s > 0 || delta_fmt == "")) && delta_fmt+="${delta_s}s"
+      ((delta_s > 0 || ${#delta_fmt} == 0)) && delta_fmt+="${delta_s}s"
       delta_fmt="${delta_fmt% }" # trim trailing space
       echo "--- ${delta_fmt} since previous iteration ---"
     fi
@@ -260,7 +260,7 @@ bd-drain() (
   local total_fmt=""
   ((total_h > 0)) && total_fmt+="${total_h}h "
   ((total_m > 0)) && total_fmt+="${total_m}m "
-  ((total_s > 0 || total_fmt == "")) && total_fmt+="${total_s}s"
+  ((total_s > 0 || ${#total_fmt} == 0)) && total_fmt+="${total_s}s"
   total_fmt="${total_fmt% }" # trim trailing space
   local summary="Done after $count iterations (total time: ${total_fmt})"
   /Users/abatilo/abatilo/singlesms/singlesms "$summary"
