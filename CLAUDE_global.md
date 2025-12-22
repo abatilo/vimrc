@@ -32,7 +32,7 @@ by `bd ready` have no blockers and are either open or in-progress.
 # Find ready work
 bd ready --json
 
-# Filter by priority (0=critical, 1=high, 2=normal, 3=low)
+# Filter by priority (0=critical, 1=high, 2=normal, 3=low, 4=backlog)
 bd ready --priority 1 --json
 
 # Filter by assignee
@@ -96,12 +96,12 @@ bd create --title "$TITLE" --description <<EOF --json
 # Description
 The description should be 1-4 sentences for what the change is and why the issue
 brings us closer to the goal that inspired the creation of the issue. List any
-considerations, comprosies, or trade-offs that might need to be made.
+considerations, compromises, or trade-offs that might need to be made.
 
 # Relevant files and snippets
-This section should have a list of files that might be relevant and were taken
+This section should have a list of files that might be relevant and were identified
 during discovery and planning. Even better if you can copy exact snippets of
-relative code from the various files.
+relevant code from the various files.
 
 # Additional sources
 If discovery was done with the repo-explore skill, list the repos that were
@@ -177,7 +177,7 @@ Flags:
 Use `bd update` to modify issue fields during work. Key fields:
 
 - `--status`: Workflow state (open → in_progress → closed)
-- `--notes`: Session handoff information (COMPLETED/IN_PROGRESS/NEXT format)
+- `--notes`: Session handoff information (COMPLETED/IN_PROGRESS/BLOCKERS/KEY_DECISIONS/NEXT format)
 - `--design`: HOW to build (can change during implementation)
 - `--acceptance`: WHAT success looks like (should remain stable)
 - `--priority`: Urgency level (0=critical through 4=backlog)
@@ -230,7 +230,7 @@ The `--reason` should include:
 - Summary of what was accomplished
 - How it was verified (tests, manual testing, etc.)
 - Key files that were modified
--
+- Any follow-up issues created
 
 ```bash
 # Close with comprehensive reason
@@ -243,7 +243,7 @@ requirements.
 Write about what we learned during closing this issue. Be detailed about any
 assumptions that were made that were wrong or any expectations and/or assertions
 that needed to be corrected. Write down any mistakes that were made during the
-implementation that lead to failed tests or failed implementations.
+implementation that led to failed tests or failed implementations.
 
 # New issues created
 A bulleted list of issues that were created
@@ -387,7 +387,8 @@ Each session must leave code production-ready:
 # 1. File remaining work as beads issues
 bd create "Follow-up: ..." --json
 
-bd close <id> --reason "" --json
+# 2. Close completed issues
+bd close <id> --reason "Completed: ..." --json
 
 # 3. Run quality validation
 # Lint, test, type-check as appropriate for project
