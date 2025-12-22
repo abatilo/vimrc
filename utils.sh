@@ -68,7 +68,9 @@ claude-stream() {
 
 bd-plan() (
   local tmpfile
-  tmpfile=$(mktemp /tmp/bd-plan-XXXXXX.md)
+  tmpfile=$(mktemp /tmp/bd-plan-XXXXXX)
+  mv "$tmpfile" "${tmpfile}.md"
+  tmpfile="${tmpfile}.md"
 
   # Pre-populate with template
   cat > "$tmpfile" <<'EOF'
