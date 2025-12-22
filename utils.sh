@@ -74,19 +74,24 @@ bd-plan() (
 
   # Pre-populate with template
   cat >"$tmpfile" <<'EOF'
-##
+## [Title of feature/task]
 
-This issue is NOT to do any implementation work. We want to plan the work.
+This issue focuses on discovery and planning—not implementation.
 
-You are in ultrathink and extreme discovery mode. You are a voracious archaeologist for understanding and analyzing the related files and their history.
+**Phase 1: Discovery**
+Use the Explore subagent with "very thorough" setting to understand:
+1. All code related to this work (run up to 5 parallel explorations)
+2. Current architecture, patterns, and conventions
+3. Testing, linting, and static analysis processes used in this project
 
-Use @agent-Explore in up to 5 parallel sessions to learn about the different code related to this work.
+**Phase 2: Planning**
+Use the Plan subagent to design implementation, then create bd issues where each issue:
+1. Has clear acceptance criteria (what success looks like)
+2. Requires linting, static analysis, and tests to pass before completion
+3. Is scoped to complete in one session
+4. Includes note: "If implementation reveals new issues, create separate bd issues for investigation"
 
-Use @agent-Explore to understand the process for doing linting, static analysis, and tests. Because I want all implementation and execution bd issues to always require execution of all linting, static analysis, and tests before they can be marked complete.
-
-Then, run @agent-Plan and create a series of bd issues to implement this work. Use the bd-issue-tracking skill for creating the issues with high quality and scrutiny.
-
-Make explicit meta instructions that the planning issues may need to create new issues based on things that are learned during implementation. Especially if any kind of linting, static analysis, or tests fail.
+Use the bd-issue-tracking skill to create high-quality issues with verbose descriptions.
 
 ### Priority
 2
@@ -214,7 +219,7 @@ bd-drain() (
   fi
 
   # Default prompt if none was provided
-  prompt="${prompt:-Run \"$sample_cmd\" then review your skills, mcps, and agents and then proceed with implementation. Remember that you have codex mcp as a that can check your work, give you ideas, or do exploration and discovery for you. You are on the hook for actually writing and implementing the code. As you encounter bugs or issues, do not forget to create new bd issues to investigate. Do not make the issues with a description for implementing. Issues that are newly discovered should be written with the exact context of what you were doing and the situation that encountered the problem, and write the description to explicitly ask @agent-Explore and @agent-Plan to first investigate and create NEW bd issues to execute the fixes and changes.}"
+  prompt="${prompt:-Run '$sample_cmd' to find available work. Review your skills (bd-issue-tracking, git-commit), MCPs (codex for verification), and agents (Explore, Plan). Implement the highest-priority ready issue completely, including all tests and linting. When you discover bugs or issues during implementation, create new bd issues with exact context of what you were doing and what you found—describe the problem for investigation, not as implementation instructions. Use the Explore and Plan subagents to investigate new issues before creating implementation tasks. Use /commit for atomic commits.}"
 
   local count=0
 
@@ -249,7 +254,7 @@ bd-drain() (
     claude-stream "$prompt" "$logfile"
 
     printf "\n=== Updating CLAUDE.md ===\n"
-    claude-stream "Use up to 20 parallel @agent-Explore and update any and all CLAUDE.md files with new documentation or fix any references to stale information. Create new CLAUDE.md files in any directories that you think could use the clarity. Delete any files or sections that are redundant and low signal. Consider checking the last few days worth of git commits to help determine what changed recently. Then use the SlashTool and run /commit" "$logfile"
+    claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Commit changes with /commit." "$logfile"
     printf "=============\n\n"
   done
 
