@@ -66,30 +66,70 @@ claude-stream() {
     jq -r "$_CLAUDE_STREAM_JQ"
 }
 
-bd-plan() {
-  local title="$1"
-  local extra="$2"
+bd-plan() (
+  local tmpfile
+  tmpfile=$(mktemp /tmp/bd-plan-XXXXXX.md)
 
-  bd create \
-    --title "Plan for $title" \
-    --description "$(
-      cat <<EOF
-This issue is NOT to do any implementation work. We want to plan the work for "$title".
+  # Pre-populate with template
+  cat > "$tmpfile" <<'EOF'
+## Plan for <TITLE>
+
+This issue is NOT to do any implementation work. We want to plan the work.
 
 You are in ultrathink and extreme discovery mode. You are a voracious archaeologist for understanding and analyzing the related files and their history.
 
-Use @agent-Explore in up to 5 parallel sessions to learn about the different code related to "$title".
+Use @agent-Explore in up to 5 parallel sessions to learn about the different code related to this work.
 
 Use @agent-Explore to understand the process for doing linting, static analysis, and tests. Because I want all implementation and execution bd issues to always require execution of all linting, static analysis, and tests before they can be marked complete.
 
-Then, run @agent-Plan and create a series of bd issues to implement "$title". Use the bd-issue-tracking skill for creating the issues with high quality and scrutiny.
+Then, run @agent-Plan and create a series of bd issues to implement this work. Use the bd-issue-tracking skill for creating the issues with high quality and scrutiny.
 
 Make explicit meta instructions that the planning issues may need to create new issues based on things that are learned during implementation. Especially if any kind of linting, static analysis, or tests fail.
 
-$extra
+### Priority
+2
+
+### Type
+task
+
+### Labels
+planning
 EOF
-    )"
-}
+
+  # Record initial checksum
+  local before_sum
+  before_sum=$(md5 -q "$tmpfile")
+
+  # Open vim for editing
+  "${EDITOR:-vim}" "$tmpfile"
+
+  # Check if file was modified and is non-empty
+  local after_sum
+  after_sum=$(md5 -q "$tmpfile")
+
+  if [[ "$before_sum" == "$after_sum" ]]; then
+    rm -f "$tmpfile"
+    return 0
+  fi
+
+  if [[ ! -s "$tmpfile" ]]; then
+    rm -f "$tmpfile"
+    return 0
+  fi
+
+  # Create the issue
+  bd create --file "$tmpfile"
+  local rc=$?
+
+  # Clean up on success
+  if [[ $rc -eq 0 ]]; then
+    rm -f "$tmpfile"
+  else
+    echo "Issue creation failed. Template preserved at: $tmpfile" >&2
+  fi
+
+  return $rc
+)
 
 bd-drain() (
   # Hold "prevent idle system sleep" while this function runs
