@@ -119,8 +119,27 @@ EOF
     return 0
   fi
 
-  # Create the issue
-  bd create --file "$tmpfile"
+  # Parse markdown and create issue (workaround for bd create --file bug)
+  local title description priority issuetype labels
+
+  # Extract title from ## header
+  title=$(grep -m1 '^## ' "$tmpfile" | sed 's/^## //')
+
+  # Extract description (everything between title and first ### section)
+  description=$(awk '/^## /{found=1; next} /^### /{exit} found{print}' "$tmpfile")
+
+  # Extract sections
+  priority=$(awk '/^### Priority/{getline; print; exit}' "$tmpfile" | tr -d '[:space:]')
+  issuetype=$(awk '/^### Type/{getline; print; exit}' "$tmpfile" | tr -d '[:space:]')
+  labels=$(awk '/^### Labels/{getline; print; exit}' "$tmpfile" | tr -d '[:space:]')
+
+  # Build bd create command
+  local cmd=(bd create --title "$title" --description "$description")
+  [[ -n "$priority" ]] && cmd+=(--priority "$priority")
+  [[ -n "$issuetype" ]] && cmd+=(--type "$issuetype")
+  [[ -n "$labels" ]] && cmd+=(--labels "$labels")
+
+  "${cmd[@]}"
   local rc=$?
 
   # Clean up on success
