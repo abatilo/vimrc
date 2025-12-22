@@ -61,8 +61,8 @@ claude-stream() {
   local prompt="$1"
   local logfile="$2"
 
-  claude --continue --print --verbose --output-format=stream-json "$prompt" | \
-    tee -a "$logfile" | \
+  claude --continue --print --verbose --output-format=stream-json "$prompt" |
+    tee -a "$logfile" |
     jq -r "$_CLAUDE_STREAM_JQ"
 }
 
@@ -73,8 +73,8 @@ bd-plan() (
   tmpfile="${tmpfile}.md"
 
   # Pre-populate with template
-  cat > "$tmpfile" <<'EOF'
-## Plan for <TITLE>
+  cat >"$tmpfile" <<'EOF'
+##
 
 This issue is NOT to do any implementation work. We want to plan the work.
 
@@ -235,7 +235,7 @@ bd-drain() (
       ((delta_h > 0)) && delta_fmt+="${delta_h}h "
       ((delta_m > 0)) && delta_fmt+="${delta_m}m "
       ((delta_s > 0 || delta_fmt == "")) && delta_fmt+="${delta_s}s"
-      delta_fmt="${delta_fmt% }"  # trim trailing space
+      delta_fmt="${delta_fmt% }" # trim trailing space
       echo "--- ${delta_fmt} since previous iteration ---"
     fi
 
@@ -261,7 +261,7 @@ bd-drain() (
   ((total_h > 0)) && total_fmt+="${total_h}h "
   ((total_m > 0)) && total_fmt+="${total_m}m "
   ((total_s > 0 || total_fmt == "")) && total_fmt+="${total_s}s"
-  total_fmt="${total_fmt% }"  # trim trailing space
+  total_fmt="${total_fmt% }" # trim trailing space
   local summary="Done after $count iterations (total time: ${total_fmt})"
   /Users/abatilo/abatilo/singlesms/singlesms "$summary"
   echo "$summary"
