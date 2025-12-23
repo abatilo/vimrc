@@ -80,7 +80,7 @@ This issue focuses on discovery and planning—not implementation.
 
 **Phase 1: Discovery**
 Use the Explore subagent with "very thorough" setting to understand:
-1. All code related to this work (run up to 5 parallel explorations)
+1. All code related to this work (run up to 3 parallel explorations)
 2. Current architecture, patterns, and conventions
 3. Testing, linting, and static analysis processes used in this project
 
@@ -219,7 +219,7 @@ bd-drain() (
   fi
 
   # Default prompt if none was provided
-  prompt="${prompt:-Run '$sample_cmd' to find available work. Review your skills (bd-issue-tracking, git-commit), MCPs (codex for verification), and agents (Explore, Plan). Implement the highest-priority ready issue completely, including all tests and linting. When you discover bugs or issues during implementation, create new bd issues with exact context of what you were doing and what you found—describe the problem for investigation, not as implementation instructions. Use the Explore and Plan subagents to investigate new issues before creating implementation tasks. Use /commit for atomic commits.}"
+  prompt="${prompt:-Run \"$sample_cmd\" to find available work. Review your skills (bd-issue-tracking, git-commit), MCPs (codex for verification), and agents (Explore, Plan). Implement the highest-priority ready issue completely, including all tests and linting. When you discover bugs or issues during implementation, create new bd issues with exact context of what you were doing and what you found—describe the problem for investigation, not as implementation instructions. Use the Explore and Plan subagents to investigate new issues before creating implementation tasks. Use /commit for atomic commits.}"
 
   local count=0
 
