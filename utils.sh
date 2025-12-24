@@ -283,7 +283,7 @@ bd-drain() (
   ((total_s > 0 || ${#total_fmt} == 0)) && total_fmt+="${total_s}s"
   total_fmt="${total_fmt% }" # trim trailing space
   local summary="Done after $count iterations (total time: ${total_fmt})"
-  /Users/abatilo/abatilo/singlesms/singlesms "$summary"
+  /Users/abatilo/abatilo/notify/notify "$summary"
   echo "$summary"
   echo "Logs: $logfile"
 
