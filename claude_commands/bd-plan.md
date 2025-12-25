@@ -48,6 +48,28 @@ Use the Plan subagent to design implementation, then create bd issues using the 
    Use exact commands from Phase 1 discovery. Omit categories if no command exists.
 4. Include note: "If implementation reveals new issues, create separate bd issues for investigation"
 
+## Phase 3: Final Verification Issue
+
+After creating all implementation issues, create one final bd issue to run the full test suite:
+
+1. **Create the issue**:
+   - Title: "Run full E2E/integration test suite"
+   - Description: Verify all changes work together by running the complete test suite
+   - Include the discovered e2e/integration command from Phase 1
+   - Acceptance criteria: All tests pass, no regressions introduced
+
+2. **Set up dependencies**:
+   Use `bd dep add <final-issue> <implementation-issue> --type blocks` for EACH implementation issue.
+   This ensures the final verification runs only after all implementation work is complete.
+
+Example:
+```bash
+# If implementation issues are bd-001, bd-002, bd-003 and final is bd-004:
+bd dep add bd-004 bd-001 --type blocks
+bd dep add bd-004 bd-002 --type blocks
+bd dep add bd-004 bd-003 --type blocks
+```
+
 ## Handling Failures
 
 When discovery or planning reveals blocking issues:
