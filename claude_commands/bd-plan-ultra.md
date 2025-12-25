@@ -12,7 +12,26 @@ Use BOTH approaches for comprehensive discovery:
 Use the Explore subagent with "very thorough" setting to understand:
 1. All code related to this work (run up to 3 parallel explorations)
 2. Current architecture, patterns, and conventions
-3. How to run tests, linting, and static analysis in this project
+
+### Discover Verification Commands
+
+Run a focused Explore query to find exact development commands:
+```
+Find the ACTUAL commands used in this project for verification. Search in order:
+1. mise.toml / .mise.toml (mise task runner - https://github.com/jdx/mise)
+2. package.json scripts / pyproject.toml / Makefile / Justfile
+3. .github/workflows (CI jobs are authoritative)
+4. docs/CONTRIBUTING.md or README.md
+
+For each category, report the EXACT command string:
+- Linting/formatting (e.g., `mise run lint`, `npm run lint`, `make lint`)
+- Static analysis / type checking (e.g., `mise run check`, `staticcheck ./...`, `golangci-lint run`, `npm run typecheck`)
+- Unit tests (e.g., `mise run test`, `go test ./...`, `npm run test`)
+- Integration/E2E tests (e.g., `mise run test:e2e`, `npm run test:e2e`, `make integration`)
+
+Output format: "CATEGORY: [exact command]"
+Stop searching a category once you find an authoritative source.
+```
 
 ### Codex Discovery
 Use the codex MCP tool for additional discovery:
@@ -27,6 +46,7 @@ Cross-reference Codex findings with Explore results to ensure nothing is missed.
 Before planning, consolidate findings into a brief summary:
 - **Architecture overview**: Key patterns, conventions, and constraints discovered
 - **Testing setup**: Where tests live, how to run them, what coverage exists
+- **Verification commands**: Exact commands for lint, static analysis, test, e2e (from discovery)
 - **Known risks**: Edge cases, gotchas, or blockers identified during discovery
 
 This summary becomes the input for Phase 2.
@@ -80,14 +100,15 @@ Before creating issues, confirm:
 Create bd issues using the bd-issue-tracking skill. Each issue must:
 1. Have clear acceptance criteria (what success looks like)
 2. Be scoped to complete in one session
-3. End with verification notes:
+3. End with verification notes using **discovered commands** (not generic phrases):
    ```
    ## Verification
-   - [ ] Linting passes
-   - [ ] Static analysis passes
-   - [ ] All tests pass
-   - [ ] E2E/integration tests pass (if applicable)
+   - [ ] `[discovered lint command]` passes
+   - [ ] `[discovered static analysis command]` passes
+   - [ ] `[discovered test command]` passes
+   - [ ] `[discovered e2e command]` passes (if applicable)
    ```
+   Use exact commands from Phase 1 discovery. Omit categories if no command exists.
 4. Include note: "If implementation reveals new issues, create separate bd issues for investigation"
 
 ## Handling Failures
