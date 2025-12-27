@@ -32,7 +32,7 @@
       "Bash(yarn:*)",
       "WebFetch(domain:*)"
     ],
-    "deny": [],
+    "deny": ["mcp__codex__codex-reply"],
     "defaultMode": "bypassPermissions"
   },
   "model": "opus",
