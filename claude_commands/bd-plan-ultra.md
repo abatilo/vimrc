@@ -9,7 +9,7 @@ This is a two-phase process: discovery first, then planning with collaborative d
 Use BOTH approaches for comprehensive discovery:
 
 ### Claude Explore Agents
-Use the Explore subagent with "very thorough" setting to understand:
+Use the Explore subagent with "very thorough" setting and **model: "opus"** to understand:
 1. All code related to this work (run up to 3 parallel explorations)
 2. Current architecture, patterns, and conventions
 
@@ -56,13 +56,13 @@ This summary becomes the input for Phase 2.
 Use multi-round refinement for thorough planning:
 
 ### Step 1: Initial Plan
-Use the Plan subagent to design implementation approach based on discovery synthesis.
+Use the Plan subagent with **model: "opus"** to design implementation approach based on discovery synthesis.
 
 ### Step 2: Collaborative Debate (2-4 rounds, until consensus or escalation)
-Claude and Codex debate back-and-forth to refine the plan:
+Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan:
 
 **Round 1 - Dual Critique**:
-- **Claude**: List 5-10 specific gaps, risks, or edge cases in the plan. For each, explain why it matters.
+- **Claude (Opus)**: List 5-10 specific gaps, risks, or edge cases in the plan. For each, explain why it matters.
 - **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
   prompt: "Review this implementation plan: [plan]. List 5-10 specific gaps, conflicts, or risks. For each issue: (1) What could break? (2) What assumption might be wrong? (3) Suggest a concrete mitigation."
@@ -70,16 +70,16 @@ Claude and Codex debate back-and-forth to refine the plan:
 - Synthesize both critiques. If >3 critical issues overlap, they are high-priority fixes.
 
 **Round 2 - Address & Counter**:
-- **Claude**: Propose specific revisions for each Round 1 concern. State which you accept, reject (with rationale), or defer.
-- **Codex**: Use `mcp__codex__codex-reply`:
+- **Claude (Opus)**: Propose specific revisions for each Round 1 concern. State which you accept, reject (with rationale), or defer.
+- **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
   prompt: "Claude proposes these revisions: [revisions]. For each: (1) Does it actually solve the concern? (2) What breaks if Claude's assumption is wrong? (3) Suggest 1-2 concrete alternatives for weak points."
   ```
 - Integrate valid counterpoints. If fundamental disagreement on architecture, pause and re-examine discovery findings.
 
 **Round 3 - Final Consensus** (skip if Round 2 achieved consensus):
-- **Claude**: Present refined plan with all incorporated feedback. List any unresolved disagreements.
-- **Codex**: Use `mcp__codex__codex-reply`:
+- **Claude (Opus)**: Present refined plan with all incorporated feedback. List any unresolved disagreements.
+- **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
   prompt: "Final plan review: [plan]. Verify: (1) All discovered edge cases addressed or explicitly deferred? (2) Error/failure paths defined? (3) Testing strategy clear? (4) Dependencies sequenced correctly? List any gaps."
   ```
@@ -97,6 +97,7 @@ Before creating issues, confirm:
 - [ ] Trade-offs documented with reasoning
 
 ### Step 3: Create Issues
+
 Create bd issues using the bd-issue-tracking skill. Each issue must:
 1. Have clear acceptance criteria (what success looks like)
 2. Be scoped to complete in one session
@@ -132,6 +133,48 @@ bd dep add bd-004 bd-001 --type blocks
 bd dep add bd-004 bd-002 --type blocks
 bd dep add bd-004 bd-003 --type blocks
 ```
+
+### Step 5: Create Epic
+
+After all issues are created and dependencies set, create a bd epic as a summary of the planned work:
+
+```bash
+bd create "[feature/task name]" --type epic --description "$(cat <<'EOF'
+# Overview
+[Brief description of the overall work being planned]
+
+# Scope
+[What this epic covers]
+
+# Implementation Issues
+- bd-xxx: [issue title]
+- bd-xxx: [issue title]
+- bd-xxx: [issue title]
+- bd-xxx: Run full E2E/integration test suite (final verification)
+
+# Verification Commands
+- Lint: `[discovered lint command]`
+- Static analysis: `[discovered static analysis command]`
+- Tests: `[discovered test command]`
+- E2E: `[discovered e2e command]`
+
+# Key Trade-offs
+[Document major trade-offs from collaborative debate]
+
+# Success Criteria
+All implementation issues closed and E2E verification passes.
+EOF
+)" --json
+```
+
+Link all created issues to the epic as children:
+```bash
+bd dep add bd-xxx <epic-id> --type parent-child
+bd dep add bd-xxx <epic-id> --type parent-child
+# ... repeat for each implementation issue
+```
+
+Check epic progress: `bd epic status`
 
 ## Handling Failures
 
