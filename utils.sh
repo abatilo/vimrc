@@ -61,7 +61,7 @@ claude-stream() {
   local prompt="$1"
   local logfile="$2"
 
-  claude --print --verbose --output-format=stream-json "$prompt" |
+  claude --model opus --print --verbose --output-format=stream-json "$prompt" |
     tee -a "$logfile" |
     jq -r "$_CLAUDE_STREAM_JQ"
 }
