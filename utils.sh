@@ -61,7 +61,7 @@ claude-stream() {
   local prompt="$1"
   local logfile="$2"
 
-  claude --continue --print --verbose --output-format=stream-json "$prompt" |
+  claude --print --verbose --output-format=stream-json "$prompt" |
     tee -a "$logfile" |
     jq -r "$_CLAUDE_STREAM_JQ"
 }
@@ -224,7 +224,7 @@ Use multi-round refinement for thorough planning:
 
    **Round 2 - Address & Counter**:
    - Claude: Propose specific revisions for each Round 1 concern. State which you accept, reject (with rationale), or defer.
-   - Codex: Use `mcp__codex__codex-reply`:
+   - Codex: Use `mcp__codex__codex`:
      ```
      prompt: "Claude proposes these revisions: [revisions]. For each: (1) Does it actually solve the concern? (2) What breaks if Claude's assumption is wrong? (3) Suggest 1-2 concrete alternatives for weak points."
      ```
@@ -232,7 +232,7 @@ Use multi-round refinement for thorough planning:
 
    **Round 3 - Final Consensus** (skip if Round 2 achieved consensus):
    - Claude: Present refined plan with all incorporated feedback. List any unresolved disagreements.
-   - Codex: Use `mcp__codex__codex-reply`:
+   - Codex: Use `mcp__codex__codex`:
      ```
      prompt: "Final plan review: [plan]. Verify: (1) All discovered edge cases addressed or explicitly deferred? (2) Error/failure paths defined? (3) Testing strategy clear? (4) Dependencies sequenced correctly? List any gaps."
      ```
