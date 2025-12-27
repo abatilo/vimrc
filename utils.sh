@@ -335,6 +335,148 @@ EOF
   return $rc
 )
 
+bd-e2e-drain() (
+  # Hold "prevent idle system sleep" while this function runs
+  local pid="${BASHPID:-$$}"
+  caffeinate -i -s -w "$pid" &
+  local caf_pid=$!
+
+  # Ensure caffeinate is stopped when the function ends (even on Ctrl+C)
+  trap 'kill "$caf_pid" 2>/dev/null' EXIT INT TERM
+
+  local test_cmd="mise run test:e2e -- -p --keep-going"
+  local logfile="/tmp/bd-e2e-drain-logs.json"
+  local test_output_file="/tmp/bd-e2e-test-output.txt"
+
+  # Parse CLI arguments
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --test-cmd)
+      test_cmd="$2"
+      shift 2
+      ;;
+    --logfile)
+      logfile="$2"
+      shift 2
+      ;;
+    --help)
+      echo "Usage: bd-e2e-drain [OPTIONS]"
+      echo ""
+      echo "Options:"
+      echo "  --test-cmd CMD   Test command to run (default: mise run test:e2e -- -p --keep-going)"
+      echo "  --logfile PATH   Log file path (default: /tmp/bd-e2e-drain-logs.json)"
+      echo "  --help           Show this help"
+      return 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      return 1
+      ;;
+    esac
+  done
+
+  # Rotate logs
+  if [[ -f "$logfile" ]]; then
+    local backup
+    backup="${logfile}.$(date +%Y%m%d-%H%M%S).bak"
+    mv "$logfile" "$backup"
+    echo "Rotated logs to: $backup"
+  fi
+
+  local count=0
+  local start_time=$SECONDS
+  local last_time=$start_time
+  local test_status
+
+  while true; do
+    local now=$SECONDS
+
+    # Print time since previous iteration (skip for the very first one)
+    if ((count > 0)); then
+      local delta_since_last=$((now - last_time))
+      local delta_h=$((delta_since_last / 3600))
+      local delta_m=$(((delta_since_last % 3600) / 60))
+      local delta_s=$((delta_since_last % 60))
+      local delta_fmt=""
+      ((delta_h > 0)) && delta_fmt+="${delta_h}h "
+      ((delta_m > 0)) && delta_fmt+="${delta_m}m "
+      ((delta_s > 0 || ${#delta_fmt} == 0)) && delta_fmt+="${delta_s}s"
+      delta_fmt="${delta_fmt% }" # trim trailing space
+      echo "--- ${delta_fmt} since previous iteration ---"
+    fi
+
+    last_time=$now
+    ((count++))
+
+    echo "=== Iteration $count: Running tests ==="
+    echo "\$ $test_cmd"
+
+    # Run tests and capture output (process substitution preserves test exit code in $?)
+    eval "$test_cmd" > >(tee "$test_output_file") 2>&1
+    test_status=$?
+
+    if ((test_status == 0)); then
+      echo "=== All tests passed! ==="
+      break
+    fi
+
+    echo "=== Tests failed (exit code: $test_status), analyzing failures ==="
+
+    # Build prompt with test failures
+    local failures
+    failures=$(cat "$test_output_file")
+
+    # Truncate if too long (keep last 8000 chars which usually has the summary)
+    if [[ ${#failures} -gt 12000 ]]; then
+      failures="[...truncated...]\n\n$(echo "$failures" | tail -c 8000)"
+    fi
+
+    local prompt
+    prompt="The following integration tests failed. Use /bd-plan-ultra to investigate the root causes and create a plan to fix them. Then implement the fixes.
+
+Test command: $test_cmd
+
+Test output:
+\`\`\`
+$failures
+\`\`\`
+
+After investigating with /bd-plan-ultra, implement the fixes. Use the Explore subagent to understand the test infrastructure and failing code paths. Create bd issues for any work that cannot be completed in this session. Use /commit for atomic commits."
+
+    claude-stream "$prompt" "$logfile"
+
+    printf "\n=== Updating CLAUDE.md ===\n"
+    claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Commit changes with /commit." "$logfile"
+    printf "=============\n\n"
+  done
+
+  local total_time=$((SECONDS - start_time))
+  local total_h=$((total_time / 3600))
+  local total_m=$(((total_time % 3600) / 60))
+  local total_s=$((total_time % 60))
+  local total_fmt=""
+  ((total_h > 0)) && total_fmt+="${total_h}h "
+  ((total_m > 0)) && total_fmt+="${total_m}m "
+  ((total_s > 0 || ${#total_fmt} == 0)) && total_fmt+="${total_s}s"
+  total_fmt="${total_fmt% }" # trim trailing space
+  local summary="E2E tests passed after $count iterations (total time: ${total_fmt})"
+  /Users/abatilo/abatilo/notify/notify "$summary"
+  echo "$summary"
+  echo "Logs: $logfile"
+
+  # Show quick stats if log file exists
+  if [[ -f "$logfile" ]]; then
+    local cost
+    cost=$(jq -s '[.[] | select(.type == "result") | .total_cost_usd] | add // 0 | . * 100 | round / 100' "$logfile" 2>/dev/null)
+    local turns
+    turns=$(jq -s '[.[] | select(.type == "result") | .num_turns] | add // 0' "$logfile" 2>/dev/null)
+    echo "Total cost: \$${cost:-0}  Turns: ${turns:-0}"
+  fi
+
+  # Cleanup
+  rm -f "$test_output_file"
+)
+
 bd-drain() (
   # Hold "prevent idle system sleep" while this function runs
   local pid="${BASHPID:-$$}"
