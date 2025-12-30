@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Reset any stuck in_progress bd issues to open with P0 priority
+# Called at the end of each drain iteration as a safety net
+_bd_reset_stuck_issues() {
+  local stuck
+  stuck=$(bd list --status=in_progress --json 2>/dev/null | jq -r '.[].id' 2>/dev/null | tr '\n' ' ')
+  if [[ -n "${stuck// /}" ]]; then
+    echo "=== Resetting stuck issues to P0: $stuck ==="
+    for id in $stuck; do
+      bd update "$id" --status=open --priority=0 \
+        --notes "RESET: Previous session ended without closing this issue."
+    done
+  fi
+}
+
 # Comprehensive jq parser for claude streaming JSON output
 # Handles system messages, assistant messages (text, thinking, tool_use), and results
 _CLAUDE_STREAM_JQ='
@@ -448,6 +462,8 @@ After investigating with /bd-plan-ultra, implement the fixes. Use the Explore su
     printf "\n=== Updating CLAUDE.md ===\n"
     claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Commit changes with /commit." "$logfile"
     printf "=============\n\n"
+
+    _bd_reset_stuck_issues
   done
 
   local total_time=$((SECONDS - start_time))
@@ -576,6 +592,8 @@ bd-drain() (
     printf "\n=== Updating CLAUDE.md ===\n"
     claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Commit changes with /commit." "$logfile"
     printf "=============\n\n"
+
+    _bd_reset_stuck_issues
   done
 
   local total_time=$((SECONDS - start_time))
