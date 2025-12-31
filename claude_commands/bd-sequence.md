@@ -100,13 +100,16 @@ You are analyzing epics from a bd issue tracker to predict which codebase module
 
 CONTEXT - bd is an issue tracking CLI. Useful commands:
 - `bd epic status --json` - List all epics with their titles, descriptions, and progress
-- `bd show <epic-id> --json` - Show detailed info about a specific epic
+- `bd show <epic-id> --json` - Show detailed info about a specific epic (includes child task IDs)
+- `bd show <task-id> --json` - Show detailed info about individual tasks within an epic
 - `bd blocked --json` - Show which issues are blocked and by what
 
 TASK:
 1. First, run `bd epic status --json` to get the list of epics
-2. For each epic, read its description and explore the codebase to predict which modules/directories it will modify
-3. Identify overlaps where multiple epics touch the same modules
+2. For each epic, run `bd show <epic-id>` to see its description and child tasks
+3. Optionally run `bd show <task-id>` on child tasks to understand specific work items
+4. Explore the codebase to predict which modules/directories each epic will modify
+5. Identify overlaps where multiple epics touch the same modules
 
 OUTPUT FORMAT:
 - Epic ID: [modules affected]
@@ -247,7 +250,8 @@ Concern #2:
 You are reviewing a proposed epic sequence for potential conflicts.
 
 CONTEXT - bd is an issue tracking CLI. Useful commands:
-- `bd show <epic-id> --json` - Show epic details including description and child tasks
+- `bd show <epic-id> --json` - Show epic details including description and child task IDs
+- `bd show <task-id> --json` - Show individual task details for deeper understanding
 - `bd dep tree <epic-id> --direction=both --json` - Show what blocks/is blocked by an epic
 - `bd blocked --json` - Show all blocked issues
 
@@ -256,8 +260,9 @@ PROPOSED SEQUENCE:
 
 TASK:
 1. For each epic in the sequence, run `bd show <epic-id>` to understand what work it involves
-2. Explore the codebase to understand which files/modules each epic will touch
-3. Analyze each adjacent pair for potential conflicts
+2. Run `bd show <task-id>` on key child tasks if you need more detail about specific work items
+3. Explore the codebase to understand which files/modules each epic will touch
+4. Analyze each adjacent pair for potential conflicts
 
 For EACH pair of adjacent epics:
 1. Could changes in epic N+1 conflict with epic N? (YES/NO)
@@ -330,7 +335,8 @@ Validation:
 You are validating a revised epic sequence before dependencies are created.
 
 CONTEXT - bd is an issue tracking CLI. Useful commands:
-- `bd show <epic-id> --json` - Show epic details (includes priority field)
+- `bd show <epic-id> --json` - Show epic details (includes priority field and child task IDs)
+- `bd show <task-id> --json` - Show individual task details if needed
 - `bd dep tree <epic-id> --direction=both --json` - Check existing dependencies
 - `bd dep cycles --json` - Detect any circular dependencies in the system
 
@@ -338,7 +344,7 @@ REVISED SEQUENCE:
 [INSERT revised sequence]
 
 TASK:
-1. Run `bd show` for each epic to verify priorities
+1. Run `bd show <epic-id>` for each epic to verify priorities
 2. Run `bd dep cycles` to check for circular dependencies
 3. Based on your earlier codebase analysis, verify module groupings
 
