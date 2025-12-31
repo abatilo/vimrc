@@ -89,19 +89,26 @@ OVERLAP: epic-001 and epic-003 both affect [auth]
 
 ### Step 1.3: Cross-Validate with Codex
 
-Use Codex to independently verify module predictions.
+Use Codex to independently verify module predictions by exploring the codebase.
 
 **Invoke**: `mcp__codex__codex`
 
 **Prompt:**
 
 ```
-Given these bd epics [INSERT: epic list with descriptions],
-predict which modules will be modified by each epic.
+You are analyzing epics from a bd issue tracker to predict which codebase modules each epic will modify.
 
-For each pair of epics that would touch the same modules, flag as "OVERLAP".
+CONTEXT - bd is an issue tracking CLI. Useful commands:
+- `bd epic status --json` - List all epics with their titles, descriptions, and progress
+- `bd show <epic-id> --json` - Show detailed info about a specific epic
+- `bd blocked --json` - Show which issues are blocked and by what
 
-Output format:
+TASK:
+1. First, run `bd epic status --json` to get the list of epics
+2. For each epic, read its description and explore the codebase to predict which modules/directories it will modify
+3. Identify overlaps where multiple epics touch the same modules
+
+OUTPUT FORMAT:
 - Epic ID: [modules affected]
 - OVERLAP: [epic A] + [epic B] on [module]
 
@@ -237,8 +244,20 @@ Concern #2:
 **Invoke**: `mcp__codex__codex`
 
 ```
-Review this epic sequence:
+You are reviewing a proposed epic sequence for potential conflicts.
+
+CONTEXT - bd is an issue tracking CLI. Useful commands:
+- `bd show <epic-id> --json` - Show epic details including description and child tasks
+- `bd dep tree <epic-id> --direction=both --json` - Show what blocks/is blocked by an epic
+- `bd blocked --json` - Show all blocked issues
+
+PROPOSED SEQUENCE:
 [INSERT sequence from Step 2.1]
+
+TASK:
+1. For each epic in the sequence, run `bd show <epic-id>` to understand what work it involves
+2. Explore the codebase to understand which files/modules each epic will touch
+3. Analyze each adjacent pair for potential conflicts
 
 For EACH pair of adjacent epics:
 1. Could changes in epic N+1 conflict with epic N? (YES/NO)
@@ -308,8 +327,20 @@ Validation:
 **Invoke**: `mcp__codex__codex`
 
 ```
-Revised epic sequence:
+You are validating a revised epic sequence before dependencies are created.
+
+CONTEXT - bd is an issue tracking CLI. Useful commands:
+- `bd show <epic-id> --json` - Show epic details (includes priority field)
+- `bd dep tree <epic-id> --direction=both --json` - Check existing dependencies
+- `bd dep cycles --json` - Detect any circular dependencies in the system
+
+REVISED SEQUENCE:
 [INSERT revised sequence]
+
+TASK:
+1. Run `bd show` for each epic to verify priorities
+2. Run `bd dep cycles` to check for circular dependencies
+3. Based on your earlier codebase analysis, verify module groupings
 
 Verify:
 1. Epics with module overlaps are adjacent or sequential. (PASS/FAIL)
