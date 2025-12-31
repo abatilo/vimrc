@@ -11,7 +11,7 @@ Determine the optimal execution order for epics to minimize merge conflicts and 
 - Tasks within a blocked epic cannot be worked on until the blocking epic completes
 - Intra-epic task dependencies are assumed to already exist
 
-### Two-Phase Process
+### Three-Phase Process
 
 1. **Discovery**: Collect all epics and map module-level dependencies.
 2. **Sequencing with Debate**: Use 2 rounds of collaborative debate to determine epic order.
@@ -55,23 +55,31 @@ Use Claude (Haiku model) to predict which modules each epic affects.
 ```
 You are analyzing bd epics to predict module-level impacts.
 
-For EACH epic provided below, predict:
-1. Which modules or packages will be modified (e.g., "auth", "api", "frontend").
-2. Other modules this epic depends on.
+INPUT: A list of epics with:
+- Epic ID
+- Epic title
+- Epic description (what work will be done)
 
-AFTER analyzing all epics, create a matrix:
+TASK: For each epic, identify:
+1. **Affected modules**: Modules/packages that will be modified by this epic
+2. **Module dependencies**: Modules this epic depends on (must be ready before this epic starts)
 
-Epic ID | Affected Modules | Module Dependencies
---------|------------------|--------------------
-epic-A  | [modules]        | [depends on]
-epic-B  | [modules]        | [depends on]
-...
+Module granularity: Use existing codebase structure (e.g., if codebase has "auth/jwt" and "auth/session" as separate modules, list both; if "auth" is a single module, list "auth").
 
-THEN identify overlaps:
-- For each pair of epics that touch the same module:
-  "OVERLAP: epic-XXX and epic-YYY both affect [module name]"
+AFTER analyzing all epics, create two outputs:
 
-OUTPUT ONLY the matrix and overlap list.
+OUTPUT #1 - Impact Matrix (Markdown table):
+
+| Epic ID   | Affected Modules | Module Dependencies |
+|-----------|------------------|---------------------|
+| epic-001  | auth, core       | (none)              |
+| epic-002  | api, core        | core, auth          |
+
+OUTPUT #2 - Overlap Analysis:
+For each pair of epics touching the same module, list once sorted by epic ID:
+
+OVERLAP: epic-001 and epic-002 both affect [core]
+OVERLAP: epic-001 and epic-003 both affect [auth]
 ```
 
 ### Step 1.3: Cross-Validate with Codex
@@ -101,20 +109,21 @@ Consolidate findings into a reference document:
 
 ```
 **Epic Inventory:**
-- List all epics with IDs, titles, and affected modules
+
+| Epic ID   | Title              | Priority | Affected Modules |
+|-----------|--------------------|----------|------------------|
+| epic-001  | Auth Refactor      | P1       | auth, core       |
+| epic-002  | API Client         | P2       | api, core        |
 
 **Overlap Map:**
-- For each pair of epics touching the same module:
-  - Epic A: [modules]
-  - Epic B: [modules]
-  - Shared: [modules in common]
+- epic-001 + epic-002: both affect [core]
 
 **Existing Dependencies:**
-- List all current epic-to-epic `blocks` relationships
+- epic-001 blocks epic-003 (from bd dep list)
 
 **Consensus Points:**
 - Epics with zero overlaps can be sequenced in any order
-- Epics with clear foundational roles (likely must come first)
+- Foundational epics (those with dependents) must come first
 ```
 
 ---
@@ -132,26 +141,45 @@ Use Claude (Haiku model) via the Plan subagent.
 **Prompt:**
 
 ```
-Given the epic conflict matrix below, propose a sequential ordering of epics.
+You are sequencing epics for a codebase. Propose a single, optimal sequential ordering.
 
-CONSTRAINTS:
-1. Foundational epics must come before epics that depend on them.
-2. Epics with module overlaps should be adjacent (not separated by unrelated work).
-3. Existing `blocks` dependencies must be honored.
-4. Higher-priority epics (P0 before P1 before P2) should come first where possible.
+INPUT: A conflict matrix showing:
+- Epic IDs, titles, and priorities (P0, P1, P2, etc.)
+- Module dependencies (which modules each epic touches)
+- Explicit `blocks` dependencies (epic-A blocks epic-B)
+
+CONSTRAINTS (in priority order—when conflicts arise, prefer earlier constraints):
+1. Honor all existing `blocks` dependencies
+2. Foundational epics (those with dependents) before dependent epics
+3. Epics touching same modules should be adjacent (minimize context switching)
+4. Higher priority (P0 > P1 > P2) when constraints 1-3 allow
+
+TASK: Propose ONE sequence that optimally satisfies these constraints.
 
 CONFLICT MATRIX:
 [INSERT matrix from Phase 1.4]
 
 OUTPUT FORMAT:
-Epic Sequence:
-1. epic-XXX - [title] - [modules affected]
-2. epic-YYY - [title] - [modules affected]
-...
 
-For each epic, explain:
-- Why this position (what constraint does it satisfy?)
-- Any trade-offs
+Proposed Epic Sequence:
+1. epic-XXX - [Title] - Modules: [module-A, module-B]
+2. epic-YYY - [Title] - Modules: [module-A, module-C]
+
+Rationale:
+- Constraint satisfied: [Which constraint(s) justify the first epic's position?]
+- Key groupings: [Which epics are adjacent for module efficiency?]
+- Trade-offs: [If any constraint was deprioritized, explain why]
+
+EXAMPLE OUTPUT:
+
+Proposed Epic Sequence:
+1. epic-001 - Auth System Refactor - Modules: auth, core
+2. epic-002 - API Client - Modules: api, core
+
+Rationale:
+- Constraint satisfied: epic-001 is foundational (epic-002 depends on core); honors constraint #2
+- Key groupings: Both epics touch core, so placing sequentially minimizes context switching
+- Trade-offs: None; constraints aligned
 ```
 
 ---
@@ -163,20 +191,40 @@ Both Claude and Codex independently critique the proposed sequence.
 **A) Claude (Haiku) Critique:**
 
 ```
-Review this proposed epic sequence:
-[INSERT sequence from Step 2.1]
+You are reviewing a proposed epic sequence for logical conflicts.
 
-Conflict Matrix (for reference):
-[INSERT matrix from Phase 1.4]
+CONSTRAINT: DO NOT propose solutions. Only identify problems.
 
-Identify up to 5 specific concerns:
+INPUT:
+- Proposed sequence (from previous step)
+- Conflict matrix (for reference)
 
-For EACH concern, state:
-1. The problem (which epics, which modules)
-2. Why it's a problem (merge conflict risk / hidden dependency)
-3. A suggested fix (reorder these epics)
+TASK: Identify up to 5 specific concerns (fewer if the sequence is sound).
 
-DO NOT attempt to resolve conflicts. Only identify them.
+For EACH concern identified, provide:
+1. **Which epics**: [epic-XXX and epic-YYY]
+2. **Which modules overlap**: [module-name]
+3. **Risk type** (choose one):
+   - Hidden dependency: Epic Y depends on work from epic X, but X comes after Y
+   - Module conflict: Both epics modify same module with no dependency—merge risk
+   - Priority inversion: Lower-priority epic blocks higher-priority epic
+   - Separation inefficiency: Related epics separated by unrelated work
+4. **Why it matters**: One sentence explaining impact
+5. **Current positions**: "epic-XXX at position N, epic-YYY at position M"
+
+OUTPUT FORMAT:
+
+Concerns Identified: [count]
+
+Concern #1:
+- Epics: epic-XXX and epic-YYY
+- Modules: auth, session
+- Risk: Module conflict
+- Why: Both modify session logic; likely merge conflict if not adjacent
+- Positions: epic-XXX at 2, epic-YYY at 5
+
+Concern #2:
+...
 ```
 
 **B) Codex Critique:**
@@ -209,21 +257,45 @@ Collect both critiques. If 2+ suggestions propose the same reordering, mark as h
 **A) Claude (Haiku) Revision:**
 
 ```
-Round 1 identified these reordering concerns:
-[INSERT ranked list from Round 1]
+You are revising an epic sequence based on identified concerns.
 
-Propose a revised epic sequence addressing the top concerns.
+CONSTRAINT: Address the top 3 concerns only. Preserve original sequence where no concern applies.
 
-For EACH epic moved:
-- What moved: [epic ID from position X to position Y]
-- Why: [which concern does this address?]
-- Risk mitigated: [what conflict is avoided?]
+INPUT:
+- Original sequence (from Step 2.1)
+- Concerns ranked by severity (from Step 2.2)
 
-OUTPUT:
+TASK: Revise the sequence to address concerns.
+
+For EACH epic you move:
+1. **Movement**: "epic-XXX: position N → position M"
+2. **Concern addressed**: "Concern #N: [risk type]"
+3. **Result**: How this move eliminates or reduces the risk
+
+After reordering, validate against original constraints:
+- Do all `blocks` dependencies still hold?
+- Are same-module epics still adjacent where possible?
+
+OUTPUT FORMAT:
+
 Revised Epic Sequence:
-1. epic-XXX - [title]
-2. epic-YYY - [title]
+1. epic-XXX - [Title]
+2. epic-YYY - [Title]
 ...
+
+Changes Made:
+
+Movement #1: epic-XXX: position 2 → position 4
+- Addressed: Concern #1 (Hidden dependency on auth module)
+- Result: Auth refactor now precedes all API work; eliminates rework
+
+Movement #2: epic-ZZZ: position 5 → position 3
+- Addressed: Concern #2 (Priority inversion)
+- Result: P1 epic now precedes lower-priority epic
+
+Validation:
+- All `blocks` dependencies honored: [Yes/No]
+- Module grouping maintained: [Yes/No, brief note]
 ```
 
 **B) Codex Validation:**
