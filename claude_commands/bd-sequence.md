@@ -36,12 +36,17 @@ Run these commands to collect the epic inventory:
 
 ```bash
 bd epic status --json     # All epics with progress
-bd dep list --json        # Existing dependencies
+bd blocked --json         # Show blocked issues and their blockers
+```
+
+For each epic, check its dependency tree:
+```bash
+bd dep tree <epic-id> --direction=both --json   # See what blocks/is blocked by this epic
 ```
 
 **What you'll need for Phase 2:**
 - Complete list of epic IDs, titles, and descriptions
-- Current epic-to-epic dependency graph
+- Current epic-to-epic dependency graph (from dep tree output)
 - Which modules/areas each epic touches
 
 ### Step 1.2: Map Epic Module Ownership
@@ -119,7 +124,7 @@ Consolidate findings into a reference document:
 - epic-001 + epic-002: both affect [core]
 
 **Existing Dependencies:**
-- epic-001 blocks epic-003 (from bd dep list)
+- epic-001 blocks epic-003 (from bd dep tree / bd blocked)
 
 **Consensus Points:**
 - Epics with zero overlaps can be sequenced in any order
