@@ -13,7 +13,7 @@ _bd_update_claude_md() {
 # Called at the end of each drain iteration as a safety net
 _bd_reset_stuck_issues() {
   local stuck
-  stuck=$(bd list --status=in_progress --json 2>/dev/null | jq -r '.[].id' 2>/dev/null | tr '\n' ' ')
+  stuck=$(bd list --status=in_progress --json 2>/dev/null | jq -r '[.[].id] | join(" ")' 2>/dev/null)
   if [[ -n "${stuck// /}" ]]; then
     echo "=== Resetting stuck issues to P0: $stuck ==="
     for id in $stuck; do
