@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Update CLAUDE.md files based on recent git commits
+# Called at the end of each drain iteration
+_bd_update_claude_md() {
+  local logfile="$1"
+  printf "\n=== Updating CLAUDE.md ===\n"
+  claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Amend CLAUDE.md changes directly into the commits that inspired them when possible (use git commit --amend if the inspiring commit is HEAD and unpushed). Otherwise, commit with /commit." "$logfile"
+  printf "=============\n\n"
+}
+
 # Reset any stuck in_progress bd issues to open with P0 priority
 # Called at the end of each drain iteration as a safety net
 _bd_reset_stuck_issues() {
@@ -459,10 +468,7 @@ After investigating with /bd-plan-ultra, implement the fixes. Use the Explore su
 
     claude-stream "$prompt" "$logfile"
 
-    printf "\n=== Updating CLAUDE.md ===\n"
-    claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Commit changes with /commit." "$logfile"
-    printf "=============\n\n"
-
+    _bd_update_claude_md "$logfile"
     _bd_reset_stuck_issues
   done
 
@@ -589,10 +595,7 @@ bd-drain() (
 
     claude-stream "$prompt" "$logfile"
 
-    printf "\n=== Updating CLAUDE.md ===\n"
-    claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Commit changes with /commit." "$logfile"
-    printf "=============\n\n"
-
+    _bd_update_claude_md "$logfile"
     _bd_reset_stuck_issues
   done
 
