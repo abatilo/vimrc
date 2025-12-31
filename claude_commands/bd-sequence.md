@@ -4,10 +4,18 @@
 
 Analyze all open bd issues and epics to determine an optimal linear execution order that minimizes merge conflicts, reduces refactor risk, and ensures focused, sequential work (not parallel).
 
-This follows a three-phase process:
+### Key Insight: Epic-Level Blocking Is Sufficient
+
+**When Epic A blocks Epic B, all tasks within Epic B are automatically blocked.** This transitive blocking through parent-child relationships means:
+- You only need to sequence epics, not individual tasks across epics
+- Tasks within a blocked epic cannot be worked on until the blocking epic completes
+- This dramatically simplifies sequencing for projects organized into epics
+
+### Three-Phase Process
+
 1. **Discovery**: Collect all open work and map file-level dependencies.
-2. **Sequencing with Debate**: Use iterative analysis to propose and refine the execution order.
-3. **Application**: Create bd dependency links to enforce the sequence.
+2. **Sequencing with Debate**: Use iterative analysis to propose and refine the epic execution order.
+3. **Application**: Create bd dependency links at the epic level to enforce the sequence.
 
 ---
 
@@ -450,23 +458,56 @@ Confirm all of these are satisfied. If any are unchecked, resolve before applyin
 
 ## Phase 3: Apply Dependencies
 
-### Step 3.1: Create Sequential Chain
+### Key Insight: Transitive Blocking
 
-For the final agreed sequence from Phase 2, create `blocks` dependencies in bd.
+**When Epic A blocks Epic B, all tasks within Epic B are automatically blocked.**
+
+bd uses transitive blocking through parent-child relationships:
+- If a parent epic is blocked, all child tasks inherit the blocked status
+- You do NOT need to create individual task-level dependencies across epics
+- Simply blocking the epic is sufficient to block all its children
+
+This is implemented via a recursive blocked issues cache that propagates blocking from parent to children.
+
+---
+
+### Step 3.1: Create Epic-Level Blocking Chain
+
+For the final agreed epic sequence from Phase 2, create `blocks` dependencies between epics:
 
 ```bash
-# Example: If final sequence is bd-001 → bd-002 → bd-003 → bd-004
+# Example: If final epic sequence is epic-A → epic-B → epic-C
 
-bd dep add bd-001 bd-002 --type blocks  # bd-001 blocks bd-002 (bd-001 must complete before bd-002 starts)
-bd dep add bd-002 bd-003 --type blocks
-bd dep add bd-003 bd-004 --type blocks
+bd dep add epic-A epic-B --type blocks  # epic-A blocks epic-B (epic-A must complete before epic-B starts)
+bd dep add epic-B epic-C --type blocks  # epic-B blocks epic-C
 ```
 
 **Critical reminder:** In `bd dep add A B --type blocks`, A blocks B, meaning A must complete before B can start.
 
+**What happens automatically:**
+- All tasks in epic-B become blocked until epic-A is closed
+- All tasks in epic-C become blocked until epic-B is closed
+- No need to link individual tasks across epics
+
 ---
 
-### Step 3.2: Link Related Issues
+### Step 3.2: Create Task-Level Dependencies (Within Epics Only)
+
+For tasks within the SAME epic that have ordering constraints:
+
+```bash
+# Example: Within epic-A, task-1 must complete before task-2
+bd dep add task-1 task-2 --type blocks
+```
+
+**When to use task-level blocking:**
+- Tasks within the same epic that have sequential dependencies
+- One task's output is required input for another task
+- Merge conflict risk between specific tasks in the same epic
+
+---
+
+### Step 3.3: Link Related Issues
 
 For issues that touch the same files/modules but are NOT adjacent in the sequence, add `related` links to preserve context:
 
@@ -482,34 +523,25 @@ bd dep add bd-002 bd-005 --type related  # Documents the relationship without en
 
 ---
 
-### Step 3.3: Epic-Level Sequencing
-
-If issues span multiple epics, create dependencies at the epic level by linking the final issue of one epic to the first issue of the next:
-
-```bash
-# If epic-A should complete before epic-B starts
-bd dep add <id-of-epic-A-final-issue> <id-of-epic-B-first-issue> --type blocks
-```
-
----
-
 ### Step 3.4: Verification
 
-Run this command to confirm the sequence is correctly enforced:
+Run these commands to confirm the sequence is correctly enforced:
 
 ```bash
-bd ready --json
+bd ready --json           # Show ready work
+bd blocked --json         # Show blocked issues
+bd epic status --json     # Show epic blocking relationships
 ```
 
 **Expected result:**
-- Exactly ONE issue shows as ready (the first issue in your sequence)
-- All other issues show as blocked (waiting for predecessors)
-- The list of ready issues matches your planned sequence when dependencies complete
+- Tasks from the FIRST epic in your sequence show as ready
+- All tasks in blocked epics show as blocked (automatically via transitive blocking)
+- When the first epic closes, tasks from the next epic become ready
 
 **If result differs:**
-- Use `bd show <issue-id> --json` to check blocked-by relationships
-- Verify `bd dep list --json` matches your created dependencies
-- Correct any missing or incorrect dependency links
+- Use `bd show <epic-id> --json` to check blocked-by relationships on the epic
+- Verify `bd dep list --json` shows epic-to-epic blocking dependencies
+- Remember: you only need to verify epic-level blocking; tasks inherit blocking from their parent epic
 
 ---
 
@@ -520,15 +552,21 @@ After completing all three phases, provide this summary:
 ```
 # Sequencing Complete
 
-## Final Sequence
-1. bd-xxx - [Issue Title] - [Files Affected]
-2. bd-xxx - [Issue Title] - [Files Affected]
-3. bd-xxx - [Issue Title] - [Files Affected]
+## Epic Sequence (Primary)
+1. epic-xxx - [Epic Title] - [Modules Affected]
+2. epic-yyy - [Epic Title] - [Modules Affected]
+3. epic-zzz - [Epic Title] - [Modules Affected]
 ...
 
-## Dependencies Created (blocks type)
-- bd-xxx → bd-xxx
-- bd-xxx → bd-xxx
+## Epic-Level Dependencies Created
+- epic-xxx → epic-yyy (epic-xxx blocks epic-yyy)
+- epic-yyy → epic-zzz (epic-yyy blocks epic-zzz)
+...
+
+Note: All tasks within blocked epics are automatically blocked via transitive parent-child blocking.
+
+## Task-Level Dependencies (Within Epics)
+- task-aaa → task-bbb (within epic-xxx)
 ...
 
 ## Related Links Added
@@ -536,21 +574,25 @@ After completing all three phases, provide this summary:
 ...
 
 ## Risk Mitigations Applied
-| Issue Pair | Risk Avoided | Mitigation |
-|-----------|------|-----------|
-| bd-XXX + bd-YYY | Merge conflict in auth.js | Placed adjacent |
-| bd-AAA + bd-BBB | Hidden dependency on config module | Sequenced AAA before BBB |
+| Epic/Issue Pair | Risk Avoided | Mitigation |
+|-----------------|--------------|------------|
+| epic-XXX + epic-YYY | Shared auth module conflicts | epic-XXX blocks epic-YYY |
+| task-AAA + task-BBB | Hidden dependency on config | task-AAA blocks task-BBB (same epic) |
 ...
 
 ## Verification
 Run: `bd ready --json`
-Expected: Only bd-xxx shows as ready (first in sequence)
+Expected: Tasks from epic-xxx show as ready (first epic in sequence)
+Actual: [INSERT OUTPUT]
+
+Run: `bd blocked --json`
+Expected: All tasks in epic-yyy and epic-zzz show as blocked
 Actual: [INSERT OUTPUT]
 
 ## Next Steps
-- Begin work on bd-xxx (now unblocked)
+- Begin work on tasks in epic-xxx (now unblocked)
+- When epic-xxx closes, tasks in epic-yyy automatically become ready
 - Monitor for new issues that touch existing modules (may require re-sequencing)
-- Run `bd ready --json` after each issue completion to unblock the next
 ```
 
 ---
