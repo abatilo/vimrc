@@ -1,6 +1,5 @@
 {
   "name": "bd-epic-drain",
   "version": "1.0.0",
-  "description": "Prevents session exit until all issues in a bd epic are closed",
-  "hooks": "./hooks/hooks.json"
+  "description": "Prevents session exit until all issues in a bd epic are closed"
 }
