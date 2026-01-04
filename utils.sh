@@ -5,7 +5,7 @@
 _bd_update_claude_md() {
   local logfile="$1"
   printf "\n=== Updating CLAUDE.md ===\n"
-  claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Amend CLAUDE.md changes directly into the commits that inspired them when possible (use git commit --amend if the inspiring commit is HEAD and unpushed). Otherwise, commit with /commit." "$logfile"
+  claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Use /commit for atomic commits." "$logfile"
   printf "=============\n\n"
 }
 
@@ -169,7 +169,26 @@ bd-drain() (
     fi
 
     echo "=== Iteration $count: Epic $epic_id ==="
-    bd show "$epic_id"
+
+    # Generate branch name using haiku with epic context
+    local epic_title
+    epic_title=$(bd show "$epic_id" --json | jq -r '.[0].title // "epic"')
+    local epic_description
+    epic_description=$(bd show "$epic_id" --json | jq -r '.[0].description // ""')
+
+    local branch_name
+    branch_name=$(claude -p --model haiku "Review this epic and generate a short git branch name (kebab-case, 3-5 words max, no prefix).
+
+Title: $epic_title
+
+Description:
+$epic_description
+
+Output ONLY the branch name, nothing else.")
+    branch_name=$(echo "$branch_name" | tr -d '[:space:]')  # Remove any whitespace
+
+    echo "Creating branch: $branch_name"
+    gs bc "$branch_name" -m "$epic_title"
 
     # Build epic-focused prompt
     local epic_prompt="${prompt:-Work on epic $epic_id. Run 'bd show $epic_id' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason=\"...\"' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed.}"
@@ -191,6 +210,49 @@ EOF
     rm -f "$state_file"
 
     _bd_update_claude_md "$logfile"
+
+    # Squash all commits on this branch into one with a well-written message
+    # Use actual branch names (may have prefix from git-spice config)
+    local current_branch
+    current_branch=$(git branch --show-current)
+    echo "=== Preparing to squash branch: $current_branch ==="
+
+    # Get all commits on this branch (since diverging from base)
+    # gs log short --json outputs one JSON object per line, base is in .down.name
+    local base_branch
+    base_branch=$(gs log short --json 2>/dev/null | jq -rs '[.[] | select(.current == true)][0].down.name // "main"')
+    local commits
+    commits=$(git log --oneline "$base_branch".."$current_branch" 2>/dev/null || git log --oneline -20)
+
+    echo "Commits to squash:"
+    echo "$commits"
+
+    # Generate squash commit message using haiku
+    local full_commits
+    full_commits=$(git log --format="=== %h ===
+%B
+" "$base_branch".."$current_branch" 2>/dev/null || git log --format="=== %h ===
+%B
+" -20)
+
+    local squash_message
+    squash_message=$(claude -p --model haiku "Review ALL of these commits and write a single, well-structured git commit message that incorporates the key changes from each.
+
+Epic: $epic_title
+
+Commits:
+$full_commits
+
+Write a commit message with:
+- A concise subject line (50 chars max, imperative mood)
+- A blank line
+- A body that summarizes the major changes, grouped logically
+
+Output ONLY the commit message, nothing else.")
+
+    echo "Squashing with message:"
+    echo "$squash_message"
+    gs branch squash -m "$squash_message"
   done
 
   local total_time=$((SECONDS - start_time))
