@@ -1,0 +1,14 @@
+{
+  "name": "local-plugins",
+  "owner": {
+    "name": "abatilo"
+  },
+  "plugins": [
+    {
+      "name": "bd-epic-drain",
+      "source": "./bd-epic-drain",
+      "description": "Prevents session exit until all issues in a bd epic are closed",
+      "version": "1.0.0"
+    }
+  ]
+}

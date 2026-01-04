@@ -9,7 +9,32 @@
     }
   },
   "enabledPlugins": {
-    "bd-epic-drain@local-plugins": true
+    "bd-epic-drain@local-plugins": true,
+    "gopls-lsp@claude-plugins-official": true
+  },
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ]
   },
   "env": {
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
@@ -41,7 +66,8 @@
       "Bash(sed:*)",
       "Bash(terraform:*)",
       "Bash(yarn:*)",
-      "WebFetch(domain:*)"
+      "WebFetch(domain:*)",
+      "mcp__deepwiki"
     ],
     "deny": ["mcp__codex__codex-reply"],
     "defaultMode": "bypassPermissions"
