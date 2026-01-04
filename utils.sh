@@ -284,15 +284,8 @@ bd-drain() (
     bd_args+=(--label "$label")
   fi
 
-  # Build a sample command string for the default prompt
-  local sample_cmd="bd ready --json"
-  if [[ ${#bd_args[@]} -gt 0 ]]; then
-    # This will render like: bd ready --json -n 1 --label "some-label"
-    sample_cmd+=" --label \"$label\""
-  fi
-
-  # Default prompt if none was provided
-  prompt="${prompt:-Run \"$sample_cmd\" to find available work. Review your skills (bd-issue-tracking, git-commit), MCPs (codex for verification), and agents (Explore, Plan). Implement the highest-priority ready issue completely, including all tests and linting. When you discover bugs or issues during implementation, create new bd issues with exact context of what you were doing and what you found—describe the problem for investigation, not as implementation instructions. Use the Explore and Plan subagents to investigate new issues before creating implementation tasks. Use /commit for atomic commits.}"
+  # State file for the epic loop hook
+  local state_file=".claude/bd-epic-loop.local.md"
 
   local count=0
 
@@ -320,11 +313,39 @@ bd-drain() (
     last_time=$now
     ((count++))
 
-    echo "=== Iteration $count ==="
+    # Get the first ready epic (bd-sequence ensures correct ordering via blocks)
+    local epic_id
+    epic_id=$(bd ready --type=epic --json "${bd_args[@]}" 2>/dev/null | jq -r '.[0].id // empty')
 
-    bd ready "${bd_args[@]}"
+    if [[ -z "$epic_id" ]]; then
+      echo "=== Iteration $count: No ready epics, processing remaining issues ==="
+      bd ready "${bd_args[@]}"
+      # No epic loop - just run claude normally for standalone issues
+      local standalone_prompt="${prompt:-Run 'bd ready --json' to find available work. Implement the highest-priority ready issue completely. Use /commit for atomic commits.}"
+      claude-stream "$standalone_prompt" "$logfile"
+    else
+      echo "=== Iteration $count: Epic $epic_id ==="
+      bd show "$epic_id"
 
-    claude-stream "$prompt" "$logfile"
+      # Build epic-focused prompt
+      local epic_prompt="${prompt:-Work on epic $epic_id. Run 'bd show $epic_id' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason=\"...\"' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed.}"
+
+      # Create state file for the Stop hook
+      mkdir -p "$(dirname "$state_file")"
+      cat > "$state_file" <<EOF
+---
+epic_id: $epic_id
+started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+---
+
+$epic_prompt
+EOF
+
+      claude-stream "$epic_prompt" "$logfile"
+
+      # Clean up state file if it still exists (hook should have deleted it)
+      rm -f "$state_file"
+    fi
 
     _bd_update_claude_md "$logfile"
     _bd_reset_stuck_issues
