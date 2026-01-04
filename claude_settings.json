@@ -65,7 +65,8 @@
   },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
-    "claude-code-wakatime@wakatime": true
+    "claude-code-wakatime@wakatime": true,
+    "bd-epic-drain@abatilo-plugins": true
   },
   "extraKnownMarketplaces": {
     "abatilo-plugins": {
