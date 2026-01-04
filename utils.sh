@@ -5,7 +5,7 @@
 _bd_update_claude_md() {
   local logfile="$1"
   printf "\n=== Updating CLAUDE.md ===\n"
-  claude-stream "Review git commits from the last few days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Use /commit for atomic commits." "$logfile"
+  claude-stream "Review git commits from the last 4 days. Update CLAUDE.md files: (1) Add documentation for new patterns, (2) Fix stale references, (3) Create CLAUDE.md in directories lacking documentation. Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Use /commit for atomic commits." "$logfile"
   printf "=============\n\n"
 }
 
