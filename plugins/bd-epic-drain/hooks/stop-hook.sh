@@ -25,8 +25,8 @@ if [[ -z "$EPIC_ID" ]]; then
 fi
 
 # Check how many issues in this epic are still open
-# bd show returns the epic with its children array
-OPEN_COUNT=$(bd show "$EPIC_ID" --json 2>/dev/null | jq '[.children // [] | .[] | select(.status != "closed")] | length' 2>/dev/null || echo "0")
+# bd show --json returns an array, dependents contains child issues
+OPEN_COUNT=$(bd show "$EPIC_ID" --json 2>/dev/null | jq '[.[0].dependents // [] | .[] | select(.status != "closed")] | length' 2>/dev/null || echo "0")
 
 # If all issues are closed, allow exit
 if [[ "$OPEN_COUNT" -eq 0 ]]; then
