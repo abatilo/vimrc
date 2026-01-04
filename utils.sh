@@ -84,17 +84,12 @@ bd-drain() (
   # Ensure caffeinate is stopped when the function ends (even on Ctrl+C)
   trap 'kill "$caf_pid" 2>/dev/null' EXIT INT TERM
 
-  local label=""
   local prompt=""
   local logfile="/tmp/full-bd-drain-logs.json"
 
   # Parse CLI arguments
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    --label)
-      label="$2"
-      shift 2
-      ;;
     --logfile)
       logfile="$2"
       shift 2
@@ -103,7 +98,6 @@ bd-drain() (
       echo "Usage: bd-drain [OPTIONS] [PROMPT]"
       echo ""
       echo "Options:"
-      echo "  --label LABEL    Filter bd ready by label"
       echo "  --logfile PATH   Log file path (default: /tmp/full-bd-drain-logs.json)"
       echo "  --help           Show this help"
       return 0
@@ -123,12 +117,6 @@ bd-drain() (
     echo "Rotated logs to: $backup"
   fi
 
-  # Common args for bd ready if label is set
-  local bd_args=()
-  if [[ -n "$label" ]]; then
-    bd_args+=(--label "$label")
-  fi
-
   # State file for the epic loop hook
   local state_file=".claude/bd-epic-loop.local.md"
 
@@ -138,7 +126,7 @@ bd-drain() (
   local start_time=$SECONDS
   local last_time=$start_time
 
-  while bd ready --json "${bd_args[@]}" | jq -e 'length > 0' >/dev/null; do
+  while bd ready --json | jq -e 'length > 0' >/dev/null; do
     local now=$SECONDS
 
     # Print time since previous iteration (skip for the very first one)
@@ -160,11 +148,11 @@ bd-drain() (
 
     # Get the first ready epic (bd-sequence ensures correct ordering via blocks)
     local epic_id
-    epic_id=$(bd ready --type=epic --json "${bd_args[@]}" 2>/dev/null | jq -r '.[0].id // empty')
+    epic_id=$(bd ready --type=epic --json 2>/dev/null | jq -r '.[0].id // empty')
 
     if [[ -z "$epic_id" ]]; then
       echo "ERROR: No ready epics found. bd-drain requires at least one epic." >&2
-      bd ready "${bd_args[@]}"
+      bd ready
       return 1
     fi
 
@@ -205,6 +193,11 @@ $epic_prompt
 EOF
 
     claude-stream "$epic_prompt" "$logfile"
+
+    # Close the epic now that all its dependents are closed
+    # (stop hook only allows exit when OPEN_COUNT == 0)
+    echo "=== Closing epic $epic_id ==="
+    bd close "$epic_id" --reason "All dependent issues completed"
 
     # Clean up state file if it still exists (hook should have deleted it)
     rm -f "$state_file"
