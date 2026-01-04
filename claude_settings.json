@@ -1,17 +1,44 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "extraKnownMarketplaces": {
-    "local-plugins": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/abatilo/abatilo/vimrc/plugins"
-      }
-    }
+  "env": {
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "MAX_THINKING_TOKENS": "31999"
   },
-  "enabledPlugins": {
-    "bd-epic-drain@local-plugins": true,
-    "gopls-lsp@claude-plugins-official": true
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(./hack/:*)",
+      "Bash(cat:*)",
+      "Bash(cwebp:*)",
+      "Bash(find:*)",
+      "Bash(git:*)",
+      "Bash(go:*)",
+      "Bash(grep:*)",
+      "Bash(helm:*)",
+      "Bash(kubectl:*)",
+      "Bash(kustomize:*)",
+      "Bash(ls:*)",
+      "Bash(mise:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(rg:*)",
+      "Bash(rm:*)",
+      "Bash(sed:*)",
+      "Bash(terraform:*)",
+      "Bash(yarn:*)",
+      "WebFetch(domain:*)",
+      "mcp__deepwiki"
+    ],
+    "deny": [
+      "mcp__codex__codex-reply"
+    ],
+    "defaultMode": "bypassPermissions",
+    "additionalDirectories": [
+      "/Users/abatilo/work"
+    ]
   },
+  "model": "opus",
   "hooks": {
     "PreCompact": [
       {
@@ -36,42 +63,18 @@
       }
     ]
   },
-  "env": {
-    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
-    "MAX_THINKING_TOKENS": "31999"
+  "enabledPlugins": {
+    "bd-epic-drain@local-plugins": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "claude-code-wakatime@wakatime": true
   },
-  "includeCoAuthoredBy": false,
-  "permissions": {
-    "additionalDirectories": [
-      "/Users/abatilo/work"
-    ],
-    "allow": [
-      "Bash(./hack/:*)",
-      "Bash(cat:*)",
-      "Bash(cwebp:*)",
-      "Bash(find:*)",
-      "Bash(git:*)",
-      "Bash(go:*)",
-      "Bash(grep:*)",
-      "Bash(helm:*)",
-      "Bash(kubectl:*)",
-      "Bash(kustomize:*)",
-      "Bash(ls:*)",
-      "Bash(mise:*)",
-      "Bash(mkdir:*)",
-      "Bash(mv:*)",
-      "Bash(rg:*)",
-      "Bash(rm:*)",
-      "Bash(sed:*)",
-      "Bash(terraform:*)",
-      "Bash(yarn:*)",
-      "WebFetch(domain:*)",
-      "mcp__deepwiki"
-    ],
-    "deny": ["mcp__codex__codex-reply"],
-    "defaultMode": "bypassPermissions"
+  "extraKnownMarketplaces": {
+    "abatilo-plugins": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/abatilo/abatilo/vimrc/plugins"
+      }
+    }
   },
-  "model": "opus",
   "alwaysThinkingEnabled": true
 }
