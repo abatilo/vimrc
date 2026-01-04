@@ -1,5 +1,5 @@
 {
   "name": "bd-epic-drain",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Prevents session exit until all issues in a bd epic are closed"
 }

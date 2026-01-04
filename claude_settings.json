@@ -64,7 +64,6 @@
     ]
   },
   "enabledPlugins": {
-    "bd-epic-drain@local-plugins": true,
     "gopls-lsp@claude-plugins-official": true,
     "claude-code-wakatime@wakatime": true
   },
