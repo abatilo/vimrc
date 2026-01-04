@@ -41,7 +41,11 @@ ln -s "$PWD/claude_commands" ~/.claude/commands
 ln -s "$PWD/agents" ~/.claude/agents
 ln -s "$PWD/skills" ~/.claude/skills
 ln -s "$PWD/rules" ~/.claude/rules
-ln -s "$PWD/plugins" ~/.claude/plugins
+# Symlink each plugin individually (plugins/ dir already exists with marketplace plugins)
+mkdir -p ~/.claude/plugins
+for plugin in "$PWD"/plugins/*/; do
+  ln -sf "$plugin" ~/.claude/plugins/
+done
 
 # Set up codex cli configuration
 mkdir -p ~/.codex
