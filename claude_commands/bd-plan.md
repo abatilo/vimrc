@@ -127,12 +127,41 @@ bd dep add bd-004 bd-003 --type blocks
 
 ### Step 5: Create Epics
 
-Group issues into one or more epics. Each epic should be:
-- **Self-contained**: Can be completed and shipped independently
-- **Atomic**: Represents a coherent set of changes that belong together
-- **Focused**: Single theme or capability
+**Goal**: Create the smallest shippable units of work. Prefer many small epics over few large ones.
 
-Create separate epics when work naturally divides into independent deliverables. Do NOT force everything into one epic.
+#### The Smallest Shippable Unit Test
+An epic is the right size when:
+- Removing any issue would make it unshippable
+- Adding any issue would make it do two things instead of one
+- You can describe what it ships in one sentence without "and"
+
+#### Decomposition Checklist
+Before finalizing epics, ask these questions:
+
+1. **File overlap test**: Do any two issues modify the same files?
+   - If YES and they're in different epics → merge epics or resequence
+   - If YES and epic is large → they belong together, but look for other splits
+
+2. **Ship independently test**: Can this epic be merged to main without the others?
+   - If NO → it's not self-contained, find the true boundary
+
+3. **Value test**: Does this epic deliver user-visible value or enable future work?
+   - If NO → it might be too granular, consider merging with dependent epic
+
+4. **Parallel work test**: Could two developers work on different epics simultaneously without conflicts?
+   - If NO → file overlap exists, resequence or merge
+
+#### Split Signals (create separate epics when you see these)
+- Different subsystems (API vs UI vs database)
+- Different risk profiles (safe refactor vs risky behavior change)
+- Natural phases (setup/infrastructure → core feature → polish)
+- Optional enhancements vs core functionality
+
+#### Anti-patterns to Avoid
+- ❌ One mega-epic containing all work
+- ❌ Epics that "prepare" for other epics without delivering value
+- ❌ Splitting by arbitrary issue count rather than logical boundaries
+- ❌ Epics where issues have no dependency relationship
 
 For each epic:
 
@@ -141,10 +170,17 @@ bd create "[epic name]" --type epic --description "$(cat <<'EOF'
 # Overview
 [Brief description of this epic's scope]
 
+# Why This Is One Epic
+[Explain the boundary: what makes this atomic and self-contained?
+Why can't it be split further? Why doesn't it need other epics to ship?]
+
 # Implementation Issues
 - bd-xxx: [issue title]
 - bd-xxx: [issue title]
 - bd-xxx: Run verification for this epic
+
+# Files Modified
+[List primary files this epic touches—used for conflict detection]
 
 # Verification Commands
 - Lint: `[discovered lint command]`
