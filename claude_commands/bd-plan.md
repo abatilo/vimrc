@@ -127,6 +127,8 @@ bd dep add bd-004 bd-003 --type blocks
 
 ### Step 5: Create Epics
 
+**IMPORTANT**: Every planned task MUST have an epic, even simple single-issue tasks. Workflow automation depends on epic completion tracking. A simple task = one epic with one issue under it.
+
 **Goal**: Create the smallest shippable units of work. Prefer many small epics over few large ones.
 
 #### The Smallest Shippable Unit Test
