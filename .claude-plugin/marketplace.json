@@ -8,7 +8,7 @@
       "name": "bd-epic-drain",
       "source": "./plugins/bd-epic-drain",
       "description": "Prevents session exit until all issues in a bd epic are closed",
-      "version": "0.0.1"
+      "version": "0.0.2"
     }
   ]
 }
