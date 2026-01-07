@@ -35,3 +35,12 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
 ## Setup
 Run the following command:
 `./install.sh`
+
+## Claude Code Plugin
+
+This repo includes a Claude Code plugin marketplace. To install:
+
+```bash
+/plugin marketplace add abatilo/vimrc
+/plugin install abatilo-core@abatilo-plugins
+```
