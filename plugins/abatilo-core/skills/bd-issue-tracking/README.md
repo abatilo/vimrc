@@ -4,7 +4,7 @@ A comprehensive Claude Code skill that teaches Claude how to use beads effective
 
 ## What is This?
 
-This is a [Claude Code](https://claude.com/claude-code) skill - a markdown-based instruction set that teaches Claude AI how to use beads. While the [beads plugin](../../.claude-plugin/) provides slash commands and MCP tools for basic operations, this skill complements it by teaching the **philosophy and patterns** of effective beads usage.
+This is a [Claude Code](https://claude.com/claude-code) skill - a markdown-based instruction set that teaches Claude AI how to use beads. While the [beads plugin](https://github.com/steveyegge/beads/tree/main/.claude-plugin) provides slash commands and MCP tools for basic operations, this skill complements it by teaching the **philosophy and patterns** of effective beads usage.
 
 ## What Does It Provide?
 
@@ -117,7 +117,7 @@ Show me what's ready to work on in bd
 
 ## Relationship to Beads Plugin
 
-This skill complements the [beads plugin](../../.claude-plugin/):
+This skill complements the [beads plugin](https://github.com/steveyegge/beads/tree/main/.claude-plugin):
 
 - **Plugin** (`.claude-plugin/`): Provides slash commands (`/bd-create`, `/bd-ready`) and MCP tools for basic operations
 - **Skill** (this directory): Teaches Claude the patterns, philosophy, and decision-making for effective beads usage
@@ -139,8 +139,8 @@ The MCP server is excellent for interactive use, but for autonomous agent workfl
 
 ## Contributing
 
-Found ways to improve the skill? Contributions welcome! See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+Found ways to improve the skill? Contributions welcome! See [CONTRIBUTING.md](https://github.com/steveyegge/beads/blob/main/CONTRIBUTING.md) for guidelines.
 
 ## License
 
-Same as beads - MIT License. See [LICENSE](../../LICENSE).
+Same as beads - MIT License. See [LICENSE](https://github.com/steveyegge/beads/blob/main/LICENSE).

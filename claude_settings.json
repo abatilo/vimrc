@@ -66,7 +66,8 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "claude-code-wakatime@wakatime": true,
-    "bd-epic-drain@abatilo-plugins": true
+    "bd-epic-drain@abatilo-plugins": true,
+    "abatilo-core@abatilo-plugins": true
   },
   "extraKnownMarketplaces": {
     "abatilo-plugins": {

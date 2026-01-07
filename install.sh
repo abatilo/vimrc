@@ -9,7 +9,10 @@ rm -rf \
   ~/.tmux/ \
   ~/.tool-versions \
   ~/.vim \
-  ~/.vimrc
+  ~/.vimrc \
+  ~/.claude/commands \
+  ~/.claude/agents \
+  ~/.claude/skills
 
 # Create nvim directory
 mkdir -p ~/.config/
@@ -37,10 +40,8 @@ ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 mkdir -p ~/.claude
 ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
 ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
-ln -s "$PWD/claude_commands" ~/.claude/commands
-ln -s "$PWD/agents" ~/.claude/agents
-ln -s "$PWD/skills" ~/.claude/skills
-ln -s "$PWD/rules" ~/.claude/rules
+ln -s "$PWD/rules" ~/.claude/rules  # rules must stay as symlink (not supported in plugins)
+# commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
 
 # Set up codex cli configuration
