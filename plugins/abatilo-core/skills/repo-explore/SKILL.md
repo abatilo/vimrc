@@ -1,6 +1,7 @@
 ---
 name: repo-explore
 description: Clone and explore external GitHub repositories to understand how libraries, frameworks, or dependencies work. Use when user provides a GitHub URL (github.com/owner/repo), asks "how does X library work", wants to look at source code for a dependency, asks about implementation details of an external package, or says "explore", "look at", or "check out" a repository. Automatically checks out the matching version tag when the repo is a dependency in the current project.
+context: fork
 ---
 
 # Repo Explore Skill

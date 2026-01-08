@@ -1,6 +1,7 @@
 ---
 name: git-spice
 description: Manage stacked Git branches and create multiple pull requests using git-spice (gs). Use when organizing feature branches into stacks, rebasing changes across branches, creating PR chains, navigating branch stacks, or managing dependent branches on GitHub/GitLab. Handles stacked PRs, branch restacking, and stack submission workflows.
+context: fork
 allowed-tools:
   - Bash(gs:*)
   - Bash(git:*)
