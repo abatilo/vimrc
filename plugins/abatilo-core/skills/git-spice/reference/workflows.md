@@ -426,3 +426,34 @@ git config spice.branchCreate.prefix "username/"
 - Merge from bottom to top
 - After each merge, sync (`gs rs`)
 - Continue merging remaining branches
+
+## Gotchas
+
+### GitHub Auto-Retarget Race Condition
+
+When merging a PR at the bottom of a stack with `gh pr merge --delete-branch`:
+
+**Expected:** GitHub auto-retargets dependent PRs to the new base branch.
+
+**Actual:** Sometimes the branch is deleted before GitHub can retarget, causing dependent PRs to close instead.
+
+**Timeline observed:**
+```
+21:52:17Z - PR merged
+21:52:19Z - base_ref_deleted (2 seconds later)
+21:52:20Z - Dependent PR closed (not retargeted)
+```
+
+**Workarounds:**
+1. Don't use `--delete-branch` flag - let GitHub delete branches automatically via repo settings (`delete_branch_on_merge: true`)
+2. Manually update base branches of dependent PRs before merging
+3. Use `gs repo sync` after merge - git-spice will detect closed PRs and create new ones with correct base
+
+**Recovery with git-spice:**
+```bash
+# After the race condition closes your PR
+gs rs                           # Sync - detects closed PR
+gs branch track <branch> --base main  # Re-track with correct base
+gs sr                           # Restack
+gs ss                           # Submit - creates new PR
+```
