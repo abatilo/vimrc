@@ -8,7 +8,7 @@
       "name": "abatilo-core",
       "source": "./plugins/abatilo-core",
       "description": "Core commands, skills, and hooks for abatilo's Claude Code setup",
-      "version": "0.0.6"
+      "version": "0.0.7"
     }
   ]
 }
