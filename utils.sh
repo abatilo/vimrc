@@ -72,7 +72,7 @@ claude-stream() {
 
   claude --model opus --print --verbose --output-format=stream-json "$prompt" |
     tee -a "$logfile" |
-    jq -r "$_CLAUDE_STREAM_JQ"
+    jq -Rr "fromjson? | $_CLAUDE_STREAM_JQ"
 }
 
 bd-drain() (
@@ -158,10 +158,19 @@ bd-drain() (
 
     echo "=== Iteration $count: Epic $epic_id ==="
 
-    # Get epic details in a single jq call
+    # Get epic details with error handling for malformed JSON
     local epic_json epic_title epic_notes epic_description
-    epic_json=$(bd show "$epic_id" --json)
-    read -r epic_title epic_notes epic_description < <(echo "$epic_json" | jq -r '.[0] | [.title // "epic", .notes // "", .description // ""] | @tsv')
+    epic_json=$(bd show "$epic_id" --json 2>/dev/null) || epic_json='[]'
+    epic_title=$(echo "$epic_json" | jq -r '.[0].title // "epic"' 2>/dev/null) || epic_title="epic"
+    epic_notes=$(echo "$epic_json" | jq -r '.[0].notes // ""' 2>/dev/null) || epic_notes=""
+    epic_description=$(echo "$epic_json" | jq -r '.[0].description // ""' 2>/dev/null) || epic_description=""
+
+    # Validate we got something useful
+    if [[ -z "$epic_title" || "$epic_title" == "null" ]]; then
+      echo "ERROR: Failed to parse epic $epic_id details" >&2
+      echo "Raw JSON: $epic_json" >&2
+      return 1
+    fi
 
     # Check if epic already has a branch assigned
     local branch_name
@@ -175,14 +184,17 @@ bd-drain() (
       }
     else
       # Generate branch name using haiku with epic context
-      branch_name=$(claude -p --model haiku "Review this epic and generate a short git branch name (kebab-case, 3-5 words max, no prefix).
+      branch_name=$(claude -p --model haiku --max-tokens 50 "Generate a git branch name for this epic. Rules: kebab-case, 3-5 words, lowercase, no prefix. Output the branch name only, no explanation.
 
-Title: $epic_title
+Epic: $epic_title" | tr -d '[:space:]' | head -c 60)
 
-Description:
-$epic_description
-
-Output ONLY the branch name, nothing else." | tr -d '[:space:]')
+      # Validate branch name - must be valid git ref and reasonable length
+      if [[ -z "$branch_name" ]] || [[ ${#branch_name} -gt 50 ]] || ! git check-ref-format --branch "$branch_name" 2>/dev/null; then
+        echo "WARNING: Invalid branch name from haiku: '$branch_name'" >&2
+        # Fallback: sanitize epic ID as branch name
+        branch_name="epic-${epic_id}"
+        echo "Using fallback branch name: $branch_name"
+      fi
 
       echo "Creating branch: $branch_name"
       gs bc "$branch_name" -m "$epic_title"
