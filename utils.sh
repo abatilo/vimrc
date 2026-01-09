@@ -158,52 +158,6 @@ bd-drain() (
 
     echo "=== Iteration $count: Epic $epic_id ==="
 
-    # Get epic details with error handling for malformed JSON
-    local epic_json epic_title epic_notes epic_description
-    epic_json=$(bd show "$epic_id" --json 2>/dev/null) || epic_json='[]'
-    epic_title=$(echo "$epic_json" | jq -r '.[0].title // "epic"' 2>/dev/null) || epic_title="epic"
-    epic_notes=$(echo "$epic_json" | jq -r '.[0].notes // ""' 2>/dev/null) || epic_notes=""
-    epic_description=$(echo "$epic_json" | jq -r '.[0].description // ""' 2>/dev/null) || epic_description=""
-
-    # Validate we got something useful
-    if [[ -z "$epic_title" || "$epic_title" == "null" ]]; then
-      echo "ERROR: Failed to parse epic $epic_id details" >&2
-      echo "Raw JSON: $epic_json" >&2
-      return 1
-    fi
-
-    # Check if epic already has a branch assigned
-    local branch_name
-    branch_name=$(echo "$epic_notes" | sed -n 's/^BRANCH: //p' | head -1)
-
-    if [[ -n "$branch_name" ]]; then
-      echo "Resuming on existing branch: $branch_name"
-      git checkout "$branch_name" 2>/dev/null || {
-        echo "Branch $branch_name not found locally, creating it"
-        gs bc "$branch_name" -m "$epic_title"
-      }
-    else
-      # Generate branch name using haiku with epic context
-      branch_name=$(claude -p --model haiku --max-tokens 50 "Generate a git branch name for this epic. Rules: kebab-case, 3-5 words, lowercase, no prefix. Output the branch name only, no explanation.
-
-Epic: $epic_title" | tr -d '[:space:]' | head -c 60)
-
-      # Validate branch name - must be valid git ref and reasonable length
-      if [[ -z "$branch_name" ]] || [[ ${#branch_name} -gt 50 ]] || ! git check-ref-format --branch "$branch_name" 2>/dev/null; then
-        echo "WARNING: Invalid branch name from haiku: '$branch_name'" >&2
-        # Fallback: sanitize epic ID as branch name
-        branch_name="epic-${epic_id}"
-        echo "Using fallback branch name: $branch_name"
-      fi
-
-      echo "Creating branch: $branch_name"
-      gs bc "$branch_name" -m "$epic_title"
-
-      # Store branch name in epic notes for future resumption
-      bd update "$epic_id" --notes "BRANCH: $branch_name${epic_notes:+
-$epic_notes}"
-    fi
-
     # Build epic-focused prompt
     local epic_prompt="${prompt:-Work on epic $epic_id. Run 'bd show $epic_id' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason=\"...\"' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed.}"
 
@@ -223,49 +177,6 @@ EOF
     # Note: Stop hook closes the epic and cleans up state file when all issues are done
 
     _bd_update_claude_md "$logfile"
-
-    # Squash all commits on this branch into one with a well-written message
-    # Use actual branch names (may have prefix from git-spice config)
-    local current_branch
-    current_branch=$(git branch --show-current)
-    echo "=== Preparing to squash branch: $current_branch ==="
-
-    # Get all commits on this branch (since diverging from base)
-    # gs log short --json outputs one JSON object per line, base is in .down.name
-    local base_branch
-    base_branch=$(gs log short --json 2>/dev/null | jq -rs '[.[] | select(.current == true)][0].down.name // "main"')
-    local commits
-    commits=$(git log --oneline "$base_branch".."$current_branch" 2>/dev/null || git log --oneline -20)
-
-    echo "Commits to squash:"
-    echo "$commits"
-
-    # Generate squash commit message using haiku
-    local full_commits
-    full_commits=$(git log --format="=== %h ===
-%B
-" "$base_branch".."$current_branch" 2>/dev/null || git log --format="=== %h ===
-%B
-" -20)
-
-    local squash_message
-    squash_message=$(claude -p --model haiku "Review ALL of these commits and write a single, well-structured git commit message that incorporates the key changes from each.
-
-Epic: $epic_title
-
-Commits:
-$full_commits
-
-Write a commit message with:
-- A concise subject line (50 chars max, imperative mood)
-- A blank line
-- A body that summarizes the major changes, grouped logically
-
-Output ONLY the commit message, nothing else.")
-
-    echo "Squashing with message:"
-    echo "$squash_message"
-    gs branch squash -m "$squash_message"
   done
 
   local total_time=$((SECONDS - start_time))
