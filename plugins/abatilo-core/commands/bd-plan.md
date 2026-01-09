@@ -44,41 +44,56 @@ This synthesis becomes the input for Phase 2.
 
 ## Phase 2: Planning with Collaborative Debate
 
-Use multi-round refinement for thorough planning:
+Use multi-round refinement for thorough planning.
+
+### Guiding Principles: Speed-of-Light Implementation
+
+**Treat planning as a minimization problem.** The goal is not to design a comprehensive solution—it's to find the smallest, fastest path to the desired outcome.
+
+- **Minimize changes**: What is the absolute minimum number of lines, files, and touch points needed? Every additional change is a potential bug, a review burden, and merge conflict risk.
+- **Minimize complexity**: Prefer boring, obvious solutions over clever ones. If two approaches work, choose the one a junior developer could understand in 5 minutes.
+- **Minimize scope**: Ruthlessly cut anything that isn't strictly required. "Nice to have" belongs in a separate future issue, not this plan.
+- **Minimize risk**: Favor incremental changes over big-bang rewrites. Ship something small that works over something ambitious that might not.
+
+**Ask at every decision point**: "Is there a simpler way?" If the answer is yes, take it.
 
 ### Step 1: Initial Plan
-Use the Plan subagent with **model: "opus"** to design implementation approach based on discovery synthesis.
+Use the Plan subagent with **model: "opus"** to design the minimum viable implementation based on discovery synthesis. The plan should answer: "What is the smallest change that achieves the goal?"
 
-### Step 2: Collaborative Debate (2-4 rounds, until consensus or escalation)
-Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan:
+### Step 2: Collaborative Debate (1-5 rounds, until feedback converges)
+Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan. The number of rounds depends on complexity and whether feedback converges:
+
+- **Simple/straightforward plans**: 1 round may suffice if both models agree
+- **Moderate complexity**: 2-3 rounds typical
+- **Complex or contentious plans**: Up to 5 rounds if feedback doesn't converge
 
 **Round 1 - Dual Critique**:
-- **Claude (Opus)**: List 5-10 specific gaps, risks, or edge cases in the plan. For each, explain why it matters.
+- **Claude (Opus)**: Review the plan through a minimization lens. For each concern: (1) Is this change actually necessary? (2) Is there a simpler alternative? (3) What can be cut or deferred? Also flag genuine gaps or risks.
 - **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
-  prompt: "Review this implementation plan: [plan]. List 5-10 specific gaps, conflicts, or risks. For each issue: (1) What could break? (2) What assumption might be wrong? (3) Suggest a concrete mitigation."
+  prompt: "Review this implementation plan with a minimization mindset: [plan]. The goal is the smallest, simplest path to the outcome. For each part of the plan: (1) Is this necessary or can it be cut? (2) Is there a simpler approach? (3) What's the minimum viable version? Also list any genuine gaps or risks, with concrete mitigations."
   ```
-- Synthesize both critiques. If >3 critical issues overlap, they are high-priority fixes.
+- Synthesize both critiques. Prioritize simplification opportunities alongside risk fixes.
+- **Exit condition**: If both models agree the plan is minimal and sound, proceed to issue creation.
 
-**Round 2 - Address & Counter**:
-- **Claude (Opus)**: Propose specific revisions for each Round 1 concern. State which you accept, reject (with rationale), or defer.
+**Round 2+ - Address & Counter** (repeat until convergence or Round 5):
+- **Claude (Opus)**: Propose revisions that make the plan simpler, not more complex. For each concern: accept and simplify, reject with rationale, or defer to a future issue. Resist adding complexity to "fix" problems.
 - **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
-  prompt: "Claude proposes these revisions: [revisions]. For each: (1) Does it actually solve the concern? (2) What breaks if Claude's assumption is wrong? (3) Suggest 1-2 concrete alternatives for weak points."
+  prompt: "Claude proposes these revisions: [revisions]. Evaluate with a bias toward simplicity: (1) Does this revision add or remove complexity? (2) Is there an even simpler fix? (3) Should this concern be deferred rather than addressed now? Flag any revision that makes the plan bigger rather than smaller."
   ```
-- Integrate valid counterpoints. If fundamental disagreement on architecture, pause and re-examine discovery findings.
+- Integrate valid counterpoints. If a fix adds more complexity than the problem warrants, defer it.
+- **Exit condition**: Feedback converges (plan is minimal, both models agree on approach).
 
-**Round 3 - Final Consensus** (skip if Round 2 achieved consensus):
-- **Claude (Opus)**: Present refined plan with all incorporated feedback. List any unresolved disagreements.
+**Final Round - Consensus Check** (when exiting):
+- **Claude (Opus)**: Present the refined plan. Confirm it represents the minimum viable implementation. List what was intentionally deferred.
 - **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
-  prompt: "Final plan review: [plan]. Verify: (1) All discovered edge cases addressed or explicitly deferred? (2) Error/failure paths defined? (3) Testing strategy clear? (4) Dependencies sequenced correctly? List any gaps."
+  prompt: "Final minimization check: [plan]. Verify: (1) Is this the smallest possible implementation? (2) Can anything else be cut or deferred? (3) Are there any 'nice to haves' hiding as requirements? (4) Is the testing strategy proportional (not over-tested)? Approve only if the plan is truly minimal."
   ```
-- If consensus: Proceed. If disagreement on implementation detail: Choose simpler/safer option, note as future optimization.
-
-**Round 4 - Escalation** (only if Round 3 has unresolved critical issues):
-- Re-examine discovery findings to identify which assumptions caused the conflict.
-- Choose the approach with fewer unknowns. Document the trade-off explicitly.
+- If consensus: Proceed to issue creation.
+- If minor disagreement: Choose the simpler option, defer the rest.
+- If still unresolved after Round 5: Choose the approach with fewer moving parts. Document what was deferred and why.
 
 ### Quality Gate
 Before creating issues, confirm:
