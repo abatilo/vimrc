@@ -117,6 +117,14 @@ bd-drain() (
     echo "Rotated logs to: $backup"
   fi
 
+  # Create marker commit to track all commits introduced during this drain session
+  # Find commits since this marker with: git log --oneline <marker-sha>..HEAD
+  # Find marker with: git log --grep="bd-drain-start:" --format="%H" -1
+  local session_id
+  session_id="$(date +%Y%m%d-%H%M%S)"
+  git commit --allow-empty -m "bd-drain-start: $session_id"
+  echo "Created drain session marker: $session_id"
+
   # State file for the epic loop hook
   local state_file=".claude/bd-epic-loop.local.md"
 
