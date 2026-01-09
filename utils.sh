@@ -158,25 +158,39 @@ bd-drain() (
 
     echo "=== Iteration $count: Epic $epic_id ==="
 
-    # Generate branch name using haiku with epic context
-    local epic_title
-    epic_title=$(bd show "$epic_id" --json | jq -r '.[0].title // "epic"')
-    local epic_description
-    epic_description=$(bd show "$epic_id" --json | jq -r '.[0].description // ""')
+    # Get epic details in a single jq call
+    local epic_json epic_title epic_notes epic_description
+    epic_json=$(bd show "$epic_id" --json)
+    read -r epic_title epic_notes epic_description < <(echo "$epic_json" | jq -r '.[0] | [.title // "epic", .notes // "", .description // ""] | @tsv')
 
+    # Check if epic already has a branch assigned
     local branch_name
-    branch_name=$(claude -p --model haiku "Review this epic and generate a short git branch name (kebab-case, 3-5 words max, no prefix).
+    branch_name=$(echo "$epic_notes" | sed -n 's/^BRANCH: //p' | head -1)
+
+    if [[ -n "$branch_name" ]]; then
+      echo "Resuming on existing branch: $branch_name"
+      git checkout "$branch_name" 2>/dev/null || {
+        echo "Branch $branch_name not found locally, creating it"
+        gs bc "$branch_name" -m "$epic_title"
+      }
+    else
+      # Generate branch name using haiku with epic context
+      branch_name=$(claude -p --model haiku "Review this epic and generate a short git branch name (kebab-case, 3-5 words max, no prefix).
 
 Title: $epic_title
 
 Description:
 $epic_description
 
-Output ONLY the branch name, nothing else.")
-    branch_name=$(echo "$branch_name" | tr -d '[:space:]')  # Remove any whitespace
+Output ONLY the branch name, nothing else." | tr -d '[:space:]')
 
-    echo "Creating branch: $branch_name"
-    gs bc "$branch_name" -m "$epic_title"
+      echo "Creating branch: $branch_name"
+      gs bc "$branch_name" -m "$epic_title"
+
+      # Store branch name in epic notes for future resumption
+      bd update "$epic_id" --notes "BRANCH: $branch_name${epic_notes:+
+$epic_notes}"
+    fi
 
     # Build epic-focused prompt
     local epic_prompt="${prompt:-Work on epic $epic_id. Run 'bd show $epic_id' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason=\"...\"' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed.}"
@@ -194,13 +208,7 @@ EOF
 
     claude-stream "$epic_prompt" "$logfile"
 
-    # Close the epic now that all its dependents are closed
-    # (stop hook only allows exit when OPEN_COUNT == 0)
-    echo "=== Closing epic $epic_id ==="
-    bd close "$epic_id" --reason "All dependent issues completed"
-
-    # Clean up state file if it still exists (hook should have deleted it)
-    rm -f "$state_file"
+    # Note: Stop hook closes the epic and cleans up state file when all issues are done
 
     _bd_update_claude_md "$logfile"
 

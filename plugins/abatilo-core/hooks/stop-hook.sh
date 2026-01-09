@@ -1,14 +1,14 @@
 #!/bin/bash
-# bd-epic-drain Stop Hook v2.0
+# bd-epic-drain Stop Hook v3.0
 # Prevents session exit when an epic loop is active
-# Includes loop detection and graceful exit after max iterations
+# Closes the epic when all dependents are complete
 #
-# Loop prevention mechanisms:
+# Mechanisms:
 # 1. Read stop_hook_active from stdin (Claude Code continuation flag)
 # 2. Track iteration counter (increments on no progress)
 # 3. Track last_open_count (detect progress by comparing)
 # 4. Progressive prompts (escalate messaging as iterations increase)
-# 5. Max iterations limit (hard stop after N no-progress blocks)
+# 5. Close epic and allow exit when all issues are closed
 
 set -euo pipefail
 
@@ -16,7 +16,15 @@ set -euo pipefail
 # Configuration
 # ============================================================
 STATE_FILE=".claude/bd-epic-loop.local.md"
-DEFAULT_MAX_ITERATIONS=10
+
+# Parse a value from YAML-like frontmatter
+# Usage: parse_frontmatter "frontmatter_string" "key" "default"
+parse_frontmatter() {
+  local frontmatter="$1" key="$2" default="${3:-}"
+  local value
+  value=$(echo "$frontmatter" | sed -n "s/^${key}: *//p")
+  echo "${value:-$default}"
+}
 
 # ============================================================
 # LAYER 0: Read stdin from Claude Code
@@ -38,7 +46,7 @@ fi
 # Parse frontmatter
 # ============================================================
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-EPIC_ID=$(echo "$FRONTMATTER" | grep '^epic_id:' | sed 's/epic_id: *//' || echo "")
+EPIC_ID=$(parse_frontmatter "$FRONTMATTER" "epic_id")
 
 if [[ -z "$EPIC_ID" ]]; then
   echo "Stop hook: Malformed state file (no epic_id), cleaning up" >&2
@@ -47,16 +55,14 @@ if [[ -z "$EPIC_ID" ]]; then
 fi
 
 # Parse tracking values with defaults for backward compatibility
-ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//' || echo "1")
-MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//' || echo "$DEFAULT_MAX_ITERATIONS")
-LAST_OPEN_COUNT=$(echo "$FRONTMATTER" | grep '^last_open_count:' | sed 's/last_open_count: *//' || echo "-1")
+ITERATION=$(parse_frontmatter "$FRONTMATTER" "iteration" "1")
+LAST_OPEN_COUNT=$(parse_frontmatter "$FRONTMATTER" "last_open_count" "-1")
 
-# Ensure numeric defaults if parsing failed
-[[ -z "$ITERATION" || ! "$ITERATION" =~ ^[0-9]+$ ]] && ITERATION=1
-[[ -z "$MAX_ITERATIONS" || ! "$MAX_ITERATIONS" =~ ^[0-9]+$ ]] && MAX_ITERATIONS=$DEFAULT_MAX_ITERATIONS
-[[ -z "$LAST_OPEN_COUNT" || ! "$LAST_OPEN_COUNT" =~ ^-?[0-9]+$ ]] && LAST_OPEN_COUNT=-1
+# Ensure numeric defaults if parsing returned non-numeric values
+[[ ! "$ITERATION" =~ ^[0-9]+$ ]] && ITERATION=1
+[[ ! "$LAST_OPEN_COUNT" =~ ^-?[0-9]+$ ]] && LAST_OPEN_COUNT=-1
 
-echo "Stop hook: epic=$EPIC_ID iteration=$ITERATION/$MAX_ITERATIONS last_open=$LAST_OPEN_COUNT" >&2
+echo "Stop hook: epic=$EPIC_ID iteration=$ITERATION last_open=$LAST_OPEN_COUNT" >&2
 
 # ============================================================
 # Get current open count from bd
@@ -73,33 +79,23 @@ fi
 echo "Stop hook: current open_count=$OPEN_COUNT" >&2
 
 # ============================================================
-# Success check: All issues closed
+# Success check: All issues closed - close epic and exit
 # ============================================================
 if [[ "$OPEN_COUNT" -eq 0 ]]; then
   echo "========================================" >&2
   echo "SUCCESS: All issues in epic $EPIC_ID are closed!" >&2
-  echo "========================================" >&2
-  rm -f "$STATE_FILE"
-  exit 0
-fi
-
-# ============================================================
-# Max iterations check (loop protection)
-# ============================================================
-if [[ "$ITERATION" -ge "$MAX_ITERATIONS" ]]; then
-  echo "========================================" >&2
-  echo "LOOP PROTECTION: Max iterations ($MAX_ITERATIONS) reached" >&2
-  echo "========================================" >&2
-  echo "Epic: $EPIC_ID" >&2
-  echo "Open issues remaining: $OPEN_COUNT" >&2
-  echo "" >&2
-  echo "The assistant may be stuck. Consider:" >&2
-  echo "  1. Review the epic: bd show $EPIC_ID" >&2
-  echo "  2. Check for blockers in issue descriptions" >&2
-  echo "  3. Restart with a more specific prompt" >&2
-  echo "========================================" >&2
-  rm -f "$STATE_FILE"
-  exit 0
+  echo "Closing epic $EPIC_ID..." >&2
+  if bd close "$EPIC_ID" --reason "All dependent issues completed" >&2; then
+    echo "Epic closed successfully" >&2
+    echo "========================================" >&2
+    rm -f "$STATE_FILE"
+    exit 0
+  else
+    echo "ERROR: Failed to close epic, will retry" >&2
+    echo "========================================" >&2
+    # Fall through to blocking logic - will prompt Claude to retry
+    CLOSE_FAILED=true
+  fi
 fi
 
 # ============================================================
@@ -136,7 +132,15 @@ ORIGINAL_PROMPT=$(awk '
 # ============================================================
 # Progressive prompt selection
 # ============================================================
-if [[ "$NEW_ITERATION" -le 3 ]]; then
+if [[ "${CLOSE_FAILED:-}" == "true" ]]; then
+  # Epic close command failed - prompt to retry
+  PROMPT="All issues in epic $EPIC_ID are closed, but the 'bd close $EPIC_ID' command failed. Please run:
+
+bd close $EPIC_ID --reason \"All dependent issues completed\"
+
+If that fails, check 'bd show $EPIC_ID --json' to verify the epic status and try again."
+  PROMPT_LEVEL="close_retry"
+elif [[ "$NEW_ITERATION" -le 3 ]]; then
   # Normal prompt (iterations 1-3)
   PROMPT="$ORIGINAL_PROMPT"
   PROMPT_LEVEL="normal"
@@ -147,15 +151,15 @@ elif [[ "$NEW_ITERATION" -le 7 ]]; then
 Do NOT respond with just an acknowledgment - take concrete action."
   PROMPT_LEVEL="suggestive"
 else
-  # Warning prompt (iterations 8+)
-  PROMPT="FINAL ATTEMPTS remaining for epic $EPIC_ID. You have $OPEN_COUNT issue(s) still open and only $((MAX_ITERATIONS - NEW_ITERATION + 1)) iteration(s) left before automatic exit.
+  # Urgent prompt (iterations 8+)
+  PROMPT="You have been working on epic $EPIC_ID for $NEW_ITERATION iterations without closing an issue. You have $OPEN_COUNT issue(s) still open.
 
-Either:
-1. Close at least one issue (implement, verify, then 'bd close <id>')
-2. Explain specifically what is blocking progress
+Run 'bd show $EPIC_ID --json' to see all open issues. For each issue, check:
+1. Is this issue actually completable? If blocked, update notes with 'bd update <id> --notes=\"BLOCKED: <reason>\"'
+2. If completable, focus on ONE issue: implement, verify, then 'bd close <id> --reason=\"...\"'
 
-Do NOT respond with just an acknowledgment - the loop will exit automatically if no progress is made."
-  PROMPT_LEVEL="warning"
+Do NOT respond with just an acknowledgment - take concrete action on exactly one issue."
+  PROMPT_LEVEL="urgent"
 fi
 
 echo "Stop hook: Using $PROMPT_LEVEL prompt (iteration $NEW_ITERATION)" >&2
@@ -163,14 +167,13 @@ echo "Stop hook: Using $PROMPT_LEVEL prompt (iteration $NEW_ITERATION)" >&2
 # ============================================================
 # Update state file with new tracking values
 # ============================================================
-STARTED_AT=$(echo "$FRONTMATTER" | grep '^started_at:' | sed 's/started_at: *//' || echo "\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"")
+STARTED_AT=$(parse_frontmatter "$FRONTMATTER" "started_at" "\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"")
 
 cat > "$STATE_FILE" <<EOF
 ---
 epic_id: $EPIC_ID
 started_at: $STARTED_AT
 iteration: $NEW_ITERATION
-max_iterations: $MAX_ITERATIONS
 last_open_count: $OPEN_COUNT
 ---
 
@@ -182,7 +185,11 @@ echo "Stop hook: State file updated" >&2
 # ============================================================
 # Output block decision
 # ============================================================
-SYSTEM_MSG="Epic $EPIC_ID: $OPEN_COUNT open issue(s) | Attempt $NEW_ITERATION/$MAX_ITERATIONS"
+if [[ "${CLOSE_FAILED:-}" == "true" ]]; then
+  SYSTEM_MSG="Epic $EPIC_ID: Close failed, retrying"
+else
+  SYSTEM_MSG="Epic $EPIC_ID: $OPEN_COUNT open issue(s) | Iteration $NEW_ITERATION"
+fi
 
 echo "Stop hook: Blocking exit, feeding prompt back" >&2
 
