@@ -79,7 +79,7 @@ fi
 echo "Stop hook: current open_count=$OPEN_COUNT" >&2
 
 # ============================================================
-# Success check: All issues closed - close epic and exit
+# Success check: All issues closed - close epic and chain or exit
 # ============================================================
 if [[ "$OPEN_COUNT" -eq 0 ]]; then
   echo "========================================" >&2
@@ -87,9 +87,44 @@ if [[ "$OPEN_COUNT" -eq 0 ]]; then
   echo "Closing epic $EPIC_ID..." >&2
   if bd close "$EPIC_ID" --reason "All dependent issues completed" >&2; then
     echo "Epic closed successfully" >&2
-    echo "========================================" >&2
-    rm -f "$STATE_FILE"
-    exit 0
+
+    # Check for next ready epic to chain to
+    NEXT_EPIC=$(bd ready --type=epic --json 2>/dev/null | jq -r '.[0].id // empty' 2>/dev/null || echo "")
+
+    if [[ -n "$NEXT_EPIC" ]]; then
+      # Chain to next epic
+      echo "Chaining to next epic: $NEXT_EPIC" >&2
+      echo "========================================" >&2
+
+      # Update state file for new epic
+      cat > "$STATE_FILE" <<EOF
+---
+epic_id: $NEXT_EPIC
+started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+iteration: 1
+last_open_count: -1
+---
+
+Work on epic $NEXT_EPIC. Run 'bd show $NEXT_EPIC' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason="..."' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed.
+EOF
+
+      # Block exit with prompt for new epic
+      jq -n \
+        --arg prompt "Work on epic $NEXT_EPIC. Run 'bd show $NEXT_EPIC' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason=\"...\"' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed." \
+        --arg msg "Chaining to epic $NEXT_EPIC" \
+        '{
+          "decision": "block",
+          "reason": $prompt,
+          "systemMessage": $msg
+        }'
+      exit 0
+    else
+      # No more epics - clean up and allow exit
+      echo "No more ready epics - drain complete" >&2
+      echo "========================================" >&2
+      rm -f "$STATE_FILE"
+      exit 0
+    fi
   else
     echo "ERROR: Failed to close epic, will retry" >&2
     echo "========================================" >&2
