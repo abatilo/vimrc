@@ -1,98 +1,91 @@
 # bd-epic-drain
 
-A Claude Code plugin that prevents session exit until all issues in a bd epic are closed, then automatically chains to the next ready epic. Inspired by the [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) plugin.
+A Claude Code plugin that prevents session exit until all issues in a bd epic are closed, then automatically chains to the next ready epic.
 
-## How It Works
+## How It Works (v5.0 - Stateless)
 
-1. The `bd-drain` bash function creates a state file (`.claude/bd-epic-loop.local.md`) with the target epic ID
-2. When Claude tries to exit, the Stop hook checks if all issues in the epic are closed
+**bd is the single source of truth.** No local state files.
+
+1. `/bd-drain` marks the first ready epic as `in_progress` in bd
+2. When Claude tries to exit, the Stop hook queries bd for the in_progress epic
 3. If issues remain open, the hook blocks exit and feeds the prompt back
-4. When all issues are closed, the hook closes the epic and chains to the next ready epic
-5. When no more ready epics exist, the hook allows exit and deletes the state file
+4. When all issues are closed, the hook closes the epic and marks the next ready epic as `in_progress`
+5. When no more ready epics exist, the hook allows exit
 
-## Loop Detection (v3.0)
+## Stop Hook Flow
 
-The stop hook includes multiple layers of protection against infinite loops:
-
-### Protection Mechanisms
-
-| Layer | Mechanism | Description |
-|-------|-----------|-------------|
-| 1 | `stop_hook_active` | Reads Claude Code's continuation flag from stdin |
-| 2 | Iteration counter | Tracks consecutive blocks without progress |
-| 3 | Progress detection | Compares open issue count between iterations |
-| 4 | Progressive prompts | Escalates messaging as iterations increase |
-
-### Progress Detection
-
-- **Progress made** (issue closed): Counter resets to 1, loop continues
-- **No progress** (same or more issues): Counter increments
-
-### Progressive Prompts
-
-| Iterations | Prompt Level | Behavior |
-|------------|--------------|----------|
-| 1-3 | Normal | Original prompt as-is |
-| 4-7 | Suggestive | Adds guidance: "You seem stuck... pick one issue..." |
-| 8+ | Urgent | Urgent: "You have been working for N iterations without progress..."
-
-### Verbose Logging
-
-All decisions are logged to stderr:
 ```
-Stop hook: stop_hook_active=false
-Stop hook: epic=bd-xxx iteration=3 last_open=5
-Stop hook: current open_count=5
-Stop hook: No progress detected, iteration 3 -> 4
-Stop hook: Using suggestive prompt (iteration 4)
-Stop hook: State file updated
-Stop hook: Blocking exit, feeding prompt back
+Agent tries to stop
+    ↓
+Query bd: any in_progress epic?
+    ├─ No → allow exit (not draining or complete)
+    └─ Yes → query bd for open issues
+              ↓
+         Open issues > 0?
+              ├─ Yes → block exit with work prompt
+              └─ No → close epic in bd
+                       ↓
+                  Query bd: any ready epics?
+                       ├─ Yes → mark in_progress, block exit
+                       └─ No → allow exit (drain complete)
 ```
 
-## State File Format
+## Key Design Decisions
 
-```yaml
----
-epic_id: bd-xxx
-started_at: "2024-01-03T12:00:00Z"
-iteration: 1
-last_open_count: 5
----
+### Why Stateless?
 
-[Epic-focused prompt here]
-```
+Previous versions (v3.0-v4.0) used a local state file (`.claude/bd-epic-loop.local.md`) to track:
+- Current epic ID
+- Iteration counter (for progressive prompts)
+- Last open count (for progress detection)
 
-### Fields
+**Problems with state files:**
+- Two sources of truth (bd + state file) could drift
+- Complexity in managing state across sessions
+- Progressive prompts added complexity without clear value
 
-| Field | Description | Default |
-|-------|-------------|---------|
-| `epic_id` | The bd epic being worked on | Required |
-| `started_at` | When the loop started | Current time |
-| `iteration` | Current iteration count | 1 |
-| `last_open_count` | Open count from previous iteration | -1 |
+**v5.0 simplifies:**
+- bd already tracks which epic is `in_progress`
+- bd already tracks open/closed status of issues
+- Simple prompt (no escalation) works just as well
 
-## Integration with bd-drain
+### Why Single-Agent (Not Two-Tier)?
 
-The `/bd-drain` command:
-1. Gets the next ready epic from `bd ready --type=epic`
-2. Creates the state file with the epic ID
-3. Invokes Claude with an epic-focused prompt
-4. The hook keeps Claude working until all epic issues are closed
-5. When epic completes, the hook automatically chains to the next ready epic
-6. Outer loop continues when Claude exits (no more ready epics)
+v4.0 attempted a coordinator/worker architecture using Task subagents:
+- Coordinator spawned workers for each epic
+- SubagentStop hook would trigger on worker completion
+
+**Problems with two-tier:**
+- Workers didn't respect scope boundaries (kept working on subsequent epics)
+- SubagentStop fires too late (after work is done, not before)
+- No mechanism to force a subagent to exit
+
+**v5.0 uses the main agent:**
+- Stop hook has enforcement power (can block exit indefinitely)
+- Simple and reliable
+
+## Integration with bd
+
+The hook uses these bd commands:
+
+| Command | Purpose |
+|---------|---------|
+| `bd list --status=in_progress --type=epic` | Find current epic |
+| `bd show <epic>` | Get open issue count |
+| `bd close <epic>` | Close completed epic |
+| `bd ready --type=epic` | Find next ready epic |
+| `bd update <epic> --status=in_progress` | Start next epic |
 
 ## Exit Conditions
 
-The hook allows exit (exit code 0) when:
+**Allows exit (exit 0):**
+- No in_progress epic (not draining)
+- All epics complete (no more ready)
+- bd command fails (graceful failure)
 
-1. **No state file** - No active epic loop
-2. **All issues closed and no more epics** - All work complete (success!)
-3. **bd command fails** - Graceful failure, don't block forever
-4. **Malformed state file** - Cleanup and allow exit
-
-The hook chains to the next epic (blocks exit) when:
-
-1. **All issues closed but more epics ready** - Creates new state file and continues
+**Blocks exit:**
+- In_progress epic has open issues
+- Just closed an epic and started the next one
 
 ## Dependencies
 
