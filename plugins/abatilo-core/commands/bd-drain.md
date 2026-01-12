@@ -43,7 +43,16 @@ stuck: false
 stuck_summary: ""
 ---
 
-Work on epic <epic_id>. Run 'bd show <epic_id>' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason="..."' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed.
+==== SCOPE: epic <epic_id> ONLY ====
+
+PROCESS:
+1. Run 'bd show <epic_id>' to see issues in THIS epic
+2. Complete each issue: 'bd update <id> --status=in_progress', implement, test, 'bd close <id> --reason="..."'
+3. Use /commit for atomic commits. Create bd issues for discovered bugs.
+4. After last issue closed, run 'bd show <epic_id>' to verify all closed
+5. Return: "SCOPE_COMPLETE: <epic_id>" then STOP
+
+DO NOT: check other epics, continue after scope complete, start new work
 ```
 
 3. Create a marker commit for session recovery:
@@ -56,7 +65,7 @@ git add -A && git commit --allow-empty -m "bd-drain-start: $(date +%Y%m%d-%H%M%S
 ```
 Task(
   subagent_type="general-purpose",
-  prompt="Work on epic <epic_id>. Run 'bd show <epic_id>' to see all issues. Complete each issue in priority order: implement, test, and close. Use 'bd update <id> --status=in_progress' before starting, 'bd close <id> --reason=\"...\"' when done. Create new bd issues for any discovered bugs. Use /commit for atomic commits. Continue until ALL issues in this epic are closed."
+  prompt="==== SCOPE: epic <epic_id> ONLY ====\n\nPROCESS:\n1. Run 'bd show <epic_id>' to see issues in THIS epic\n2. Complete each issue: 'bd update <id> --status=in_progress', implement, test, 'bd close <id> --reason=\"...\"'\n3. Use /commit for atomic commits. Create bd issues for discovered bugs.\n4. After last issue closed, run 'bd show <epic_id>' to verify all closed\n5. Return: \"SCOPE_COMPLETE: <epic_id>\" then STOP\n\nDO NOT: check other epics, continue after scope complete, start new work"
 )
 ```
 
