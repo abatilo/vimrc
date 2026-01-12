@@ -73,7 +73,7 @@ last_open_count: 5
 
 ## Integration with bd-drain
 
-The `bd-drain` function in `utils.sh`:
+The `/bd-drain` command:
 1. Gets the next ready epic from `bd ready --type=epic`
 2. Creates the state file with the epic ID
 3. Invokes Claude with an epic-focused prompt
