@@ -4,10 +4,10 @@
 #
 # Flow:
 # 1. Find in_progress epic from bd
-# 2. No in_progress epic → allow exit
+# 2. No in_progress epic → drain inactive (not started/cancelled) → allow exit
 # 3. In_progress epic has open issues → block exit
 # 4. In_progress epic complete → close it, start next, block exit
-# 5. No next epic → allow exit (drain complete)
+# 5. No next ready epic → drain complete → allow exit
 
 set -euo pipefail
 

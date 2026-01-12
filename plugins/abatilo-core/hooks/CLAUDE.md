@@ -2,17 +2,20 @@
 
 Files here define Claude Code hooks (e.g., Stop hook for bd-epic-drain).
 
-## Architecture
+## Architecture (v5.0 - Stateless)
 
-The stop hook (`stop-hook.sh`) prevents session exit during epic drain operations:
+The stop hook (`stop-hook.sh`) prevents session exit during epic drain operations.
+**bd is the single source of truth** - no local state files.
 
-1. Reads state from `.claude/bd-epic-loop.local.md`
-2. Checks if all issues in the current epic are closed
-3. Blocks exit with progressive prompts if work remains
-4. Chains to next ready epic when current epic completes
-5. Cleans up and allows exit when no more epics
+Flow:
+1. Query bd for any `in_progress` epic
+2. If none, allow exit (not draining or complete)
+3. If found, check for open issues in the epic
+4. If issues remain, block exit with work prompt
+5. If all closed, close epic and start next ready epic
+6. If no more ready epics, allow exit (drain complete)
 
-See `../README-epic-drain.md` for full documentation of the loop detection and epic chaining mechanisms.
+See `../README-epic-drain.md` for design decisions and history.
 
 ## Before committing changes
 
