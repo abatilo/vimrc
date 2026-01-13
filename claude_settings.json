@@ -36,7 +36,8 @@
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [
-      "/Users/abatilo/work"
+      "/Users/abatilo/work",
+      "/Users/abatilo/Documents/notes"
     ]
   },
   "model": "opus",
