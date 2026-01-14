@@ -2,45 +2,20 @@
 
 Detailed step-by-step workflows for common bd usage patterns with checklists.
 
+For basic session start and CLI commands, run `bd prime`.
+
 ## Contents
 
-- [Session Start Workflow](#session-start) - Check bd ready, establish context
 - [Compaction Survival](#compaction-survival) - Recovering after compaction events
 - [Discovery and Issue Creation](#discovery) - Proactive issue creation during work
-- [Status Maintenance](#status-maintenance) - Keeping bd status current
 - [Epic Planning](#epic-planning) - Structuring complex work with dependencies
-- [Side Quest Handling](#side-quests) - Discovery during main task, assessing blocker vs deferrable, resuming
+- [Side Quest Handling](#side-quests) - Discovery during main task, assessing blocker vs deferrable
 - [Multi-Session Resume](#resume) - Returning after days/weeks away
 - [Session Handoff Workflow](#session-handoff) - Collaborative handoff between sessions
 - [Unblocking Work](#unblocking) - Handling blocked issues
 - [Integration with TodoWrite](#integration-with-todowrite) - Using both tools together
 - [Common Workflow Patterns](#common-workflow-patterns)
-  - Systematic Exploration, Bug Investigation, Refactoring with Dependencies, Spike Investigation
-- [Checklist Templates](#checklist-templates)
-  - Starting Any Work Session, Creating Issues During Work, Completing Work, Planning Complex Features
-- [Decision Points](#decision-points)
 - [Troubleshooting Workflows](#troubleshooting-workflows)
-
-## Session Start Workflow {#session-start}
-
-**bd is available when**:
-- Project has `.beads/` directory (project-local), OR
-- `~/.beads/` exists (global fallback for any directory)
-
-**Automatic checklist at session start:**
-
-```
-Session Start (when bd is available):
-- [ ] Run bd ready --json
-- [ ] Report: "X items ready to work on: [summary]"
-- [ ] If using global ~/.beads, note this in report
-- [ ] If none ready, check bd blocked --json
-- [ ] Suggest next action based on findings
-```
-
-**Pattern**: Always run `bd ready` when starting work where bd is available. Report status immediately to establish shared context.
-
-**Database selection**: bd auto-discovers which database to use (project-local `.beads/` takes precedence over global `~/.beads/`).
 
 ---
 
@@ -115,30 +90,6 @@ Discovery Workflow:
 - Clear bug found
 - Obvious follow-up work
 - Technical debt with clear scope
-
----
-
-## Status Maintenance {#status-maintenance}
-
-**Throughout work on an issue:**
-
-```
-Issue Lifecycle:
-- [ ] Start: Update status to in_progress
-- [ ] During: Add design notes as decisions made
-- [ ] During: Update acceptance criteria if requirements clarify
-- [ ] During: Add dependencies if blockers discovered
-- [ ] Complete: Close with summary of what was done
-- [ ] After: Check bd ready to see what unblocked
-```
-
-**Pattern**: Keep bd status current so project state is always accurate.
-
-**Status transitions**:
-- `open` → `in_progress` when starting work
-- `in_progress` → `blocked` if blocker discovered
-- `blocked` → `in_progress` when unblocked
-- `in_progress` → `closed` when complete
 
 ---
 
@@ -296,33 +247,6 @@ Updated some stuff. Will continue later.
 - Optional: Blockers, key decisions, references
 - Written for someone with zero conversation context
 
-### Session Handoff Checklist
-
-For Claude at session end:
-
-```
-Session End Checklist:
-- [ ] Work reaching logical stopping point
-- [ ] Prompt user about updating notes
-- [ ] If approved:
-  - [ ] Craft note with COMPLETED/IN_PROGRESS/NEXT
-  - [ ] Include blocker if stuck
-  - [ ] Include key decisions if relevant
-  - [ ] Suggest bd update command
-- [ ] Execute approved update
-- [ ] Confirm: "Saved handoff notes for next session"
-```
-
-For user (optional, but helpful):
-
-```
-User Tips:
-- [ ] When stopping work: Let Claude suggest notes update
-- [ ] When resuming: Let Claude read notes and report context
-- [ ] Avoid: Trying to remember context manually (that's what notes are for!)
-- [ ] Trust: Well-written notes will help next session pick up instantly
-```
-
 ### Example: Real Session Handoff
 
 **Scenario:** Implementing markdown→Docs feature (workspace-mcp-server-2)
@@ -447,73 +371,6 @@ Research or investigation work:
 
 ---
 
-## Checklist Templates
-
-### Starting Any Work Session
-
-```
-- [ ] Check for .beads/ directory
-- [ ] If exists: bd ready
-- [ ] Report status to user
-- [ ] Get user input on what to work on
-- [ ] Show issue details
-- [ ] Update to in_progress
-- [ ] Begin work
-```
-
-### Creating Issues During Work
-
-```
-- [ ] Notice new work needed
-- [ ] Create issue with clear title
-- [ ] Add context in description
-- [ ] Link with discovered-from to current work
-- [ ] Assess blocker vs deferrable
-- [ ] Update statuses appropriately
-```
-
-### Completing Work
-
-```
-- [ ] Implementation done
-- [ ] Tests passing
-- [ ] Close issue with summary
-- [ ] Check bd ready for unblocked work
-- [ ] Report completion and next available work
-```
-
-### Planning Complex Features
-
-```
-- [ ] Create epic for overall goal
-- [ ] Break into child tasks
-- [ ] Create all child issues
-- [ ] Link with parent-child dependencies
-- [ ] Add blocks between children if order matters
-- [ ] Work through in dependency order
-```
-
----
-
-## Decision Points
-
-**Should I create a bd issue or use TodoWrite?**
-→ See [BOUNDARIES.md](BOUNDARIES.md) for decision matrix
-
-**Should I ask user before creating issue?**
-→ Ask if scope unclear; create if obvious follow-up work
-
-**Should I mark work as blocked or just note dependency?**
-→ Blocked = can't proceed; dependency = need to track relationship
-
-**Should I create epic or just tasks?**
-→ Epic if 5+ related tasks; tasks if simpler structure
-
-**Should I update status frequently or just at start/end?**
-→ Start and end minimum; during work if significant changes
-
----
-
 ## Troubleshooting Workflows
 
 **"I can't find any ready work"**
@@ -545,4 +402,3 @@ Research or investigation work:
 2. Use bd ready to focus on unblocked work
 3. Consider closing old issues that no longer matter
 4. Use labels for organization
-
