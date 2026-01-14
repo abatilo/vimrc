@@ -14,20 +14,13 @@ This applies when modifying: `commands/`, `skills/`, `hooks/`, `.claude-plugin/`
 | New skill, command, or feature | MINOR | 0.0.8 → 0.1.0 |
 | Breaking change, major restructure | MAJOR | 0.0.8 → 1.0.0 |
 
-### Step 2: Update BOTH files (they must match)
+### Step 2: Update version in plugin.json
 
 ```
-.claude-plugin/plugin.json      → "version": "X.Y.Z"
-/.claude-plugin/marketplace.json → "version": "X.Y.Z" (in plugins array)
+.claude-plugin/plugin.json → "version": "X.Y.Z"
 ```
 
-### Step 3: Verify before committing
-
-```bash
-grep '"version"' plugins/abatilo-core/.claude-plugin/plugin.json .claude-plugin/marketplace.json
-```
-
-Both must show the same version number.
+This is the single source of truth for the plugin version.
 
 ---
 

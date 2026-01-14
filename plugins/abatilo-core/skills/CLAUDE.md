@@ -10,4 +10,4 @@ Quick reminder:
 - Adding a skill → bump MINOR
 - Modifying a skill → bump PATCH
 - Removing a skill → bump PATCH (or MAJOR if breaking)
-- Update both `plugin.json` and `marketplace.json`
+- Update version in `plugin.json`

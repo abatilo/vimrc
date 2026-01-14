@@ -9,4 +9,4 @@ Files here define slash commands (e.g., `/bd-plan`, `/git-commit`).
 Quick reminder:
 - Adding a command → bump MINOR
 - Modifying a command → bump PATCH
-- Update both `plugin.json` and `marketplace.json`
+- Update version in `plugin.json`

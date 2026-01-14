@@ -24,4 +24,4 @@ See `../README-epic-drain.md` for design decisions and history.
 Quick reminder:
 - Modifying hook behavior → bump PATCH
 - Adding new hooks → bump MINOR
-- Update both `plugin.json` and `marketplace.json`
+- Update version in `plugin.json`
