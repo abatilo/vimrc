@@ -75,7 +75,7 @@
     "abatilo-plugins": {
       "source": {
         "source": "directory",
-        "path": "/Users/abatilo/abatilo/vimrc/plugins"
+        "path": "/Users/abatilo/abatilo/vimrc"
       }
     }
   },
