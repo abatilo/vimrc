@@ -2,6 +2,13 @@
 name: repo-explore
 description: Clone and explore external GitHub repositories to understand how libraries, frameworks, or dependencies work. Use when user provides a GitHub URL (github.com/owner/repo), asks "how does X library work", wants to look at source code for a dependency, asks about implementation details of an external package, or says "explore", "look at", or "check out" a repository. Automatically checks out the matching version tag when the repo is a dependency in the current project.
 context: fork
+allowed-tools:
+  - Bash(git:*)
+  - Bash(ls:*)
+  - Read
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Repo Explore Skill
@@ -30,7 +37,7 @@ Extract owner and repo from various formats:
 ls ~/.cache/claude/repos/<owner>/<repo>/
 ```
 
-- **If exists**: Check if update needed (see `update-reference.md`)
+- **If exists**: Check if update needed (see `references/update-reference.md`)
 - **If not exists**: Proceed to clone
 
 ### 3. Clone Repository
@@ -44,7 +51,7 @@ git clone https://github.com/<owner>/<repo>.git ~/.cache/claude/repos/<owner>/<r
 
 **Before exploring, check if this repo is a dependency in the current working directory.**
 
-Consult `version-detection.md` for:
+Consult `references/version-detection.md` for:
 - Which dependency files to check
 - How to extract versions from each format
 - How to map versions to git tags
@@ -133,7 +140,7 @@ At the end of every response, include a **"Key Files for Further Exploration"** 
 
 ### 7. Updates
 
-For refreshing the repository or switching versions, consult `update-reference.md`.
+For refreshing the repository or switching versions, consult `references/update-reference.md`.
 
 ## Important Notes
 

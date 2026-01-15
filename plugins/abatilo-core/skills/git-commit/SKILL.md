@@ -1,8 +1,8 @@
 ---
 name: git-commit
-description: Create logically grouped, atomic git commits with well-formatted commit messages following best practices. Use this skill when you need to commit changes to a git repository with proper message formatting and atomic grouping.
+description: Create logically grouped, atomic git commits with well-formatted commit messages following best practices. Use when user says "/commit", "commit changes", "create commits", asks about conventional commits format, needs to split changes into multiple commits, or wants help with git add -p partial staging.
 allowed-tools:
-  - Bash
+  - Bash(git:*)
   - Read
   - Edit
 ---
@@ -150,6 +150,11 @@ Follow these seven rules for excellent commit messages (adjust for conventional 
    - Create a commit with a well-formatted message **matching the project's style**
    - Verify the commit with `git show`
 6. After all commits, run `git status` to verify nothing important was missed
+
+## Reference Documentation
+
+For detailed information on conventional commits, see:
+- [Conventional Commits Reference](references/conventional-commits.md) - Complete specification and examples
 
 ## Notes
 

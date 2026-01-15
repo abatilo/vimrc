@@ -104,7 +104,7 @@ Before creating issues, confirm:
 
 ### Step 3: Create Issues
 
-Create bd issues using the bd-issue-tracking skill. Each issue must:
+Create bd issues using the beads skill. Each issue must:
 1. Have clear acceptance criteria (what success looks like)
 2. Be scoped to complete in one session
 3. End with verification notes using **discovered commands** (not generic phrases):

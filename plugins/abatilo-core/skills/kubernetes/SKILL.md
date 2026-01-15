@@ -1,11 +1,12 @@
 ---
 name: kubernetes
-description: Comprehensive Kubernetes cluster management skill. Use this skill when working with Kubernetes resources, kubectl operations, Helm charts, container orchestration, debugging pods, managing deployments, or any Kubernetes-related infrastructure tasks.
+description: Comprehensive Kubernetes (k8s) cluster management skill. Use when working with kubectl, Helm, kustomize, pods, deployments, services, configmaps, secrets, or any Kubernetes operations. Triggers on "k8s", "kubectl get", "helm install", "debug pod", "scale deployment", or cluster troubleshooting questions.
 context: fork
 allowed-tools:
   - Bash(kubectl:*)
   - Bash(helm:*)
   - Bash(kustomize:*)
+  - Read
 ---
 
 # Kubernetes Management Skill

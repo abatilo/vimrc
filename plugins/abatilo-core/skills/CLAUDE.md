@@ -1,6 +1,6 @@
 # Skills Directory
 
-Files here define skills that Claude can invoke (e.g., `bd-issue-tracking`, `repo-explore`).
+Files here define skills that Claude can invoke (e.g., `beads`, `repo-explore`).
 
 ## Before committing changes
 

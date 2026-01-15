@@ -304,8 +304,8 @@ git push --force-with-lease
 ## Reference Documentation
 
 For detailed information on specific topics, see:
-- [Command Reference](reference/commands.md) - Complete command documentation
-- [Workflows](reference/workflows.md) - Advanced workflow patterns
+- [Command Reference](references/commands.md) - Complete command documentation
+- [Workflows](references/workflows.md) - Advanced workflow patterns
 
 ## Key Principles
 

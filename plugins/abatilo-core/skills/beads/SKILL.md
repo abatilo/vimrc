@@ -1,6 +1,10 @@
 ---
 name: beads
-description: Track and manage work with beads issue tracker for persistent context across sessions and compaction events. Use for work needing dependencies, recovery after compaction, or multi-session tracking.
+description: Track and manage work with beads issue tracker (bd command) for persistent context across sessions and compaction events. Use when user mentions "bd", "beads", "track issues", needs dependencies between tasks, recovery after compaction, or multi-session tracking.
+allowed-tools:
+  - Bash(bd:*)
+  - Bash(git:*)
+  - Read
 ---
 
 # Beads Issue Tracking

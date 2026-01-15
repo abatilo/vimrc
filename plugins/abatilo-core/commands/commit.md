@@ -1,3 +1,8 @@
+---
+description: Create logically grouped, atomic git commits with well-formatted commit messages
+argument-hint: [optional: additional context or specific files]
+---
+
 ## Context
 
 - Current git status: !`git status`
