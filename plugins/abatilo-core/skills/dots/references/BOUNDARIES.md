@@ -143,9 +143,9 @@ Just need a checklist to show progress to user.
 | Aspect | dots | TodoWrite |
 |--------|------|-----------|
 | **Persistence** | Markdown files in `.dots/`, survives compaction | Session-only, lost after conversation |
-| **Dependencies** | blocks and parent-child, automatic ready detection | Manual, no automatic tracking |
+| **Dependencies** | blocks dependencies, automatic ready detection | Manual, no automatic tracking |
 | **Discoverability** | `dot ready` surfaces work | Scroll conversation for todos |
-| **Complexity** | Handles nested epics, blockers | Flat list only |
+| **Complexity** | Handles blockers and dependencies | Flat list only |
 | **Visibility** | Background structure, not in conversation | Visible to user in chat |
 | **Setup** | Requires `.dots/` directory in project | Always available |
 | **Best for** | Complex, multi-session, explorative | Simple, single-session, linear |
@@ -164,10 +164,10 @@ dots and TodoWrite can coexist effectively in a session. Use both strategically.
 
 **Example:**
 ```
-dots task: "Implement user authentication" (epic/parent)
-  ├─ Child task: "Create login endpoint"
-  ├─ Child task: "Add JWT token validation"  ← Currently working on this
-  └─ Child task: "Implement logout"
+dots tasks (with blocking dependencies):
+  dots-auth-1: "Create login endpoint"
+  dots-auth-2: "Add JWT token validation" (blocked by auth-1) ← Currently working on this
+  dots-auth-3: "Implement logout" (blocked by auth-2)
 
 TodoWrite (for JWT validation):
 - [ ] Install JWT library
@@ -260,11 +260,10 @@ Rare, but happens when dots task turns out simpler than expected.
 
 **dots structure**:
 ```
-dots-db-epic: "Migrate production database to PostgreSQL"
-  ├─ dots-db-1: "Audit current MySQL schema and queries"
-  ├─ dots-db-2: "Research PostgreSQL equivalents" (blocked by db-1)
-  ├─ dots-db-3: "Design PostgreSQL schema with type mappings" (blocked by db-2)
-  └─ dots-db-4: "Create migration scripts and test" (blocked by db-3)
+dots-db-1: "Audit current MySQL schema and queries"
+dots-db-2: "Research PostgreSQL equivalents" (blocked by db-1)
+dots-db-3: "Design PostgreSQL schema with type mappings" (blocked by db-2)
+dots-db-4: "Create migration scripts and test" (blocked by db-3)
 ```
 
 **TodoWrite role**: None initially. Might use TodoWrite for single-session testing sprints once migration scripts ready.
@@ -400,7 +399,7 @@ dots-refactor-4: "Update payment controller to use shared validation"
 **When to ask first** (get user input):
 - **Strategic work**: Fuzzy boundaries, multiple valid approaches ("Should we implement X or Y pattern?")
 - **Potential duplicates**: Might overlap with existing work
-- **Large epics**: Multiple approaches, unclear scope ("Plan migration strategy")
+- **Large projects**: Multiple approaches, unclear scope ("Plan migration strategy")
 - **Major scope changes**: Changing direction of existing task
 
 **Why ask**: Ensures alignment on fuzzy work, prevents duplicate effort, clarifies scope before investment.

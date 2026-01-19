@@ -1,6 +1,6 @@
 ---
 name: dots
-description: Track and manage work with dots issue tracker (dot command) for persistent context across sessions and compaction events. Use when user mentions "dots", "dot", "track issues", needs dependencies between tasks, recovery after compaction, or multi-session tracking.
+description: Track and manage work with dots flat task tracker (dot command) for persistent context across sessions and compaction events. Use when user mentions "dots", "dot", "track issues", needs dependencies between tasks, recovery after compaction, or multi-session tracking.
 allowed-tools:
   - Bash(dot:*)
   - Bash(git:*)
@@ -39,18 +39,16 @@ Essential commands: `dot ready`, `dot add`, `dot show`, `dot on`, `dot off`, `do
 | Complete work | `dot close <id> --reason "..."` |
 | View details | `dot show <id> --json` |
 | List tasks | `dot ls --json` |
-| View tree | `dot tree <id>` |
 
-### Dependency Types
+### Dependencies
 
-dots supports two dependency types:
+Use blocking dependencies to control work order:
 
 | Type | Command | Effect |
 |------|---------|--------|
 | **blocks** | `dot add "B" -a <blocker-id>` | B blocked until blocker closes |
-| **parent-child** | `dot add "Child" -P <parent-id>` | Folder hierarchy, parent = epic |
 
-**Key insight**: Only `blocks` dependencies affect what work is ready. Parent-child provides structure.
+**Key insight**: `blocks` dependencies control what work is ready. Tasks without blockers appear in `dot ready`.
 
 ## Description Sections Convention
 
@@ -87,22 +85,6 @@ KEY DECISION: Important choices with rationale
 IN PROGRESS: Current state + immediate next step
 BLOCKERS: What's preventing progress
 NEXT: What to do when unblocked
-```
-
-## Epic Identification
-
-In dots, a task with children functions as an epic:
-- Create parent task: `dot add "Epic title" -d "Description"`
-- Add children: `dot add "Child task" -P <parent-id>`
-- View hierarchy: `dot tree <parent-id>`
-
-**Note**: `dot ls --json` does not include a `children` field. To find epics, check each task with `dot tree`:
-```bash
-# Check if a task has children (is an epic)
-dot tree <id> | grep -q '└─' && echo "Has children"
-
-# Count open children (○ = open, > = active, ✓ = closed)
-dot tree <id> | grep '└─' | grep -c '[○>]'
 ```
 
 ## Reference Documentation

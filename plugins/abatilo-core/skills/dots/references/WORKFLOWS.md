@@ -8,7 +8,6 @@ For basic CLI commands, run `dot --help`.
 
 - [Compaction Survival](#compaction-survival) - Recovering after compaction events
 - [Discovery and Issue Creation](#discovery) - Proactive issue creation during work
-- [Epic Planning](#epic-planning) - Structuring complex work with dependencies
 - [Side Quest Handling](#side-quests) - Discovery during main task, assessing blocker vs deferrable
 - [Multi-Session Resume](#resume) - Returning after days/weeks away
 - [Session Handoff Workflow](#session-handoff) - Collaborative handoff between sessions
@@ -30,7 +29,6 @@ After Compaction:
 - [ ] Run dot ls --status active to see active work
 - [ ] Run dot show <id> for each active task
 - [ ] Read description's Session Notes section for: COMPLETED, IN PROGRESS, BLOCKERS, KEY DECISIONS
-- [ ] Check parent/children: dot tree <id> for context
 - [ ] If notes insufficient, check dot ls for related issues
 - [ ] Reconstruct TodoWrite list from notes if needed
 ```
@@ -93,51 +91,6 @@ Discovery Workflow:
 - Clear bug found
 - Obvious follow-up work
 - Technical debt with clear scope
-
----
-
-## Epic Planning {#epic-planning}
-
-**For complex multi-step features:**
-
-```
-Epic Planning Workflow:
-- [ ] Create parent task for high-level goal
-- [ ] Break down into child tasks
-- [ ] Create each child with -P flag
-- [ ] Add blocks dependencies between children if needed
-- [ ] Use dot ready to work through tasks in dependency order
-```
-
-**Example**: OAuth Integration Epic
-
-```bash
-1. Create epic (parent task):
-   dot add "Implement OAuth integration" -d "$(cat <<'EOF'
-# Description
-OAuth with Google and GitHub providers.
-
-# Design
-Support Google and GitHub providers.
-
-# Acceptance Criteria
-- [ ] Users can log in with Google
-- [ ] Users can log in with GitHub
-- [ ] Tokens refresh automatically
-EOF
-)"
-# Note the ID, e.g., dots-abc-123
-
-2. Create child tasks:
-   dot add "Set up OAuth client credentials" -P dots-abc-123
-   dot add "Implement authorization code flow" -P dots-abc-123
-   dot add "Add token storage and refresh" -P dots-abc-123
-   dot add "Create login/logout endpoints" -P dots-abc-123
-
-3. Add blocks between children if needed:
-   # If oauth-setup must complete before oauth-flow:
-   dot add "Implement auth flow" -P dots-abc-123 -a <setup-id>
-```
 
 ---
 
@@ -377,4 +330,3 @@ Research or investigation work:
 1. Use dot ls with status filters
 2. Use dot ready to focus on unblocked work
 3. Consider closing old tasks that no longer matter
-4. Use parent-child hierarchy for organization

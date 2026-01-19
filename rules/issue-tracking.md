@@ -12,7 +12,6 @@ Track work with `dot` for persistent context across sessions.
 | Complete work | `dot close <id> --reason "..."` |
 | View details | `dot show <id> --json` |
 | Add blocker dependency | `dot add "B" -a <blocker-id>` |
-| Add as child (parent-child) | `dot add "Child" -P <parent-id>` |
 
 ## Create Task
 
@@ -45,22 +44,6 @@ NEXT: Immediate next step
 - Major milestone reached
 - Hit a blocker
 - Before asking user for input
-
-## Epic Pattern
-
-In dots, a parent task with children = epic:
-
-```bash
-# Create epic (parent)
-dot add "Epic title" -d "Description"
-
-# Add children
-dot add "Child 1" -P <epic-id>
-dot add "Child 2" -P <epic-id>
-
-# View hierarchy
-dot tree <epic-id>
-```
 
 ## Do NOT Close If
 

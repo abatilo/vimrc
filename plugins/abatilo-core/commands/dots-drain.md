@@ -1,70 +1,40 @@
 ---
-description: Start draining all ready dots epics
+description: Start working on the next ready task
 ---
 
 # Dots-Drain
 
-Start an automated loop to drain all ready dots epics (parent tasks). Uses dots as the single source of truth - no local state files.
+Start working on the next ready task. Uses dots as the single source of truth.
 
 ## Startup
 
-First, check for an already active parent task (epic).
-
-**Note**: `dot ls --json` does not include a `children` field, so we must check each task with `dot tree`:
-
+Check for an already active task:
 ```bash
-# Find active epic (task with children)
-for id in $(dot ls --status active --json | jq -r '.[].id'); do
-  if dot tree "$id" 2>/dev/null | grep -q '└─'; then
-    echo "Active epic: $id"
-    break
-  fi
-done
+dot ls --status active --json | jq -r '.[0].id // empty'
 ```
 
-**If a parent task is already active:** Resume working on it.
+**If a task is already active:** Resume working on it.
 
-**If no parent task is active:** Check for ready parent tasks:
-
+**If no task is active:** Find the next ready task:
 ```bash
-# Find ready epic (task with children)
-for id in $(dot ready --json | jq -r '.[].id'); do
-  if dot tree "$id" 2>/dev/null | grep -q '└─'; then
-    echo "Ready epic: $id"
-    break
-  fi
-done
+dot ready --json | jq -r '.[0].id // empty'
 ```
 
 ## Logic
 
-**If no parent tasks ready and none active:** Inform the user that there are no epics to drain.
+**If no ready tasks and none active:** Inform user there are no tasks to work on.
 
-**If parent tasks ready:**
+**If tasks ready:**
 
-1. Get the first ready parent task ID from the JSON output
-2. Mark it as active:
-
-```bash
-dot on <parent_id>
-```
-
-3. Create a marker commit for session recovery:
-
-```bash
-git add -A && git commit --allow-empty -m "dots-drain-start: $(date +%Y%m%d-%H%M%S)"
-```
-
-4. Output the prompt to start working:
+1. Get the first ready task ID
+2. Mark it as active: `dot on <task_id>`
+3. Create marker commit: `git add -A && git commit --allow-empty -m "dots-drain-start: $(date +%Y%m%d-%H%M%S)"`
+4. Output work prompt:
 
 ```
-Work on epic <parent_id>. Run 'dot tree <parent_id>' to see all tasks. Complete each task in priority order: implement, test, and close. Use 'dot on <id>' before starting, 'dot close <id> --reason="..."' when done. Create new dots tasks for any discovered bugs. Use /commit for atomic commits.
+Work on task <task_id>. Run 'dot show <task_id>' for details. Implement, test, and close when done. Use 'dot close <task_id> --reason="..."' when complete. Use /commit for atomic commits.
 ```
 
-The Stop hook controls the drain loop:
-- Blocks exit while tasks remain open
-- Closes completed epics (parent tasks) automatically
-- Chains to next ready epic
-- Allows exit when no more epics
+The Stop hook blocks exit while a task is active.
 
 $ARGUMENTS
