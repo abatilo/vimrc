@@ -1,4 +1,4 @@
-# Making Issues Resumable Across Sessions
+# Making Tasks Resumable Across Sessions
 
 ## When Resumability Matters
 
@@ -16,17 +16,31 @@
 
 **The test:** Would a fresh Claude instance (or you after 2 weeks) struggle to resume this work from the description alone? If yes, add implementation details.
 
-## Anatomy of a Resumable Issue
+## Anatomy of a Resumable Task
 
 ### Minimal (Always Include)
 ```markdown
-Description: What needs to be built and why
-Acceptance Criteria: Concrete, testable outcomes (WHAT not HOW)
+# Description
+What needs to be built and why.
+
+# Acceptance Criteria
+- [ ] Concrete, testable outcome 1
+- [ ] Concrete, testable outcome 2
 ```
 
 ### Enhanced (Complex Technical Work)
 ```markdown
-Notes Field - IMPLEMENTATION GUIDE:
+# Description
+What needs to be built and why.
+
+# Design
+Implementation approach and rationale.
+
+# Acceptance Criteria
+- [ ] Outcome-focused criteria
+
+# Session Notes
+[Date] IMPLEMENTATION GUIDE:
 
 WORKING CODE:
 ```python
@@ -52,7 +66,7 @@ Key discoveries that informed the design.
 
 ## Real Example: Before vs After
 
-### ❌ Not Resumable
+### Not Resumable
 ```
 Title: Add dynamic capabilities resources
 Description: Query Google APIs for capabilities and return as resources
@@ -64,13 +78,22 @@ Acceptance: Resources return capability info
 - What the responses look like
 - What format to return
 
-### ✅ Resumable
-```
+### Resumable
+```markdown
 Title: Add dynamic capabilities resources
-Description: Query Google APIs for system capabilities (import formats,
-themes, quotas) that aren't in static docs. Makes server self-documenting.
 
-Notes: IMPLEMENTATION GUIDE
+# Description
+Query Google APIs for system capabilities (import formats, themes, quotas) that
+aren't in static docs. Makes server self-documenting.
+
+# Acceptance Criteria
+- [ ] User queries workspace://capabilities/drive/import-formats
+- [ ] Response shows all 49 formats including text/markdown
+- [ ] Output is readable markdown, not raw JSON
+- [ ] Queries live API (not static data)
+
+# Session Notes
+[2025-01-19] IMPLEMENTATION GUIDE:
 
 WORKING CODE (tested):
 ```python
@@ -96,7 +119,7 @@ OUTPUT FORMAT EXAMPLE:
 Google Drive supports 49 import formats:
 
 ## Text Formats
-- **text/markdown** → Google Docs ✨ (NEW July 2024)
+- **text/markdown** → Google Docs (NEW July 2024)
 - text/plain → Google Docs
 ...
 ```
@@ -105,12 +128,6 @@ RESEARCH CONTEXT:
 text/markdown support announced July 2024 but NOT in static Google docs.
 Google's workspace-developer MCP server doesn't expose this.
 This is why dynamic resources matter.
-
-Acceptance Criteria:
-- User queries workspace://capabilities/drive/import-formats
-- Response shows all 49 formats including text/markdown
-- Output is readable markdown, not raw JSON
-- Queries live API (not static data)
 ```
 
 **Result:** Fresh Claude instance can:
@@ -121,7 +138,7 @@ Acceptance Criteria:
 
 ## Optional Template
 
-Copy this into notes field for complex technical features:
+Copy this into Session Notes section for complex technical features:
 
 ```markdown
 IMPLEMENTATION GUIDE FOR FUTURE SESSIONS:
@@ -156,31 +173,31 @@ RESEARCH CONTEXT:
 
 ## Anti-Patterns
 
-### ❌ Over-Documenting Simple Work
+### Over-Documenting Simple Work
 ```markdown
 Title: Fix typo in README
-Notes: IMPLEMENTATION GUIDE
+Session Notes: IMPLEMENTATION GUIDE
 WORKING CODE: Open README.md, change "teh" to "the"...
 ```
 **Problem:** Wastes tokens on obvious work.
 
-### ❌ Design Details in Acceptance Criteria
+### Design Details in Acceptance Criteria
 ```markdown
-Acceptance:
+Acceptance Criteria:
 - [ ] Use batchUpdate approach
 - [ ] Call API with fields parameter
 - [ ] Format as markdown with ## headers
 ```
-**Problem:** Locks implementation. Should be in Design/Notes, not Acceptance.
+**Problem:** Locks implementation. Should be in Design section, not Acceptance Criteria.
 
-### ❌ Raw JSON Dumps
+### Raw JSON Dumps
 ```markdown
 API RESPONSE:
 {giant unformatted JSON blob spanning 100 lines}
 ```
 **Problem:** Hard to read. Extract relevant parts, show structure.
 
-### ✅ Right Balance
+### Right Balance
 ```markdown
 API RESPONSE SAMPLE:
 Returns dict with 49 entries. Example entries:
@@ -191,11 +208,11 @@ Returns dict with 49 entries. Example entries:
 
 ## When to Add This Detail
 
-**During issue creation:**
+**During task creation:**
 - Already have working code from research? Include it.
 - Clear output format in mind? Show example.
 
-**During work (update notes):**
+**During work (update Session Notes):**
 - Just got API query working? Add to notes.
 - Discovered important context? Document it.
 - Made key decision? Explain rationale.

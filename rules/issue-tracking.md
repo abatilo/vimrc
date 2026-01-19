@@ -1,22 +1,23 @@
-# Issue Tracking with bd
+# Issue Tracking with dots
 
-Track work with `bd` for persistent context across sessions.
+Track work with `dot` for persistent context across sessions.
 
 ## Quick Commands
 
 | Task | Command |
 |------|---------|
-| Find ready work | `bd ready --json` |
-| Start work | `bd update bd-xxx --status in_progress --json` |
-| Checkpoint | `bd update bd-xxx --notes "COMPLETED: ...\nNEXT: ..." --json` |
-| Complete work | `bd close bd-xxx --reason "..." --json` |
-| View details | `bd show bd-xxx --json` |
-| Add dependency | `bd dep add bd-A bd-B --type blocks` |
+| Find ready work | `dot ready --json` |
+| Start work | `dot on <id>` |
+| Pause work | `dot off <id>` |
+| Complete work | `dot close <id> --reason "..."` |
+| View details | `dot show <id> --json` |
+| Add blocker dependency | `dot add "B" -a <blocker-id>` |
+| Add as child (parent-child) | `dot add "Child" -P <parent-id>` |
 
-## Create Issue
+## Create Task
 
 ```bash
-bd create --title "Title" --description "$(cat <<'EOF'
+dot add "Title" -d "$(cat <<'EOF'
 # Description
 What and why (1-4 sentences).
 
@@ -26,10 +27,13 @@ EOF
 )" --json
 ```
 
-## Notes Format
+## Session Notes Format
+
+Update the task description's Session Notes section:
 
 ```
-COMPLETED: What was done
+# Session Notes
+[Date] COMPLETED: What was done
 KEY DECISION: Why this approach
 IN PROGRESS: Current state
 NEXT: Immediate next step
@@ -42,9 +46,21 @@ NEXT: Immediate next step
 - Hit a blocker
 - Before asking user for input
 
-## Priority Levels
+## Epic Pattern
 
-0=critical, 1=high, 2=normal, 3=low, 4=backlog
+In dots, a parent task with children = epic:
+
+```bash
+# Create epic (parent)
+dot add "Epic title" -d "Description"
+
+# Add children
+dot add "Child 1" -P <epic-id>
+dot add "Child 2" -P <epic-id>
+
+# View hierarchy
+dot tree <epic-id>
+```
 
 ## Do NOT Close If
 
@@ -52,4 +68,4 @@ NEXT: Immediate next step
 - Implementation partial
 - Unresolved errors
 
-Instead: `bd update bd-xxx --notes "BLOCKED: ..." --json`
+Instead: Update description with "BLOCKED: ..." in Session Notes section.

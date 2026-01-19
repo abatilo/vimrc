@@ -1,13 +1,13 @@
 ---
-description: Sequence bd epics to minimize merge conflicts and reduce refactor risk
+description: Sequence dots epics to minimize merge conflicts and reduce refactor risk
 argument-hint: [optional epic filter]
 ---
 
-# Sequencing Bd Epics
+# Sequencing Dots Epics
 
 ## Overview
 
-Determine the optimal execution order for epics to minimize merge conflicts and reduce refactor risk across the project.
+Determine the optimal execution order for epics (parent tasks) to minimize merge conflicts and reduce refactor risk across the project.
 
 ### Key Insight: Epic-Level Blocking Is Sufficient
 
@@ -20,7 +20,7 @@ Determine the optimal execution order for epics to minimize merge conflicts and 
 
 1. **Discovery**: Collect all epics and map module-level dependencies.
 2. **Sequencing with Debate**: Use 2 rounds of collaborative debate to determine epic order.
-3. **Application**: Create bd dependency links between epics.
+3. **Application**: Create dots dependency links between epics.
 
 ---
 
@@ -40,18 +40,18 @@ Before starting, ensure:
 Run these commands to collect the epic inventory:
 
 ```bash
-bd epic status --json     # All epics with progress
-bd blocked --json         # Show blocked issues and their blockers
+# List all tasks with children (epics)
+dot ls --json | jq '[.[] | select(.children)]'
+
+# Show specific epic details
+dot tree <epic-id>
 ```
 
-For each epic, check its dependency tree:
-```bash
-bd dep tree <epic-id> --direction=both --json   # See what blocks/is blocked by this epic
-```
+For each epic, check its blocking relationships by examining the task details.
 
 **What you'll need for Phase 2:**
 - Complete list of epic IDs, titles, and descriptions
-- Current epic-to-epic dependency graph (from dep tree output)
+- Current epic-to-epic dependency graph
 - Which modules/areas each epic touches
 
 ### Step 1.2: Map Epic Module Ownership
@@ -60,14 +60,14 @@ Use Explore subagent (haiku) to predict module impacts for each epic.
 
 Output two things:
 1. **Impact Matrix**: Table with Epic ID | Affected Modules | Module Dependencies
-2. **Overlap Analysis**: Which epic pairs touch the same modules (e.g., "OVERLAP: epic-001 and epic-002 both affect [core]")
+2. **Overlap Analysis**: Which epic pairs touch the same modules (e.g., "OVERLAP: dots-epic-001 and dots-epic-002 both affect [core]")
 
 Use existing codebase module granularity.
 
 ### Step 1.3: Cross-Validate with Codex
 
 Use `mcp__codex__codex` (gpt-5.1-codex-mini) to independently verify module predictions:
-- Run `bd epic status --json` and `bd show <epic-id>` to understand epics
+- Run `dot ls --json | jq '[.[] | select(.children)]'` and `dot show <epic-id>` to understand epics
 - Explore codebase to predict which modules each epic modifies
 - Output: Epic ID → modules affected, plus overlaps
 
@@ -78,16 +78,16 @@ Consolidate findings into a reference document:
 ```
 **Epic Inventory:**
 
-| Epic ID   | Title              | Priority | Affected Modules |
-|-----------|--------------------|----------|------------------|
-| epic-001  | Auth Refactor      | P1       | auth, core       |
-| epic-002  | API Client         | P2       | api, core        |
+| Epic ID       | Title              | Priority | Affected Modules |
+|---------------|--------------------|----------|------------------|
+| dots-epic-001 | Auth Refactor      | P1       | auth, core       |
+| dots-epic-002 | API Client         | P2       | api, core        |
 
 **Overlap Map:**
-- epic-001 + epic-002: both affect [core]
+- dots-epic-001 + dots-epic-002: both affect [core]
 
 **Existing Dependencies:**
-- epic-001 blocks epic-003 (from bd dep tree / bd blocked)
+- dots-epic-001 blocks dots-epic-003 (from dot show)
 
 **Consensus Points:**
 - Epics with zero overlaps can be sequenced in any order
@@ -134,7 +134,7 @@ Use `mcp__codex__codex` to analyze adjacent pairs:
 
 **Claude (Haiku) Revision:**
 Address top 3 concerns only. For each move:
-- Movement: "epic-XXX: position N → M"
+- Movement: "dots-epic-XXX: position N → M"
 - Which concern addressed
 - Validate: blocks dependencies still hold? modules still grouped?
 
@@ -163,16 +163,25 @@ Before proceeding to Phase 3:
 
 ### Step 3.1: Create Epic Blocking Chain
 
-For the final epic sequence, create `blocks` dependencies:
+For the final epic sequence, create `blocks` dependencies. In dots, this means creating new tasks that block others, or manually noting the sequence.
 
+Since dots creates blocking dependencies at task creation time with `-a`, for existing epics you'll need to create the blocking relationship by:
+
+1. Documenting the sequence in each epic's description
+2. Creating a "sequence tracker" task if needed
+
+**For new epics**, create them in order with blocking:
 ```bash
 # Example: If final sequence is epic-A → epic-B → epic-C
+# Create epic-A first (no blockers)
+dot add "Epic A" -d "..."
 
-bd dep add epic-A epic-B --type blocks  # epic-A blocks epic-B
-bd dep add epic-B epic-C --type blocks  # epic-B blocks epic-C
+# Create epic-B blocked by epic-A
+dot add "Epic B" -d "..." -a <epic-A-id>
+
+# Create epic-C blocked by epic-B
+dot add "Epic C" -d "..." -a <epic-B-id>
 ```
-
-**Critical reminder:** In `bd dep add A B --type blocks`, A blocks B (A must complete before B starts).
 
 **What happens automatically:**
 - All tasks in epic-B become blocked until epic-A closes
@@ -184,9 +193,8 @@ bd dep add epic-B epic-C --type blocks  # epic-B blocks epic-C
 ### Step 3.2: Verification
 
 ```bash
-bd ready --json           # Show ready work
-bd blocked --json         # Show blocked issues
-bd epic status --json     # Show epic blocking relationships
+dot ready --json           # Show ready work
+dot ls --json              # Show all tasks with status
 ```
 
 **Expected result:**

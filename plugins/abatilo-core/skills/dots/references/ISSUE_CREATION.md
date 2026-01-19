@@ -1,12 +1,12 @@
-# Issue Creation Guidelines
+# Task Creation Guidelines
 
-Guidance on when and how to create bd issues for maximum effectiveness.
+Guidance on when and how to create dots tasks for maximum effectiveness.
 
 ## Contents
 
 - [When to Ask First vs Create Directly](#when-to-ask)
-- [Issue Quality](#quality)
-- [Making Issues Resumable](#resumable)
+- [Task Quality](#quality)
+- [Making Tasks Resumable](#resumable)
 - [Design vs Acceptance Criteria](#design-vs-acceptance)
 
 ## When to Ask First vs Create Directly {#when-to-ask}
@@ -23,27 +23,50 @@ Guidance on when and how to create bd issues for maximum effectiveness.
 - Technical debt with clear scope
 - Dependency or blocker found
 
-**Why ask first for knowledge work?** Task boundaries in strategic/research work are often unclear until discussed, whereas technical implementation tasks are usually well-defined. Discussion helps structure the work properly before creating issues, preventing poorly-scoped issues that need immediate revision.
+**Why ask first for knowledge work?** Task boundaries in strategic/research work are often unclear until discussed, whereas technical implementation tasks are usually well-defined. Discussion helps structure the work properly before creating tasks, preventing poorly-scoped tasks that need immediate revision.
 
-## Issue Quality {#quality}
+## Task Quality {#quality}
 
 Use clear, specific titles and include sufficient context in descriptions to resume work later.
 
-### Field Usage
+### Description Sections
 
-**Use --design flag for:**
+Structure task descriptions with markdown sections:
+
+```markdown
+# Description
+What needs to be done and why (1-4 sentences).
+
+# Design
+Implementation approach, architecture notes, trade-offs considered.
+
+# Acceptance Criteria
+- [ ] Criterion 1 (outcome-focused)
+- [ ] Criterion 2
+
+# Session Notes
+[Date] COMPLETED: X | IN PROGRESS: Y | NEXT: Z
+
+# Provenance
+Discovered from: dots-xxx (if applicable)
+
+# Related
+- dots-similar-xxx (if applicable)
+```
+
+**Use # Design section for:**
 - Implementation approach decisions
 - Architecture notes
 - Trade-offs considered
 
-**Use --acceptance flag for:**
+**Use # Acceptance Criteria section for:**
 - Definition of done
 - Testing requirements
 - Success metrics
 
-## Making Issues Resumable (Complex Technical Work) {#resumable}
+## Making Tasks Resumable (Complex Technical Work) {#resumable}
 
-For complex technical features spanning multiple sessions, enhance notes field with implementation details.
+For complex technical features spanning multiple sessions, enhance Session Notes section with implementation details.
 
 ### Optional but valuable for technical work:
 - Working API query code (tested, with response structure)
@@ -54,11 +77,12 @@ For complex technical features spanning multiple sessions, enhance notes field w
 ### Example pattern:
 
 ```markdown
-bd update issue-9 --notes "IMPLEMENTATION GUIDE:
+# Session Notes
+[2025-01-19] IMPLEMENTATION GUIDE:
 WORKING CODE: service.about().get(fields='importFormats')
 Returns: dict with 49 entries like {'text/markdown': [...]}
 OUTPUT FORMAT: # Drive Import Formats (markdown with categorized list)
-CONTEXT: text/markdown support added July 2024, not in static docs"
+CONTEXT: text/markdown support added July 2024, not in static docs
 ```
 
 **When to add:** Multi-session technical features with APIs or specific formats. Skip for simple tasks.
@@ -69,13 +93,13 @@ CONTEXT: text/markdown support added July 2024, not in static docs"
 
 Common mistake: Putting implementation details in acceptance criteria. Here's the difference:
 
-### DESIGN field (HOW to build it):
+### # Design section (HOW to build it):
 - "Use two-phase batchUpdate approach: insert text first, then apply formatting"
 - "Parse with regex to find * and _ markers"
 - "Use JWT tokens with 1-hour expiry"
 - Trade-offs: "Chose batchUpdate over streaming API for atomicity"
 
-### ACCEPTANCE CRITERIA (WHAT SUCCESS LOOKS LIKE):
+### # Acceptance Criteria section (WHAT SUCCESS LOOKS LIKE):
 - "Bold and italic markdown formatting renders correctly in the Doc"
 - "Solution accepts markdown input and creates Doc with specified title"
 - "Returns doc_id and webViewLink to caller"
@@ -99,7 +123,7 @@ If you rewrote the solution using a different approach, would the acceptance cri
 
 ### Example of correct structure
 
-✅ **Design field:**
+**# Design section:**
 ```
 Two-phase Docs API approach:
 1. Parse markdown to positions
@@ -108,7 +132,7 @@ Two-phase Docs API approach:
 Rationale: Atomic operations, easier to debug formatting separately
 ```
 
-✅ **Acceptance criteria:**
+**# Acceptance Criteria section:**
 ```
 - [ ] Markdown formatting renders in Doc (bold, italic, headings)
 - [ ] Lists preserve order and nesting
@@ -116,7 +140,7 @@ Rationale: Atomic operations, easier to debug formatting separately
 - [ ] Large documents (>50KB) process without timeout
 ```
 
-❌ **Wrong (design masquerading as criteria):**
+**Wrong (design masquerading as criteria):**
 ```
 - [ ] Use two-phase batchUpdate approach
 - [ ] Apply formatting in second batchUpdate call
@@ -124,13 +148,13 @@ Rationale: Atomic operations, easier to debug formatting separately
 
 ## Quick Reference
 
-**Creating good issues:**
+**Creating good tasks:**
 
 1. **Title**: Clear, specific, action-oriented
-2. **Description**: Problem statement, context, why it matters
-3. **Design**: Approach, architecture, trade-offs (can change)
-4. **Acceptance**: Outcomes, success criteria (should be stable)
-5. **Notes**: Implementation details, session handoffs (evolves over time)
+2. **# Description**: Problem statement, context, why it matters
+3. **# Design**: Approach, architecture, trade-offs (can change)
+4. **# Acceptance Criteria**: Outcomes, success criteria (should be stable)
+5. **# Session Notes**: Implementation details, session handoffs (evolves over time)
 
 **Common mistakes:**
 

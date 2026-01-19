@@ -1,11 +1,11 @@
 ---
-description: Plan complex work with collaborative AI debate, create bd issues with dependencies
+description: Plan complex work with collaborative AI debate, create dots tasks with dependencies
 argument-hint: [optional focus area]
 ---
 
-# Planning Bd Issues
+# Planning Dots Tasks
 
-Review the conversation history above to identify work that needs planning. Extract requirements, decisions, and context discussed—these inform the bd issues you create. If the user provided additional instructions below, incorporate those as well.
+Review the conversation history above to identify work that needs planning. Extract requirements, decisions, and context discussed—these inform the dots tasks you create. If the user provided additional instructions below, incorporate those as well.
 
 This is a two-phase process: discovery first, then planning with collaborative debate.
 
@@ -52,7 +52,7 @@ Use multi-round refinement for thorough planning.
 
 - **Minimize changes**: What is the absolute minimum number of lines, files, and touch points needed? Every additional change is a potential bug, a review burden, and merge conflict risk.
 - **Minimize complexity**: Prefer boring, obvious solutions over clever ones. If two approaches work, choose the one a junior developer could understand in 5 minutes.
-- **Minimize scope**: Ruthlessly cut anything that isn't strictly required. "Nice to have" belongs in a separate future issue, not this plan.
+- **Minimize scope**: Ruthlessly cut anything that isn't strictly required. "Nice to have" belongs in a separate future task, not this plan.
 - **Minimize risk**: Favor incremental changes over big-bang rewrites. Ship something small that works over something ambitious that might not.
 
 **Ask at every decision point**: "Is there a simpler way?" If the answer is yes, take it.
@@ -74,10 +74,10 @@ Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan
   prompt: "Review this implementation plan with a minimization mindset: [plan]. The goal is the smallest, simplest path to the outcome. For each part of the plan: (1) Is this necessary or can it be cut? (2) Is there a simpler approach? (3) What's the minimum viable version? Also list any genuine gaps or risks, with concrete mitigations."
   ```
 - Synthesize both critiques. Prioritize simplification opportunities alongside risk fixes.
-- **Exit condition**: If both models agree the plan is minimal and sound, proceed to issue creation.
+- **Exit condition**: If both models agree the plan is minimal and sound, proceed to task creation.
 
 **Round 2+ - Address & Counter** (repeat until convergence or Round 5):
-- **Claude (Opus)**: Propose revisions that make the plan simpler, not more complex. For each concern: accept and simplify, reject with rationale, or defer to a future issue. Resist adding complexity to "fix" problems.
+- **Claude (Opus)**: Propose revisions that make the plan simpler, not more complex. For each concern: accept and simplify, reject with rationale, or defer to a future task. Resist adding complexity to "fix" problems.
 - **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
   ```
   prompt: "Claude proposes these revisions: [revisions]. Evaluate with a bias toward simplicity: (1) Does this revision add or remove complexity? (2) Is there an even simpler fix? (3) Should this concern be deferred rather than addressed now? Flag any revision that makes the plan bigger rather than smaller."
@@ -91,71 +91,66 @@ Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan
   ```
   prompt: "Final minimization check: [plan]. Verify: (1) Is this the smallest possible implementation? (2) Can anything else be cut or deferred? (3) Are there any 'nice to haves' hiding as requirements? (4) Is the testing strategy proportional (not over-tested)? Approve only if the plan is truly minimal."
   ```
-- If consensus: Proceed to issue creation.
+- If consensus: Proceed to task creation.
 - If minor disagreement: Choose the simpler option, defer the rest.
 - If still unresolved after Round 5: Choose the approach with fewer moving parts. Document what was deferred and why.
 
 ### Quality Gate
-Before creating issues, confirm:
+Before creating tasks, confirm:
 - [ ] All discovered edge cases addressed or explicitly deferred with rationale
 - [ ] Error paths defined (what happens when X fails?)
 - [ ] Testing strategy covers new code
 - [ ] Trade-offs documented with reasoning
 
-### Step 3: Create Issues
+### Step 3: Create Tasks
 
-Create bd issues using the beads skill. Each issue must:
+Create dots tasks using the dots skill. Each task must:
 1. Have clear acceptance criteria (what success looks like)
 2. Be scoped to complete in one session
 3. End with verification notes using **discovered commands** (not generic phrases):
-   ```
-   ## Verification
+   ```markdown
+   # Verification
    - [ ] `[discovered lint command]` passes
    - [ ] `[discovered static analysis command]` passes
    - [ ] `[discovered test command]` passes
    - [ ] `[discovered scoped e2e command]` passes (if applicable)
    ```
    Use exact commands from Phase 1 discovery. Omit categories if no command exists.
-4. Include note: "If implementation reveals new issues, create separate bd issues for investigation"
+4. Include note: "If implementation reveals new tasks, create separate dots tasks for investigation"
 
-### Step 4: Final Verification Issue
+### Step 4: Final Verification Task
 
-After creating all implementation issues, create one final bd issue to run the full test suite:
+After creating all implementation tasks, create one final dots task to run the full test suite:
 
-1. **Create the issue**:
+1. **Create the task**:
    - Title: "Run full E2E/integration test suite"
    - Description: Verify all changes work together by running the complete test suite
    - Include the discovered **full E2E** command from Phase 1
-   - Acceptance criteria: All tests pass, no regressions introduced. If any tests fail, create new issues for each failure and link them to the same epic before closing this verification issue.
+   - Acceptance criteria: All tests pass, no regressions introduced. If any tests fail, create new tasks for each failure before closing this verification task.
 
 2. **Set up dependencies**:
-   Use `bd dep add <final-issue> <implementation-issue> --type blocks` for EACH implementation issue.
+   Create the verification task blocked by all implementation tasks using `-a` flags:
+   ```bash
+   dot add "Run full E2E test suite" -a <task-1-id> -a <task-2-id> -a <task-3-id>
+   ```
    This ensures the final verification runs only after all implementation work is complete.
-
-Example:
-```bash
-# If implementation issues are bd-001, bd-002, bd-003 and final is bd-004:
-bd dep add bd-004 bd-001 --type blocks
-bd dep add bd-004 bd-002 --type blocks
-bd dep add bd-004 bd-003 --type blocks
-```
 
 ### Step 5: Create Epics
 
-**IMPORTANT**: Every planned task MUST have an epic, even simple single-issue tasks. Workflow automation depends on epic completion tracking. A simple task = one epic with one issue under it.
+**IMPORTANT**: Every planned work MUST have an epic (parent task), even simple single-task items. Workflow automation depends on epic completion tracking. A simple task = one parent with one child under it.
 
 **Goal**: Create the smallest shippable units of work. Prefer many small epics over few large ones.
 
 #### The Smallest Shippable Unit Test
 An epic is the right size when:
-- Removing any issue would make it unshippable
-- Adding any issue would make it do two things instead of one
+- Removing any task would make it unshippable
+- Adding any task would make it do two things instead of one
 - You can describe what it ships in one sentence without "and"
 
 #### Decomposition Checklist
 Before finalizing epics, ask these questions:
 
-1. **File overlap test**: Do any two issues modify the same files?
+1. **File overlap test**: Do any two tasks modify the same files?
    - If YES and they're in different epics → merge epics or resequence
    - If YES and epic is large → they belong together, but look for other splits
 
@@ -175,26 +170,26 @@ Before finalizing epics, ask these questions:
 - Optional enhancements vs core functionality
 
 #### Anti-patterns to Avoid
-- ❌ One mega-epic containing all work
-- ❌ Epics that "prepare" for other epics without delivering value
-- ❌ Splitting by arbitrary issue count rather than logical boundaries
-- ❌ Epics where issues have no dependency relationship
+- One mega-epic containing all work
+- Epics that "prepare" for other epics without delivering value
+- Splitting by arbitrary task count rather than logical boundaries
+- Epics where tasks have no dependency relationship
 
 For each epic:
 
 ```bash
-bd create "[epic name]" --type epic --description "$(cat <<'EOF'
-# Overview
+dot add "[epic name]" -d "$(cat <<'EOF'
+# Description
 [Brief description of this epic's scope]
 
 # Why This Is One Epic
 [Explain the boundary: what makes this atomic and self-contained?
 Why can't it be split further? Why doesn't it need other epics to ship?]
 
-# Implementation Issues
-- bd-xxx: [issue title]
-- bd-xxx: [issue title]
-- bd-xxx: Run verification for this epic
+# Implementation Tasks
+- dots-xxx: [task title]
+- dots-xxx: [task title]
+- dots-xxx: Run verification for this epic
 
 # Files Modified
 [List primary files this epic touches—used for conflict detection]
@@ -209,26 +204,26 @@ Why can't it be split further? Why doesn't it need other epics to ship?]
 # Success Criteria
 [What "done" looks like for this epic]
 EOF
-)" --json
+)"
 ```
 
-Link issues to their epic:
+Link tasks to their epic using `-P` flag:
 ```bash
-bd dep add bd-xxx <epic-id> --type parent-child
-# ... repeat for each issue in this epic
+dot add "Task title" -P <epic-id>
+# ... repeat for each task in this epic
 ```
 
-Check progress: `bd epic status`
+Check progress: `dot tree <epic-id>`
 
 ## Handling Failures
 
 When discovery or planning reveals blocking issues:
-1. Create a P0 meta issue titled: "Create plan for [blocker-topic]"
+1. Create a P0 meta task titled: "Create plan for [blocker-topic]"
 2. Description must include:
    - What was blocking and why it matters
    - Instruction to use Explore subagent for discovery
    - Instruction to use Plan subagent to design fix
-   - Instruction to create implementation bd issues via bd-issue-tracking skill
-3. Any implementation issues spawned from meta issues are also P0
+   - Instruction to create implementation dots tasks via dots skill
+3. Any implementation tasks spawned from meta tasks are also P0
 
 $ARGUMENTS
