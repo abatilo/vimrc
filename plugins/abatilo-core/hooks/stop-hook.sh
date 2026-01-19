@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# stop-hook.sh v7.0 (Flat Task List)
+# stop-hook.sh v8.0 (bits migration)
 set -euo pipefail
 
 block() {
@@ -12,13 +12,13 @@ block() {
 
 work_prompt() {
   local id="$1"
-  echo "Work on task $id. Run 'dot show $id' for details. When complete: dot close $id --reason=\"...\". Use /commit for atomic commits."
+  echo "Work on task $id. Run 'bits show $id' for details. When complete: bits close $id \"reason\". Use /commit for atomic commits."
 }
 
-echo "Stop hook v7.0 (flat)" >&2
+echo "Stop hook v8.0 (bits)" >&2
 
 # Step 1: Find any active task
-CURRENT=$(dot ls --status active --json 2>/dev/null | jq -r '.[0].id // empty' 2>/dev/null || echo "")
+CURRENT=$(bits list --active --json 2>/dev/null | jq -r '.[0].id // empty' 2>/dev/null || echo "")
 
 if [[ -z "$CURRENT" ]]; then
   echo "Stop hook: No active task, allowing exit" >&2

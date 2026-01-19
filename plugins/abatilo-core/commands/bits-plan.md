@@ -1,11 +1,11 @@
 ---
-description: Plan complex work with collaborative AI debate, create dots tasks with dependencies
+description: Plan complex work with collaborative AI debate, create bits tasks with dependencies
 argument-hint: [optional focus area]
 ---
 
-# Planning Dots Tasks
+# Planning Bits Tasks
 
-Review the conversation history above to identify work that needs planning. Extract requirements, decisions, and context discussed—these inform the dots tasks you create. If the user provided additional instructions below, incorporate those as well.
+Review the conversation history above to identify work that needs planning. Extract requirements, decisions, and context discussed—these inform the bits tasks you create. If the user provided additional instructions below, incorporate those as well.
 
 This is a two-phase process: discovery first, then planning with collaborative debate.
 
@@ -104,7 +104,7 @@ Before creating tasks, confirm:
 
 ### Step 3: Create Tasks
 
-Create dots tasks using the dots skill. Each task must:
+Create bits tasks using the bits skill. Each task must:
 1. Have clear acceptance criteria (what success looks like)
 2. Be scoped to complete in one session
 3. End with verification notes using **discovered commands** (not generic phrases):
@@ -116,11 +116,11 @@ Create dots tasks using the dots skill. Each task must:
    - [ ] `[discovered scoped e2e command]` passes (if applicable)
    ```
    Use exact commands from Phase 1 discovery. Omit categories if no command exists.
-4. Include note: "If implementation reveals new tasks, create separate dots tasks for investigation"
+4. Include note: "If implementation reveals new tasks, create separate bits tasks for investigation"
 
 ### Step 4: Final Verification Task
 
-After creating all implementation tasks, create one final dots task to run the full test suite:
+After creating all implementation tasks, create one final bits task to run the full test suite:
 
 1. **Create the task**:
    - Title: "Run full E2E/integration test suite"
@@ -129,9 +129,13 @@ After creating all implementation tasks, create one final dots task to run the f
    - Acceptance criteria: All tests pass, no regressions introduced. If any tests fail, create new tasks for each failure before closing this verification task.
 
 2. **Set up dependencies**:
-   Create the verification task blocked by all implementation tasks using `-a` flags:
+   Create the verification task first, then add dependencies to each blocker:
    ```bash
-   dot add "Run full E2E test suite" -a <task-1-id> -a <task-2-id> -a <task-3-id>
+   bits add "Run full E2E test suite"
+   # Note the returned task ID (e.g., bits-xxx)
+   bits dep bits-xxx <task-1-id>
+   bits dep bits-xxx <task-2-id>
+   bits dep bits-xxx <task-3-id>
    ```
    This ensures the final verification runs only after all implementation work is complete.
 
@@ -143,7 +147,7 @@ When discovery or planning reveals blocking issues:
    - What was blocking and why it matters
    - Instruction to use Explore subagent for discovery
    - Instruction to use Plan subagent to design fix
-   - Instruction to create implementation dots tasks via dots skill
+   - Instruction to create implementation bits tasks via bits skill
 3. Any implementation tasks spawned from meta tasks are also P0
 
 $ARGUMENTS
