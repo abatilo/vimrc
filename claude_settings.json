@@ -42,30 +42,7 @@
     ]
   },
   "model": "opus",
-  "hooks": {
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bd prime"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bd prime"
-          }
-        ]
-      }
-    ]
-  },
+  "hooks": {},
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "claude-code-wakatime@wakatime": true,
