@@ -28,8 +28,7 @@ bits ready --json | jq -r '.[0].id // empty'
 
 1. Get the first ready task ID
 2. Mark it as active: `bits claim <task_id>`
-3. Create marker commit: `git add -A && git commit --allow-empty -m "bits-drain-start: $(date +%Y%m%d-%H%M%S)"`
-4. Output work prompt:
+3. Output work prompt:
 
 ```
 Work on task <task_id>. Run 'bits show <task_id>' for details. Implement, test, and close when done. Use 'bits close <task_id> "reason"' when complete. Use /commit for atomic commits.
