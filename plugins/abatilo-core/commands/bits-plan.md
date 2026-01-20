@@ -14,7 +14,7 @@ This is a two-phase process: discovery first, then planning with collaborative d
 Gather context from the conversation history and find verification commands.
 
 ### Step 1: Verification Commands
-Run a focused Explore query to find exact development commands:
+Run a focused Explore query to discover development commands. This may return nothing, especially for new projects—in which case, simply create tasks without verification sections.
 ```
 Find the ACTUAL commands used in this project for verification. Search in order:
 1. mise.toml / .mise.toml (mise task runner - https://github.com/jdx/mise)
@@ -104,23 +104,68 @@ Before creating tasks, confirm:
 
 ### Step 3: Create Tasks
 
-Create bits tasks using the bits skill. Each task must:
-1. Have clear acceptance criteria (what success looks like)
-2. Be scoped to complete in one session
-3. End with verification notes using **discovered commands** (not generic phrases):
-   ```markdown
-   # Verification
-   - [ ] `[discovered lint command]` passes
-   - [ ] `[discovered static analysis command]` passes
-   - [ ] `[discovered test command]` passes
-   - [ ] `[discovered scoped e2e command]` passes (if applicable)
-   ```
-   Use exact commands from Phase 1 discovery. Omit categories if no command exists.
-4. Include note: "If implementation reveals new tasks, create separate bits tasks for investigation"
+Create bits tasks using the bits skill. **Tasks must be self-contained** with sufficient context for immediate implementation without repeating discovery work. Be verbose and repeat context; prioritize completeness over brevity.
 
-### Step 4: Final Verification Task
+#### Task Description Structure
 
-After creating all implementation tasks, create one final bits task to run the full test suite:
+```markdown
+# Context
+Explain why this task exists and what it solves:
+- The specific problem being addressed
+- Why this solution was chosen over alternatives
+- Relevant constraints or assumptions
+
+# References
+List all files and resources to consult during implementation:
+- `path/to/relevant/file.ts` - reason it's relevant
+- `path/to/example/pattern.ts:42-58` - specific pattern to follow
+- [Link or doc reference] - what to learn
+
+# Code Snippets
+Include code from discovery only if it shows patterns or templates to replicate:
+
+\`\`\`language
+// Existing code to modify or pattern to follow
+\`\`\`
+
+# File Changes
+Specify every file that will be touched:
+
+Files to **edit**:
+- `path/to/file.ts` - specific changes required
+
+Files to **create**:
+- `path/to/new/file.ts` - purpose and responsibility
+
+Files to **delete**:
+- `path/to/obsolete/file.ts` - reason for removal
+
+# Acceptance Criteria
+State each criterion as a verifiable, testable condition:
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+# Verification
+Run these commands and confirm all pass:
+- [ ] `[lint command]` passes
+- [ ] `[test command]` passes
+```
+
+**Section inclusion rules:**
+- Always include: Context, References, File Changes, Acceptance Criteria
+- Include Code Snippets only if discovery surfaced code to replicate or templates to follow
+- Include Verification only if the project has test or lint commands
+- Include Files to delete only if the task involves deletion or refactoring
+- Replace all bracketed examples with concrete values
+
+#### Task Requirements
+1. Scope each task to complete in one focused session
+2. Use specific language; avoid vague descriptions or qualifiers
+3. When implementation reveals new tasks or scope changes, create separate bits tasks for each discovery instead of expanding this task. Add a note linking them: "Discovered: [task IDs]"
+
+### Step 4: Final Verification Task (if applicable)
+
+If a full E2E/integration test command was discovered, create a final verification task:
 
 1. **Create the task**:
    - Title: "Run full E2E/integration test suite"
