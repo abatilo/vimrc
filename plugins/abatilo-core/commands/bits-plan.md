@@ -184,6 +184,26 @@ If a full E2E/integration test command was discovered, create a final verificati
    ```
    This ensures the final verification runs only after all implementation work is complete.
 
+### Step 5: CLAUDE.md Update Task
+
+After all implementation tasks, create a documentation maintenance task:
+
+1. **Create the task**:
+   - Title: "Update CLAUDE.md documentation"
+   - Description: Review git commits from the last 4 days. Update CLAUDE.md files:
+     (1) Add documentation for new patterns
+     (2) Fix stale references
+     (3) Create CLAUDE.md in directories lacking documentation
+     Delete redundant or low-signal sections. Use the Explore subagent for thorough discovery. Use /commit for atomic commits.
+
+2. **Set up dependencies**:
+   This task should depend on the final verification task (if created) or all implementation tasks:
+   ```bash
+   bits add "Update CLAUDE.md documentation"
+   # Note the returned task ID
+   bits dep <claude-md-task-id> <verification-task-id>
+   ```
+
 ## Handling Failures
 
 When discovery or planning reveals blocking issues:
