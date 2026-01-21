@@ -34,6 +34,22 @@ bits dep bits-abc123 bits-blocker  # B blocked by blocker
 
 Tasks with unresolved dependencies won't appear in `bits ready`.
 
+## Session Commands
+
+| Command | Purpose |
+|---------|---------|
+| `bits session claim` | Claim primary session (reads stdin) |
+| `bits session release` | Release session (reads stdin) |
+| `bits session prune` | Manual cleanup of stale sessions |
+| `bits session hook` | Stop hook with session ownership check |
+
+## Drain Commands
+
+| Command | Purpose |
+|---------|---------|
+| `bits drain claim` | Activate drain mode (reads stdin) |
+| `bits drain release` | Deactivate drain mode (reads stdin) |
+
 ## Task Description Format
 
 ```markdown

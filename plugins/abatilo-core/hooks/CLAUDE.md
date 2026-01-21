@@ -1,21 +1,42 @@
 # Hooks Directory
 
-Files here define Claude Code hooks (e.g., Stop hook for bd-epic-drain).
+Files here define Claude Code hooks for session and drain mode management.
 
-## Architecture (v5.0 - Stateless)
+## Architecture (v6.0 - Session-Based)
 
-The stop hook (`stop-hook.sh`) prevents session exit during epic drain operations.
-**bd is the single source of truth** - no local state files.
+The hooks use bits session management to track primary Claude instance ownership.
+Only the primary instance (first to start) can be blocked during drain mode.
 
-Flow:
-1. Query bd for any `in_progress` epic
-2. If none, allow exit (not draining or complete)
-3. If found, check for open issues in the epic
-4. If issues remain, block exit with work prompt
-5. If all closed, close epic and start next ready epic
-6. If no more ready epics, allow exit (drain complete)
+### Hook Events
 
-See `../README-epic-drain.md` for design decisions and history.
+| Event | Command | Purpose |
+|-------|---------|---------|
+| SessionStart | `bits session claim` | Claim primary session ownership |
+| SessionEnd | `bits session release` | Release session ownership |
+| Stop | `bits session hook` | Check drain mode and block if needed |
+
+### Session Flow
+
+1. First Claude instance starts → claims session via `bits session claim`
+2. Secondary instances → see existing session, do nothing
+3. Primary runs `/bits-drain` → `bits drain claim` sets drain_active=true
+4. Primary tries to exit → blocked if drain_active AND tasks remain
+5. Secondary tries to exit → allowed (not session owner)
+6. Primary exits normally → `bits session release` deletes session file
+
+### Session File
+
+Location: `~/.bits/<project>/session.json`
+
+```json
+{
+  "session_id": "abc123",
+  "started_at": "2025-01-21T10:00:00Z",
+  "source": "claude-code",
+  "drain_active": false,
+  "drain_started_at": null
+}
+```
 
 ## Before committing changes
 
