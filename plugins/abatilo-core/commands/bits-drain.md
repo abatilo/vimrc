@@ -8,7 +8,12 @@ Start working on the next ready task. Uses bits as the single source of truth.
 
 ## Startup
 
-Check for an already active task:
+First, activate drain mode to block exit until all tasks are complete:
+```bash
+bits drain claim
+```
+
+Then check for an already active task:
 ```bash
 bits list --active --json | jq -r '.[0].id // empty'
 ```
