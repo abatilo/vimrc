@@ -1,6 +1,7 @@
 ---
 name: git-spice
-description: Manage stacked Git branches and create multiple pull requests using git-spice (gs). Use when organizing feature branches into stacks, rebasing changes across branches, creating PR chains, navigating branch stacks, or managing dependent branches on GitHub/GitLab. Handles stacked PRs, branch restacking, and stack submission workflows.
+description: Manage Git branches and pull requests using git-spice (gs). Use when user says "/gs", "create branch", "new branch", "switch branch", "checkout branch", "rebase branch", "update branch from main", "create PR", "submit PR", "open pull request", needs to manage multiple related branches, wants stacked PRs or PR chains, or asks about rebasing and branch dependencies. Handles branch creation, navigation, rebasing, and PR submission.
+argument-hint: "[branch-name or command]"
 context: fork
 allowed-tools:
   - Bash(gs:*)
@@ -15,12 +16,16 @@ This skill helps you manage stacked Git branches using git-spice (`gs`), a CLI t
 
 ## When to Use This Skill
 
-Use this skill when:
-- Creating stacked branches for large features broken into reviewable chunks
-- Navigating up/down through branch stacks
-- Submitting multiple related PRs as a stack
-- Rebasing and restacking branches after upstream changes
-- Managing branch dependencies and PR chains on GitHub/GitLab
+Use this skill when the user wants to:
+- Create a new feature branch ("create a branch", "new branch called X")
+- Switch to another branch ("switch branch", "checkout branch")
+- Update a branch with latest main ("rebase my branch", "update from main")
+- Create a pull request ("create PR", "submit PR", "open pull request")
+- Manage multiple related changes ("I have several related changes")
+- Work with stacked branches for large features broken into reviewable chunks
+- Navigate up/down through branch stacks
+- Submit multiple related PRs as a stack
+- Manage branch dependencies and PR chains on GitHub/GitLab
 
 ## Core Concepts
 
