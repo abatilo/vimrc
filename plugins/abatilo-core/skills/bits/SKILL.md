@@ -1,6 +1,7 @@
 ---
 name: bits
-description: Track and manage work with bits task tracker. Use when user mentions "bits", "track issues", or needs dependencies between tasks.
+description: Track and manage work items, tasks, issues, and todos with dependencies using bits. Use when user needs to create tasks, track progress, manage blockers, find ready work, claim/release tasks, close completed work, or organize multi-step projects. Triggers on "bits", "task", "issue", "backlog", "blockers", "dependencies", "what's ready", "track this", "add to my list", "what should I work on".
+argument-hint: "[command or task description]"
 allowed-tools:
   - Bash(bits:*)
   - Bash(git:*)
@@ -9,7 +10,15 @@ allowed-tools:
 
 # Bits Task Tracking
 
-Use bits for complex work with dependencies. Use TodoWrite for simple checklists.
+## When to Use
+
+| Scenario | Tool |
+|----------|------|
+| Multi-step work with dependencies | bits |
+| Tasks that block other tasks | bits |
+| Tracking progress across sessions | bits |
+| Simple one-off checklist | TaskCreate |
+| Quick session-scoped todos | TaskCreate |
 
 ## Commands
 
