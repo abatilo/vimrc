@@ -32,9 +32,6 @@
       "WebFetch(domain:*)",
       "mcp__deepwiki"
     ],
-    "deny": [
-      "mcp__codex__codex-reply"
-    ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [
       "/Users/abatilo/work",
