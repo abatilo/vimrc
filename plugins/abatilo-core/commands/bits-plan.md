@@ -60,40 +60,42 @@ Use multi-round refinement for thorough planning.
 ### Step 1: Initial Plan
 Use the Plan subagent with **model: "opus"** to design the minimum viable implementation based on discovery synthesis. The plan should answer: "What is the smallest change that achieves the goal?"
 
-### Step 2: Collaborative Debate (1-5 rounds, until feedback converges)
-Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan. The number of rounds depends on complexity and whether feedback converges:
+### Step 2: Interview Codex
 
-- **Simple/straightforward plans**: 1 round may suffice if both models agree
-- **Moderate complexity**: 2-3 rounds typical
-- **Complex or contentious plans**: Up to 5 rounds if feedback doesn't converge
+Use threaded conversations to probe and refine the plan. Claude interviews Codex, asking probing questions to surface gaps, risks, and simplification opportunities.
 
-**Round 1 - Dual Critique**:
-- **Claude (Opus)**: Review the plan through a minimization lens. For each concern: (1) Is this change actually necessary? (2) Is there a simpler alternative? (3) What can be cut or deferred? Also flag genuine gaps or risks.
-- **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
-  ```
-  prompt: "Review this implementation plan with a minimization mindset: [plan]. The goal is the smallest, simplest path to the outcome. For each part of the plan: (1) Is this necessary or can it be cut? (2) Is there a simpler approach? (3) What's the minimum viable version? Also list any genuine gaps or risks, with concrete mitigations."
-  ```
-- Synthesize both critiques. Prioritize simplification opportunities alongside risk fixes.
-- **Exit condition**: If both models agree the plan is minimal and sound, proceed to task creation.
+**Start the thread:**
+Use `mcp__codex__codex` to share the initial plan and begin the interview. Inform Codex of your capabilities so it can request specific research:
+```
+prompt: "I'm planning this implementation: [plan].
 
-**Round 2+ - Address & Counter** (repeat until convergence or Round 5):
-- **Claude (Opus)**: Propose revisions that make the plan simpler, not more complex. For each concern: accept and simplify, reject with rationale, or defer to a future task. Resist adding complexity to "fix" problems.
-- **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
-  ```
-  prompt: "Claude proposes these revisions: [revisions]. Evaluate with a bias toward simplicity: (1) Does this revision add or remove complexity? (2) Is there an even simpler fix? (3) Should this concern be deferred rather than addressed now? Flag any revision that makes the plan bigger rather than smaller."
-  ```
-- Integrate valid counterpoints. If a fix adds more complexity than the problem warrants, defer it.
-- **Exit condition**: Feedback converges (plan is minimal, both models agree on approach).
+I can run multiple parallel sub-agents to gather information:
+- Explore agents to search the codebase and answer specific questions
+- Plan agents for deeper architectural analysis
 
-**Final Round - Consensus Check** (when exiting):
-- **Claude (Opus)**: Present the refined plan. Confirm it represents the minimum viable implementation. List what was intentionally deferred.
-- **Codex**: Use `mcp__codex__codex` with model "gpt-5.2-codex":
-  ```
-  prompt: "Final minimization check: [plan]. Verify: (1) Is this the smallest possible implementation? (2) Can anything else be cut or deferred? (3) Are there any 'nice to haves' hiding as requirements? (4) Is the testing strategy proportional (not over-tested)? Approve only if the plan is truly minimal."
-  ```
-- If consensus: Proceed to task creation.
-- If minor disagreement: Choose the simpler option, defer the rest.
-- If still unresolved after Round 5: Choose the approach with fewer moving parts. Document what was deferred and why.
+Help me think through this critically. What concerns do you have? What might I be missing? Are there specific questions I should investigate with an Explore agent before proceeding?"
+```
+
+**Probe deeper:**
+Continue with `mcp__codex__codex-reply` using the returned `threadId`. Ask about literally anything: technical implementation, concerns, tradeoffs, edge cases, assumptions, risks, dependencies.
+
+Questions should not be obvious—probe deeper into things that might not have been considered:
+- "What's the hardest part of this?"
+- "Where could this break in production?"
+- "What assumptions am I making that might be wrong?"
+- "Is there a simpler way to achieve this?"
+- "What would you cut if you had to ship this in half the time?"
+
+Challenge assumptions. Ask about the hard parts. Push back when answers feel incomplete.
+
+**Continue until the plan is fully fleshed out:**
+There's no fixed number of rounds. Keep interviewing until:
+- Major concerns have been addressed or explicitly deferred
+- The plan feels minimal and well-understood
+- You're confident it represents the smallest viable implementation
+
+**Synthesize insights:**
+After the interview, integrate Codex's feedback into the final plan. Document what was deferred and why.
 
 ### Quality Gate
 Before creating tasks, confirm:
