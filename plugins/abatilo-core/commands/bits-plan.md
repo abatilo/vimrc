@@ -97,10 +97,10 @@ Claude (Opus) and Codex (gpt-5.2-codex) debate back-and-forth to refine the plan
 
 ### Quality Gate
 Before creating tasks, confirm:
-- [ ] All discovered edge cases addressed or explicitly deferred with rationale
-- [ ] Error paths defined (what happens when X fails?)
-- [ ] Testing strategy covers new code
-- [ ] Trade-offs documented with reasoning
+- All discovered edge cases addressed or explicitly deferred with rationale
+- Error paths defined (what happens when X fails?)
+- Testing strategy covers new code
+- Trade-offs documented with reasoning
 
 ### Step 3: Create Tasks
 
@@ -141,14 +141,16 @@ Files to **delete**:
 - `path/to/obsolete/file.ts` - reason for removal
 
 # Acceptance Criteria
-State each criterion as a verifiable, testable condition:
-- [ ] Criterion 1
-- [ ] Criterion 2
+Create a verification bit for each criterion (bits are immutable—no checkboxes):
+- "Verify: [criterion 1]"
+- "Verify: [criterion 2]"
 
 # Verification
-Run these commands and confirm all pass:
-- [ ] `[lint command]` passes
-- [ ] `[test command]` passes
+Create a verification bit for each command:
+- "Verify: `[lint command]` passes"
+- "Verify: `[test command]` passes"
+- "Verify: `[e2e test command]` passes"
+- "Verify: `[integration test command]` passes"
 ```
 
 **Section inclusion rules:**
