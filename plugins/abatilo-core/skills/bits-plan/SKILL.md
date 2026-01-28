@@ -1,11 +1,21 @@
 ---
-description: Plan complex work with collaborative AI debate, create bits tasks with dependencies
-argument-hint: [optional focus area]
+name: bits-plan
+description: Analyze conversation history and create bits tasks with dependencies. Use when extracting work from a discussion, turning decisions into tracked tasks, or breaking down what was discussed into actionable items. Triggers on "create tasks from this", "turn this into bits", "extract tasks", "what should we track", "break this down into tasks", "plan from this conversation". Uses collaborative Codex debate to refine scope, discovers verification commands, creates self-contained tasks with context and acceptance criteria.
+argument-hint: "[optional focus area]"
 ---
 
-# Planning Bits Tasks
+# Bits Planning Skill
 
 Review the conversation history above to identify work that needs planning. Extract requirements, decisions, and context discussed—these inform the bits tasks you create. If the user provided additional instructions below, incorporate those as well.
+
+## When to Use This Skill
+
+| Scenario | Approach |
+|----------|----------|
+| Complex multi-step implementation | Use this skill for structured planning |
+| Breaking down large features into tasks | Use this skill with debate refinement |
+| Simple single-task work | Use bits skill directly |
+| Quick research or exploration | Use Explore agent |
 
 This is a two-phase process: discovery first, then planning with collaborative debate.
 
