@@ -41,16 +41,23 @@
   "model": "opus",
   "hooks": {},
   "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": true,
-    "claude-code-wakatime@wakatime": true,
+    "bits@bits-plugins": true,
     "abatilo-core@abatilo-plugins": true,
-    "code-simplifier@claude-plugins-official": true
+    "claude-code-wakatime@wakatime": true,
+    "code-simplifier@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "abatilo-plugins": {
       "source": {
         "source": "directory",
         "path": "/Users/abatilo/abatilo/vimrc/plugins"
+      }
+    },
+    "bits-plugins": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/abatilo/abatilo/bits"
       }
     }
   },
