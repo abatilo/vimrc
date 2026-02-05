@@ -1,3 +1,6 @@
+# Preflight checks
+command -v jq >/dev/null 2>&1 || { echo "jq is required but not found"; exit 1; }
+
 # Delete old stuff
 rm -rf \
   ~/.config/nvim \
@@ -7,12 +10,18 @@ rm -rf \
   ~/.local/share/nvim \
   ~/.tmux.conf \
   ~/.tmux/ \
-  ~/.tool-versions \
-  ~/.vim \
-  ~/.vimrc \
+  ~/.vsnip \
   ~/.claude/commands \
   ~/.claude/agents \
-  ~/.claude/skills
+  ~/.claude/skills \
+  ~/.claude/rules \
+  ~/.claude/CLAUDE.md \
+  ~/.claude/settings.json
+rm -f \
+  ~/.config/ghostty/config \
+  ~/.config/gh-dash/config.yml \
+  ~/.codex/AGENTS.md \
+  ~/.codex/config.toml
 
 # Create nvim directory
 mkdir -p ~/.config/
@@ -44,12 +53,41 @@ ln -s "$PWD/rules" ~/.claude/rules  # rules must stay as symlink (not supported 
 # commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
 
+# Set global MCP servers in ~/.claude.json (authoritative)
+[ -f ~/.claude.json ] || echo '{}' > ~/.claude.json
+tmp=$(mktemp)
+jq --arg instructions_file "$PWD/codex_mcp_instructions.md" \
+  '.mcpServers = {
+    "codex": {
+      "type": "stdio",
+      "command": "codex",
+      "args": [
+        "mcp-server",
+        "-c", "model=\"gpt-5.3-codex\"",
+        "-c", "model_reasoning_effort=\"xhigh\"",
+        "-c", "sandbox_mode=\"read-only\"",
+        "-c", "sandbox_permissions=[\"disk-full-read-access\"]",
+        "-c", ("model_instructions_file=\"" + $instructions_file + "\"")
+      ],
+      "env": {}
+    },
+    "jira": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp"
+    },
+    "coreweave": {
+      "type": "http",
+      "url": "https://docs.coreweave.com/mcp"
+    }
+  }' ~/.claude.json > "$tmp" && mv "$tmp" ~/.claude.json
+
 # Set up codex cli configuration
 mkdir -p ~/.codex
 ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
 ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
 
-echo "" >>~/.zshrc
+# Ensure trailing newline before appending
+[ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
 grep -q "set -o vi" ~/.zshrc || echo "set -o vi" >>~/.zshrc
 grep -q "alias vi=" ~/.zshrc || echo "alias vi='nvim'" >>~/.zshrc
@@ -64,13 +102,13 @@ grep -q 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"' ~/.zshrc || echo 'exp
 grep -q "# Set 'infinite' zsh history" ~/.zshrc || echo "# Set 'infinite' zsh history" >>~/.zshrc
 grep -q "HISTFILE=~/.zsh_history" ~/.zshrc || echo "HISTFILE=~/.zsh_history" >>~/.zshrc
 grep -q "HISTSIZE=100000" ~/.zshrc || echo "HISTSIZE=100000" >>~/.zshrc
-grep -q "SAVEHIST=$HISTSIZE" ~/.zshrc || echo "SAVEHIST=$HISTSIZE" >>~/.zshrc
+grep -q "SAVEHIST=" ~/.zshrc || echo "SAVEHIST=1000000" >>~/.zshrc
 grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >>~/.zshrc
 
-grep -q "octo()" ~/.zshrc || echo "octo() { vim -c \"Octo pr edit \$1\" }" >>~/.zshrc
-grep -q "ask()" ~/.zshrc || echo "ask() { gh models run gpt-4.1 \$1 }" >>~/.zshrc
+grep -qF "octo()" ~/.zshrc || echo "octo() { vim -c \"Octo pr edit \$1\" }" >>~/.zshrc
+grep -qF "ask()" ~/.zshrc || echo "ask() { gh models run gpt-4.1 \$1 }" >>~/.zshrc
 grep -q "export PAGER=" ~/.zshrc || echo "export PAGER=" >>~/.zshrc
-grep -q "tmpdir()" ~/.zshrc || cat <<'EOF' >>~/.zshrc
+grep -qF "tmpdir()" ~/.zshrc || cat <<'EOF' >>~/.zshrc
 tmpdir() {
   pushd "$(mktemp -d)"
 }
