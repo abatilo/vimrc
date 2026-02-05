@@ -39,7 +39,7 @@
       "/Users/abatilo/Documents/notes"
     ]
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "hooks": {},
   "enabledPlugins": {
     "bits@bits-plugins": false,
