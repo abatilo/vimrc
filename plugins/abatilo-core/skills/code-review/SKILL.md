@@ -134,7 +134,6 @@ Include genuine, specific praise. One harsh comment overshadows ten positive one
 ## Review Summary
 - **Risk Lane**: L0 / L1 / L2
 - **Change Size**: X lines across Y files
-- **Overall Assessment**: Approve / Approve with suggestions / Request changes / Needs discussion
 - **One-line summary**: [Your overall take in one sentence]
 
 ## What's Done Well
@@ -167,6 +166,48 @@ Rollback plan, blast radius, observability, decision record.
 ## Reviewability Assessment
 Size verdict, cohesion, cognitive load, improvement suggestions.
 ```
+
+### Merge Verdict (REQUIRED — must be the LAST section of the review)
+
+After all findings are presented, deliver an explicit merge verdict. This is the most important output of the entire review.
+
+**If no blockers exist — APPROVE:**
+
+```
+## Verdict: APPROVE
+
+This change improves code health and is safe to merge. [1-2 sentence rationale.]
+```
+
+**If no blockers but suggestions/risks exist — APPROVE WITH SUGGESTIONS:**
+
+```
+## Verdict: APPROVE (with suggestions)
+
+Safe to merge as-is. The suggestions above would improve the change but are not required. [1-2 sentence rationale.]
+```
+
+**If blockers exist — REQUEST CHANGES:**
+
+```
+## Verdict: REQUEST CHANGES
+
+This change has [N] blocker(s) that must be resolved before merge:
+
+1. **[Blocker title]** — [file:line] — [What must change and why]
+2. **[Blocker title]** — [file:line] — [What must change and why]
+...
+
+Once these are addressed, this PR should be ready to approve.
+```
+
+**When the verdict is REQUEST CHANGES**, you MUST also:
+
+1. Use `TaskCreate` to create one task per blocker with:
+   - A clear imperative subject (e.g., "Add null check for user input in auth handler")
+   - A description explaining exactly what needs to change, why, and what "done" looks like
+   - An activeForm for progress tracking (e.g., "Adding null check to auth handler")
+2. After creating all blocker tasks, invoke the `/interview` skill to collaboratively determine the best approach for communicating the review findings to the PR author — whether to post individual PR comments per blocker, a single summary comment, open a discussion, or another approach.
 
 ### Final Anti-Pattern Checks
 Before delivering, verify you are NOT:
