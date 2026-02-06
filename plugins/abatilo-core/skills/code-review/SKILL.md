@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Orchestrates a parallel code review using a 12-agent team with specialized reviewers for correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, simplification, dead code detection, and adversarial design debate via Codex MCP. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
+description: Orchestrates a parallel code review using a 22-agent team. 11 Claude-powered specialized reviewers (correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, simplification, dead code) each paired with a Codex MCP mirror agent that conducts an independent threaded review on the same dimension. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
 disable-model-invocation: true
 allowed-tools:
@@ -16,7 +16,7 @@ allowed-tools:
 
 # Code Review Agent Team
 
-You are the team lead for a comprehensive, research-backed code review. You will orchestrate a team of 12 specialized review agents working in parallel, then synthesize their findings into a single structured review.
+You are the team lead for a comprehensive, research-backed code review. You will orchestrate a team of 22 review agents working in parallel: 11 Claude-powered specialists and 11 Codex MCP mirror agents that independently review the same dimensions through threaded Codex conversations. Then synthesize all findings into a single structured review.
 
 The target of the review is: $ARGUMENTS
 
@@ -47,9 +47,9 @@ Count lines changed. Optimal: 200-400 lines (SmartBear/Cisco). Beyond 1000 lines
 
 | Lane | Criteria | Agents to Spawn |
 |------|----------|-----------------|
-| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | 1-4, 9, and 11 only |
-| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | 1-11. Agent 12 if design is non-obvious. |
-| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | ALL 12 agents |
+| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | Claude agents 1-4, 9, 11 only (no Codex mirrors) |
+| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | All 11 Claude agents + all 11 Codex mirrors (22 total) |
+| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | All 22 agents |
 
 ### PR Context Quality
 If the PR lacks a description explaining **what** AND **why**, flag as your first `blocker`. A clean PR with no context is worse than a messy PR that spreads understanding.
@@ -90,7 +90,7 @@ Spawn only agents appropriate for the risk lane. Each agent prompt MUST include 
 
 Full agent specifications with detailed checklists are in [references/agents.md](references/agents.md).
 
-Summary of the 12 agents:
+### Claude Agents (1-11)
 
 | # | Name | Focus | Key Question |
 |---|------|-------|--------------|
@@ -105,7 +105,24 @@ Summary of the 12 agents:
 | 9 | human-factors-reviewer | Change size, cohesion, cognitive load, scope creep, author preparation, reviewability | "Can a human effectively review this change?" |
 | 10 | simplification-reviewer | Over-engineering, unnecessary abstraction, indirection, premature generalization, config bloat, framework overuse | "What would this look like if it were easy?" |
 | 11 | dead-code-reviewer | Unreachable code, unused declarations/imports/params, no-op operations, commented-out code, vestigial scaffolding, write-only variables | "If I deleted this, would anything change?" |
-| 12 | codex-debate-reviewer | Multi-turn Codex MCP adversarial design debate: challenge approach, explore tradeoffs, probe failure modes, assess trajectory | "What's the strongest argument against this approach?" |
+
+### Codex MCP Mirror Agents (12-22)
+
+Each mirrors its Claude counterpart but conducts an independent multi-turn threaded review via Codex MCP. This gives every dimension a second opinion from a different model.
+
+| # | Name | Mirrors | Codex Thread Focus |
+|---|------|---------|-------------------|
+| 12 | codex-correctness-reviewer | Agent 1 | Logic errors, edge cases, race conditions via Codex debate |
+| 13 | codex-architecture-reviewer | Agent 2 | Coupling, design fit, future trajectory via Codex debate |
+| 14 | codex-security-reviewer | Agent 3 | Attack surfaces, exploit scenarios via Codex debate |
+| 15 | codex-maintainability-reviewer | Agent 4 | Readability, naming, complexity via Codex debate |
+| 16 | codex-testing-reviewer | Agent 5 | Coverage gaps, test quality via Codex debate |
+| 17 | codex-performance-reviewer | Agent 6 | Scalability, hot paths, resource usage via Codex debate |
+| 18 | codex-governance-reviewer | Agent 7 | Blast radius, rollback, operational risk via Codex debate |
+| 19 | codex-knowledge-reviewer | Agent 8 | Documentation, bus factor, context quality via Codex debate |
+| 20 | codex-human-factors-reviewer | Agent 9 | Reviewability, cognitive load, PR structure via Codex debate |
+| 21 | codex-simplification-reviewer | Agent 10 | Over-engineering, unnecessary complexity via Codex debate |
+| 22 | codex-dead-code-reviewer | Agent 11 | Unreachable code, no-ops, unused declarations via Codex debate |
 
 ## Step 4: Monitor and Collect
 

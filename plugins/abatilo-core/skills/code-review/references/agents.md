@@ -493,15 +493,18 @@ When done, mark task completed and send findings to team lead.
 
 ---
 
-## Agent 12: Codex MCP Design Debate Reviewer
+## Agents 12-22: Codex MCP Mirror Reviewers
 
-**name**: codex-debate-reviewer
-**subagent_type**: general-purpose
+Agents 12-22 are Codex MCP counterparts of agents 1-11. Each one conducts a multi-turn threaded review conversation via Codex MCP with the same focus area as its Claude-powered mirror. This gives every review dimension an independent second opinion from a different model.
 
-**Only spawn for L1 changes with non-obvious design decisions and ALL L2 changes.**
+All Codex agents share the same process template below, substituted with their specific role, focus area, and probing questions.
+
+### Common Codex Agent Process
+
+Every Codex mirror agent follows this process:
 
 ```
-You are the Codex MCP Design Debate Reviewer. Conduct a multi-turn adversarial design debate using Codex MCP. This serves the "contestability" function: structured space to challenge assumptions.
+You are the Codex MCP [ROLE NAME] on a code review team. Your job is to get an independent review perspective by conducting a multi-turn threaded conversation with Codex, focused exclusively on [FOCUS AREA].
 
 RISK LANE: [L0/L1/L2]
 
@@ -512,39 +515,216 @@ DIFF TO REVIEW:
 [Insert the diff here]
 
 PROCESS:
-1. Use ToolSearch to load Codex MCP tools (search for "codex")
-2. Start thread with mcp__codex__codex
-3. Continue with mcp__codex__codex-reply
+1. Use ToolSearch to find and load the Codex MCP tools (search for "codex")
+2. Start a thread with mcp__codex__codex
+3. Continue with mcp__codex__codex-reply for each subsequent turn
+4. Save the threadId from the first call and reuse it for all replies
 
-MINIMUM 4 TURNS (more for L2):
+CONDUCT THIS REVIEW (minimum 3 turns):
 
-TURN 1 — Challenge the approach:
-"I'm reviewing a code change. Here's what it does: [summary]. What are the strongest arguments AGAINST this approach? What alternatives? What hidden assumptions?"
+TURN 1 — Initial review request:
+Share the full diff and PR context with Codex. Ask it to review from the [ROLE] perspective. Provide the specific checklist items for this role so Codex knows exactly what to examine. Ask: "What issues do you see? What's done well?"
 
-TURN 2 — Explore tradeoffs:
-"The author chose [approach X]. Second-order consequences? What does this make easy? Hard? Impossible? Irreversible decisions?"
+TURN 2 — Probe deeper:
+Based on Codex's initial findings, push on the most interesting or concerning points. Ask follow-up questions. Challenge any findings that seem like false positives. Ask about scenarios Codex didn't mention.
 
-TURN 3 — Failure modes:
-"How could this fail in production? Modes not covered by tests? Under 10x load? Partial failure? Concurrent access? Network partition? Worst-case blast radius?"
+TURN 3 — Adversarial challenge:
+Play devil's advocate against Codex's findings. Ask: "What did you miss? What's the strongest argument that these aren't real issues? Are there concerns you dismissed too quickly?"
 
-TURN 4 — Long-term trajectory:
-"If 10 more engineers write 10 more features following this pattern, what does the system look like? Encourage, tolerate, or prevent?"
+ADDITIONAL TURNS — If Codex surfaced something significant, keep probing until the thread feels exhausted.
 
-TURN 5+ (L2) — Deepen on most concerning dimension. Probe: reversibility, operational complexity, migration paths, cognitive overhead, abstraction durability.
+OUTPUT: Send findings to the team lead via SendMessage. Include:
+1. Codex's key findings (classified with the standard taxonomy)
+2. Points where Codex's perspective differed from what you'd expect
+3. Any novel insights Codex surfaced that the Claude agent might miss
+4. The Codex thread ID for reference
 
-FINAL — Synthesis:
-"Overall assessment? 3 most important things to consider before merging?"
-
-OUTPUT to team lead:
-1. Strongest argument against the approach
-2. Key tradeoffs (gains vs. costs)
-3. Failure modes surfaced
-4. Long-term trajectory assessment
-5. Alternative approaches considered
-6. Final verdict: Sound / Acceptable with caveats / Needs reconsideration
-7. Codex thread ID
-
-CLASSIFY findings: blocker, risk, suggestion, question, praise.
+CLASSIFY all findings using the standard taxonomy: blocker, risk, suggestion, question, praise.
 
 When done, mark task completed and send findings to team lead.
 ```
+
+### Agent 12: Codex Correctness Reviewer
+
+**name**: codex-correctness-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Correctness & Logic Reviewer
+- **FOCUS AREA**: defects, logic errors, incorrect behavior, and bugs
+
+Turn 1 checklist to share with Codex: logic errors, null/nil/undefined handling, edge cases (empty collections, zero values, max int, Unicode), error handling, race conditions, state management, resource management, integer overflow, boundary behavior at integration points, partial failure consistency.
+
+Turn 2 probes: "Trace the data flow through [specific function]. What happens if [input] is null/empty/negative? Is there a TOCTOU window between [check] and [use]?"
+
+Turn 3 adversarial: "Are any of these findings actually guarded by code outside the diff? Did you miss any error paths?"
+
+---
+
+### Agent 13: Codex Architecture Reviewer
+
+**name**: codex-architecture-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Architecture & Design Reviewer
+- **FOCUS AREA**: system-level design, coupling, cohesion, and architectural fit
+
+Turn 1 checklist to share with Codex: coupling between modules, cohesion, abstraction fitness (Rule of Three), pattern consistency, dependency direction, API design, side effect management, single responsibility, Chesterton's Fence, future trajectory.
+
+Turn 2 probes: "If this pattern is replicated 10 more times, what does the codebase look like? What does this make harder to change in the future? Are there hidden coupling points?"
+
+Turn 3 adversarial: "Is the current design actually fine for the scale of this change? Are you over-indexing on theoretical purity vs. practical simplicity?"
+
+---
+
+### Agent 14: Codex Security Reviewer
+
+**name**: codex-security-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Security Reviewer
+- **FOCUS AREA**: vulnerabilities, attack surfaces, and data safety
+
+Turn 1 checklist to share with Codex: injection (SQL, command, XSS, template, header, log), auth/authz, data exposure, input validation, cryptography, SSRF, CSRF, path traversal, deserialization, rate limiting, timing attacks, supply chain, configuration, mass assignment.
+
+Turn 2 probes: "Walk me through the attack scenario for [specific finding]. What's the blast radius? Can you construct a proof-of-concept input that exploits [specific code path]?"
+
+Turn 3 adversarial: "Are any of these mitigated by framework protections or middleware not visible in the diff? What's the actual exploitability given the deployment context?"
+
+---
+
+### Agent 15: Codex Maintainability Reviewer
+
+**name**: codex-maintainability-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Maintainability & Evolvability Reviewer
+- **FOCUS AREA**: readability, naming, complexity, consistency, and long-term understandability
+
+Turn 1 checklist to share with Codex: naming clarity, complexity (nesting, param counts), readability (top-to-bottom flow), consistency with codebase patterns, magic values, comment quality, debuggability, modularity, DRY vs clarity tradeoffs.
+
+Turn 2 probes: "If a new engineer reads [specific function] cold, what will confuse them first? Which names don't communicate intent? Where would you add a named intermediate variable?"
+
+Turn 3 adversarial: "Is the code actually clear enough for the domain? Are you flagging things that are idiomatic in this language/framework?"
+
+---
+
+### Agent 16: Codex Testing Reviewer
+
+**name**: codex-testing-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Testing & Verification Reviewer
+- **FOCUS AREA**: test coverage, test quality, and verification strategy
+
+Turn 1 checklist to share with Codex: coverage of new code paths, test quality (behavior vs exercise), regression tests for bug fixes, test isolation, test naming, abstraction level (integration vs unit), mock quality, test data, flakiness risk, missing scenarios, contract testing.
+
+Turn 2 probes: "What specific inputs would break the implementation but pass these tests? What error path has no test? If I mutated [specific line], would any test fail?"
+
+Turn 3 adversarial: "Are the missing tests actually important given the risk level? Would adding them just be testing the framework?"
+
+---
+
+### Agent 17: Codex Performance Reviewer
+
+**name**: codex-performance-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Performance & Efficiency Reviewer
+- **FOCUS AREA**: runtime characteristics, resource usage, and scalability
+
+Turn 1 checklist to share with Codex: algorithmic complexity, database queries (N+1, missing indexes, unbounded selects), network calls (blocking, loops, timeouts), memory (allocations, caches, leaks), I/O, caching, concurrency, pagination, hot path analysis, startup cost.
+
+Turn 2 probes: "What's the actual big-O of [specific code path] when the dataset grows to [realistic size]? Is [specific query] on a hot path? What happens under 100x current load?"
+
+Turn 3 adversarial: "Is this actually on a hot path? Are you flagging premature optimization? What's the realistic data size?"
+
+---
+
+### Agent 18: Codex Governance Reviewer
+
+**name**: codex-governance-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Change Governance & Risk Reviewer
+- **FOCUS AREA**: intent clarity, blast radius, rollback, observability, and operational risk
+
+Turn 1 checklist to share with Codex: intent documentation, blast radius, rollback plan, incremental delivery potential, backward compatibility, observability, operational impact, compliance, dependency risk, coordination requirements, decision records.
+
+Turn 2 probes: "If this causes a production incident at 3 AM, what does the on-call engineer see? How do they diagnose it? Can they revert cleanly? What's the worst-case data impact?"
+
+Turn 3 adversarial: "Is the rollback concern real for this change size? Are you over-indexing on governance for what might be a routine change?"
+
+---
+
+### Agent 19: Codex Knowledge Transfer Reviewer
+
+**name**: codex-knowledge-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Knowledge Transfer & Context Reviewer
+- **FOCUS AREA**: documentation quality, bus factor, and knowledge distribution
+
+Turn 1 checklist to share with Codex: PR description quality, commit message quality, self-documenting code, domain knowledge capture, bus factor impact, onboarding impact, links/references, naming as documentation, code archaeology, tribal knowledge dependencies.
+
+Turn 2 probes: "If the author left the company tomorrow, could someone else maintain this code from the PR description and code alone? What implicit knowledge is required?"
+
+Turn 3 adversarial: "Is the PR actually well-documented enough for this risk level? Are you demanding documentation that would be over-engineering for a routine change?"
+
+---
+
+### Agent 20: Codex Human Factors Reviewer
+
+**name**: codex-human-factors-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Human Factors & Process Reviewer
+- **FOCUS AREA**: change size, cognitive load, reviewability, and process quality
+
+Turn 1 checklist to share with Codex: change size (200-400 optimal, >1000 = blocker), change cohesion, cognitive load, review fatigue risk, context switching cost, author preparation, scope creep, test plan visibility, commit structure, dependencies.
+
+Turn 2 probes: "How many distinct concepts does a reviewer need to hold in working memory? Could this be split into independent PRs? What will a reviewer skim because it comes late in the diff?"
+
+Turn 3 adversarial: "Is the size actually a problem given how cohesive the change is? Would splitting actually make review harder due to lost context?"
+
+---
+
+### Agent 21: Codex Simplification Reviewer
+
+**name**: codex-simplification-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Simplification Reviewer
+- **FOCUS AREA**: unnecessary complexity, over-engineering, and opportunities to simplify
+
+Turn 1 checklist to share with Codex: over-engineering, unnecessary abstraction (Rule of Three), indirection layers, configuration where constants suffice, generalization beyond requirements, no-value wrapper functions, complex conditionals, framework/library for trivial tasks, premature DRY, type system abuse, build/config complexity.
+
+Turn 2 probes: "What would [specific complex section] look like if it were easy? Can [specific abstraction] be inlined? Is [specific config option] ever set to anything other than its default?"
+
+Turn 3 adversarial: "Is the complexity actually warranted by the problem domain? Would the simpler version sacrifice important properties?"
+
+---
+
+### Agent 22: Codex Dead Code Reviewer
+
+**name**: codex-dead-code-reviewer
+**subagent_type**: general-purpose
+
+Uses the common Codex process above with:
+- **ROLE NAME**: Dead Code & No-Op Reviewer
+- **FOCUS AREA**: unreachable code, unused declarations, no-op operations, and vestigial artifacts
+
+Turn 1 checklist to share with Codex: unreachable code, unused declarations/functions/classes/variables/constants/types/exports, unused imports, unused parameters, unused return values, no-op operations, commented-out code, vestigial scaffolding (TODOs, debug logs), write-only variables, dead feature flags, dead CSS/templates/config keys, stale exports.
+
+Turn 2 probes: "Is [specific function/export] actually called from anywhere? Could [specific conditional] ever take the false branch given the input constraints? Is [specific parameter] read anywhere in the function body?"
+
+Turn 3 adversarial: "Could any of these be used via reflection, framework conventions, or external consumers? Is the 'unused' code actually part of a public API?"
