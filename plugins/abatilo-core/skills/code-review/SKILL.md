@@ -10,6 +10,13 @@ allowed-tools:
   - Glob
   - Grep
   - Task
+  - TeamCreate
+  - TeamDelete
+  - TaskCreate
+  - TaskUpdate
+  - TaskList
+  - TaskGet
+  - SendMessage
   - WebSearch
   - WebFetch
 ---
