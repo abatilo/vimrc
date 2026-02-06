@@ -16,7 +16,15 @@ allowed-tools:
 
 # Code Review Agent Team
 
-You are the team lead for a comprehensive, research-backed code review. You will orchestrate a team of 22 review agents working in parallel: 11 Claude-powered specialists and 11 Codex MCP mirror agents that independently review the same dimensions through threaded Codex conversations. Then synthesize all findings into a single structured review.
+**YOU MUST SPAWN AN AGENT TEAM TO COMPLETE THIS SKILL.** Do NOT attempt to do the review alone. You are the team lead. Your job is to:
+
+1. Gather the diff
+2. Classify the risk lane
+3. **Use `TeamCreate` to create a team, then use the `Task` tool to spawn up to 22 parallel agent teammates** (see Step 3)
+4. Wait for all agents to report back
+5. Synthesize their findings into a final review
+
+You will orchestrate 22 review agents in parallel: 11 Claude-powered specialists and 11 Codex MCP mirror agents that independently review the same dimensions through threaded Codex conversations.
 
 The target of the review is: $ARGUMENTS
 
@@ -56,13 +64,56 @@ If the PR lacks a description explaining **what** AND **why**, flag as your firs
 
 ## Step 3: Spawn the Review Team
 
-Use `TeamCreate` to create a team named `code-review-<short-identifier>`.
+**YOU MUST CREATE AN AGENT TEAM. This is not optional. Do not attempt to do the review yourself. You MUST use the tools below to spawn parallel teammates.**
 
-Use `TaskCreate` to create one task per agent, then spawn all agents in parallel using the `Task` tool with `subagent_type: general-purpose`, assigning each a `name` and `team_name`.
+Execute these steps in order:
 
-**CRITICAL**: Include the full diff in each agent's prompt. Each agent works independently without access to the diff unless you provide it. Also include the risk lane and PR context.
+### 3a. Create the team
 
-**CRITICAL**: Tell each agent to send findings via `SendMessage` and mark their task completed via `TaskUpdate`.
+Call the `TeamCreate` tool:
+```
+TeamCreate(team_name: "code-review-<short-identifier>")
+```
+This creates the team and shared task list. You are the team lead.
+
+### 3b. Create tasks
+
+Call `TaskCreate` once for each agent you are spawning (based on the risk lane). For example:
+```
+TaskCreate(subject: "Correctness review", description: "Review the diff for logic errors...", activeForm: "Reviewing correctness")
+TaskCreate(subject: "Architecture review", description: "Review the diff for design issues...", activeForm: "Reviewing architecture")
+... (one per agent)
+```
+
+### 3c. Spawn all agents in parallel
+
+**This is the most important step.** Call the `Task` tool ONCE PER AGENT, ALL IN THE SAME MESSAGE, so they run in parallel. Each call must include:
+- `subagent_type: "general-purpose"`
+- `name`: the agent name from the tables below (e.g., "correctness-reviewer")
+- `team_name`: the team name from step 3a
+- `run_in_background: true`
+- `prompt`: the full agent prompt from [references/agents.md](references/agents.md), with the RISK LANE, PR CONTEXT, and DIFF substituted in
+
+Example of ONE agent spawn (you must do this for ALL agents in a single message):
+```
+Task(
+  subagent_type: "general-purpose",
+  name: "correctness-reviewer",
+  team_name: "code-review-<identifier>",
+  run_in_background: true,
+  prompt: "You are the Correctness & Logic Reviewer on a code review team...\n\nRISK LANE: L1\n\nPR CONTEXT:\n<the PR description>\n\nDIFF TO REVIEW:\n<the full diff>\n\n<rest of agent prompt from references/agents.md>"
+)
+```
+
+**Repeat for every agent.** For L1/L2, that means 22 parallel `Task` calls in a single message. For L0, spawn only the subset specified in the risk lane table.
+
+**CRITICAL**: Each agent's prompt MUST contain the full diff text. Agents cannot see the diff unless you paste it into their prompt. Also include the risk lane and PR context.
+
+**CRITICAL**: Each agent's prompt MUST end with instructions to send findings via `SendMessage` to the team lead and mark their task completed via `TaskUpdate`.
+
+### 3d. Assign tasks to agents
+
+After all agents are spawned, use `TaskUpdate` to set `owner` on each task to the corresponding agent name, and use `SendMessage` to notify each agent of their assignment.
 
 ### Comment Taxonomy (required for ALL agent findings)
 
