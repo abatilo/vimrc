@@ -201,13 +201,7 @@ This change has [N] blocker(s) that must be resolved before merge:
 Once these are addressed, this PR should be ready to approve.
 ```
 
-**When the verdict is REQUEST CHANGES**, you MUST also:
-
-1. Use `TaskCreate` to create one task per blocker with:
-   - A clear imperative subject (e.g., "Add null check for user input in auth handler")
-   - A description explaining exactly what needs to change, why, and what "done" looks like
-   - An activeForm for progress tracking (e.g., "Adding null check to auth handler")
-2. After creating all blocker tasks, invoke the `/interview` skill to collaboratively determine the best approach for communicating the review findings to the PR author — whether to post individual PR comments per blocker, a single summary comment, open a discussion, or another approach.
+**When the verdict is REQUEST CHANGES**, you MUST also invoke the `/interview` skill to collaboratively determine the best approach for communicating the review findings to the PR author — whether to post individual PR comments per blocker, a single summary comment, open a discussion, or another approach.
 
 ### Final Anti-Pattern Checks
 Before delivering, verify you are NOT:
