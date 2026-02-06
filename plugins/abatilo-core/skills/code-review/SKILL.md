@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Orchestrates a parallel code review using a 10-agent team with specialized reviewers for correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, and adversarial design debate via Codex MCP. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
+description: Orchestrates a parallel code review using a 12-agent team with specialized reviewers for correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, simplification, dead code detection, and adversarial design debate via Codex MCP. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
 disable-model-invocation: true
 allowed-tools:
@@ -16,7 +16,7 @@ allowed-tools:
 
 # Code Review Agent Team
 
-You are the team lead for a comprehensive, research-backed code review. You will orchestrate a team of 10 specialized review agents working in parallel, then synthesize their findings into a single structured review.
+You are the team lead for a comprehensive, research-backed code review. You will orchestrate a team of 12 specialized review agents working in parallel, then synthesize their findings into a single structured review.
 
 The target of the review is: $ARGUMENTS
 
@@ -47,9 +47,9 @@ Count lines changed. Optimal: 200-400 lines (SmartBear/Cisco). Beyond 1000 lines
 
 | Lane | Criteria | Agents to Spawn |
 |------|----------|-----------------|
-| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | 1-4 and 9 only |
-| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | 1-9. Agent 10 if design is non-obvious. |
-| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | ALL 10 agents |
+| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | 1-4, 9, and 11 only |
+| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | 1-11. Agent 12 if design is non-obvious. |
+| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | ALL 12 agents |
 
 ### PR Context Quality
 If the PR lacks a description explaining **what** AND **why**, flag as your first `blocker`. A clean PR with no context is worse than a messy PR that spreads understanding.
@@ -90,20 +90,22 @@ Spawn only agents appropriate for the risk lane. Each agent prompt MUST include 
 
 Full agent specifications with detailed checklists are in [references/agents.md](references/agents.md).
 
-Summary of the 10 agents:
+Summary of the 12 agents:
 
 | # | Name | Focus | Key Question |
 |---|------|-------|--------------|
 | 1 | correctness-reviewer | Logic errors, null handling, edge cases, race conditions, resource leaks, partial failure | "Is this code correct in all paths?" |
 | 2 | architecture-reviewer | Coupling, cohesion, abstraction fitness, pattern consistency, Chesterton's Fence, future trajectory | "Does this make the codebase easier or harder to understand?" |
 | 3 | security-reviewer | Injection, auth, data exposure, input validation, crypto, SSRF, CSRF, supply chain | "How would an attacker exploit this?" |
-| 4 | maintainability-reviewer | Naming, complexity, readability, dead code, consistency, debuggability, modularity | "Will a new engineer understand this in 6 months?" |
+| 4 | maintainability-reviewer | Naming, complexity, readability, consistency, debuggability, modularity | "Will a new engineer understand this in 6 months?" |
 | 5 | testing-reviewer | Coverage, test quality, regression tests, isolation, mocking, flakiness, missing scenarios | "If the implementation broke subtly, would these tests catch it?" |
 | 6 | performance-reviewer | Algorithmic complexity, N+1 queries, network, memory, caching, hot path analysis | "What happens at 10x/100x scale?" |
 | 7 | governance-reviewer | Intent clarity, blast radius, rollback, backward compat, observability, operational impact | "At 3 AM, can the on-call engineer diagnose this?" |
 | 8 | knowledge-reviewer | PR description, commit messages, self-documenting code, bus factor, domain knowledge | "Does this increase or decrease the number of people who can modify this area?" |
 | 9 | human-factors-reviewer | Change size, cohesion, cognitive load, scope creep, author preparation, reviewability | "Can a human effectively review this change?" |
-| 10 | codex-debate-reviewer | Multi-turn Codex MCP adversarial design debate: challenge approach, explore tradeoffs, probe failure modes, assess trajectory | "What's the strongest argument against this approach?" |
+| 10 | simplification-reviewer | Over-engineering, unnecessary abstraction, indirection, premature generalization, config bloat, framework overuse | "What would this look like if it were easy?" |
+| 11 | dead-code-reviewer | Unreachable code, unused declarations/imports/params, no-op operations, commented-out code, vestigial scaffolding, write-only variables | "If I deleted this, would anything change?" |
+| 12 | codex-debate-reviewer | Multi-turn Codex MCP adversarial design debate: challenge approach, explore tradeoffs, probe failure modes, assess trajectory | "What's the strongest argument against this approach?" |
 
 ## Step 4: Monitor and Collect
 
