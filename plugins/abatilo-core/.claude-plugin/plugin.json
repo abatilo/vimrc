@@ -1,5 +1,5 @@
 {
   "name": "abatilo-core",
-  "version": "0.11.4",
+  "version": "0.11.5",
   "description": "Core commands, skills, and hooks for abatilo's Claude Code setup"
 }

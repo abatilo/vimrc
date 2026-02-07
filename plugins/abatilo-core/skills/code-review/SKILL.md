@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Orchestrates a parallel code review using an 11-agent team. Each specialist (correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, simplification, dead code) conducts its own review, then stress-tests its findings through a Socratic-style Codex debate — adversarial collaboration where the agent defends its work against Codex challenges. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
+description: "Orchestrates a three-phase parallel code review using an agent team. Phase 1: dynamically selected specialists each review the diff and stress-test findings through Socratic Codex debate. Phase 2: lead-mediated cross-review where specialists challenge each other's findings. Phase 3: deduplicated synthesis with Conventional Comments taxonomy and explicit merge verdict."
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
 disable-model-invocation: true
 allowed-tools:
@@ -23,106 +23,150 @@ allowed-tools:
 
 # Code Review Agent Team
 
-**YOU MUST SPAWN AN AGENT TEAM TO COMPLETE THIS SKILL.** Do NOT attempt to do the review alone. You are the team lead. Your job is to:
+**YOU MUST SPAWN AN AGENT TEAM.** Do NOT review code yourself. You are the team lead — your job is orchestration, not review.
 
+Your workflow:
 1. Gather the diff
-2. Classify the risk lane
-3. **Use `TeamCreate` to create a team, then use the `Task` tool to spawn up to 11 parallel agent teammates** (see Step 3)
-4. Wait for all agents to report back
-5. Synthesize their findings into a final review
-
-You will orchestrate up to 11 review agents in parallel. Each agent conducts a two-phase review: Phase 1 is the specialist analysis, Phase 2 is a Socratic Codex debate where the agent stress-tests its own findings through adversarial collaboration with Codex MCP (L1/L2 only).
+2. Classify risk lane and select relevant specialists
+3. Create a team and spawn specialists
+4. **Phase 1**: Collect specialist findings (each agent reviews + Codex debate)
+5. **Phase 2**: Mediate cross-agent challenges (L1/L2 only)
+6. **Phase 3**: Synthesize into final review
+7. Clean up
 
 The target of the review is: $ARGUMENTS
 
-If $ARGUMENTS is empty, ask the user what to review (a PR number, a branch diff, staged changes, etc.).
+If $ARGUMENTS is empty, ask the user what to review.
 
 ## Step 1: Gather the Diff
 
-Before spawning agents, obtain the actual code changes to review:
+Obtain the code changes before spawning agents:
 
-- **PR number**: Run `gh pr diff <number>` and `gh pr view <number>` for description
-- **Branch name**: Run `git diff main...<branch>` (adjust base branch as needed)
-- **"staged"**: Run `git diff --cached`
-- **"unstaged" or no qualifier**: Run `git diff`
+- **PR number**: `gh pr diff <number>` and `gh pr view <number>`
+- **Branch name**: `git diff main...<branch>` (adjust base as needed)
+- **"staged"**: `git diff --cached`
+- **"unstaged" or no qualifier**: `git diff`
 - **File path**: Read the file and infer from context
-- **Commit SHA**: Run `git show <sha>`
+- **Commit SHA**: `git show <sha>`
 
 Also gather:
-- `git log --oneline -10` for recent commit history
+- `git log --oneline -10` for recent history
 - PR description and linked issues (if applicable)
 - Which files changed and their roles (use Glob/Grep)
 
-## Step 2: Assess and Classify
+## Step 2: Assess, Classify, and Select Agents
 
 ### Change Size
-Count lines changed. Optimal: 200-400 lines (SmartBear/Cisco). Beyond 1000 lines, defect detection drops 70%. Flag oversized changes prominently.
 
-### Risk Lane Classification
+Count lines changed. Optimal: 200–400 lines (SmartBear/Cisco). Beyond 1000 lines, defect detection drops 70%. Flag oversized changes prominently.
 
-| Lane | Criteria | Agents to Spawn | Codex Debate? |
-|------|----------|-----------------|---------------|
-| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | Agents 1-4, 9, 11 only | No |
-| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | All 11 agents | Yes |
-| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | All 11 agents | Yes |
+### Risk Lane
+
+| Lane | Criteria | Codex Debate? | Cross-Review? |
+|------|----------|---------------|---------------|
+| **L0 — Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | No | No |
+| **L1 — Significant** | New features, refactors, API changes, 3+ files, shared code | Yes | Yes |
+| **L2 — Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | Yes | Yes |
 
 ### PR Context Quality
-If the PR lacks a description explaining **what** AND **why**, flag as your first `blocker`. A clean PR with no context is worse than a messy PR that spreads understanding.
 
-## Step 3: Spawn the Review Team
+If the PR lacks a description explaining **what** AND **why**, flag as your first `blocker`.
 
-**YOU MUST CREATE AN AGENT TEAM. This is not optional. Do not attempt to do the review yourself. You MUST use the tools below to spawn parallel teammates.**
+### Dynamic Agent Selection
 
-Execute these steps in order:
+Analyze the diff and select which specialists are relevant. Not every change needs all 11 agents. Err toward including rather than excluding for L1/L2.
+
+| # | Agent | Spawn guidance |
+|---|-------|----------------|
+| 1 | correctness-reviewer | Always. Logic errors are always relevant. |
+| 2 | architecture-reviewer | 3+ files, new modules, structural changes, dependency direction changes. |
+| 3 | security-reviewer | Auth, input handling, crypto, API endpoints, PII, network calls, deserialization. |
+| 4 | maintainability-reviewer | Significant new code (not just config/docs), naming-heavy changes. |
+| 5 | testing-reviewer | Test files changed, or production code without corresponding test changes. |
+| 6 | performance-reviewer | Database queries, loops over data, network calls, hot-path code, caching. |
+| 7 | governance-reviewer | L1/L2 only. Deployment, API surface, operational, rollback-sensitive changes. |
+| 8 | knowledge-reviewer | Sparse PR context, domain-specific code, bus-factor-sensitive areas. |
+| 9 | human-factors-reviewer | Always. Meta-review of the change itself. |
+| 10 | simplification-reviewer | New abstractions, config options, indirection layers, framework introduction. |
+| 11 | dead-code-reviewer | Code removal/refactoring, new code alongside existing similar code. |
+
+For **L0**: spawn only agents 1 and 9 unless the diff warrants more.
+
+State which agents you're spawning and why before proceeding.
+
+## Step 3: Create Team and Spawn Agents
 
 ### 3a. Create the team
 
-Call the `TeamCreate` tool:
 ```
 TeamCreate(team_name: "code-review-<short-identifier>")
 ```
-This creates the team and shared task list. You are the team lead.
 
-### 3b. Create tasks
+### 3b. Read agent specifications
 
-Call `TaskCreate` once for each agent you are spawning (based on the risk lane). For example:
-```
-TaskCreate(subject: "Correctness review", description: "Review the diff for logic errors...", activeForm: "Reviewing correctness")
-TaskCreate(subject: "Architecture review", description: "Review the diff for design issues...", activeForm: "Reviewing architecture")
-... (one per agent)
-```
+Read [references/agents.md](references/agents.md). It contains two parts:
+1. **Shared Preamble** — prepend to every agent's prompt
+2. **Agent-specific sections** — one per specialist
 
-### 3c. Spawn all agents in parallel
+### 3c. Create tasks, assemble prompts, and spawn all agents
 
-**This is the most important step.** Call the `Task` tool ONCE PER AGENT, ALL IN THE SAME MESSAGE, so they run in parallel. Each call must include:
-- `subagent_type: "general-purpose"`
-- `name`: the agent name from the tables below (e.g., "correctness-reviewer")
-- `team_name`: the team name from step 3a
-- `run_in_background: true`
-- `prompt`: the full agent prompt from [references/agents.md](references/agents.md), with the RISK LANE, PR CONTEXT, and DIFF substituted in
+For each selected agent:
+1. Call `TaskCreate` with subject, description, and activeForm
+2. Construct the spawn prompt: **Shared Preamble** + `\n\n---\n\n` + **agent-specific section**
+3. Substitute `[L0/L1/L2]`, `[Insert PR description and context here]`, and `[Insert the diff here]` placeholders with actual values
 
-Example of ONE agent spawn (you must do this for ALL agents in a single message):
+Then spawn **ALL agents in a SINGLE message** for maximum parallelism:
+
 ```
 Task(
   subagent_type: "general-purpose",
   name: "correctness-reviewer",
   team_name: "code-review-<identifier>",
   run_in_background: true,
-  prompt: "You are the Correctness & Logic Reviewer on a code review team...\n\nRISK LANE: L1\n\nPR CONTEXT:\n<the PR description>\n\nDIFF TO REVIEW:\n<the full diff>\n\n<rest of agent prompt from references/agents.md>"
+  prompt: "<assembled prompt with substituted values>"
 )
 ```
 
-**Repeat for every agent.** For L1/L2, that means 11 parallel `Task` calls in a single message. For L0, spawn only the subset specified in the risk lane table.
+Repeat for every selected agent — all `Task` calls in ONE message.
 
-**CRITICAL**: Each agent's prompt MUST contain the full diff text. Agents cannot see the diff unless you paste it into their prompt. Also include the risk lane and PR context.
+After spawning, use `TaskUpdate` to set `owner` on each task to the corresponding agent name.
 
-**CRITICAL**: Each agent's prompt MUST end with instructions to send findings via `SendMessage` to the team lead and mark their task completed via `TaskUpdate`.
+**CRITICAL**: Each agent's prompt MUST contain the full diff text. Agents cannot see the diff unless you include it in their prompt.
 
-### 3d. Assign tasks to agents
+## Step 4: Phase 1 — Collect Hardened Findings
 
-After all agents are spawned, use `TaskUpdate` to set `owner` on each task to the corresponding agent name, and use `SendMessage` to notify each agent of their assignment.
+Agents work in parallel:
+1. Each agent conducts its specialist review
+2. Each agent stress-tests findings via Socratic Codex debate (L1/L2 only)
+3. Each agent sends hardened findings to you via `SendMessage`
+4. Each agent then goes idle, waiting for Phase 2
 
-### Comment Taxonomy (required for ALL agent findings)
+Wait for **all** agents to report. Messages are delivered automatically — you do not need to poll.
+
+**Error recovery**: If an agent fails or crashes, re-spawn it with the same prompt and reassign its task.
+
+## Step 5: Phase 2 — Lead-Mediated Cross-Review (L1/L2 only)
+
+**Skip for L0.**
+
+After collecting all Phase 1 findings:
+
+1. **Identify cross-review targets** using your judgment:
+   - **Contradictions**: two agents disagree (e.g., architecture says "add abstraction" while simplification says "inline it")
+   - **Domain overlap**: a finding where another specialist has relevant expertise
+   - **High-severity findings** that deserve a second opinion
+
+2. **Route challenges** via `SendMessage` to the best-positioned agent. Include the original finding, its source agent, and what you want challenged.
+
+3. **Collect responses**: the challenged agent evaluates and responds. Route the response to the original agent if a counter is warranted.
+
+4. **Arbitrate**: if agents cannot align, you decide. You are the final arbiter.
+
+5. **Integrate**: note what held up, what changed, and what was resolved.
+
+## Step 6: Phase 3 — Synthesize the Final Review
+
+### Comment Taxonomy
 
 | Label | Meaning | Blocking? |
 |-------|---------|-----------|
@@ -131,10 +175,10 @@ After all agents are spawned, use `TaskUpdate` to set `owner` on each task to th
 | `question` | Seeking understanding, not suggesting. | No |
 | `suggestion` | Concrete alternative with rationale and code snippet. | No |
 | `nitpick` | Trivial preference, not linter-enforceable. | No |
-| `praise` | Something done well. **Every agent MUST include at least one.** | No |
+| `praise` | Something done well. **Required.** | No |
 | `thought` | Observation, not a request. | No |
 
-### Comment Framing Rules
+### Comment Framing
 
 - Questions over statements: "What led you to this approach?" NOT "This is wrong"
 - Personal perspective: "I find this harder to follow because..." NOT "This is confusing"
@@ -142,50 +186,23 @@ After all agents are spawned, use `TaskUpdate` to set `owner` on each task to th
 - No diminishing language: never "simply," "just," "obviously," "clearly"
 - No surprise late blockers: if the approach is wrong, say so immediately
 
-### Agent Specifications
-
-Spawn only agents appropriate for the risk lane. Each agent prompt MUST include the risk lane, PR context, and the diff.
-
-Full agent specifications with detailed checklists are in [references/agents.md](references/agents.md).
-
-### Agent Specifications (1-11)
-
-| # | Name | Focus | Key Question |
-|---|------|-------|--------------|
-| 1 | correctness-reviewer | Logic errors, null handling, edge cases, race conditions, resource leaks, partial failure | "Is this code correct in all paths?" |
-| 2 | architecture-reviewer | Coupling, cohesion, abstraction fitness, pattern consistency, Chesterton's Fence, future trajectory | "Does this make the codebase easier or harder to understand?" |
-| 3 | security-reviewer | Injection, auth, data exposure, input validation, crypto, SSRF, CSRF, supply chain | "How would an attacker exploit this?" |
-| 4 | maintainability-reviewer | Naming, complexity, readability, consistency, debuggability, modularity | "Will a new engineer understand this in 6 months?" |
-| 5 | testing-reviewer | Coverage, test quality, regression tests, isolation, mocking, flakiness, missing scenarios | "If the implementation broke subtly, would these tests catch it?" |
-| 6 | performance-reviewer | Algorithmic complexity, N+1 queries, network, memory, caching, hot path analysis | "What happens at 10x/100x scale?" |
-| 7 | governance-reviewer | Intent clarity, blast radius, rollback, backward compat, observability, operational impact | "At 3 AM, can the on-call engineer diagnose this?" |
-| 8 | knowledge-reviewer | PR description, commit messages, self-documenting code, bus factor, domain knowledge | "Does this increase or decrease the number of people who can modify this area?" |
-| 9 | human-factors-reviewer | Change size, cohesion, cognitive load, scope creep, author preparation, reviewability | "Can a human effectively review this change?" |
-| 10 | simplification-reviewer | Over-engineering, unnecessary abstraction, indirection, premature generalization, config bloat, framework overuse | "What would this look like if it were easy?" |
-| 11 | dead-code-reviewer | Unreachable code, unused declarations/imports/params, no-op operations, commented-out code, vestigial scaffolding, write-only variables | "If I deleted this, would anything change?" |
-
-## Step 4: Monitor and Collect
-
-1. Assign tasks via `TaskUpdate` with `owner`
-2. Send each agent their assignment via `SendMessage`
-3. Wait for all agents to report back
-4. Shut down completed agents via `SendMessage` with `type: shutdown_request`
-
-## Step 5: Synthesize the Final Review
-
 ### Deduplication
-Consolidate findings flagged by multiple agents into the single most impactful framing.
+
+Consolidate findings flagged by multiple agents into the single most impactful framing. Note which agents agreed.
 
 ### Prioritization
+
 Order strictly: blockers > risks > suggestions > questions > nitpicks.
 
 ### Balance
+
 Include genuine, specific praise. One harsh comment overshadows ten positive ones (negativity bias).
 
 ### Calibrate to Risk Lane
-- L0: SHORT review. Few key points. Don't over-scrutinize routine changes.
+
+- L0: SHORT review. Few key points only.
 - L1: Thorough but proportional.
-- L2: Comprehensive, including Socratic debate insights and governance assessment.
+- L2: Comprehensive, including Codex debate insights, cross-review outcomes, and governance assessment.
 
 ### Output Structure
 
@@ -193,10 +210,11 @@ Include genuine, specific praise. One harsh comment overshadows ten positive one
 ## Review Summary
 - **Risk Lane**: L0 / L1 / L2
 - **Change Size**: X lines across Y files
-- **One-line summary**: [Your overall take in one sentence]
+- **Agents Spawned**: [list with rationale for selection]
+- **One-line summary**: [Your overall take]
 
 ## What's Done Well
-[Specific, genuine praise. Cite specific good decisions.]
+[Specific, genuine praise. Cite good decisions.]
 
 ## Blockers (must resolve before merge)
 [taxonomy-label] file:line — Concrete harm scenario and suggested fix.
@@ -213,8 +231,11 @@ Include genuine, specific praise. One harsh comment overshadows ten positive one
 ## Nitpicks
 [taxonomy-label] file:line — Preference. Keep SHORT.
 
+## Cross-Review Outcomes (L1/L2 only)
+Contradictions found, how resolved, findings strengthened or withdrawn after cross-agent challenge.
+
 ## Socratic Debate Summary (L1/L2 only)
-Key Codex challenges, position shifts, strongest counter-arguments, failure modes, trajectory assessment.
+Key Codex challenges, position shifts, strongest counter-arguments, failure modes.
 
 ## Knowledge Transfer Assessment
 Self-documenting? Bus factor? Context quality?
@@ -226,11 +247,9 @@ Rollback plan, blast radius, observability, decision record.
 Size verdict, cohesion, cognitive load, improvement suggestions.
 ```
 
-### Merge Verdict (REQUIRED — must be the LAST section of the review)
+### Merge Verdict (REQUIRED — must be the LAST section)
 
-After all findings are presented, deliver an explicit merge verdict. This is the most important output of the entire review.
-
-**If no blockers exist — APPROVE:**
+**No blockers — APPROVE:**
 
 ```
 ## Verdict: APPROVE
@@ -238,7 +257,7 @@ After all findings are presented, deliver an explicit merge verdict. This is the
 This change improves code health and is safe to merge. [1-2 sentence rationale.]
 ```
 
-**If no blockers but suggestions/risks exist — APPROVE WITH SUGGESTIONS:**
+**No blockers but suggestions/risks — APPROVE WITH SUGGESTIONS:**
 
 ```
 ## Verdict: APPROVE (with suggestions)
@@ -246,7 +265,7 @@ This change improves code health and is safe to merge. [1-2 sentence rationale.]
 Safe to merge as-is. The suggestions above would improve the change but are not required. [1-2 sentence rationale.]
 ```
 
-**If blockers exist — REQUEST CHANGES:**
+**Blockers exist — REQUEST CHANGES:**
 
 ```
 ## Verdict: REQUEST CHANGES
@@ -254,15 +273,13 @@ Safe to merge as-is. The suggestions above would improve the change but are not 
 This change has [N] blocker(s) that must be resolved before merge:
 
 1. **[Blocker title]** — [file:line] — [What must change and why]
-2. **[Blocker title]** — [file:line] — [What must change and why]
 ...
 
 Once these are addressed, this PR should be ready to approve.
 ```
 
-**When the verdict is REQUEST CHANGES**, you MUST also invoke the `/interview` skill to collaboratively determine the best approach for communicating the review findings to the PR author — whether to post individual PR comments per blocker, a single summary comment, open a discussion, or another approach.
-
 ### Final Anti-Pattern Checks
+
 Before delivering, verify you are NOT:
 - Producing a wall of text (concision = respect)
 - Burying blockers among nitpicks
@@ -272,9 +289,16 @@ Before delivering, verify you are NOT:
 - Framing opinions as mandates
 - Bikeshedding on trivia
 
+## Step 7: Cleanup
+
+1. Mark all tasks as completed via `TaskUpdate`
+2. Shut down all agents via `SendMessage` with `type: shutdown_request`
+3. Wait for shutdown confirmations
+4. Call `TeamDelete`
+
 ## Calibration Principles
 
-1. **Progress over perfection.** "There is no such thing as 'perfect' code -- there is only better code." (Google)
+1. **Progress over perfection.** "There is no such thing as 'perfect' code — there is only better code." (Google)
 2. **The author is competent.** Assume good intent. Ask before assuming wrong.
 3. **Governance, not gatekeeping.** Protect future modifiability, not ego.
 4. **Every comment has a cost.** 3 high-signal > 30 mixed-signal.
@@ -282,5 +306,3 @@ Before delivering, verify you are NOT:
 6. **Be explicit about severity.** The taxonomy distinguishes "data loss" from "naming preference."
 7. **Speed matters.** 1-hour review > 3-day perfect review. Context decays.
 8. **Power awareness.** Never hold approval hostage for unrelated work.
-
-After delivering the review, clean up with `TeamDelete`.
