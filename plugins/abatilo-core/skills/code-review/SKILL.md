@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Orchestrates a parallel code review using a 22-agent team. 11 Claude-powered specialized reviewers (correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, simplification, dead code) each paired with a Codex MCP mirror agent that conducts an independent threaded review on the same dimension. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
+description: Orchestrates a parallel code review using an 11-agent team. Each specialist (correctness, architecture, security, maintainability, testing, performance, governance, knowledge transfer, human factors, simplification, dead code) conducts its own review, then stress-tests its findings through a Socratic-style Codex debate — adversarial collaboration where the agent defends its work against Codex challenges. Classifies changes by risk lane and scales review depth accordingly. Produces a structured, deduplicated review with findings labeled by severity using Conventional Comments taxonomy.
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
 disable-model-invocation: true
 allowed-tools:
@@ -27,11 +27,11 @@ allowed-tools:
 
 1. Gather the diff
 2. Classify the risk lane
-3. **Use `TeamCreate` to create a team, then use the `Task` tool to spawn up to 22 parallel agent teammates** (see Step 3)
+3. **Use `TeamCreate` to create a team, then use the `Task` tool to spawn up to 11 parallel agent teammates** (see Step 3)
 4. Wait for all agents to report back
 5. Synthesize their findings into a final review
 
-You will orchestrate 22 review agents in parallel: 11 Claude-powered specialists and 11 Codex MCP mirror agents that independently review the same dimensions through threaded Codex conversations.
+You will orchestrate up to 11 review agents in parallel. Each agent conducts a two-phase review: Phase 1 is the specialist analysis, Phase 2 is a Socratic Codex debate where the agent stress-tests its own findings through adversarial collaboration with Codex MCP (L1/L2 only).
 
 The target of the review is: $ARGUMENTS
 
@@ -60,11 +60,11 @@ Count lines changed. Optimal: 200-400 lines (SmartBear/Cisco). Beyond 1000 lines
 
 ### Risk Lane Classification
 
-| Lane | Criteria | Agents to Spawn |
-|------|----------|-----------------|
-| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | Claude agents 1-4, 9, 11 only (no Codex mirrors) |
-| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | All 11 Claude agents + all 11 Codex mirrors (22 total) |
-| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | All 22 agents |
+| Lane | Criteria | Agents to Spawn | Codex Debate? |
+|------|----------|-----------------|---------------|
+| **L0 - Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | Agents 1-4, 9, 11 only | No |
+| **L1 - Significant** | New features, refactors, API changes, 3+ files, shared code | All 11 agents | Yes |
+| **L2 - Strategic** | Architecture changes, security-sensitive, data models, public API, 10+ files, auth/payments/PII | All 11 agents | Yes |
 
 ### PR Context Quality
 If the PR lacks a description explaining **what** AND **why**, flag as your first `blocker`. A clean PR with no context is worse than a messy PR that spreads understanding.
@@ -112,7 +112,7 @@ Task(
 )
 ```
 
-**Repeat for every agent.** For L1/L2, that means 22 parallel `Task` calls in a single message. For L0, spawn only the subset specified in the risk lane table.
+**Repeat for every agent.** For L1/L2, that means 11 parallel `Task` calls in a single message. For L0, spawn only the subset specified in the risk lane table.
 
 **CRITICAL**: Each agent's prompt MUST contain the full diff text. Agents cannot see the diff unless you paste it into their prompt. Also include the risk lane and PR context.
 
@@ -148,7 +148,7 @@ Spawn only agents appropriate for the risk lane. Each agent prompt MUST include 
 
 Full agent specifications with detailed checklists are in [references/agents.md](references/agents.md).
 
-### Claude Agents (1-11)
+### Agent Specifications (1-11)
 
 | # | Name | Focus | Key Question |
 |---|------|-------|--------------|
@@ -163,24 +163,6 @@ Full agent specifications with detailed checklists are in [references/agents.md]
 | 9 | human-factors-reviewer | Change size, cohesion, cognitive load, scope creep, author preparation, reviewability | "Can a human effectively review this change?" |
 | 10 | simplification-reviewer | Over-engineering, unnecessary abstraction, indirection, premature generalization, config bloat, framework overuse | "What would this look like if it were easy?" |
 | 11 | dead-code-reviewer | Unreachable code, unused declarations/imports/params, no-op operations, commented-out code, vestigial scaffolding, write-only variables | "If I deleted this, would anything change?" |
-
-### Codex MCP Mirror Agents (12-22)
-
-Each mirrors its Claude counterpart but conducts an independent multi-turn threaded review via Codex MCP. This gives every dimension a second opinion from a different model.
-
-| # | Name | Mirrors | Codex Thread Focus |
-|---|------|---------|-------------------|
-| 12 | codex-correctness-reviewer | Agent 1 | Logic errors, edge cases, race conditions via Codex debate |
-| 13 | codex-architecture-reviewer | Agent 2 | Coupling, design fit, future trajectory via Codex debate |
-| 14 | codex-security-reviewer | Agent 3 | Attack surfaces, exploit scenarios via Codex debate |
-| 15 | codex-maintainability-reviewer | Agent 4 | Readability, naming, complexity via Codex debate |
-| 16 | codex-testing-reviewer | Agent 5 | Coverage gaps, test quality via Codex debate |
-| 17 | codex-performance-reviewer | Agent 6 | Scalability, hot paths, resource usage via Codex debate |
-| 18 | codex-governance-reviewer | Agent 7 | Blast radius, rollback, operational risk via Codex debate |
-| 19 | codex-knowledge-reviewer | Agent 8 | Documentation, bus factor, context quality via Codex debate |
-| 20 | codex-human-factors-reviewer | Agent 9 | Reviewability, cognitive load, PR structure via Codex debate |
-| 21 | codex-simplification-reviewer | Agent 10 | Over-engineering, unnecessary complexity via Codex debate |
-| 22 | codex-dead-code-reviewer | Agent 11 | Unreachable code, no-ops, unused declarations via Codex debate |
 
 ## Step 4: Monitor and Collect
 
@@ -203,7 +185,7 @@ Include genuine, specific praise. One harsh comment overshadows ten positive one
 ### Calibrate to Risk Lane
 - L0: SHORT review. Few key points. Don't over-scrutinize routine changes.
 - L1: Thorough but proportional.
-- L2: Comprehensive, including Codex debate summary and governance assessment.
+- L2: Comprehensive, including Socratic debate insights and governance assessment.
 
 ### Output Structure
 
@@ -231,8 +213,8 @@ Include genuine, specific praise. One harsh comment overshadows ten positive one
 ## Nitpicks
 [taxonomy-label] file:line — Preference. Keep SHORT.
 
-## Design Debate Summary (L1/L2 only)
-Key tradeoffs, strongest counter-argument, failure modes, trajectory assessment.
+## Socratic Debate Summary (L1/L2 only)
+Key Codex challenges, position shifts, strongest counter-arguments, failure modes, trajectory assessment.
 
 ## Knowledge Transfer Assessment
 Self-documenting? Bus factor? Context quality?
