@@ -284,9 +284,9 @@ Before delivering, verify you are NOT:
 - Framing opinions as mandates
 - Bikeshedding on trivia
 
-## Step 7: Stay Available
+## Step 7: Clean Up
 
-After delivering the review, **do NOT shut down agents or delete the team**. The user may want to ask follow-up questions through you, and idle agents retain their full context history. Leave cleanup to the user.
+After delivering the review, shut down all agents and delete the team. Agents persist learnings via their local memory directories — they do not need to stay alive for context retention.
 
 ## Calibration Principles
 

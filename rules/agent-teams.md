@@ -18,6 +18,6 @@ When shutting down a team, follow this exact order:
 - NEVER send `shutdown_request` to an agent that hasn't sent an `idle_notification` or a findings message in the current phase. The request will queue behind their in-progress turn.
 - NEVER retry `TeamDelete` in a loop. If it fails, agents are still running — wait for their shutdown approvals.
 
-## Prefer Staying Available
+## Prefer Clean Shutdown
 
-Unless the user explicitly requests cleanup, leave agents idle after delivering results. Idle agents retain full context and can answer follow-up questions. The user can shut down the team themselves.
+After delivering results, shut down agents and delete the team. Agents with `memory: local` persist learnings across sessions — they do not need to stay alive for context retention.
