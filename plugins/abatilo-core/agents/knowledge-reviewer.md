@@ -12,6 +12,7 @@ tools:
   - TaskUpdate
   - TaskGet
   - TaskList
+  - ToolSearch
 mcpServers:
   - codex
 ---
@@ -57,6 +58,7 @@ After your specialist review, stress-test your findings through adversarial deba
 
 ### Process
 
+0. **Load tools**: Use `ToolSearch` with query `"codex"` to load `mcp__codex__codex` and `mcp__codex__codex-reply`.
 1. **Start thread**: Call `mcp__codex__codex` with your Phase 1 findings, the diff context, and your opening questions (listed in your specialist section below).
 2. **Debate**: Continue via `mcp__codex__codex-reply`. Each turn must include substantive challenge, not acknowledgment.
 3. **Convergence**: After each Codex reply, evaluate:

@@ -118,7 +118,7 @@ Task(
   name: "correctness-reviewer",
   team_name: "code-review-<identifier>",
   run_in_background: true,
-  prompt: "RISK LANE: L1\n\nPR CONTEXT:\n<PR description and context>\n\nDIFF TO REVIEW:\n<the full diff>\n\nYour task has been created as Task #N. Update it to in_progress when you start, and mark it completed when done sending findings."
+  prompt: "RISK LANE: L1\n\nCODEX DEBATE REQUIREMENT:\nThis is an L1/L2 review. After your specialist review, you MUST stress-test findings via Codex debate before sending them. Use ToolSearch with query \"codex\" to load mcp__codex__codex and mcp__codex__codex-reply, then follow your Codex Debate protocol. Include Codex insights and thread ID in your findings message.\n(For L0 reviews, replace the above with: CODEX DEBATE: Not required for L0. Send findings directly.)\n\nPR CONTEXT:\n<PR description and context>\n\nDIFF TO REVIEW:\n<the full diff>\n\nYour task has been created as Task #N. Update it to in_progress when you start, and mark it completed when done sending findings."
 )
 ```
 
