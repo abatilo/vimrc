@@ -102,28 +102,23 @@ State which agents you're spawning and why before proceeding.
 TeamCreate(team_name: "code-review-<short-identifier>")
 ```
 
-### 3b. Read agent specifications
+### 3b. Create tasks for each selected agent
 
-Read [references/agents.md](references/agents.md). It contains two parts:
-1. **Shared Preamble** — prepend to every agent's prompt
-2. **Agent-specific sections** — one per specialist
+For each selected agent, call `TaskCreate` with subject, description, and activeForm.
 
-### 3c. Create tasks, assemble prompts, and spawn all agents
+### 3c. Spawn all agents in a SINGLE message
 
-For each selected agent:
-1. Call `TaskCreate` with subject, description, and activeForm
-2. Construct the spawn prompt: **Shared Preamble** + `\n\n---\n\n` + **agent-specific section**
-3. Substitute `[L0/L1/L2]`, `[Insert PR description and context here]`, and `[Insert the diff here]` placeholders with actual values
+Each specialist has a custom agent definition (in `agents/`) with its review protocol, specialist instructions, and persistent memory. You do NOT need to assemble prompts — the agent's `.md` file provides its system prompt automatically.
 
-Then spawn **ALL agents in a SINGLE message** for maximum parallelism:
+Spawn using `subagent_type` matching the agent name. The Task prompt contains only the dynamic content:
 
 ```
 Task(
-  subagent_type: "general-purpose",
+  subagent_type: "correctness-reviewer",
   name: "correctness-reviewer",
   team_name: "code-review-<identifier>",
   run_in_background: true,
-  prompt: "<assembled prompt with substituted values>"
+  prompt: "RISK LANE: L1\n\nPR CONTEXT:\n<PR description and context>\n\nDIFF TO REVIEW:\n<the full diff>\n\nYour task has been created as Task #N. Update it to in_progress when you start, and mark it completed when done sending findings."
 )
 ```
 
@@ -289,12 +284,9 @@ Before delivering, verify you are NOT:
 - Framing opinions as mandates
 - Bikeshedding on trivia
 
-## Step 7: Cleanup
+## Step 7: Stay Available
 
-1. Mark all tasks as completed via `TaskUpdate`
-2. Shut down all agents via `SendMessage` with `type: shutdown_request`
-3. Wait for shutdown confirmations
-4. Call `TeamDelete`
+After delivering the review, **do NOT shut down agents or delete the team**. The user may want to ask follow-up questions through you, and idle agents retain their full context history. Leave cleanup to the user.
 
 ## Calibration Principles
 
