@@ -74,23 +74,19 @@ If the PR lacks a description explaining **what** AND **why**, flag as your firs
 
 ### Dynamic Agent Selection
 
-Analyze the diff and select which specialists are relevant. Not every change needs all 11 agents. Err toward including rather than excluding for L1/L2.
+Analyze the diff and select which specialists are relevant. Not every change needs all 7 agents. Err toward including rather than excluding for L1/L2.
 
 | # | Agent | Spawn guidance |
 |---|-------|----------------|
-| 1 | correctness-reviewer | Always. Logic errors are always relevant. |
+| 1 | correctness-reviewer | Always. Logic errors and dead/unreachable code. |
 | 2 | architecture-reviewer | 3+ files, new modules, structural changes, dependency direction changes. |
 | 3 | security-reviewer | Auth, input handling, crypto, API endpoints, PII, network calls, deserialization. |
-| 4 | maintainability-reviewer | Significant new code (not just config/docs), naming-heavy changes. |
+| 4 | maintainability-reviewer | Significant new code, naming-heavy changes, new abstractions, simplification opportunities. |
 | 5 | testing-reviewer | Test files changed, or production code without corresponding test changes. |
 | 6 | performance-reviewer | Database queries, loops over data, network calls, hot-path code, caching. |
-| 7 | governance-reviewer | L1/L2 only. Deployment, API surface, operational, rollback-sensitive changes. |
-| 8 | knowledge-reviewer | Sparse PR context, domain-specific code, bus-factor-sensitive areas. |
-| 9 | human-factors-reviewer | Always. Meta-review of the change itself. |
-| 10 | simplification-reviewer | New abstractions, config options, indirection layers, framework introduction. |
-| 11 | dead-code-reviewer | Code removal/refactoring, new code alongside existing similar code. |
+| 7 | governance-reviewer | L1/L2 only. Change governance, reviewability, PR context, operational impact. |
 
-For **L0**: spawn only agents 1 and 9 unless the diff warrants more.
+For **L0**: spawn only agent 1 unless the diff warrants more.
 
 State which agents you're spawning and why before proceeding.
 
@@ -183,11 +179,11 @@ After collecting all Phase 1 findings:
 
 ### Deduplication
 
-Consolidate findings flagged by multiple agents into the single most impactful framing. Note which agents agreed.
+Consolidate findings flagged by multiple agents into the single most impactful framing. Note which agents agreed. When deduplicating, use the highest priority (lowest P-number) assigned by any agent.
 
 ### Prioritization
 
-Order strictly: blockers > risks > suggestions > questions > nitpicks.
+Order strictly: blockers > risks > suggestions > questions > nitpicks. Within each taxonomy label, sub-order by P0 > P1 > P2 > P3.
 
 ### Balance
 
@@ -232,14 +228,8 @@ Contradictions found, how resolved, findings strengthened or withdrawn after cro
 ## Socratic Debate Summary (L1/L2 only)
 Key Codex challenges, position shifts, strongest counter-arguments, failure modes.
 
-## Knowledge Transfer Assessment
-Self-documenting? Bus factor? Context quality?
-
 ## Governance Assessment (L1/L2 only)
-Rollback plan, blast radius, observability, decision record.
-
-## Reviewability Assessment
-Size verdict, cohesion, cognitive load, improvement suggestions.
+Rollback plan, blast radius, observability, decision record, reviewability (size, cohesion, cognitive load).
 ```
 
 ### Merge Verdict (REQUIRED — must be the LAST section)
@@ -249,6 +239,8 @@ Size verdict, cohesion, cognitive load, improvement suggestions.
 ```
 ## Verdict: APPROVE
 
+**Correctness**: patch is correct
+
 This change improves code health and is safe to merge. [1-2 sentence rationale.]
 ```
 
@@ -257,6 +249,8 @@ This change improves code health and is safe to merge. [1-2 sentence rationale.]
 ```
 ## Verdict: APPROVE (with suggestions)
 
+**Correctness**: patch is correct
+
 Safe to merge as-is. The suggestions above would improve the change but are not required. [1-2 sentence rationale.]
 ```
 
@@ -264,6 +258,8 @@ Safe to merge as-is. The suggestions above would improve the change but are not 
 
 ```
 ## Verdict: REQUEST CHANGES
+
+**Correctness**: patch is correct / patch is incorrect
 
 This change has [N] blocker(s) that must be resolved before merge:
 
