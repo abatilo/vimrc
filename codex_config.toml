@@ -14,9 +14,5 @@ web_search = "live"
 inherit = "all"
 ignore_default_excludes = true
 
-[mcp_servers.deepwiki]
-command = "npx"
-args = ["mcp-remote", "https://mcp.deepwiki.com/mcp"]
-
 [notice.model_migrations]
 "gpt-5.2" = "gpt-5.2-codex"
