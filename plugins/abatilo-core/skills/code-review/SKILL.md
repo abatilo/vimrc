@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Orchestrates a three-phase parallel code review using an agent team. Phase 1: dynamically selected specialists each review the diff and stress-test findings through Socratic Codex debate. Phase 2: lead-mediated cross-review where specialists challenge each other's findings. Phase 3: deduplicated synthesis with Conventional Comments taxonomy and explicit merge verdict."
+description: "Orchestrates a three-phase parallel code review using an agent team. Phase 1: dynamically selected specialists each review the diff and stress-test findings through Socratic Codex debate. Phase 2: lead-mediated cross-review where specialists challenge each other's findings. Phase 3: deduplicated synthesis with priority-based output and binary merge verdict."
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
 disable-model-invocation: true
 allowed-tools:
@@ -166,7 +166,6 @@ After collecting all Phase 1 findings:
 | `question` | Seeking understanding, not suggesting. | No |
 | `suggestion` | Concrete alternative with rationale and code snippet. | No |
 | `nitpick` | Trivial preference, not linter-enforceable. | No |
-| `praise` | Something done well. **Required.** | No |
 | `thought` | Observation, not a request. | No |
 
 ### Comment Framing
@@ -181,91 +180,72 @@ After collecting all Phase 1 findings:
 
 Consolidate findings flagged by multiple agents into the single most impactful framing. Note which agents agreed. When deduplicating, use the highest priority (lowest P-number) assigned by any agent.
 
-### Prioritization
+### Calibrate to Risk Lane (internal — not surfaced in output)
 
-Order strictly: blockers > risks > suggestions > questions > nitpicks. Within each taxonomy label, sub-order by P0 > P1 > P2 > P3.
-
-### Balance
-
-Include genuine, specific praise. One harsh comment overshadows ten positive ones (negativity bias).
-
-### Calibrate to Risk Lane
-
-- L0: SHORT review. Few key points only.
+- L0: SHORT review. Few key points only. No Codex debate columns.
 - L1: Thorough but proportional.
-- L2: Comprehensive, including Codex debate insights, cross-review outcomes, and governance assessment.
+- L2: Comprehensive.
+
+### Priority Mapping (internal classification → output tier)
+
+| Output Tier | Maps From |
+|---|---|
+| Critical | Any `blocker` finding (regardless of P-level) |
+| High | P0/P1 non-blocker findings |
+| Medium | P2 findings |
+| Low | P3 findings, nitpicks, thoughts |
+
+Empty tiers are omitted. Questions get folded into the appropriate tier based on their priority.
 
 ### Output Structure
 
 ```
-## Review Summary
-- **Risk Lane**: L0 / L1 / L2
+## Summary
 - **Change Size**: X lines across Y files
-- **Agents Spawned**: [list with rationale for selection]
-- **One-line summary**: [Your overall take]
+- **One-line summary**: [Overall take]
 
-## What's Done Well
-[Specific, genuine praise. Cite good decisions.]
+## Critical
+[Items that must be resolved before merge]
 
-## Blockers (must resolve before merge)
-[taxonomy-label] file:line — Concrete harm scenario and suggested fix.
+**`file:line` — Title**
+Blurb describing the issue, concrete harm, and suggested fix. Include rationale for suggestions.
+- **Claude**: [Fix now / Can defer] — [1-sentence rationale]
+- **Codex**: [Fix now / Can defer] — [1-sentence rationale]
 
-## Risks (require conscious decision)
-[taxonomy-label] file:line — Failure scenario and mitigation options.
+## High Priority
+[Items that should be addressed soon]
+(same per-item format)
 
-## Suggestions
-[taxonomy-label] file:line — Rationale and concrete alternative.
+## Medium Priority
+(same per-item format)
 
-## Questions
-[taxonomy-label] file:line — What you need to understand and why.
+## Low Priority
+(same per-item format)
 
-## Nitpicks
-[taxonomy-label] file:line — Preference. Keep SHORT.
-
-## Cross-Review Outcomes (L1/L2 only)
-Contradictions found, how resolved, findings strengthened or withdrawn after cross-agent challenge.
-
-## Socratic Debate Summary (L1/L2 only)
-Key Codex challenges, position shifts, strongest counter-arguments, failure modes.
-
-## Governance Assessment (L1/L2 only)
-Rollback plan, blast radius, observability, decision record, reviewability (size, cohesion, cognitive load).
+## Verdict: APPROVE / REQUEST CHANGES
+[1-2 sentence rationale. If REQUEST CHANGES, list the Critical items that must be resolved.]
 ```
 
-### Merge Verdict (REQUIRED — must be the LAST section)
+For L0 reviews (no Codex debate), omit the Codex line from each finding.
 
-**No blockers — APPROVE:**
+### Verdict (REQUIRED — must be the LAST section)
+
+Binary. No "approve with suggestions" — either it's safe to merge or it isn't.
+
+**No Critical items — APPROVE:**
 
 ```
 ## Verdict: APPROVE
-
-**Correctness**: patch is correct
-
-This change improves code health and is safe to merge. [1-2 sentence rationale.]
+This change is safe to merge. [1-2 sentence rationale.]
 ```
 
-**No blockers but suggestions/risks — APPROVE WITH SUGGESTIONS:**
-
-```
-## Verdict: APPROVE (with suggestions)
-
-**Correctness**: patch is correct
-
-Safe to merge as-is. The suggestions above would improve the change but are not required. [1-2 sentence rationale.]
-```
-
-**Blockers exist — REQUEST CHANGES:**
+**Critical items exist — REQUEST CHANGES:**
 
 ```
 ## Verdict: REQUEST CHANGES
-
-**Correctness**: patch is correct / patch is incorrect
-
-This change has [N] blocker(s) that must be resolved before merge:
-
-1. **[Blocker title]** — [file:line] — [What must change and why]
+This change has [N] critical item(s) that must be resolved before merge:
+1. **[Title]** — `file:line` — [What must change and why]
 ...
-
 Once these are addressed, this PR should be ready to approve.
 ```
 
@@ -273,10 +253,8 @@ Once these are addressed, this PR should be ready to approve.
 
 Before delivering, verify you are NOT:
 - Producing a wall of text (concision = respect)
-- Burying blockers among nitpicks
 - Demanding perfection (approve if it improves code health)
 - Including unresolved conflicting feedback
-- Missing praise (not optional)
 - Framing opinions as mandates
 - Bikeshedding on trivia
 

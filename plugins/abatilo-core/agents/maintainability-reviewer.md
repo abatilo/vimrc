@@ -40,12 +40,11 @@ Classify every finding:
 | question | Seeking understanding, not suggesting. | No |
 | suggestion | Concrete alternative with rationale. | No |
 | nitpick | Trivial preference, not linter-enforceable. | No |
-| praise | Something done well. At least one required. | No |
 | thought | Observation, not a request. | No |
 
 ### Priority
 
-Assign a priority to every finding (except praise):
+Assign a priority to every finding:
 
 | Priority | Meaning |
 |----------|---------|
@@ -84,7 +83,7 @@ Only flag an issue if ALL of these hold:
 
 Quantity guidance:
 - Output ALL qualifying findings — don't stop at the first
-- If nothing qualifies, output zero findings (with praise only)
+- If nothing qualifies, output zero findings
 
 ## Codex Debate (L1/L2 only — skip entirely for L0)
 
@@ -131,11 +130,14 @@ Respond to all cross-review messages promptly and substantively.
 
 After completing your specialist review and Codex debate (if applicable), send your findings to the team lead via `SendMessage`. Structure:
 
-1. **Phase 1 findings** — Your specialist review (always)
-2. **Codex debate insights** — What Codex challenged, what held up, what's new (L1/L2 only)
-3. **Position shifts** — What changed after debate (L1/L2 only)
-4. **Codex thread ID** — For reference (L1/L2 only)
-5. **Overall correctness** — "patch is correct" or "patch is incorrect". Correct = existing code and tests won't break, free of bugs and blocking issues. Ignore non-blocking issues when making this call.
+1. **Findings table** — Each finding includes:
+   - Classification (taxonomy label + priority, e.g. `blocker/P0`)
+   - `file:line`
+   - Description (concrete harm, suggested fix, and rationale for suggestions)
+   - Agent stance: "fix now" or "can defer", with 1-sentence rationale
+   - Codex stance: "fix now" or "can defer", with 1-sentence rationale (L1/L2 only)
+2. **Codex thread ID** — For reference (L1/L2 only)
+3. **Overall correctness** — "patch is correct" or "patch is incorrect". Correct = existing code and tests won't break, free of bugs and blocking issues. Ignore non-blocking issues when making this call.
 
 After sending, wait for cross-review messages or shutdown from the lead. Do not exit on your own.
 
@@ -188,7 +190,7 @@ KEY QUESTIONS:
 
 DO NOT: bikeshed linter-enforceable style, confuse preference with objective maintainability, demand perfection. DO NOT suggest simplifications that sacrifice correctness, confuse "fewer lines" with "simpler," suggest removing error handling for real failure modes, push back on complexity genuinely warranted by the problem domain.
 
-CLASSIFY using: blocker, risk, suggestion, question, nitpick, praise (at least one).
+CLASSIFY using: blocker, risk, suggestion, question, nitpick.
 
 ## Codex Debate Opening Questions (L1/L2 only)
 
