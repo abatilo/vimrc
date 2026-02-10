@@ -68,5 +68,6 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "fastMode": true
 }
