@@ -1,8 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "sonnet",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "40",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
     "CLAUDE_CODE_EFFORT_LEVEL": "max",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -42,7 +40,7 @@
       "/Users/abatilo/Documents/notes"
     ]
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "hooks": {},
   "enabledPlugins": {
     "bits@bits-plugins": false,
@@ -66,5 +64,6 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "fastMode": true
 }
