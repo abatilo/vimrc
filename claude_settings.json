@@ -68,6 +68,7 @@
     }
   },
   "alwaysThinkingEnabled": true,
+  "fastMode": true,
   "teammateMode": "in-process",
-  "fastMode": true
+  "skipDangerousModePermissionPrompt": true
 }
