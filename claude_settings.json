@@ -47,7 +47,6 @@
   "model": "opus",
   "hooks": {},
   "enabledPlugins": {
-    "bits@bits-plugins": false,
     "abatilo-core@abatilo-plugins": true,
     "claude-code-wakatime@wakatime": true,
     "code-simplifier@claude-plugins-official": true,
@@ -69,6 +68,6 @@
   },
   "alwaysThinkingEnabled": true,
   "fastMode": true,
-  "teammateMode": "in-process",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "teammateMode": "in-process"
 }
