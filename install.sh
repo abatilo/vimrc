@@ -71,10 +71,6 @@ jq --arg instructions_file "$PWD/codex_mcp_instructions.md" \
       ],
       "env": {}
     },
-    "jira": {
-      "type": "http",
-      "url": "https://mcp.atlassian.com/v1/mcp"
-    },
     "coreweave": {
       "type": "http",
       "url": "https://docs.coreweave.com/mcp"
