@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "sonnet",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-6",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "opus",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "opus",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
     "CLAUDE_CODE_EFFORT_LEVEL": "max",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
