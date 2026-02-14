@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.go"
+---
+
 # Go LSP (gopls) Usage
 
 The `gopls-lsp` plugin is enabled. Use LSP operations proactively when working in Go codebases — don't rely solely on Grep/Glob/Read for code understanding.
