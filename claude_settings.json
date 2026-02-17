@@ -3,6 +3,7 @@
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "sonnet",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-6",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "40",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
     "CLAUDE_CODE_EFFORT_LEVEL": "max",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -43,14 +44,15 @@
       "/Users/abatilo/Documents/notes"
     ]
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "hooks": {},
   "enabledPlugins": {
     "abatilo-core@abatilo-plugins": true,
     "claude-code-wakatime@wakatime": true,
     "code-simplifier@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "support@cw-plugins": true
+    "support@cw-plugins": true,
+    "bits@bits-plugins": true
   },
   "extraKnownMarketplaces": {
     "abatilo-plugins": {
@@ -67,7 +69,6 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "fastMode": true,
   "skipDangerousModePermissionPrompt": true,
   "teammateMode": "in-process"
 }
