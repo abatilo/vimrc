@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Orchestrates a three-phase parallel code review using an agent team. Phase 1: dynamically selected specialists each review the diff and stress-test findings through Socratic Codex debate. Phase 2: lead-mediated cross-review where specialists challenge each other's findings. Phase 3: deduplicated synthesis with priority-based output and binary merge verdict."
+description: "Orchestrates a three-phase parallel code review using an agent team. Phase 1: dynamically selected specialists each review the diff with structured self-critique. Phase 2: mandatory lead-mediated cross-review where specialists challenge each other's findings (primary rigor layer). Phase 3: deduplicated synthesis with priority-based output and binary merge verdict."
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
 disable-model-invocation: true
 allowed-tools:
@@ -29,7 +29,7 @@ Your workflow:
 1. Gather the diff
 2. Classify risk lane and select relevant specialists
 3. Create a team and spawn specialists
-4. **Phase 1**: Collect specialist findings (each agent reviews + Codex debate)
+4. **Phase 1**: Collect specialist findings (each agent reviews + self-critique)
 5. **Phase 2**: Mediate cross-agent challenges (L1/L2 only)
 6. **Phase 3**: Synthesize into final review
 7. Clean up
@@ -62,7 +62,7 @@ Count lines changed. Optimal: 200–400 lines (SmartBear/Cisco). Beyond 1000 lin
 
 ### Risk Lane
 
-| Lane | Criteria | Codex Debate? | Cross-Review? |
+| Lane | Criteria | Self-Critique? | Cross-Review? |
 |------|----------|---------------|---------------|
 | **L0 — Routine** | Config, docs, dependency bumps, single-line fixes, established patterns | No | No |
 | **L1 — Significant** | New features, refactors, API changes, 3+ files, shared code | Yes | Yes |
@@ -84,7 +84,7 @@ Analyze the diff and select which specialists are relevant. Not every change nee
 | 4 | maintainability-reviewer | Significant new code, naming-heavy changes, new abstractions, simplification opportunities. |
 | 5 | testing-reviewer | Test files changed, or production code without corresponding test changes. |
 | 6 | performance-reviewer | Database queries, loops over data, network calls, hot-path code, caching. |
-| 7 | governance-reviewer | L1/L2 only. Change governance, reviewability, PR context, operational impact. |
+| 7 | governance-reviewer | L1/L2 only. Skip for test-only or docs-only changes. Change governance, reviewability, PR context, operational impact. |
 
 For **L0**: spawn only agent 1 unless the diff warrants more.
 
@@ -114,7 +114,7 @@ Task(
   name: "correctness-reviewer",
   team_name: "code-review-<identifier>",
   run_in_background: true,
-  prompt: "RISK LANE: L1\n\nCODEX DEBATE REQUIREMENT:\nThis is an L1/L2 review. After your specialist review, you MUST stress-test findings via Codex debate before sending them. Use ToolSearch with query \"codex\" to load mcp__codex__codex and mcp__codex__codex-reply, then follow your Codex Debate protocol. Include Codex insights and thread ID in your findings message.\n(For L0 reviews, replace the above with: CODEX DEBATE: Not required for L0. Send findings directly.)\n\nPR CONTEXT:\n<PR description and context>\n\nDIFF TO REVIEW:\n<the full diff>\n\nYour task has been created as Task #N. Update it to in_progress when you start, and mark it completed when done sending findings."
+  prompt: "RISK LANE: L1\n\nSELF-CRITIQUE REQUIREMENT:\nThis is an L1/L2 review. After your specialist review, stress-test your findings through self-critique before sending them. Follow your Self-Critique protocol and prune or downgrade findings that don't survive scrutiny.\n(For L0 reviews, replace the above with: SELF-CRITIQUE: Not required for L0. Send findings directly.)\n\nPR CONTEXT:\n<PR description and context>\n\nDIFF TO REVIEW:\n<the full diff>\n\nYour task has been created as Task #N. Update it to in_progress when you start, and mark it completed when done sending findings."
 )
 ```
 
@@ -128,8 +128,8 @@ After spawning, use `TaskUpdate` to set `owner` on each task to the correspondin
 
 Agents work in parallel:
 1. Each agent conducts its specialist review
-2. Each agent stress-tests findings via Socratic Codex debate (L1/L2 only)
-3. Each agent sends hardened findings to you via `SendMessage`
+2. Each agent stress-tests findings via structured self-critique (L1/L2 only)
+3. Each agent sends findings to you via `SendMessage`
 4. Each agent then goes idle, waiting for Phase 2
 
 Wait for **all** agents to report. Messages are delivered automatically — you do not need to poll.
@@ -140,20 +140,37 @@ Wait for **all** agents to report. Messages are delivered automatically — you 
 
 **Skip for L0.**
 
+**Short-circuit rule**: If ALL Phase 1 findings are `suggestion`, `nitpick`, `thought`, or informational (zero `blocker`, `risk`, or `question` findings across all agents), skip cross-review. State in the synthesis: "Phase 2 skipped: no blocker/risk/question findings to challenge." Omit Challenger lines from output.
+
+This is the primary quality gate. Cross-review is mandatory for L1/L2 unless short-circuited above.
+
 After collecting all Phase 1 findings:
 
-1. **Identify cross-review targets** using your judgment:
-   - **Contradictions**: two agents disagree (e.g., architecture says "add abstraction" while simplification says "inline it")
-   - **Domain overlap**: a finding where another specialist has relevant expertise
-   - **High-severity findings** that deserve a second opinion
+1. **Identify cross-review targets**: Every `blocker`, `risk`, and `suggestion` finding MUST be routed to at least one other specialist. Use this routing guidance:
 
-2. **Route challenges** via `SendMessage` to the best-positioned agent. Include the original finding, its source agent, and what you want challenged.
+   | Finding domain | Route to | Why |
+   |----------------|----------|-----|
+   | Correctness (logic bugs) | architecture-reviewer or testing-reviewer | Verify the bug is real given codebase structure; confirm test gap |
+   | Architecture (coupling, abstraction) | maintainability-reviewer or correctness-reviewer | Challenge whether abstraction concern is practical or theoretical |
+   | Security (vulnerabilities) | correctness-reviewer | Verify exploitability — is the attack path actually reachable? |
+   | Maintainability (clarity, simplification) | architecture-reviewer | Challenge whether simplification sacrifices important properties |
+   | Testing (gaps, quality) | correctness-reviewer | Confirm the untested path is actually reachable and risky |
+   | Performance (complexity, scaling) | correctness-reviewer or architecture-reviewer | Verify the hot path assumption; confirm scale projections |
+   | Governance (process, risk) | architecture-reviewer or security-reviewer | Validate blast radius and rollback assessments |
 
-3. **Collect responses**: the challenged agent evaluates and responds. Route the response to the original agent if a counter is warranted.
+   Additionally route **contradictions** (two agents disagree) and **high-severity findings** (any P0) to the best-positioned challenger even if not in the table above.
 
-4. **Arbitrate**: if agents cannot align, you decide. You are the final arbiter.
+2. **Route challenges** via `SendMessage` to the selected agent. Include: the original finding text, its source agent, and what you want challenged (e.g., "Is this actually exploitable?" or "Is this abstraction concern practical?").
 
-5. **Integrate**: note what held up, what changed, and what was resolved.
+3. **Collect responses**: The challenged agent evaluates and responds. Route counter-arguments back to the original agent if warranted.
+
+4. **Arbitrate**: If agents cannot align after one round of challenge + response, you decide. You are the final arbiter. Don't let cross-review become infinite.
+
+5. **Integrate**: For each finding, note whether it was:
+   - **Confirmed**: Challenger agreed or couldn't counter
+   - **Modified**: Severity or framing changed based on challenge
+   - **Withdrawn**: Original agent conceded
+   - **Disputed**: Agents disagreed, lead arbitrated
 
 ## Step 6: Phase 3 — Synthesize the Final Review
 
@@ -182,7 +199,7 @@ Consolidate findings flagged by multiple agents into the single most impactful f
 
 ### Calibrate to Risk Lane (internal — not surfaced in output)
 
-- L0: SHORT review. Few key points only. No Codex debate columns.
+- L0: SHORT review. Few key points only. No cross-review.
 - L1: Thorough but proportional.
 - L2: Comprehensive.
 
@@ -209,8 +226,8 @@ Empty tiers are omitted. Questions get folded into the appropriate tier based on
 
 **`file:line` — Title**
 Blurb describing the issue, concrete harm, and suggested fix. Include rationale for suggestions.
-- **Claude**: [Fix now / Can defer] — [1-sentence rationale]
-- **Codex**: [Fix now / Can defer] — [1-sentence rationale]
+- **Author** (<agent-name>): [Fix now / Can defer] — [1-sentence rationale]
+- **Challenger** (<agent-name>): [Confirmed / Modified / Disputed] — [1-sentence assessment]
 
 ## High Priority
 [Items that should be addressed soon]
@@ -226,7 +243,7 @@ Blurb describing the issue, concrete harm, and suggested fix. Include rationale 
 [1-2 sentence rationale. If REQUEST CHANGES, list the Critical items that must be resolved.]
 ```
 
-For L0 reviews (no Codex debate), omit the Codex line from each finding.
+Omit the Challenger line when cross-review was not performed (L0, or L1/L2 short-circuited).
 
 ### Verdict (REQUIRED — must be the LAST section)
 
