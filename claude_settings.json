@@ -51,12 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay '/Users/abatilo/.claude/sounds/se000.win32#28.wav' &",
-            "async": true
-          },
-          {
-            "type": "command",
-            "command": "/Users/abatilo/abatilo/vimrc/tmux-flash-name.sh",
+            "command": "afplay '/Users/abatilo/.claude/sounds/se000.win32#50.wav' &",
             "async": true
           }
         ]
