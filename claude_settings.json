@@ -61,10 +61,9 @@
   "enabledPlugins": {
     "abatilo-core@abatilo-plugins": true,
     "claude-code-wakatime@wakatime": true,
-    "code-simplifier@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "support@cw-plugins": true,
-    "bits@bits-plugins": true
+    "bits@bits-plugins": false
   },
   "extraKnownMarketplaces": {
     "abatilo-plugins": {
