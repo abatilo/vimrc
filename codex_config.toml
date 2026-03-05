@@ -1,6 +1,8 @@
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 model_reasoning_summary = "detailed"
+model_context_window = 1000000
+model_auto_compact_token_limit = 400000
 model_verbosity = "high"
 file_opener = "none"
 show_raw_agent_reasoning = true
@@ -9,6 +11,7 @@ approval_policy = "never"
 notify = ["codex-wakatime"]
 personality = "pragmatic"
 web_search = "live"
+service_tier = "fast"
 
 [shell_environment_policy]
 inherit = "all"
