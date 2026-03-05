@@ -1,0 +1,67 @@
+{
+  "skill_name": "humanizer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Humanize this blog post I drafted about my experience switching from React to Svelte:\n\nIn today's rapidly evolving landscape of frontend development, choosing the right framework serves as a pivotal decision that can significantly impact a team's productivity and satisfaction. After years of working with React, I made the bold decision to transition our entire codebase to Svelte — a groundbreaking framework that has garnered significant attention in the developer community.\n\nThe journey was not without its challenges. Initially, our team faced several hurdles, including a steep learning curve and the need to refactor existing components. However, the results have been nothing short of transformative. Not only did we see a 40% reduction in bundle size, but we also experienced enhanced developer satisfaction and fostering a more collaborative environment.\n\nAdditionally, the intricate interplay between Svelte's reactive declarations and its compile-time approach showcases the framework's commitment to performance. This is a testament to the vibrant community that continues to push the boundaries of what's possible in web development.\n\nDespite these challenges, the future looks bright. Our team is now more productive than ever, and we're excited about the possibilities that lie ahead. The transition has been a key turning point in our development journey, setting the stage for even greater innovation.\n\nIn conclusion, if you're considering making the switch, I would highly recommend exploring Svelte. It has truly been a game-changer for our team. Let me know if you have any questions!",
+      "expected_output": "A natural-sounding blog post that preserves the author's experience (React to Svelte migration, 40% bundle size reduction) while removing AI patterns. Should have personality and voice, not just be a sterile rewrite.",
+      "files": [],
+      "expectations": [
+        "Removes 'rapidly evolving landscape' or similar AI significance inflation",
+        "Removes 'serves as a pivotal decision' copula avoidance",
+        "Removes 'garnered' (AI vocabulary)",
+        "Removes 'nothing short of transformative' (promotional language)",
+        "Removes the 'Not only...but also' negative parallelism",
+        "Removes 'intricate interplay' (AI vocabulary)",
+        "Removes 'testament' (AI vocabulary)",
+        "Removes 'vibrant community' (promotional)",
+        "Removes 'Despite these challenges, the future looks bright' (formulaic)",
+        "Removes 'In conclusion' and 'Let me know' (chatbot artifacts)",
+        "Preserves the 40% bundle size reduction fact",
+        "The output reads naturally when spoken aloud — varied sentence lengths and structures",
+        "The output has personality or voice, not just neutral reporting"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Please humanize this product announcement email I'm sending to our customers:\n\nSubject: Exciting News: Introducing Our Groundbreaking New Analytics Dashboard!\n\nDear Valued Customers,\n\nWe are thrilled to announce the launch of our new Analytics Dashboard — a pivotal addition to our platform that underscores our commitment to empowering data-driven decision-making.\n\n**Key Features:**\n- **Real-time Insights:** Get instant access to crucial metrics, ensuring you're always informed\n- **Custom Reports:** Create tailored reports that showcase your team's performance\n- **Seamless Integration:** Our dashboard seamlessly integrates with your existing tools, enhancing your workflow\n\nThis dashboard serves as a testament to the valuable feedback we've received from our vibrant user community. We've delved deep into your needs and crafted a solution that fosters collaboration and drives results.\n\nAdditionally, we're offering an exclusive 30-day free trial for all existing customers. This is not just an upgrade — it's a transformation of how you interact with your data.\n\nWe hope this helps streamline your analytics journey. Let us know if you have any questions!\n\nWarm regards,\nThe Product Team",
+      "expected_output": "A professional but human-sounding product email. Should still feel like a real company announcement — not overly casual — but without the AI slop. Preserves key info (features, 30-day trial).",
+      "files": [],
+      "expectations": [
+        "Removes 'Exciting News' and 'Groundbreaking' from subject line",
+        "Removes 'Dear Valued Customers' (or replaces with something less formulaic)",
+        "Removes 'thrilled to announce' sycophantic tone",
+        "Removes 'pivotal addition' and 'underscores our commitment' significance inflation",
+        "Removes bold-header list format (inline-header vertical lists pattern)",
+        "Removes 'testament', 'vibrant', 'delved' AI vocabulary",
+        "Removes 'fosters collaboration and drives results' promotional language",
+        "Removes 'Not just an upgrade — it's a transformation' (negative parallelism + em dash)",
+        "Removes 'We hope this helps' and 'Let us know' chatbot artifacts",
+        "Preserves all three feature descriptions (real-time metrics, custom reports, integration)",
+        "Preserves the 30-day free trial offer",
+        "Maintains professional tone appropriate for customer communication"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you humanize this personal essay I wrote about learning to cook during COVID? It's mostly my own writing but I used ChatGPT to help clean it up and now it sounds weird:\n\nWhen the pandemic hit in 2020, I found myself stuck at home with nothing but time and a kitchen I'd barely used. I'd always relied on takeout — the kind of person who owned exactly one pan and used it to heat up frozen pizza.\n\nThe journey into cooking started small. A scrambled egg here, some pasta there. But what began as mere survival quickly evolved into something more profound. The intricate interplay between flavors and techniques opened up a world I never knew existed. Each dish served as a canvas for creativity, showcasing the endless possibilities of culinary exploration.\n\nMy grandmother, who'd cooked for her family of nine every day for decades, became my unlikely mentor. She didn't use recipes — everything was \"a little of this, a little of that.\" Her method drove me crazy at first, but it taught me something crucial about cooking that no YouTube video ever could: trust your senses.\n\nAdditionally, the experience highlighted the importance of patience. Good food takes time. A properly caramelized onion can't be rushed — it requires at least 45 minutes of low heat and occasional stirring. This was a testament to the broader lesson that meaningful results often demand sustained effort.\n\nToday, three years later, I own way too many pans and strong opinions about olive oil. I still can't make my grandmother's biryani taste like hers. I suspect I never will.",
+      "expected_output": "A lightly edited version that removes the ChatGPT artifacts while preserving the author's genuine voice (the frozen pizza joke, the grandmother details, the olive oil line). Should NOT over-edit the parts that are already human.",
+      "files": [],
+      "expectations": [
+        "Removes 'intricate interplay' (AI vocabulary)",
+        "Removes 'served as a canvas' (copula avoidance + promotional)",
+        "Removes 'showcasing the endless possibilities of culinary exploration' (promotional + -ing phrase)",
+        "Removes 'Additionally' (AI vocabulary)",
+        "Removes 'crucial' or replaces with simpler word",
+        "Removes 'testament to the broader lesson' (AI vocabulary + significance inflation)",
+        "Preserves the frozen pizza / one pan detail from paragraph 1",
+        "Preserves the grandmother cooking for family of nine detail",
+        "Preserves 'a little of this, a little of that' quote",
+        "Preserves the 45-minute caramelized onion detail",
+        "Preserves the final paragraph about too many pans and olive oil opinions essentially unchanged",
+        "Does NOT rewrite paragraphs 1, 3, or 5 which are already human-sounding",
+        "The overall piece still reads as a personal essay with the author's voice"
+      ]
+    }
+  ]
+}
