@@ -63,7 +63,8 @@
     "claude-code-wakatime@wakatime": true,
     "gopls-lsp@claude-plugins-official": true,
     "support@cw-plugins": true,
-    "bits@bits-plugins": false
+    "bits@bits-plugins": false,
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "abatilo-plugins": {
