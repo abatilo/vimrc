@@ -1,5 +1,8 @@
 # Preflight checks
-command -v jq >/dev/null 2>&1 || { echo "jq is required but not found"; exit 1; }
+command -v jq >/dev/null 2>&1 || {
+  echo "jq is required but not found"
+  exit 1
+}
 
 # Delete old stuff
 rm -rf \
@@ -35,7 +38,6 @@ ln -s "$PWD/.gitconfig_global" ~/.gitconfig
 # Set a default global .gitignore
 ln -s "$PWD/.gitignore_global" ~/.gitignore
 
-
 # Install a default global .editorconfig
 ln -s "$PWD/.editorconfig_global" ~/.editorconfig
 
@@ -49,25 +51,20 @@ ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 mkdir -p ~/.claude
 ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md
 ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
-ln -s "$PWD/rules" ~/.claude/rules  # rules must stay as symlink (not supported in plugins)
+ln -s "$PWD/rules" ~/.claude/rules # rules must stay as symlink (not supported in plugins)
 # commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
 
 # Set global MCP servers in ~/.claude.json (authoritative)
-[ -f ~/.claude.json ] || echo '{}' > ~/.claude.json
+[ -f ~/.claude.json ] || echo '{}' >~/.claude.json
 tmp=$(mktemp)
-jq --arg instructions_file "$PWD/codex_mcp_instructions.md" \
+jq \
   '.mcpServers = {
     "codex": {
       "type": "stdio",
       "command": "codex",
       "args": [
-        "mcp-server",
-        "-c", "model=\"gpt-5.3-codex\"",
-        "-c", "model_reasoning_effort=\"xhigh\"",
-        "-c", "sandbox_mode=\"read-only\"",
-        "-c", "sandbox_permissions=[\"disk-full-read-access\"]",
-        "-c", ("model_instructions_file=\"" + $instructions_file + "\"")
+        "mcp-server"
       ],
       "env": {}
     },
@@ -79,7 +76,7 @@ jq --arg instructions_file "$PWD/codex_mcp_instructions.md" \
       "type": "http",
       "url": "https://docs.coreweave.com/mcp"
     }
-  }' ~/.claude.json > "$tmp" && mv "$tmp" ~/.claude.json
+  }' ~/.claude.json >"$tmp" && mv "$tmp" ~/.claude.json
 
 # Set up codex cli configuration
 mkdir -p ~/.codex
@@ -111,6 +108,28 @@ grep -q "export PAGER=" ~/.zshrc || echo "export PAGER=" >>~/.zshrc
 grep -qF "tmpdir()" ~/.zshrc || cat <<'EOF' >>~/.zshrc
 tmpdir() {
   pushd "$(mktemp -d)"
+}
+EOF
+grep -qF "keychamber()" ~/.zshrc || cat <<'EOF' >>~/.zshrc
+keychamber() {
+  case "$1" in
+    write)
+      security add-generic-password -U -a "$USER" -s "keychamber/$2" -w "$3"
+      ;;
+    read)
+      security find-generic-password -a "$USER" -s "keychamber/$2" -w
+      ;;
+    list)
+      security dump-keychain | grep -o '"keychamber/[^"]*"' | tr -d '"' | sed 's|^keychamber/||' | sort -u
+      ;;
+    delete)
+      security delete-generic-password -a "$USER" -s "keychamber/$2"
+      ;;
+    *)
+      echo "Usage: keychamber {read|write|list|delete} <name> [value]" >&2
+      return 1
+      ;;
+  esac
 }
 EOF
 
