@@ -5,7 +5,6 @@
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-6",
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "40",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
-    "CLAUDE_CODE_EFFORT_LEVEL": "max",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "100000",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "32000",
@@ -59,28 +58,29 @@
     ]
   },
   "enabledPlugins": {
-    "abatilo-core@abatilo-plugins": true,
     "claude-code-wakatime@wakatime": true,
     "gopls-lsp@claude-plugins-official": true,
-    "support@cw-plugins": true,
     "bits@bits-plugins": false,
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "support@cw-plugins": true,
+    "abatilo-core@abatilo-plugins": true
   },
   "extraKnownMarketplaces": {
-    "abatilo-plugins": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/abatilo/abatilo/vimrc/plugins"
-      }
-    },
     "bits-plugins": {
       "source": {
         "source": "directory",
         "path": "/Users/abatilo/abatilo/bits"
       }
+    },
+    "cw-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "coreweave/cw-claude-code-marketplace"
+      }
     }
   },
   "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
   "teammateMode": "in-process"
 }
