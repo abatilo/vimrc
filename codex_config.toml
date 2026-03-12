@@ -9,6 +9,7 @@ show_raw_agent_reasoning = true
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 notify = ["codex-wakatime"]
+model_instructions_file = "/Users/abatilo/abatilo/vimrc/codex_mcp_instructions.md"
 personality = "pragmatic"
 web_search = "live"
 service_tier = "fast"
