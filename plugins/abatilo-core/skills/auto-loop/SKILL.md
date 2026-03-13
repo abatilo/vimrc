@@ -1,6 +1,6 @@
 ---
-name: autonomous-loop
-description: Work autonomously on a task until it is complete or the human stops you, without pausing to ask permission between steps. Use when user says "/autonomous-loop", "loop forever", "keep going", "run overnight", "don't stop", "run autonomously", "work until it's done", "finish this without me", or when the user is leaving and wants work to continue unattended. Applies to both open-ended iteration (optimization, experimentation, search) and finite tasks that need to be driven to completion (migrations, refactors, implementing a feature, fixing a list of issues).
+name: auto-loop
+description: Work autonomously on a task until it is complete or the human stops you, without pausing to ask permission between steps. Use when user says "/auto-loop", "loop forever", "keep going", "run overnight", "don't stop", "run autonomously", "work until it's done", "finish this without me", or when the user is leaving and wants work to continue unattended. Applies to both open-ended iteration (optimization, experimentation, search) and finite tasks that need to be driven to completion (migrations, refactors, implementing a feature, fixing a list of issues).
 ---
 
 # Autonomous Loop
