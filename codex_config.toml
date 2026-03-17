@@ -20,3 +20,7 @@ ignore_default_excludes = true
 
 [notice.model_migrations]
 "gpt-5.2" = "gpt-5.2-codex"
+
+[mcp_servers.chrome]
+command = "npx"
+args = ["chrome-devtools-mcp@latest", "--auto-connect"]
