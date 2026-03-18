@@ -2,7 +2,6 @@
 name: code-review
 description: "Orchestrates a three-phase parallel code review using an agent team. Phase 1: dynamically selected specialists each review the diff and stress-test findings through Socratic Codex debate. Phase 2: lead-mediated cross-review where specialists challenge each other's findings. Phase 3: deduplicated synthesis with priority-based output and binary merge verdict."
 argument-hint: "[PR number, branch name, 'staged', commit SHA, or file path]"
-disable-model-invocation: true
 allowed-tools:
   - Bash(git:*)
   - Bash(gh:*)
