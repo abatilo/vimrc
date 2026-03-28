@@ -83,5 +83,7 @@
   "voiceEnabled": true,
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "fastMode": true,
+  "showThinkingSummaries": true
 }
