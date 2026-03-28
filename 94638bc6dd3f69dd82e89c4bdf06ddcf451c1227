@@ -1,0 +1,53 @@
+## Conversation
+User asked to create a new rule in rules/ about putting extremely verbose
+notes into git commit notes. Initial draft conflated commit messages and
+notes — user corrected: commit messages carry the "why" (for humans), notes
+are agent memory (hints, history, errors, dead ends for future AI agents).
+User also requested a section telling agents to READ notes, not just write
+them.
+
+## Actions
+1. Read rules/task-tracking.md, rules/monitoring.md, rules/simple.md to
+   match existing rule file style and tone.
+2. Searched for existing git-commit skills (none found in expected paths).
+3. Wrote first draft of rules/commit-notes.md — framed notes as "why"
+   companion to commit messages.
+4. User corrected: commit messages = why, notes = agent process log.
+   Rewrote the file with correct framing.
+5. User requested a "Reading Notes" section. Added it near the top with
+   guidance to use git log --show-notes and git notes show.
+
+## Errors & Mistakes
+First draft had the wrong mental model — positioned notes as answering
+"why it changed this way and not some other way" and commit messages as
+just "what changed." User clarified that commit messages should carry the
+why, and notes are specifically agent-oriented memory. This required a
+full rewrite of the file, not just a tweak.
+
+## Dead Ends
+Searched for a git-commit skill file to understand how commits are
+currently handled, but the skills directory was empty at the checked path.
+The skill exists as an abatilo-core plugin skill but wasn't needed to
+write the rule.
+
+## Hints for Future Agents
+- The commit-notes rule is in rules/commit-notes.md and applies globally.
+- It complements the Chesterton's Fence rule in rules/simple.md — when
+  doing fence checks, read git notes for agent context.
+- Notes use a specific section format (Conversation, Actions, Errors &
+  Mistakes, Dead Ends, Hints for Future Agents, Codebase Discoveries,
+  Open Questions). Follow it.
+- The "Reading Notes" section at the top is important — agents should
+  check notes BEFORE modifying code with recent notes attached.
+
+## Codebase Discoveries
+- Rules files use a consistent style: markdown with headers, imperative
+  tone, ALWAYS/NEVER/DO/PREFER keywords for directives.
+- The abatilo-core plugin has a git-commit skill that handles the commit
+  creation process. The commit-notes rule is separate and additive.
+
+## Open Questions
+- Should there be a hook or automation to enforce that notes are always
+  added? Currently it's a rule-level requirement only.
+- The rule mentions pushing notes (git push origin refs/notes/commits)
+  but doesn't enforce it — some remotes may not support notes well.
