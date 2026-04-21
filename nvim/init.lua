@@ -12,12 +12,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
     if kind ~= "install" and kind ~= "update" then
       return
     end
-    if name == "nvim-treesitter" then
-      if not ev.data.active then
-        vim.cmd.packadd("nvim-treesitter")
-      end
-      vim.cmd("TSUpdate")
-    elseif name == "vim-go" then
+    if name == "vim-go" then
       if not ev.data.active then
         vim.cmd.packadd("vim-go")
       end
@@ -57,9 +52,10 @@ vim.pack.add({
   "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/nvim-tree/nvim-tree.lua",
 
-  -- Treesitter (pin to master; the `main` branch is a WIP rewrite with a new
-  -- `require('nvim-treesitter').setup()` API that this config does not use)
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" },
+  -- Treesitter: native 0.12 engine + parser manager. nvim-treesitter archived
+  -- on 2026-04-03; tree-sitter-manager drives parser install/build + registers
+  -- a FileType autocmd that calls vim.treesitter.start() for installed langs.
+  "https://github.com/romus204/tree-sitter-manager.nvim",
   "https://github.com/folke/ts-comments.nvim",
 
   -- Telescope
@@ -101,7 +97,7 @@ require("snacks").setup({
   },
 })
 
-require("nvim-treesitter.configs").setup({
+require("tree-sitter-manager").setup({
   ensure_installed = {
     "bash",
     "c",
@@ -153,9 +149,8 @@ require("nvim-treesitter.configs").setup({
     "xml",
     "yaml",
   },
-  sync_install = true,
-  highlight = { enable = true },
-  indent = { enable = true },
+  auto_install = false,
+  highlight = true,
 })
 
 require("ts-comments").setup({})
@@ -406,10 +401,9 @@ vim.keymap.set("i", "jk", "<ESC>")
 vim.keymap.set("n", "n", "nzz")
 vim.keymap.set("n", "N", "Nzz")
 
--- Folding code
--- https://github.com/nvim-treesitter/nvim-treesitter/tree/5e894bdb85795f1bc1d84701fc58fc954c22edd5#folding
+-- Folding via native treesitter (Neovim 0.12+)
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 10
 
 vim.keymap.set("n", "<C-N>", "<cmd>NvimTreeFindFileToggle<CR>")
