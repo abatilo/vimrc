@@ -66,6 +66,7 @@ vim.pack.add({
   "https://github.com/nvim-telescope/telescope-fzf-native.nvim",
   "https://github.com/nvim-telescope/telescope-ui-select.nvim",
   { src = "https://github.com/nvim-telescope/telescope.nvim", version = "0.1.x" },
+  "https://github.com/kiyoon/telescope-insert-path.nvim",
 
   -- LSP
   "https://github.com/neovim/nvim-lspconfig",
@@ -171,7 +172,22 @@ require("nvim-tree").setup({
   live_filter = { always_show_folders = false },
 })
 
-require("telescope").setup()
+local path_actions = require("telescope_insert_path")
+require("telescope").setup({
+  defaults = {
+    mappings = {
+      n = {
+        ["["] = path_actions.insert_reltobufpath_visual,
+        ["]"] = path_actions.insert_abspath_visual,
+        ["{"] = path_actions.insert_reltobufpath_insert,
+        ["}"] = path_actions.insert_abspath_insert,
+        ["-"] = path_actions.insert_reltobufpath_normal,
+        ["="] = path_actions.insert_abspath_normal,
+        ["<C-o>"] = path_actions.insert_abspath_a_insert,
+      },
+    },
+  },
+})
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
 
