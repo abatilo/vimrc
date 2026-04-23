@@ -4,13 +4,13 @@
       "rev": "b74fab3656eea9de20a9b8116afa3cfc4ec09657",
       "src": "https://github.com/hrsh7th/cmp-buffer"
     },
+    "cmp-fuzzy-path": {
+      "rev": "9953c11a2510a04111b7b152cf50ae1e83f00798",
+      "src": "https://github.com/tzachar/cmp-fuzzy-path"
+    },
     "cmp-nvim-lsp": {
       "rev": "cbc7b02bb99fae35cb42f514762b89b5126651ef",
       "src": "https://github.com/hrsh7th/cmp-nvim-lsp"
-    },
-    "cmp-path": {
-      "rev": "c642487086dbd9a93160e1679a1327be111cbc25",
-      "src": "https://github.com/hrsh7th/cmp-path"
     },
     "cmp-vsnip": {
       "rev": "989a8a73c44e926199bfd05fa7a516d51f2d2752",
@@ -19,6 +19,10 @@
     "dracula.nvim": {
       "rev": "ae752c13e95fb7c5f58da4b5123cb804ea7568ee",
       "src": "https://github.com/Mofiqul/dracula.nvim"
+    },
+    "fuzzy.nvim": {
+      "rev": "68608f6a232f7e73ccf81437bf12108128f15bd4",
+      "src": "https://github.com/tzachar/fuzzy.nvim"
     },
     "gitlinker.nvim": {
       "rev": "cc59f732f3d043b626c8702cb725c82e54d35c25",
@@ -100,10 +104,6 @@
     "telescope-fzf-native.nvim": {
       "rev": "6fea601bd2b694c6f2ae08a6c6fab14930c60e2c",
       "src": "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
-    },
-    "telescope-insert-path.nvim": {
-      "rev": "286815cf0cd743f21c705466203dc19cc02f1144",
-      "src": "https://github.com/kiyoon/telescope-insert-path.nvim"
     },
     "telescope-ui-select.nvim": {
       "rev": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
