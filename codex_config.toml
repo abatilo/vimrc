@@ -1,6 +1,7 @@
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
 model_reasoning_summary = "detailed"
+plan_mode_reasoning_effort = "xhigh"
 model_context_window = 1000000
 model_verbosity = "high"
 file_opener = "none"
