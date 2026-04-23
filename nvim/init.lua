@@ -66,6 +66,7 @@ vim.pack.add({
   "https://github.com/nvim-telescope/telescope-fzf-native.nvim",
   "https://github.com/nvim-telescope/telescope-ui-select.nvim",
   { src = "https://github.com/nvim-telescope/telescope.nvim", version = "0.1.x" },
+  "https://github.com/kiyoon/telescope-insert-path.nvim",
 
   -- LSP
   "https://github.com/neovim/nvim-lspconfig",
@@ -81,8 +82,7 @@ vim.pack.add({
   "https://github.com/hrsh7th/cmp-vsnip",
   "https://github.com/hrsh7th/cmp-nvim-lsp",
   "https://github.com/hrsh7th/cmp-buffer",
-  "https://github.com/tzachar/fuzzy.nvim",
-  "https://github.com/tzachar/cmp-fuzzy-path",
+  "https://github.com/hrsh7th/cmp-path",
 
   -- GitHub UI
   "https://github.com/pwntester/octo.nvim",
@@ -172,7 +172,22 @@ require("nvim-tree").setup({
   live_filter = { always_show_folders = false },
 })
 
-require("telescope").setup()
+local path_actions = require("telescope_insert_path")
+require("telescope").setup({
+  defaults = {
+    mappings = {
+      n = {
+        ["["] = path_actions.insert_reltobufpath_visual,
+        ["]"] = path_actions.insert_abspath_visual,
+        ["{"] = path_actions.insert_reltobufpath_insert,
+        ["}"] = path_actions.insert_abspath_insert,
+        ["-"] = path_actions.insert_reltobufpath_normal,
+        ["="] = path_actions.insert_abspath_normal,
+        ["<C-o>"] = path_actions.insert_abspath_a_insert,
+      },
+    },
+  },
+})
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
 
@@ -316,7 +331,6 @@ require("mason-tool-installer").setup({
 })
 
 local cmp = require("cmp")
-local compare = require("cmp.config.compare")
 cmp.setup({
   completion = {
     completeopt = "menu,menuone,noinsert",
@@ -332,26 +346,11 @@ cmp.setup({
     ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
     ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
   },
-  sorting = {
-    priority_weight = 2,
-    comparators = {
-      require("cmp_fuzzy_path.compare"),
-      compare.offset,
-      compare.exact,
-      compare.score,
-      compare.recently_used,
-      compare.locality,
-      compare.kind,
-      compare.sort_text,
-      compare.length,
-      compare.order,
-    },
-  },
   sources = {
     { name = "nvim_lsp" },
     { name = "vsnip" },
     { name = "buffer", keyword_length = 4 },
-    { name = "fuzzy_path" },
+    { name = "path" },
   },
 })
 
