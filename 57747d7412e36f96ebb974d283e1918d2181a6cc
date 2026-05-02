@@ -1,0 +1,134 @@
+## Conversation
+User asked to upgrade their machine from Neovim 0.11 to 0.12 and fully
+migrate their lazy.nvim plugin setup to the built-in vim.pack that ships
+with 0.12. They pointed at two references:
+- https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack
+- The Neovim 0.12 changelog commit fc7e5cf6c93fef08effc183087a2c8cc9bf0d75a
+
+Invoked in auto-loop mode, so the work was driven to completion without
+pausing for confirmation between steps.
+
+## Actions
+1. Read blog post (WebFetch) + runtime/doc/news.txt and deprecated.txt at
+   ref v0.12.0 (via `gh api repos/neovim/neovim/contents/...`). Identified
+   the breaking + deprecated surface that actually touched this config.
+2. Read runtime/doc/pack.txt for the vim.pack API contract (Spec fields,
+   PackChanged event, default confirm=true, lockfile semantics).
+3. Created working branch `nvim-0.12-vim-pack-migration` off master.
+4. Rewrote `nvim/init.lua` end-to-end: removed the lazy.nvim bootstrap,
+   replaced `require('lazy').setup({spec = ...})` with a single
+   `vim.pack.add({...})` listing all 31 plugin URLs. Moved all
+   `config = function()`/`opts = {}` bodies into explicit
+   `require('<plugin>').setup(...)` calls after the add() returns.
+   Registered a single PackChanged autocmd BEFORE the add() call to run
+   `:TSUpdate`, `:GoInstallBinaries`, and `make` for telescope-fzf-native.
+5. `brew upgrade neovim` → 0.11.3 → 0.12.1.
+6. `mv ~/.local/share/nvim/lazy ~/.local/share/nvim/lazy.bak` for safety.
+7. Headless smoke test via `timeout 180 nvim --headless -c q`. Iterated
+   on failures (see below) until it exited 0 with no errors.
+8. Verified plugins with `require('telescope')` etc., checked
+   `vim.lsp.is_enabled()` for every configured server, opened a Go file
+   and confirmed gopls + null-ls both attach and the treesitter
+   highlighter is active.
+9. `:checkhealth vim.pack` reported all green.
+10. Removed `nvim/lazy-lock.json` and its `.gitignore` entry; removed the
+    `lazy.bak` directory. Committed `init.lua`, `nvim-pack-lock.json`,
+    `.gitignore`.
+
+## Errors & Mistakes
+- First headless run failed with:
+    E5113: Lua chunk: init.lua: module 'nvim-treesitter.configs' not found
+  Root cause: nvim-treesitter's default branch is `main`, which is the
+  WIP rewrite and no longer ships `nvim-treesitter/configs.lua`. The
+  current config uses the old
+  `require('nvim-treesitter.configs').setup({ensure_installed=...})` API
+  which only exists on the `master` branch.
+- Second run (with `version = 'master'` added to the spec) failed with
+  the SAME error. Root cause: vim.pack explicitly documents
+  "If plugin is already present on disk, there are no checks about its
+  current revision." So adding `version = 'master'` to the spec did
+  nothing because the plugin was already installed at `main`. Had to
+  `rm -rf ~/.local/share/nvim/site/pack` AND
+  `rm -f ~/.config/nvim/nvim-pack-lock.json` to force a fresh install.
+- Initial attempt to test headlessly hit the `confirm = true` prompt
+  that vim.pack shows on first install. Worked around by temporarily
+  adding `{ confirm = false }` as the second arg to `vim.pack.add()`,
+  then removed it after verification so future new-plugin installs use
+  the default interactive confirmation.
+
+## Dead Ends
+- Tried to run `nvim --headless -c 'lua vim.deprecate = ...'` to catch
+  deprecation warnings; the patch runs *after* init.lua already sourced,
+  so it missed anything. Fell back to checking `:messages` post-startup
+  — empty, so no deprecations surfaced anyway.
+- Briefly considered keeping `confirm = false` in the final config to
+  match lazy.nvim's silent-install UX. Decided against: vim.pack's
+  default prompt only fires on genuinely new installs and gives useful
+  visibility. The user can flip it back if the prompt becomes annoying.
+
+## Hints for Future Agents
+- **vim.pack does NOT switch branches on already-installed plugins.**
+  If you change `version = ...` for a plugin that is already on disk,
+  you must either (a) run `:lua vim.pack.update({'plugin'})` to sync
+  explicitly or (b) delete the plugin directory + lockfile and let it
+  reinstall. Changing the spec alone has no effect.
+- **nvim-treesitter default branch is `main`, not `master`.** `main` is
+  the rewritten API with
+  `require('nvim-treesitter').setup({install_dir=..., ensure_install=...})`
+  instead of the legacy `require('nvim-treesitter.configs').setup(...)`.
+  If you want the legacy API, pin `version = 'master'`.
+- **Lockfile location is `$XDG_CONFIG_HOME/nvim/nvim-pack-lock.json`.**
+  With `~/.config/nvim` symlinked to `vimrc/nvim/`, the lockfile lives
+  in the git tree and is now committed.
+- **Plugin install directory is `~/.local/share/nvim/site/pack/core/opt`.**
+  Not `start/`. Everything is loaded via `:packadd` (or custom `load`
+  function). Nothing is loaded automatically from `start`.
+- **Build hooks fire via a single `PackChanged` autocmd.** Register it
+  BEFORE the first `vim.pack.add()` call or it won't fire on initial
+  install. The autocmd dispatches on `ev.data.spec.name`.
+- **mason-lspconfig v2 auto-enables any mason-installed server.** The
+  current config lists 11 servers in `servers = {...}` for
+  `mason-lspconfig`'s `ensure_installed`, but `gopls` (installed via
+  mason-tool-installer) is *also* auto-enabled — observed via
+  `vim.lsp.is_enabled('gopls') == true` despite not being in the list.
+- **null-ls still works in 0.12** but its `on_attach` must use
+  `client:supports_method(...)` (colon call). The dot form still works
+  but is in `deprecated-0.12`.
+- **`vim.diagnostic.goto_prev/goto_next` are deprecated**, replaced by
+  `vim.diagnostic.jump({count=-1, float=true})` and
+  `vim.diagnostic.jump({count=1, float=true})`.
+- The `folke/snacks.nvim` `indent` feature needs
+  `require('snacks').setup({ indent = { enabled = true, ... } })` — the
+  setup call is still `require('snacks')`, not a submodule.
+- `lualine.nvim` is installed but never `setup()`'d in this config. It
+  loads silently with defaults. Preserved as-is because the pre-migration
+  config was identical — don't "fix" this without confirming intent.
+
+## Codebase Discoveries
+- `~/.config/nvim` is a symlink into the git repo at
+  `/Users/aaron/abatilo/vimrc/nvim/`. Editing the file in either place
+  hits the same inode. Means `nvim-pack-lock.json` is tracked in git
+  for free once committed.
+- `.gitignore` previously ignored `/nvim/lazy-lock.json`. Removed that
+  line because the file no longer exists. `/nvim/plugin/` is still
+  gitignored — leave it alone, it predates this work.
+- `vim-go`'s `:GoInstallBinaries` takes a while (installs ~13 Go tools
+  via `go install`). The PackChanged callback runs synchronously so
+  first install adds ~20-30s of wall time. Subsequent updates skip
+  already-installed binaries.
+- There's also a `~/.local/share/nvim/avante`, `mason`, `snacks`,
+  `remote-nvim.nvim` directory — those are plugin *data* dirs (not the
+  plugins themselves), preserved across the migration.
+
+## Open Questions
+- The user may want to eventually migrate nvim-treesitter to the new
+  `main` branch API, which is simpler and uses
+  `require('nvim-treesitter').setup({install_dir=vim.fn.stdpath('data')..'/site', ensure_install={...}})`.
+  That's a separate refactor and was not in scope here.
+- lazy.nvim's `checker = { enabled = true }` (auto-check for updates)
+  has no direct vim.pack equivalent. User will need to run
+  `:lua vim.pack.update()` manually when they want to update plugins.
+- The eager-load-everything approach trades startup time for simplicity.
+  If startup feels sluggish, deferred loading via `VimEnter`+`vim.schedule`
+  (for VeryLazy equivalents) or `FileType yaml` autocmd (for yaml.nvim)
+  is straightforward to add back.
