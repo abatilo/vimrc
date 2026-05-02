@@ -44,7 +44,7 @@
       "/Users/abatilo/Documents/notes"
     ]
   },
-  "model": "claude-opus-4-7[1m]",
+  "model": "opus[1m]",
   "hooks": {
     "Stop": [
       {
@@ -84,5 +84,9 @@
   "autoDreamEnabled": true,
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "in-process"
+  "editorMode": "vim",
+  "preferredNotifChannel": "ghostty",
+  "terminalProgressBarEnabled": false,
+  "teammateMode": "in-process",
+  "skipAutoPermissionPrompt": true
 }
