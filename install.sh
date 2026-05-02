@@ -26,6 +26,7 @@ rm -f \
   ~/.config/gh-dash/config.yml \
   ~/.codex/AGENTS.md \
   ~/.codex/config.toml \
+  ~/.pi/agent/AGENTS.md \
   ~/.pi/agent/settings.json
 
 # Create nvim directory
@@ -87,6 +88,7 @@ ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
 
 # Set up pi agent configuration
 mkdir -p ~/.pi/agent
+ln -s "$PWD/AGENTS_global.md" ~/.pi/agent/AGENTS.md
 ln -s "$PWD/pi_settings.json" ~/.pi/agent/settings.json
 ln -s "$PWD/pi_extensions" ~/.pi/agent/extensions
 
