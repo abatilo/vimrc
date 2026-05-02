@@ -1,0 +1,15 @@
+{
+  "skills": [
+    "/Users/abatilo/abatilo/vimrc/plugins/abatilo-core/skills"
+  ],
+  "lastChangelogVersion": "0.72.1",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "xhigh",
+  "packages": [
+    "npm:pi-vim",
+    "npm:pi-subagents"
+  ],
+  "editorPaddingX": 2,
+  "transport": "websocket-cached"
+}

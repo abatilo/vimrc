@@ -24,7 +24,8 @@ rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml \
   ~/.codex/AGENTS.md \
-  ~/.codex/config.toml
+  ~/.codex/config.toml \
+  ~/.pi/agent/settings.json
 
 # Create nvim directory
 mkdir -p ~/.config/
@@ -82,6 +83,10 @@ jq \
 mkdir -p ~/.codex
 ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
 ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
+
+# Set up pi agent configuration
+mkdir -p ~/.pi/agent
+ln -s "$PWD/pi_settings.json" ~/.pi/agent/settings.json
 
 # Ensure trailing newline before appending
 [ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc
