@@ -14,6 +14,9 @@ personality = "pragmatic"
 web_search = "live"
 service_tier = "fast"
 
+[feature]
+goal = true
+
 [shell_environment_policy]
 inherit = "all"
 ignore_default_excludes = true
@@ -24,3 +27,9 @@ ignore_default_excludes = true
 [mcp_servers.chrome]
 command = "npx"
 args = ["chrome-devtools-mcp@latest", "--auto-connect"]
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[projects."/Users/abatilo/abatilo/vimrc"]
+trust_level = "trusted"
