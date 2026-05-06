@@ -66,7 +66,6 @@ vim.pack.add({
 
   -- LSP
   "https://github.com/neovim/nvim-lspconfig",
-  "https://github.com/lukas-reineke/lsp-format.nvim",
   "https://github.com/nvimtools/none-ls.nvim",
   "https://github.com/williamboman/mason.nvim",
   "https://github.com/williamboman/mason-lspconfig.nvim",
@@ -212,14 +211,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end, opts)
     vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 
-    local ok, lsp_format = pcall(require, "lsp-format")
-    if ok then
-      lsp_format.on_attach(client, event.buf)
-    end
   end,
 })
 
-require("lsp-format").setup()
 require("mason").setup()
 
 local function lsp_config(_config)
