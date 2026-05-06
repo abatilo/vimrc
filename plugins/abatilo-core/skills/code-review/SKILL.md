@@ -18,6 +18,7 @@ allowed-tools:
   - SendMessage
   - WebSearch
   - WebFetch
+disable-model-invocation: false
 ---
 
 # Code Review Agent Team
