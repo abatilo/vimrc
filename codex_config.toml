@@ -9,7 +9,7 @@ show_raw_agent_reasoning = true
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 notify = ["codex-wakatime"]
-model_instructions_file = "/Users/abatilo/abatilo/vimrc/codex_mcp_instructions.md"
+# model_instructions_file = "/Users/abatilo/abatilo/vimrc/codex_mcp_instructions.md"
 personality = "pragmatic"
 web_search = "live"
 service_tier = "fast"
@@ -41,4 +41,46 @@ env_vars = ["GRAFANA_URL", "GRAFANA_SERVICE_ACCOUNT_TOKEN"]
 "gpt-5.5" = 4
 
 [projects."/Users/abatilo/abatilo/vimrc"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/abatilo/TorchSpec"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/at"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/sglang"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/sunk-internal"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/aiperf"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/mentallyanimated/ma"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/cwic-internal"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/harbor"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/vllm"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/ml-containers"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/maru"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/infr-api"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/abatilo"]
+trust_level = "trusted"
+
+[projects."/Users/abatilo/work/infr"]
 trust_level = "trusted"
