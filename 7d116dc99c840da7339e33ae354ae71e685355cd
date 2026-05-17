@@ -1,0 +1,29 @@
+## Conversation
+User asked to "run the git-commit skill and push this repo". The working tree had several unrelated dirty files beyond the auto-loop work; this commit bundles the claude_settings.json changes into one atomic commit. No prior session context for why each individual setting was toggled — the changes were already in the working tree when this session began.
+
+## Actions
+1. git diff HEAD on claude_settings.json showed four changes:
+   - CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR: "true" -> "1"
+   - Added top-level worktree.baseRef = "fresh"
+   - Added autoCompactEnabled: true
+   - Added useAutoModeDuringPlan: false
+2. Staged whole file (changes are cohesive — all Claude Code settings).
+3. Committed with descriptive imperative title matching the non-conventional style used elsewhere for config files in this repo.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+- Considered splitting the env var rename from the new top-level keys, but they're all in one settings file with no logical conflict — single commit is cleaner.
+
+## Hints for Future Agents
+- claude_settings.json is the source-of-truth for ~/.claude/settings.json on this user's machine. The two settings files diverge by symlink layout — check claude_settings_layout (if it exists) or the dotfiles install script before assuming behavior.
+- "useAutoModeDuringPlan: false" likely means: when in /plan mode, do NOT auto-accept tool calls. That's the conservative default; user wants explicit prompts during plan mode.
+- "worktree.baseRef: fresh" — the harness's EnterWorktree tool will start fresh-from-base rather than dirty-copy.
+- Env value "1" vs "true" — both probably parse as truthy but "1" is the more conventional shell-boolean representation. Whoever toggled it likely hit a parser that didn't accept "true".
+
+## Codebase Discoveries
+- This repo (vimrc) tracks dotfiles and Claude/Codex/tmux configs in addition to nvim and plugin sources. claude_settings.json here is the canonical source.
+
+## Open Questions
+- Why specifically these four changes shipped together — no in-session evidence. If a future agent needs to revert one, audit each independently.
