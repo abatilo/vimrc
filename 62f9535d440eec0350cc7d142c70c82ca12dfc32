@@ -1,0 +1,24 @@
+## Conversation
+User asked to "run the git-commit skill and push this repo". pi_settings.json had a lastChangelogVersion bump (0.72.1 -> 0.73.0) sitting in the working tree from before this session. Committing as cleanup.
+
+## Actions
+1. git diff HEAD on pi_settings.json showed:
+   - lastChangelogVersion: "0.72.1" -> "0.73.0"
+   - Trailing newline removed at EOF (likely an editor side effect, kept as-is)
+2. Staged, committed.
+
+## Errors & Mistakes
+- Noted that the trailing-newline removal is probably accidental, but committed as-is rather than re-adding the newline since it's not what the user asked about.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- "Pi" here refers to the user's Pi Agent / Anthropic Pi runtime (separate from Claude Code). lastChangelogVersion is what version of the changelog the user has acknowledged dismissing.
+- The file lost its trailing newline. If a linter complains later, the fix is to append a newline. Don't read into the removal — just an editor saving without final-newline.
+
+## Codebase Discoveries
+- pi_settings.json is the canonical source for Pi config in this dotfiles repo, alongside the Claude/Codex/tmux configs.
+
+## Open Questions
+None.
