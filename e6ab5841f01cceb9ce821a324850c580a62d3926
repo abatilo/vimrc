@@ -1,0 +1,24 @@
+## Conversation
+User asked "did you already update the claude plugin version file?" after I deleted the auto-loop skill. They wanted the plugin.json version bumped to reflect the removal.
+
+## Actions
+1. Read plugins/abatilo-core/.claude-plugin/plugin.json — version was 0.18.0.
+2. git log on that file — confirmed prior pattern of dedicated "chore(abatilo-core): bump plugin version to X.Y.Z" commits.
+3. Edit 0.18.0 -> 0.19.0. Chose minor bump because removing a public skill is technically a breaking change to anyone using that surface (semver). Told the user they could correct me to 0.18.1 if preferred — no objection raised.
+4. Committed.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- Version bumps in this plugin are conventionally their own commit (separate from the change that motivates them) — follow that pattern.
+- The previous bump (0.17 -> 0.18) bundled multiple skill additions; this bump (0.18 -> 0.19) is a single removal. Inconsistent in scope, consistent in style.
+
+## Codebase Discoveries
+- plugin.json is the only versioned manifest in plugins/abatilo-core/.claude-plugin/ — no separate lockfile or changelog to keep in sync.
+
+## Open Questions
+- Whether 0.19.0 is the right level for this change vs 0.18.1. Surfaced to user; they did not push back, so 0.19.0 stands.
