@@ -3,7 +3,7 @@
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-sonnet-4-6",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-7",
-    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_EFFORT_LEVEL": "max",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -58,6 +58,9 @@
       }
     ]
   },
+  "worktree": {
+    "baseRef": "fresh"
+  },
   "enabledPlugins": {
     "claude-code-wakatime@wakatime": true,
     "gopls-lsp@claude-plugins-official": true,
@@ -86,7 +89,9 @@
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
+  "autoCompactEnabled": true,
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "useAutoModeDuringPlan": false
 }
