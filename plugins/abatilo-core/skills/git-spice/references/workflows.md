@@ -12,34 +12,34 @@ You're implementing a large feature that should be broken into reviewable pieces
 
 ```bash
 # 1. Start from updated trunk
-gs trunk
+git-spice trunk
 git pull origin main
 
 # 2. Create the first branch (foundation layer)
-gs bc api-models -m "Add User and Profile models"
+git-spice bc api-models -m "Add User and Profile models"
 
 # Make your changes...
 git add src/models/
-gs ca  # Amend to add more changes
+git-spice ca  # Amend to add more changes
 # Or create additional commits
-gs cc -m "Add model validation"
+git-spice cc -m "Add model validation"
 
 # 3. Create second branch (builds on first)
-gs bc api-endpoints -m "Add user API endpoints"
+git-spice bc api-endpoints -m "Add user API endpoints"
 
 # Make changes...
 git add src/api/
-gs cc -m "Implement CRUD operations"
+git-spice cc -m "Implement CRUD operations"
 
 # 4. Create third branch (builds on second)
-gs bc api-tests -m "Add API integration tests"
+git-spice bc api-tests -m "Add API integration tests"
 
 # Make changes...
 git add tests/
-gs cc -m "Add user endpoint tests"
+git-spice cc -m "Add user endpoint tests"
 
 # 5. View your stack
-gs ll
+git-spice ll
 ```
 
 ### Result
@@ -61,22 +61,22 @@ Your stack is ready for review. You want to create linked PRs.
 
 ```bash
 # 1. Ensure you're authenticated
-gs auth status
+git-spice auth status
 
 # 2. View what will be submitted
-gs ls
+git-spice ls
 
 # 3. Submit entire stack
-gs ss
+git-spice ss
 
 # For draft PRs
-gs ss --draft
+git-spice ss --draft
 
 # For auto-filled titles/bodies from commits
-gs ss --fill
+git-spice ss --fill
 
 # 4. View PR links
-gs ls  # Shows PR numbers next to branches
+git-spice ls  # Shows PR numbers next to branches
 ```
 
 ### Navigation Comments
@@ -100,22 +100,22 @@ Reviewers requested changes to a branch in the middle of your stack.
 
 ```bash
 # 1. Check out the branch that needs changes
-gs bco api-endpoints
+git-spice bco api-endpoints
 
 # 2. Make your changes
 # ... edit files ...
 
 # 3. Either amend existing commit
-gs ca
+git-spice ca
 
 # Or create a new commit
-gs cc -m "Address review: improve error handling"
+git-spice cc -m "Address review: improve error handling"
 
 # 4. Restack everything above this branch
-gs usr  # upstack restack
+git-spice usr  # upstack restack
 
 # 5. Re-submit updated branches
-gs uss  # upstack submit (force push happens automatically)
+git-spice uss  # upstack submit (force push happens automatically)
 ```
 
 ## Workflow 4: Syncing with Upstream
@@ -128,7 +128,7 @@ Trunk has new commits and your stack needs updating.
 
 ```bash
 # 1. Sync repository
-gs rs  # repo sync
+git-spice rs  # repo sync
 # This:
 # - Fetches from remote
 # - Fast-forwards trunk
@@ -136,13 +136,13 @@ gs rs  # repo sync
 
 # 2. Restack your branches
 # Option A: Restack all tracked branches
-gs repo restack
+git-spice repo restack
 
 # Option B: Restack just current stack
-gs sr  # stack restack
+git-spice sr  # stack restack
 
 # 3. Re-submit to update PRs
-gs ss
+git-spice ss
 ```
 
 ## Workflow 5: Handling Merge Conflicts
@@ -155,9 +155,9 @@ A restack operation encounters conflicts.
 
 ```bash
 # 1. Start restack
-gs sr
+git-spice sr
 
-# 2. If conflicts occur, gs pauses and shows conflicted files
+# 2. If conflicts occur, git-spice pauses and shows conflicted files
 # Check status
 git status
 
@@ -168,12 +168,12 @@ git status
 git add <resolved-files>
 
 # 5. Continue the restack
-gs rbc  # rebase continue
+git-spice rbc  # rebase continue
 
 # If conflicts continue in other branches, repeat steps 3-5
 
 # 6. If you need to abort
-gs rba  # rebase abort
+git-spice rba  # rebase abort
 ```
 
 ## Workflow 6: Reorganizing a Stack
@@ -186,7 +186,7 @@ You need to reorder branches or insert a new branch in the middle.
 
 ```bash
 # 1. Edit stack order
-gs se  # stack edit
+git-spice se  # stack edit
 
 # Opens editor with branch list - reorder as needed
 # Save and close to apply changes
@@ -196,10 +196,10 @@ gs se  # stack edit
 
 ```bash
 # 1. Check out where you want to insert
-gs bco api-endpoints
+git-spice bco api-endpoints
 
 # 2. Create with --insert flag
-gs bc api-middleware --insert -m "Add rate limiting middleware"
+git-spice bc api-middleware --insert -m "Add rate limiting middleware"
 
 # This creates:
 #       ┌── api-tests      (moved up)
@@ -213,10 +213,10 @@ gs bc api-middleware --insert -m "Add rate limiting middleware"
 
 ```bash
 # Move current branch onto different base
-gs bon main  # Direct to trunk
+git-spice bon main  # Direct to trunk
 
 # Move entire upstack
-gs uso other-feature
+git-spice uso other-feature
 ```
 
 ## Workflow 7: Cleaning Up After Merge
@@ -229,7 +229,7 @@ PRs have been merged and you want to clean up.
 
 ```bash
 # 1. Sync to detect merged PRs
-gs rs
+git-spice rs
 
 # Repo sync automatically:
 # - Detects merged PRs
@@ -237,7 +237,7 @@ gs rs
 # - Updates tracking state
 
 # 2. If manual cleanup needed
-gs bd merged-branch --force
+git-spice bd merged-branch --force
 ```
 
 ## Workflow 8: Working with Draft PRs
@@ -250,17 +250,17 @@ You want early feedback without formal review.
 
 ```bash
 # 1. Submit as drafts
-gs ss --draft
+git-spice ss --draft
 
 # 2. Continue working and updating
-gs bco some-branch
+git-spice bco some-branch
 # ... make changes ...
-gs ca
-gs usr
-gs uss  # Updates existing draft PRs
+git-spice ca
+git-spice usr
+git-spice uss  # Updates existing draft PRs
 
 # 3. When ready, mark as ready on GitHub/GitLab
-# (No gs command - use web UI)
+# (No git-spice command - use web UI)
 ```
 
 ## Workflow 9: Splitting a Large Branch
@@ -273,10 +273,10 @@ A branch has grown too large and should be split.
 
 ```bash
 # 1. Check out the branch to split
-gs bco large-feature
+git-spice bco large-feature
 
 # 2. Use branch split
-gs bsp
+git-spice bsp
 
 # Interactive mode lets you:
 # - Select commits for each new branch
@@ -288,15 +288,15 @@ gs bsp
 
 ```bash
 # 1. Create new branch at earlier point
-gs bco large-feature
-gs bc first-half --below
+git-spice bco large-feature
+git-spice bc first-half --below
 
 # 2. Cherry-pick relevant commits
-gs cp <commit-hash>
+git-spice cp <commit-hash>
 
 # 3. Use branch edit to remove from original
-gs bco large-feature
-gs be  # Remove commits that were moved
+git-spice bco large-feature
+git-spice be  # Remove commits that were moved
 ```
 
 ## Workflow 10: Squashing Before Merge
@@ -309,10 +309,10 @@ You want to squash commits before the final merge.
 
 ```bash
 # Squash all commits in branch to one
-gs bsq
+git-spice bsq
 
 # Or use branch edit for selective squashing
-gs be
+git-spice be
 # In editor, change "pick" to "squash" for commits to combine
 ```
 
@@ -326,16 +326,16 @@ You have existing branches that aren't tracked by git-spice.
 
 ```bash
 # Track a single branch
-gs btr existing-feature --base main
+git-spice btr existing-feature --base main
 
 # Track a chain of branches (bottom-up)
-gs btr feature-part1 --base main
-gs btr feature-part2 --base feature-part1
-gs btr feature-part3 --base feature-part2
+git-spice btr feature-part1 --base main
+git-spice btr feature-part2 --base feature-part1
+git-spice btr feature-part3 --base feature-part2
 
 # Or use downstack track from the top
-gs bco feature-part3
-gs dstr  # Tracks all branches below
+git-spice bco feature-part3
+git-spice dstr  # Tracks all branches below
 ```
 
 ## Workflow 12: Multiple Stacks
@@ -348,21 +348,21 @@ You're working on multiple independent features.
 
 ```bash
 # Stack 1: Auth feature
-gs trunk
-gs bc auth-models -m "Auth models"
-gs bc auth-api -m "Auth API"
+git-spice trunk
+git-spice bc auth-models -m "Auth models"
+git-spice bc auth-api -m "Auth API"
 
 # Stack 2: Separate feature
-gs trunk  # Return to trunk
-gs bc reporting-models -m "Reporting models"
-gs bc reporting-ui -m "Reporting UI"
+git-spice trunk  # Return to trunk
+git-spice bc reporting-models -m "Reporting models"
+git-spice bc reporting-ui -m "Reporting UI"
 
 # View all stacks
-gs ls
+git-spice ls
 
 # Navigate between stacks
-gs bco auth-api      # Jump to auth stack
-gs bco reporting-ui  # Jump to reporting stack
+git-spice bco auth-api      # Jump to auth stack
+git-spice bco reporting-ui  # Jump to reporting stack
 ```
 
 ## Workflow 13: Handling Force Push Failures
@@ -384,10 +384,10 @@ git log HEAD..origin/your-branch
 git reset --hard origin/your-branch
 
 # 4. Restack if needed
-gs br
+git-spice br
 
 # 5. Re-submit
-gs bs
+git-spice bs
 ```
 
 ## Best Practices
@@ -415,16 +415,16 @@ git config spice.branchCreate.prefix "username/"
 
 ### Review Workflow
 
-1. Submit stack as draft (`gs ss --draft`)
+1. Submit stack as draft (`git-spice ss --draft`)
 2. Get early feedback
 3. Address comments branch by branch
-4. Restack after changes (`gs sr`)
+4. Restack after changes (`git-spice sr`)
 5. Mark ready when complete
 
 ### Merge Strategy
 
 - Merge from bottom to top
-- After each merge, sync (`gs rs`)
+- After each merge, sync (`git-spice rs`)
 - Continue merging remaining branches
 
 ## Gotchas
@@ -447,13 +447,13 @@ When merging a PR at the bottom of a stack with `gh pr merge --delete-branch`:
 **Workarounds:**
 1. Don't use `--delete-branch` flag - let GitHub delete branches automatically via repo settings (`delete_branch_on_merge: true`)
 2. Manually update base branches of dependent PRs before merging
-3. Use `gs repo sync` after merge - git-spice will detect closed PRs and create new ones with correct base
+3. Use `git-spice repo sync` after merge - git-spice will detect closed PRs and create new ones with correct base
 
 **Recovery with git-spice:**
 ```bash
 # After the race condition closes your PR
-gs rs                           # Sync - detects closed PR
-gs branch track <branch> --base main  # Re-track with correct base
-gs sr                           # Restack
-gs ss                           # Submit - creates new PR
+git-spice rs                           # Sync - detects closed PR
+git-spice branch track <branch> --base main  # Re-track with correct base
+git-spice sr                           # Restack
+git-spice ss                           # Submit - creates new PR
 ```

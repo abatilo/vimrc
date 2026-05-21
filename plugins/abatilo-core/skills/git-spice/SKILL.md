@@ -1,10 +1,10 @@
 ---
 name: git-spice
-description: Manage Git branches and pull requests using git-spice (gs). Use when user says "/gs", "create branch", "new branch", "switch branch", "checkout branch", "rebase branch", "update branch from main", "create PR", "submit PR", "open pull request", needs to manage multiple related branches, wants stacked PRs or PR chains, or asks about rebasing and branch dependencies. Handles branch creation, navigation, rebasing, and PR submission.
+description: Manage Git branches and pull requests using git-spice. Use when user says "git-spice", "git spice", "/git-spice", "create branch", "new branch", "switch branch", "checkout branch", "rebase branch", "update branch from main", "create PR", "submit PR", "open pull request", needs to manage multiple related branches, wants stacked PRs or PR chains, or asks about rebasing and branch dependencies. Handles branch creation, navigation, rebasing, and PR submission.
 argument-hint: "[branch-name or command]"
 context: fork
 allowed-tools:
-  - Bash(gs:*)
+  - Bash(git-spice:*)
   - Bash(git:*)
   - Read
   - Edit
@@ -12,7 +12,9 @@ allowed-tools:
 
 # Git Spice Skill
 
-This skill helps you manage stacked Git branches using git-spice (`gs`), a CLI tool for creating, navigating, and submitting branch stacks as pull requests.
+This skill helps you manage stacked Git branches using `git-spice`, a CLI tool for creating, navigating, and submitting branch stacks as pull requests.
+
+Use `git-spice` in automated commands and examples. `git spice` is equivalent through Git's external subcommand dispatch, but `git-spice` is the installed binary and gives consistent help output.
 
 ## When to Use This Skill
 
@@ -47,7 +49,7 @@ main                  <- trunk
 ### 1. Initialize Repository
 
 ```bash
-gs repo init
+git-spice repo init
 ```
 
 This sets up git-spice tracking in your repository. You'll be prompted to select the trunk branch and remote.
@@ -59,70 +61,70 @@ This sets up git-spice tracking in your repository. You'll be prompted to select
 git checkout main
 
 # Create first branch in stack
-gs branch create feat1 -m "Add user model"
+git-spice branch create feat1 -m "Add user model"
 
 # Create second branch stacked on feat1
-gs branch create feat2 -m "Add user API"
+git-spice branch create feat2 -m "Add user API"
 
 # Create third branch stacked on feat2
-gs branch create feat3 -m "Add user tests"
+git-spice branch create feat3 -m "Add user tests"
 ```
 
 ### 3. Navigate the Stack
 
 ```bash
-gs up        # Move up one branch (u)
-gs down      # Move down one branch (d)
-gs top       # Jump to top of stack (U)
-gs bottom    # Jump to bottom of stack (D)
-gs trunk     # Return to trunk branch
+git-spice up        # Move up one branch (u)
+git-spice down      # Move down one branch (d)
+git-spice top       # Jump to top of stack (U)
+git-spice bottom    # Jump to bottom of stack (D)
+git-spice trunk     # Return to trunk branch
 ```
 
 ### 4. View Your Stack
 
 ```bash
-gs log short    # List all tracked branches (ls)
-gs log long     # Show branches with commits (ll)
+git-spice log short    # List all tracked branches (ls)
+git-spice log long     # Show branches with commits (ll)
 ```
 
 ### 5. Submit PRs
 
 ```bash
-gs stack submit     # Submit entire stack as PRs (ss)
-gs branch submit    # Submit current branch only (bs)
-gs upstack submit   # Submit current and all above (uss)
-gs downstack submit # Submit current and all below (dss)
+git-spice stack submit     # Submit entire stack as PRs (ss)
+git-spice branch submit    # Submit current branch only (bs)
+git-spice upstack submit   # Submit current and all above (uss)
+git-spice downstack submit # Submit current and all below (dss)
 ```
 
 ### 6. Sync and Restack
 
 ```bash
-gs repo sync       # Pull latest, delete merged branches (rs)
-gs stack restack   # Rebase all branches onto latest (sr)
+git-spice repo sync       # Pull latest, delete merged branches (rs)
+git-spice stack restack   # Rebase all branches onto latest (sr)
 ```
 
 ## Command Reference (Shorthands)
 
 | Command | Shorthand | Description |
 |---------|-----------|-------------|
-| `gs branch create` | `gs bc` | Create new branch |
-| `gs branch checkout` | `gs bco` | Switch to branch |
-| `gs branch submit` | `gs bs` | Submit branch as PR |
-| `gs branch restack` | `gs br` | Rebase branch on base |
-| `gs branch delete` | `gs bd` | Delete branch |
-| `gs branch onto` | `gs bon` | Move branch onto another |
-| `gs branch edit` | `gs be` | Interactive rebase |
-| `gs stack submit` | `gs ss` | Submit entire stack |
-| `gs stack restack` | `gs sr` | Restack entire stack |
-| `gs upstack submit` | `gs uss` | Submit upstack |
-| `gs upstack restack` | `gs usr` | Restack upstack |
-| `gs downstack submit` | `gs dss` | Submit downstack |
-| `gs repo sync` | `gs rs` | Sync with remote |
-| `gs repo init` | `gs ri` | Initialize repo |
-| `gs commit create` | `gs cc` | Create commit |
-| `gs commit amend` | `gs ca` | Amend commit |
-| `gs log short` | `gs ls` | List branches |
-| `gs log long` | `gs ll` | List with commits |
+| `git-spice branch create` | `git-spice bc` | Create new branch |
+| `git-spice branch checkout` | `git-spice bco` | Switch to branch |
+| `git-spice branch submit` | `git-spice bs` | Submit branch as PR |
+| `git-spice branch restack` | `git-spice br` | Rebase branch on base |
+| `git-spice branch delete` | `git-spice bd` | Delete branch |
+| `git-spice branch onto` | `git-spice bon` | Move branch onto another |
+| `git-spice branch edit` | `git-spice be` | Interactive rebase |
+| `git-spice stack submit` | `git-spice ss` | Submit entire stack |
+| `git-spice stack restack` | `git-spice sr` | Restack entire stack |
+| `git-spice upstack submit` | `git-spice uss` | Submit upstack |
+| `git-spice upstack restack` | `git-spice usr` | Restack upstack |
+| `git-spice downstack submit` | `git-spice dss` | Submit downstack |
+| `git-spice repo sync` | `git-spice rs` | Sync with remote |
+| `git-spice repo init` | `git-spice ri` | Initialize repo |
+| `git-spice commit create` | `git-spice cc` | Create commit |
+| `git-spice commit amend` | `git-spice ca` | Amend commit |
+| `git-spice log short` | `git-spice ls` | List branches |
+| `git-spice log long` | `git-spice ll` | List with commits |
 
 ## Common Workflows
 
@@ -130,54 +132,54 @@ gs stack restack   # Rebase all branches onto latest (sr)
 
 ```bash
 # Start from updated trunk
-gs trunk
+git-spice trunk
 git pull
 
 # Create logical branches for each reviewable piece
-gs bc api-models -m "Add data models for new API"
-gs bc api-handlers -m "Implement API handlers"
-gs bc api-tests -m "Add API integration tests"
+git-spice bc api-models -m "Add data models for new API"
+git-spice bc api-handlers -m "Implement API handlers"
+git-spice bc api-tests -m "Add API integration tests"
 
 # View your stack
-gs ll
+git-spice ll
 ```
 
 ### Updating After Review Feedback
 
 ```bash
 # Navigate to branch that needs changes
-gs bco api-handlers
+git-spice bco api-handlers
 
 # Make changes, then amend or create new commit
-gs ca  # amend current commit
+git-spice ca  # amend current commit
 # or
-gs cc -m "Address review feedback"
+git-spice cc -m "Address review feedback"
 
 # Restack all branches above to incorporate changes
-gs usr  # upstack restack
+git-spice usr  # upstack restack
 ```
 
 ### Syncing with Upstream Changes
 
 ```bash
 # Sync repo - pulls trunk, deletes merged branches
-gs rs
+git-spice rs
 
 # Restack all tracked branches onto new trunk
-gs repo restack
+git-spice repo restack
 # or for just current stack:
-gs sr
+git-spice sr
 ```
 
 ### Moving a Branch
 
 ```bash
 # Move current branch onto a different base
-gs bon main           # Move onto main directly
-gs bon other-feature  # Move onto another branch
+git-spice bon main           # Move onto main directly
+git-spice bon other-feature  # Move onto another branch
 
 # Insert a new branch in the middle of a stack
-gs bc new-branch --insert  # Restacks upstack onto new branch
+git-spice bc new-branch --insert  # Restacks upstack onto new branch
 ```
 
 ### Handling Conflicts
@@ -191,26 +193,26 @@ git status  # See conflicted files
 git add <resolved-files>
 
 # Continue the restack operation
-gs rebase continue  # (gs rbc)
+git-spice rebase continue  # (git-spice rbc)
 
 # Or abort if needed
-gs rebase abort     # (gs rba)
+git-spice rebase abort     # (git-spice rba)
 ```
 
 ### Submitting PRs
 
 ```bash
 # Submit all branches in stack as linked PRs
-gs ss
+git-spice ss
 
 # Submit with draft PRs
-gs ss --draft
+git-spice ss --draft
 
 # Submit only current branch
-gs bs
+git-spice bs
 
 # Update PR after changes
-gs bs  # Re-run submit updates existing PR
+git-spice bs  # Re-run submit updates existing PR
 ```
 
 ## Branch Operations
@@ -219,41 +221,41 @@ gs bs  # Re-run submit updates existing PR
 
 ```bash
 # Track a single branch
-gs branch track feature-branch --base main
+git-spice branch track feature-branch --base main
 
 # Track all branches in a downstack
-gs downstack track
+git-spice downstack track
 ```
 
 ### Split and Squash
 
 ```bash
 # Split current branch into multiple commits
-gs branch split
+git-spice branch split
 
 # Squash branch into single commit
-gs branch squash
+git-spice branch squash
 ```
 
 ### Delete Branches
 
 ```bash
 # Delete a single branch
-gs bd feature-branch
+git-spice bd feature-branch
 
 # Delete entire upstack
-gs upstack delete
+git-spice upstack delete
 
 # Delete entire stack
-gs stack delete
+git-spice stack delete
 ```
 
 ## Authentication
 
 ```bash
-gs auth login   # Authenticate with GitHub/GitLab
-gs auth status  # Check current auth status
-gs auth logout  # Clear credentials
+git-spice auth login   # Authenticate with GitHub/GitLab
+git-spice auth status  # Check current auth status
+git-spice auth logout  # Clear credentials
 ```
 
 ## Configuration
@@ -277,31 +279,31 @@ git config --get-regexp spice
 
 ```bash
 # Track an existing branch
-gs branch track my-branch --base main
+git-spice branch track my-branch --base main
 ```
 
 ### Rebase Conflicts
 
 ```bash
 # After resolving conflicts
-gs rebase continue
+git-spice rebase continue
 
 # To abort and try different approach
-gs rebase abort
+git-spice rebase abort
 ```
 
 ### Out of Sync with Remote
 
 ```bash
-gs repo sync    # Fetch and sync
-gs repo restack # Restack all branches
+git-spice repo sync    # Fetch and sync
+git-spice repo restack # Restack all branches
 ```
 
 ### Force Push After Restack
 
 After restacking, branches need force push:
 ```bash
-gs bs --force  # Submit handles force push
+git-spice bs --force  # Submit handles force push
 # or manually:
 git push --force-with-lease
 ```
@@ -317,5 +319,5 @@ For detailed information on specific topics, see:
 1. **Atomic branches**: Each branch should be one logical, reviewable change
 2. **Stack from trunk**: Build stacks starting from main/master
 3. **Restack often**: Keep branches rebased on latest changes
-4. **Submit together**: Use `gs ss` to create linked PRs
-5. **Sync regularly**: Use `gs rs` to stay current with upstream
+4. **Submit together**: Use `git-spice ss` to create linked PRs
+5. **Sync regularly**: Use `git-spice rs` to stay current with upstream

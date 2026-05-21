@@ -1,6 +1,6 @@
 # Git Spice Command Reference
 
-Complete reference for all git-spice (gs) commands.
+Complete reference for `git-spice` commands. Examples use the `git-spice` binary; `git spice` is equivalent through Git's external subcommand dispatch.
 
 ## Global Flags
 
@@ -16,26 +16,26 @@ All commands support these flags:
 
 ## Repository Commands
 
-### gs repo init (ri)
+### git-spice repo init (ri)
 
 Initialize git-spice in a repository.
 
 ```bash
-gs repo init
-gs ri
+git-spice repo init
+git-spice ri
 ```
 
 Prompts for:
 - Trunk branch (main, master, etc.)
 - Remote name (origin, etc.)
 
-### gs repo sync (rs)
+### git-spice repo sync (rs)
 
 Synchronize with remote repository.
 
 ```bash
-gs repo sync
-gs rs
+git-spice repo sync
+git-spice rs
 ```
 
 Actions:
@@ -44,26 +44,26 @@ Actions:
 - Deletes local branches whose PRs are merged
 - Updates branch tracking state
 
-### gs repo restack (rr)
+### git-spice repo restack (rr)
 
 Restack all tracked branches onto their bases.
 
 ```bash
-gs repo restack
-gs rr
+git-spice repo restack
+git-spice rr
 ```
 
 Rebases every tracked branch to ensure it's up-to-date with its base.
 
 ## Branch Commands
 
-### gs branch create (bc)
+### git-spice branch create (bc)
 
 Create a new branch stacked on current branch.
 
 ```bash
-gs branch create <name> [flags]
-gs bc <name> [flags]
+git-spice branch create <name> [flags]
+git-spice bc <name> [flags]
 ```
 
 **Flags:**
@@ -83,61 +83,61 @@ gs bc <name> [flags]
 
 ```bash
 # Basic creation with commit message
-gs bc feature-auth -m "Add authentication middleware"
+git-spice bc feature-auth -m "Add authentication middleware"
 
 # Create without committing staged changes
-gs bc feature-auth --no-commit
+git-spice bc feature-auth --no-commit
 
 # Insert branch in middle of stack
-gs bc new-middle --insert
+git-spice bc new-middle --insert
 
 # Create below current branch
-gs bc earlier-feature --below
+git-spice bc earlier-feature --below
 ```
 
-### gs branch checkout (bco)
+### git-spice branch checkout (bco)
 
 Switch to a tracked branch.
 
 ```bash
-gs branch checkout [branch]
-gs bco [branch]
+git-spice branch checkout [branch]
+git-spice bco [branch]
 ```
 
 If no branch specified, shows interactive picker.
 
-### gs branch track (btr)
+### git-spice branch track (btr)
 
 Track an existing branch.
 
 ```bash
-gs branch track <branch> --base <base>
-gs btr <branch> --base <base>
+git-spice branch track <branch> --base <base>
+git-spice btr <branch> --base <base>
 ```
 
 **Examples:**
 
 ```bash
-gs btr feature-x --base main
-gs btr feature-y --base feature-x
+git-spice btr feature-x --base main
+git-spice btr feature-y --base feature-x
 ```
 
-### gs branch untrack (buntr)
+### git-spice branch untrack (buntr)
 
 Stop tracking a branch (doesn't delete it).
 
 ```bash
-gs branch untrack [branch]
-gs buntr [branch]
+git-spice branch untrack [branch]
+git-spice buntr [branch]
 ```
 
-### gs branch submit (bs)
+### git-spice branch submit (bs)
 
 Submit branch as a pull request.
 
 ```bash
-gs branch submit [flags]
-gs bs [flags]
+git-spice branch submit [flags]
+git-spice bs [flags]
 ```
 
 **Flags:**
@@ -155,65 +155,65 @@ gs bs [flags]
 **Examples:**
 
 ```bash
-gs bs                    # Submit current branch
-gs bs --draft            # Submit as draft
-gs bs --fill             # Auto-fill from commits
-gs bs -R alice -R bob    # Add reviewers
+git-spice bs                    # Submit current branch
+git-spice bs --draft            # Submit as draft
+git-spice bs --fill             # Auto-fill from commits
+git-spice bs -R alice -R bob    # Add reviewers
 ```
 
-### gs branch restack (br)
+### git-spice branch restack (br)
 
 Rebase branch onto its base.
 
 ```bash
-gs branch restack [branch]
-gs br [branch]
+git-spice branch restack [branch]
+git-spice br [branch]
 ```
 
-### gs branch onto (bon)
+### git-spice branch onto (bon)
 
 Move branch to a different base.
 
 ```bash
-gs branch onto <new-base>
-gs bon <new-base>
+git-spice branch onto <new-base>
+git-spice bon <new-base>
 ```
 
 **Examples:**
 
 ```bash
-gs bon main           # Rebase onto main
-gs bon other-feature  # Rebase onto another branch
+git-spice bon main           # Rebase onto main
+git-spice bon other-feature  # Rebase onto another branch
 ```
 
-### gs branch edit (be)
+### git-spice branch edit (be)
 
 Interactive rebase to edit commits in branch.
 
 ```bash
-gs branch edit [branch]
-gs be [branch]
+git-spice branch edit [branch]
+git-spice be [branch]
 ```
 
 Opens interactive rebase for commits between base and branch head.
 
-### gs branch rename (brn, bmv)
+### git-spice branch rename (brn, bmv)
 
 Rename a branch.
 
 ```bash
-gs branch rename <old> <new>
-gs brn <old> <new>
-gs bmv <old> <new>
+git-spice branch rename <old> <new>
+git-spice brn <old> <new>
+git-spice bmv <old> <new>
 ```
 
-### gs branch delete (bd, brm)
+### git-spice branch delete (bd, brm)
 
 Delete one or more branches.
 
 ```bash
-gs branch delete <branch>...
-gs bd <branch>...
+git-spice branch delete <branch>...
+git-spice bd <branch>...
 ```
 
 **Flags:**
@@ -222,161 +222,161 @@ gs bd <branch>...
 |------|-------------|
 | `--force` | Force delete unmerged branches |
 
-### gs branch fold (bfo)
+### git-spice branch fold (bfo)
 
 Merge branch into its base.
 
 ```bash
-gs branch fold [branch]
-gs bfo [branch]
+git-spice branch fold [branch]
+git-spice bfo [branch]
 ```
 
 Squash-merges branch commits into base branch.
 
-### gs branch split (bsp)
+### git-spice branch split (bsp)
 
 Split branch at specified commits.
 
 ```bash
-gs branch split
-gs bsp
+git-spice branch split
+git-spice bsp
 ```
 
 Interactive command to split branch into multiple branches.
 
-### gs branch squash (bsq)
+### git-spice branch squash (bsq)
 
 Squash all commits in branch into one.
 
 ```bash
-gs branch squash [branch]
-gs bsq [branch]
+git-spice branch squash [branch]
+git-spice bsq [branch]
 ```
 
 ## Stack Commands
 
-### gs stack submit (ss)
+### git-spice stack submit (ss)
 
 Submit entire stack as PRs.
 
 ```bash
-gs stack submit [flags]
-gs ss [flags]
+git-spice stack submit [flags]
+git-spice ss [flags]
 ```
 
 Creates/updates PRs for all branches in the stack. PRs are linked with navigation comments.
 
-**Flags:** Same as `gs branch submit`
+**Flags:** Same as `git-spice branch submit`
 
-### gs stack restack (sr)
+### git-spice stack restack (sr)
 
 Restack all branches in current stack.
 
 ```bash
-gs stack restack
-gs sr
+git-spice stack restack
+git-spice sr
 ```
 
-### gs stack edit (se)
+### git-spice stack edit (se)
 
 Edit order of branches in stack.
 
 ```bash
-gs stack edit
-gs se
+git-spice stack edit
+git-spice se
 ```
 
 Opens editor to reorder or remove branches.
 
-### gs stack delete (sd)
+### git-spice stack delete (sd)
 
 Delete all branches in current stack.
 
 ```bash
-gs stack delete [flags]
-gs sd [flags]
+git-spice stack delete [flags]
+git-spice sd [flags]
 ```
 
 ## Upstack Commands
 
 Commands that operate on current branch and everything above it.
 
-### gs upstack submit (uss)
+### git-spice upstack submit (uss)
 
 Submit current branch and all branches above.
 
 ```bash
-gs upstack submit [flags]
-gs uss [flags]
+git-spice upstack submit [flags]
+git-spice uss [flags]
 ```
 
-### gs upstack restack (usr)
+### git-spice upstack restack (usr)
 
 Restack current branch and all above.
 
 ```bash
-gs upstack restack
-gs usr
+git-spice upstack restack
+git-spice usr
 ```
 
-### gs upstack onto (uso)
+### git-spice upstack onto (uso)
 
 Move current branch and upstack onto new base.
 
 ```bash
-gs upstack onto <new-base>
-gs uso <new-base>
+git-spice upstack onto <new-base>
+git-spice uso <new-base>
 ```
 
-### gs upstack delete (usd)
+### git-spice upstack delete (usd)
 
 Delete all branches above current branch.
 
 ```bash
-gs upstack delete
-gs usd
+git-spice upstack delete
+git-spice usd
 ```
 
 ## Downstack Commands
 
 Commands that operate on current branch and everything below it.
 
-### gs downstack submit (dss)
+### git-spice downstack submit (dss)
 
 Submit current branch and all branches below.
 
 ```bash
-gs downstack submit [flags]
-gs dss [flags]
+git-spice downstack submit [flags]
+git-spice dss [flags]
 ```
 
-### gs downstack track (dstr)
+### git-spice downstack track (dstr)
 
 Track all untracked branches below current branch.
 
 ```bash
-gs downstack track
-gs dstr
+git-spice downstack track
+git-spice dstr
 ```
 
-### gs downstack edit (dse)
+### git-spice downstack edit (dse)
 
 Edit order of branches below current.
 
 ```bash
-gs downstack edit
-gs dse
+git-spice downstack edit
+git-spice dse
 ```
 
 ## Commit Commands
 
-### gs commit create (cc)
+### git-spice commit create (cc)
 
 Create a new commit.
 
 ```bash
-gs commit create [flags]
-gs cc [flags]
+git-spice commit create [flags]
+git-spice cc [flags]
 ```
 
 **Flags:**
@@ -388,13 +388,13 @@ gs cc [flags]
 | `--no-verify` | Skip hooks |
 | `--signoff` | Add Signed-off-by |
 
-### gs commit amend (ca)
+### git-spice commit amend (ca)
 
 Amend the current commit.
 
 ```bash
-gs commit amend [flags]
-gs ca [flags]
+git-spice commit amend [flags]
+git-spice ca [flags]
 ```
 
 **Flags:**
@@ -406,157 +406,157 @@ gs ca [flags]
 | `--no-edit` | Keep existing message |
 | `--no-verify` | Skip hooks |
 
-### gs commit split (csp)
+### git-spice commit split (csp)
 
 Split current commit into multiple commits.
 
 ```bash
-gs commit split
-gs csp
+git-spice commit split
+git-spice csp
 ```
 
-### gs commit fixup (cf)
+### git-spice commit fixup (cf)
 
 Create fixup commit for a commit below.
 
 ```bash
-gs commit fixup [commit]
-gs cf [commit]
+git-spice commit fixup [commit]
+git-spice cf [commit]
 ```
 
-### gs commit pick (cp)
+### git-spice commit pick (cp)
 
 Cherry-pick a commit into current branch.
 
 ```bash
-gs commit pick <commit>
-gs cp <commit>
+git-spice commit pick <commit>
+git-spice cp <commit>
 ```
 
 ## Navigation Commands
 
-### gs up (u)
+### git-spice up (u)
 
 Move up one branch in the stack.
 
 ```bash
-gs up
-gs u
+git-spice up
+git-spice u
 ```
 
-### gs down (d)
+### git-spice down (d)
 
 Move down one branch in the stack.
 
 ```bash
-gs down
-gs d
+git-spice down
+git-spice d
 ```
 
-### gs top (U)
+### git-spice top (U)
 
 Move to the top of the current stack.
 
 ```bash
-gs top
-gs U
+git-spice top
+git-spice U
 ```
 
-### gs bottom (D)
+### git-spice bottom (D)
 
 Move to the bottom of the current stack.
 
 ```bash
-gs bottom
-gs D
+git-spice bottom
+git-spice D
 ```
 
-### gs trunk
+### git-spice trunk
 
 Switch to the trunk branch.
 
 ```bash
-gs trunk
+git-spice trunk
 ```
 
 ## Log Commands
 
-### gs log short (ls)
+### git-spice log short (ls)
 
 List all tracked branches.
 
 ```bash
-gs log short
-gs ls
+git-spice log short
+git-spice ls
 ```
 
 Shows branch tree with PR status.
 
-### gs log long (ll)
+### git-spice log long (ll)
 
 List branches with their commits.
 
 ```bash
-gs log long
-gs ll
+git-spice log long
+git-spice ll
 ```
 
 Shows branch tree with commit details.
 
 ## Rebase Commands
 
-### gs rebase continue (rbc)
+### git-spice rebase continue (rbc)
 
 Continue an interrupted rebase operation.
 
 ```bash
-gs rebase continue
-gs rbc
+git-spice rebase continue
+git-spice rbc
 ```
 
 Use after resolving conflicts during restack.
 
-### gs rebase abort (rba)
+### git-spice rebase abort (rba)
 
 Abort an interrupted rebase operation.
 
 ```bash
-gs rebase abort
-gs rba
+git-spice rebase abort
+git-spice rba
 ```
 
 ## Authentication Commands
 
-### gs auth login
+### git-spice auth login
 
 Authenticate with GitHub or GitLab.
 
 ```bash
-gs auth login
+git-spice auth login
 ```
 
-### gs auth status
+### git-spice auth status
 
 Show current authentication status.
 
 ```bash
-gs auth status
+git-spice auth status
 ```
 
-### gs auth logout
+### git-spice auth logout
 
 Clear stored credentials.
 
 ```bash
-gs auth logout
+git-spice auth logout
 ```
 
 ## Shell Completion
 
 ```bash
-gs shell completion bash   # Bash completion
-gs shell completion zsh    # Zsh completion
-gs shell completion fish   # Fish completion
+git-spice shell completion bash   # Bash completion
+git-spice shell completion zsh    # Zsh completion
+git-spice shell completion fish   # Fish completion
 ```
 
 ## Configuration Options
