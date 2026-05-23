@@ -19,15 +19,12 @@ rm -rf \
   ~/.claude/skills \
   ~/.claude/rules \
   ~/.claude/CLAUDE.md \
-  ~/.claude/settings.json \
-  ~/.pi/agent/extensions
+  ~/.claude/settings.json
 rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml \
   ~/.codex/AGENTS.md \
-  ~/.codex/config.toml \
-  ~/.pi/agent/AGENTS.md \
-  ~/.pi/agent/settings.json
+  ~/.codex/config.toml
 
 # Create nvim directory
 mkdir -p ~/.config/
@@ -85,12 +82,6 @@ jq \
 mkdir -p ~/.codex
 ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
 ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
-
-# Set up pi agent configuration
-mkdir -p ~/.pi/agent
-ln -s "$PWD/AGENTS_global.md" ~/.pi/agent/AGENTS.md
-ln -s "$PWD/pi_settings.json" ~/.pi/agent/settings.json
-ln -s "$PWD/pi_extensions" ~/.pi/agent/extensions
 
 # Ensure trailing newline before appending
 [ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc
