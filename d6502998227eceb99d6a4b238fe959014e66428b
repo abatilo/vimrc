@@ -1,0 +1,51 @@
+## Conversation
+User asked to clean up and remove all Pi-related settings/config from /Users/abatilo/abatilo/vimrc after uninstalling Pi with `mise uninstall npm:@mariozechner/pi-coding-agent@latest`. They explicitly said not to delete `AGENTS_global.md` because Codex also uses it, explained Pi was only needed before Codex had Vim bindings, asked me to set a goal for the cleanup, and invoked the git-commit skill. The intended result was a focused repo cleanup commit that deprecates Pi usage while preserving shared Codex instructions.
+
+## Actions
+1. Created a Codex goal with objective: clean up the vimrc repo by deprecating and removing Pi-specific config, leftover files, and install wiring while preserving `AGENTS_global.md` for Codex, then commit with required git notes.
+2. Read `/Users/abatilo/abatilo/vimrc/codex_skills/git-commit/SKILL.md` because the user invoked `$git-commit`. The skill requires inspecting status/diff/history, keeping logical commits atomic, leaving unrelated user changes unstaged, matching local message style, verifying the commit, and adding git notes when repo instructions require them.
+3. Searched memory at `/Users/abatilo/.codex/memories/MEMORY.md` for Pi-related context. Relevant lines documented the old Pi `before_provider_request` service-tier extension workaround and warned not to confuse provider support with first-class Pi config.
+4. Ran `git status --short --branch`; branch was `master...origin/master` with pre-existing dirty files `AGENTS_global.md`, `claude_settings.json`, `codex_config.toml`, `install.sh`, plus untracked `.antigravitycli/` and `codex_skills/`. These were not all part of the Pi cleanup.
+5. Ran `git diff HEAD --stat` and `git diff HEAD -- install.sh AGENTS_global.md claude_settings.json codex_config.toml` to understand the unrelated worktree changes. `install.sh` already had unrelated Codex git-commit skill symlink additions; `AGENTS_global.md`, `claude_settings.json`, and `codex_config.toml` had unrelated user/worktree edits.
+6. Read recent history with `git log --show-notes --oneline -20`, per repo instructions. Important notes included prior warnings that unrelated dirty files should be left untouched, and commit `520f9be` explaining that `AGENTS_global.md` was shared by Codex and Pi.
+7. Read Pi-specific history with `git log --show-notes --oneline -- pi_settings.json pi_extensions install.sh AGENTS_global.md`. Relevant commits were `bbabe40 Add portable pi settings`, `b800b77 Make Pi extensions portable`, `520f9be Add Pi AGENTS global setup`, and `62f9535 Bump Pi changelog version to 0.73.0`.
+8. Ran `git blame -- install.sh | sed -n '20,100p'`, `git blame -- pi_settings.json`, and `git blame -- pi_extensions/openai-fast-tier.ts` as the Chesterton's Fence check before removal. The blamed lines matched the Pi setup commits from May 2026 and confirmed the Pi extension/settings were intentionally added for Pi, not shared infrastructure.
+9. Inspected `pi_settings.json`: it configured Pi skills, changelog version `0.73.0`, default provider/model/thinking level, packages `npm:pi-vim` and `npm:pi-subagents`, editor padding, and websocket-cached transport.
+10. Inspected `pi_extensions/openai-fast-tier.ts`: it imported `@mariozechner/pi-coding-agent`, registered a `before_provider_request` hook, and injected `service_tier: "priority"` for OpenAI/OpenAI Codex request payloads.
+11. Used `apply_patch` to delete `pi_settings.json`, delete `pi_extensions/openai-fast-tier.ts`, and remove Pi cleanup/setup wiring from `install.sh`. The removed install wiring covered `~/.pi/agent/extensions`, `~/.pi/agent/AGENTS.md`, `~/.pi/agent/settings.json`, `mkdir -p ~/.pi/agent`, and symlinks for `AGENTS_global.md`, `pi_settings.json`, and `pi_extensions`.
+12. Removed the now-empty local `pi_extensions/` directory with `rmdir pi_extensions`.
+13. Removed live dotfile-managed Pi symlinks with `rm -f ~/.pi/agent/settings.json ~/.pi/agent/AGENTS.md ~/.pi/agent/extensions`. I intentionally did not delete `~/.pi/agent/auth.json`, `models.json`, `run-history.jsonl`, or `sessions/` because those are user/runtime data rather than repo-managed symlinks.
+14. Verified `~/.pi/agent` no longer contains the repo symlinks; remaining files are `auth.json`, `models.json`, `run-history.jsonl`, and `sessions/`.
+15. Verified `AGENTS_global.md` still exists with `test -f AGENTS_global.md && printf 'AGENTS_global.md preserved\n'`.
+16. Ran targeted searches with `rg` and `git grep --cached` for `pi.dev`, `pi[._-]?dev`, `pidev`, `~/.pi`, `pi_settings`, `pi_extensions`, `pi-coding-agent`, `mariozechner`, `pi-vim`, `pi-subagents`, `pi agent`, and whole-word `Pi`; no matches remained in the worktree or staged tree.
+17. Ran `git diff --cached --check`; it passed.
+18. Ran `bash -n install.sh`; it passed.
+19. Isolated staging so only the Pi cleanup was committed. `install.sh` had unrelated pre-existing Codex skill symlink edits in the working tree, so I staged a Pi-only version and restored the worktree copy that still contains those unrelated edits. Verified the cached diff only contained Pi removals plus the two file deletions.
+20. Committed with subject `Remove Pi agent configuration` and a body explaining Pi was only kept around for Vim-oriented agent usage before Codex supported that workflow directly, and that `AGENTS_global.md` remains because Codex consumes it.
+
+## Errors & Mistakes
+- My first attempt to stage only the `install.sh` Pi removal hunk used a manual `git apply --cached <<'PATCH' ...` patch. It failed with `error: corrupt patch at line 23`. I abandoned that patch and used the safer backup-reset-stage-restore workflow instead.
+- The working tree was dirty before this cleanup. It would have been easy to accidentally commit unrelated changes in `AGENTS_global.md`, `claude_settings.json`, `codex_config.toml`, and the Codex skill additions in `install.sh`. I explicitly inspected and isolated the staged diff to avoid that.
+- `git status` after staging showed `MM install.sh`, which is expected: the index contains the Pi removal and the worktree still contains unrelated Codex skill symlink edits on top of that.
+
+## Dead Ends
+- Did not delete `AGENTS_global.md` because the user explicitly said Codex still uses it.
+- Did not remove all of `~/.pi/agent/` or its non-symlink data files because the request was primarily to remove repo-managed Pi config and leftovers. Deleting auth/history/session data would be a broader destructive cleanup and was not necessary for this commit.
+- Did not use or consult a Codex MCP planning thread because the purpose of the existing Pi code was clear from blame, git notes, and the user's explicit explanation. There was no unclear Chesterton's Fence question left to resolve.
+
+## Hints for Future Agents
+- `AGENTS_global.md` is shared Codex context, not exclusively Pi context. Do not remove it just because Pi support is gone.
+- If Pi references reappear, check whether they are repo-managed dotfile symlinks or runtime data under `~/.pi/agent/`. This commit removed repo-managed settings/extensions/install wiring and cleaned the live symlinks, but intentionally left runtime data alone.
+- `install.sh` may still show unrelated dirty Codex skill symlink changes in the working tree after this commit. Those were present before this Pi cleanup and were intentionally left unstaged.
+- The old Pi service-tier behavior was only a workaround via `before_provider_request` extension injection, not a first-class durable config surface. Do not preserve or migrate it unless the user explicitly revives Pi.
+- Whole-word `Pi`/Pi-config targeted searches should return no tracked repo matches after this commit, but filenames like `README-epic-drain.md` contain the substring `pi` inside unrelated words and should not be interpreted as Pi agent config.
+
+## Codebase Discoveries
+- `pi_settings.json` was the canonical Pi settings file in this dotfiles repo before removal.
+- `pi_extensions/openai-fast-tier.ts` was the only tracked Pi extension and only existed to inject OpenAI `service_tier: "priority"` into request payloads.
+- `install.sh` was the only tracked installation path for Pi symlinks. Removing its Pi block fully stops this repo from reinstalling Pi settings, AGENTS, or extensions.
+- The live `~/.pi/agent/settings.json` and `~/.pi/agent/extensions` entries were symlinks back into this repo and were removed. `~/.pi/agent/AGENTS.md` was already absent before cleanup.
+
+## Open Questions
+- Whether the user wants the remaining non-repo-managed `~/.pi/agent/` runtime data (`auth.json`, `models.json`, `run-history.jsonl`, `sessions/`) deleted too. I left it in place because it is outside the repository and could contain history or credentials.
+- Whether to commit the unrelated Codex skill symlink additions in `install.sh` and the untracked `codex_skills/` directory later. They were intentionally not included here.
