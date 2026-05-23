@@ -37,6 +37,9 @@ command = "docker"
 args = ["run", "--rm", "-i", "-e", "GRAFANA_URL", "-e", "GRAFANA_SERVICE_ACCOUNT_TOKEN", "grafana/mcp-grafana", "-t", "stdio"]
 env_vars = ["GRAFANA_URL", "GRAFANA_SERVICE_ACCOUNT_TOKEN"]
 
+[tui]
+vim_mode_default = true
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 
