@@ -1,0 +1,49 @@
+## Conversation
+User asked to continue the active goal: figure out how to make Vim mode the default, add the setting under ~/abatilo/vimrc in the Codex settings files, then commit and push that one file. The requested end state was a committed and pushed dotfiles change that makes Codex start the TUI composer in Vim mode by default.
+
+## Actions
+1. Started in /Users/abatilo/abatilo/codex and inspected memory plus current repo state.
+2. Searched /Users/abatilo/.codex/memories/MEMORY.md for Codex Vim/TUI history and found recent entries about TUI Vim keymap work and the /Users/abatilo/abatilo/vimrc dotfiles repo workflow.
+3. Checked /Users/abatilo/abatilo/vimrc with `git status --short --branch`; the repo was on master tracking origin/master with pre-existing dirty files: claude_settings.json, codex_config.toml, and untracked .antigravitycli/.
+4. Read recent vimrc history with `git log --show-notes --oneline -5`, including notes from commit 3b09125 that explicitly warned about unrelated dirty claude_settings.json, codex_config.toml, and .antigravitycli/ changes being left untouched in prior work.
+5. Searched the current Codex source for the Vim setting with `rg -n "tui_vim_mode_default|vim_mode_default|vim-mode|vim mode|vim_mode" codex-rs ...`.
+6. Confirmed the user-facing TOML key in current source:
+   - codex-rs/config/src/types.rs documents `Tui::vim_mode_default` as "Start the composer in Vim mode (`Normal`) by default." and defaults it to false.
+   - codex-rs/core/src/config/config_tests.rs contains a parser test for `[tui] vim_mode_default = true`.
+   - codex-rs/core/src/config/mod.rs maps it to runtime config field `tui_vim_mode_default`.
+   - codex-rs/tui/src/chatwidget/constructor.rs applies it to the composer with `set_vim_enabled`.
+7. Confirmed `/Users/abatilo/.codex/config.toml` is a symlink to `/Users/abatilo/abatilo/vimrc/codex_config.toml`, so editing the dotfiles file updates the live Codex config path.
+8. Added this section to codex_config.toml before the existing `[tui.model_availability_nux]` table:
+   `[tui]`
+   `vim_mode_default = true`
+9. Verified the file lines with `nl -ba codex_config.toml | sed -n '30,48p'`, showing `[tui]` at lines 40-41 and the existing model availability table immediately after it.
+10. Ran `git diff --check -- codex_config.toml`, which passed.
+11. Ran `codex doctor --summary --ascii --no-color` and `codex --strict-config doctor --summary --ascii --no-color`. Both successfully loaded configuration (`[ok] config loaded`). They still exited 1 because of pre-existing install/update path mismatches unrelated to this change.
+12. Staged only the new Vim-mode hunk in codex_config.toml so the pre-existing project trust additions in the same file would remain unstaged. Verified with `git diff --cached -- codex_config.toml` that the index contained only the `[tui]` setting addition. Verified `git diff --cached --name-only` printed only `codex_config.toml`.
+13. Committed with subject `chore(codex): default TUI to Vim mode`.
+
+## Errors & Mistakes
+- Tried to parse the TOML with `python3 -c 'import tomllib, ...'`, but this machine's `python3` is Python 3.9.6 and does not have `tomllib`; the command failed with `ModuleNotFoundError: No module named 'tomllib'`.
+- Tried `yq -p=toml '.tui.vim_mode_default' codex_config.toml`, but the installed `/Users/abatilo/.local/bin/yq` is version 3.4.3 and does not support that syntax. It failed with `jq: Unknown option -p=toml` and a parser error. I treated neither of those as validation evidence.
+- My first manually written `git apply --cached` patch was malformed and failed with `error: corrupt patch at line 13`. I then staged the first hunk deterministically by piping the real `git diff --unified=3 -- codex_config.toml` through `awk` to stop before the unrelated second hunk and applying that to the index.
+
+## Dead Ends
+- Did not use `git checkout -- codex_config.toml` or reset the file to isolate the hunk, because the working tree had user/unrelated edits that should remain in place. Partial staging through the index was safer.
+- Did not run Rust tests in the Codex repo because this was a dotfiles TOML configuration change, not a Rust source change. The relevant verification was current source inspection plus live Codex strict-config loading.
+
+## Hints for Future Agents
+- Keep `codex_config.toml` as the only file for this setting; it is symlinked from `/Users/abatilo/.codex/config.toml`.
+- The correct current TOML spelling is:
+  `[tui]`
+  `vim_mode_default = true`
+- `codex doctor` may exit 1 on this machine due to existing install/update mismatch diagnostics even when the config itself loads successfully. Look at the Configuration section; `[ok] config loaded` is the relevant signal for this change.
+- At the time of this commit, the working tree still had pre-existing unrelated changes in claude_settings.json, codex_config.toml project trust entries, and untracked .antigravitycli/. They were intentionally left out of this commit.
+- Because codex_config.toml had pre-existing unstaged project trust additions, `git status` after this commit is expected to still show codex_config.toml modified even though the Vim setting is committed.
+
+## Codebase Discoveries
+- `vim_mode_default` is a top-level setting under the `[tui]` table, not under the keymap tables.
+- The installed Codex CLI is v0.133.0 and recognizes the setting under `--strict-config`.
+- The current Codex source confirms that setting true starts the TUI composer with Vim enabled/default normal mode through the `tui_vim_mode_default` runtime config field.
+
+## Open Questions
+None.
