@@ -21,6 +21,9 @@ memories = true
 prevent_idle_sleep = true
 goals = true
 
+[agents]
+max_threads = 20
+
 [shell_environment_policy]
 inherit = "all"
 ignore_default_excludes = true
