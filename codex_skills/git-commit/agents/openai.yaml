@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Commit"
+  short_description: "Create focused commits with strong messages"
+  default_prompt: "Use $git-commit to split my current changes into focused commits."
