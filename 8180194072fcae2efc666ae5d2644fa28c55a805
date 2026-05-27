@@ -1,0 +1,46 @@
+## Conversation
+The user first had me run an at-evals DFlash SPEED-Bench acceptance-length evaluation for a new MiniMax M2.7 checkpoint at s3://cwstudio/spec/checkpoints/dflash-minimax-m2p7-v001-pb8-hd128-g4-s1337/iter_0010001/. That prior run required inspecting recipes/evals/k26_dflash_acc_len.py, understanding the conversion pipeline, creating/submitting a MiniMax-specific recipe, watching the live workload through conversion/serving/SPEED-Bench, and finally printing the acceptance-length CSV from s3://cwstudio/spec/checkpoints/dflash-minimax-m2p7-serving/v001-pb8-hd128-g4-s1337-iter-0010001/speed-bench/speed_bench_report.csv. The final stdout was the MiniMax acceptance-length table with Overall 2.52. The user then asked to save that end-to-end process as a local skill named speed-bench-al-eval, using $skill-creator, and then use $git-commit to commit the skill and push it.
+
+## Actions
+1. Used the skill-creator skill because the user explicitly invoked $skill-creator. Read /Users/abatilo/.codex/skills/.system/skill-creator/SKILL.md enough to follow the progressive disclosure workflow, then read the generator help and the OpenAI metadata reference at /Users/abatilo/.codex/skills/.system/skill-creator/references/openai_yaml.md.
+2. Used the git-commit skill because the user explicitly invoked $git-commit. Read /Users/abatilo/abatilo/vimrc/codex_skills/git-commit/SKILL.md, which requires inspecting status/diff/history, staging only the logical change, verifying the commit, and adding/pushing notes where repo instructions require them.
+3. Checked local repo instructions. /Users/abatilo/abatilo/vimrc/AGENTS_global.md requires every commit to have a verbose git note and says to push refs/notes/commits when pushing.
+4. Ran git status in /Users/abatilo/abatilo/vimrc. The repo was already dirty: modified AGENTS_global.md, claude_settings.json, codex_config.toml, install.sh, plus untracked .antigravitycli/ and codex_skills/. I intentionally left those unrelated changes unstaged except for the new speed-bench-al-eval files.
+5. Read recent history with git log --show-notes --oneline -8. The recent notes confirmed this repo commonly has unrelated dirty config files and that future agents are expected to preserve unrelated worktree changes.
+6. Determined the correct commit-able local skill location is /Users/abatilo/abatilo/vimrc/codex_skills because the existing $git-commit skill is loaded from that tree. I checked that /Users/abatilo/abatilo/vimrc/codex_skills/speed-bench-al-eval did not already exist.
+7. Scaffolded the skill with python3 /Users/abatilo/.codex/skills/.system/skill-creator/scripts/init_skill.py speed-bench-al-eval --path /Users/abatilo/abatilo/vimrc/codex_skills --resources references --interface display_name='SPEED-Bench AL Eval' --interface short_description='Run DFlash acceptance-length evals end to end.' --interface default_prompt='Use $speed-bench-al-eval to run a SPEED-Bench acceptance-length eval for this S3 checkpoint: <checkpoint-s3-uri>.'.
+8. Replaced the generated SKILL.md template with an operational workflow. The skill instructs agents to work in /Users/abatilo/work/at, create a task list immediately, read repo instructions and git notes, inspect recipes/evals/k26_dflash_acc_len.py and the provided S3 checkpoint, complete upfront analysis before create_goal(), validate locally, submit, watch conversion/serving/SPEED-Bench, and finish only after printing the final speed_bench_report.csv.
+9. Added codex_skills/speed-bench-al-eval/references/at-evals-dflash-speed-bench.md with detailed commands and operational checks for reading at-evals DFlash code, inspecting S3 artifacts, constructing recipes, validating, submitting, monitoring Kubernetes JobSets/pods/logs, handling conversion/serving/SPEED-Bench failures, and retrieving the final CSV.
+10. Included the concrete MiniMax M2.7 evidence from the creating session in the reference file: the source checkpoint, target model s3://cwstudio/quantize/minimax-m27-nvfp4-nvidia/, output root s3://cwstudio/spec/checkpoints/dflash-minimax-m2p7-serving/, JobSet al-v001-pb8-hd128-g4-s1337-i0010001, validation commands that passed, and the final aws s3 cp command/stdout.
+11. Ran python3 /Users/abatilo/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/abatilo/abatilo/vimrc/codex_skills/speed-bench-al-eval. It printed Skill is valid!.
+12. Ran git diff --cached --check after staging. It passed.
+13. Ran LC_ALL=C grep -RIn '[^ -~]' /Users/abatilo/abatilo/vimrc/codex_skills/speed-bench-al-eval || true. It produced no output, confirming the new files are ASCII-only.
+14. Staged only codex_skills/speed-bench-al-eval/SKILL.md, codex_skills/speed-bench-al-eval/agents/openai.yaml, and codex_skills/speed-bench-al-eval/references/at-evals-dflash-speed-bench.md.
+15. Verified the cached name-status showed only those three new files, then committed with subject Add SPEED-Bench acceptance-length skill.
+
+## Errors & Mistakes
+- Normal git diff did not show the newly created skill files before staging because they were untracked. I corrected by checking git status --short -- codex_skills/speed-bench-al-eval, staging the specific new files, and then inspecting the cached diff.
+- The apply_patch output for replacing the generated SKILL.md displayed both add and delete entries for the same path because I deleted the generated template and added the replacement in one patch. The resulting file content was inspected afterward and was correct.
+- The previous at-evals worktree still contains unrelated dirty changes from the live MiniMax eval session. This commit is in /Users/abatilo/abatilo/vimrc and does not attempt to commit or clean /Users/abatilo/work/at.
+
+## Dead Ends
+- Did not put the skill under /Users/abatilo/.codex/skills because that directory currently contains system skills, while the user's commit-able local skills are under /Users/abatilo/abatilo/vimrc/codex_skills.
+- Did not stage the pre-existing untracked codex_skills/git-commit/ directory. Although it is the skill I used, it was already untracked before this task and was not part of the requested new speed-bench-al-eval skill.
+- Did not modify install.sh or Codex config to register the skill. The existing environment already loads local skills from the vimrc codex_skills tree, as shown by the available $git-commit skill path.
+
+## Hints for Future Agents
+- The speed-bench-al-eval skill is intended for full end-to-end execution, not just recipe authoring. The finish line is the exact aws --profile cwstudio s3 cp .../speed-bench/speed_bench_report.csv - command and its stdout.
+- The MiniMax values in the reference are evidence from the creating session, not defaults. For a new checkpoint, inspect the S3 URI and derive recipe names, output prefixes, target model path, served model name, and JobSet name from current artifacts and repo conventions.
+- The skill deliberately says to do upfront analysis before calling create_goal(). This mirrors the user's earlier request: understand current recipe and S3 artifacts first, then create a goal and run the workload through completion.
+- Keep at-evals support changes small. Prefer copying the closest recipe and adding only the minimal support needed for a new architecture instead of introducing broad abstractions.
+- When debugging failed runs, inspect live logs and newest artifacts first. Be careful with stale or partial S3 prefixes; delete only artifacts that are clearly from the current failed attempt and only when rerun correctness requires it.
+- /Users/abatilo/abatilo/vimrc remains dirty after this commit because unrelated files were dirty beforehand: AGENTS_global.md, claude_settings.json, codex_config.toml, install.sh, .antigravitycli/, and codex_skills/git-commit/.
+
+## Codebase Discoveries
+- skill-creator's init_skill.py can generate agents/openai.yaml metadata via repeated --interface key=value flags. The default_prompt must explicitly mention the skill name with $speed-bench-al-eval.
+- quick_validate.py accepts the skill directory path directly and printed Skill is valid! for this skill.
+- The current local skill tree used by this setup is /Users/abatilo/abatilo/vimrc/codex_skills. It is not fully tracked yet: the existing git-commit skill directory remains untracked, and this commit only adds speed-bench-al-eval.
+- Recent vimrc commit notes are valuable because they document the expected dirty-worktree hygiene in this repo and warn future agents not to fold unrelated config edits into narrow commits.
+
+## Open Questions
+None for the requested skill commit. The unrelated dirty vimrc files and untracked git-commit skill remain for the user or a future task to handle.
