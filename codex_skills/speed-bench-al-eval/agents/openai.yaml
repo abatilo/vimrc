@@ -1,0 +1,4 @@
+interface:
+  display_name: "SPEED-Bench AL Eval"
+  short_description: "Run DFlash acceptance-length evals end to end."
+  default_prompt: "Use $speed-bench-al-eval to run a SPEED-Bench acceptance-length eval for this S3 checkpoint: <checkpoint-s3-uri>."
