@@ -1,0 +1,44 @@
+## Conversation
+The user asked, after committing the existing `codex_skills` work, to port `plugins/abatilo-core/skills/repo-explore` for the Codex skill format, then use `$git-commit` on that second change and push both commits. The intended scope for this commit is a new local Codex skill under `codex_skills/repo-explore`, not a change to the original Claude plugin skill.
+
+## Actions
+1. Continued using the `git-commit` workflow requested by the user. The first commit had already added `codex_skills/git-commit` and installed it, so this commit starts from `master` one commit ahead of origin.
+2. Used the `skill-creator` guidance because this task creates/updates a Codex skill. Read `/Users/abatilo/.codex/skills/.system/skill-creator/SKILL.md` and `/Users/abatilo/.codex/skills/.system/skill-creator/references/openai_yaml.md` for the required Codex skill layout and `agents/openai.yaml` constraints.
+3. Inspected the source Claude plugin skill at `plugins/abatilo-core/skills/repo-explore/SKILL.md` plus its references `references/update-reference.md` and `references/version-detection.md`. The Claude skill used Claude-specific frontmatter (`context: fork`, `allowed-tools`) and required Claude's `Task` tool with `subagent_type=Explore`.
+4. Created `codex_skills/repo-explore/references` and `codex_skills/repo-explore/agents`, then copied the two source reference files from the Claude plugin into the new Codex skill directory.
+5. Added a new Codex-format `codex_skills/repo-explore/SKILL.md` with only Codex-readable frontmatter (`name`, `description`, and `metadata.short-description`) and a concise workflow for cloning, caching, version alignment, source inspection, and evidence-based responses.
+6. Replaced the Claude cache path with the Codex cache path in the copied references: `~/.cache/claude/repos` became `~/.cache/codex/repos`.
+7. Removed Claude-only behavior from the ported skill body. The new workflow says to use a focused exploration sub-agent only if the current Codex environment exposes one; otherwise inspect directly with `rg`, `git`, and targeted file reads.
+8. Generated `codex_skills/repo-explore/agents/openai.yaml` with `generate_openai_yaml.py`, setting display name `Repo Explore`, short description `Explore external GitHub repos locally`, and a default prompt that explicitly invokes `$repo-explore`.
+9. Updated `install.sh` to remove stale `~/.codex/skills/repo-explore` during cleanup and symlink `$PWD/codex_skills/repo-explore` into `~/.codex/skills/repo-explore` during setup.
+10. Ran `rg -n "claude|Claude|allowed-tools|context:|Task\\(|Explore agent" codex_skills/repo-explore install.sh`. Matches remained only in unrelated existing Claude setup sections of `install.sh`; no Claude-specific strings remained inside `codex_skills/repo-explore`.
+11. Validated the new skill with `python3 /Users/abatilo/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/abatilo/abatilo/vimrc/codex_skills/repo-explore`; it printed `Skill is valid!`.
+12. Ran `bash -n install.sh`; it passed with no output.
+13. Ran `LC_ALL=C grep -RIn '[^ -~]' codex_skills/repo-explore`; it initially found Unicode arrows inherited from the copied reference file. Converted those arrows to ASCII `->`, reran the grep, and it exited 1 with no output.
+14. Staged only `install.sh` and the four files under `codex_skills/repo-explore/`.
+15. Verified the staged set with `git diff --cached --name-status`, which showed only `codex_skills/repo-explore/SKILL.md`, `codex_skills/repo-explore/agents/openai.yaml`, the two reference files, and `install.sh`. `git diff --cached --check` passed.
+16. Committed with subject `Add Codex repo-explore skill` and body explaining that the abatilo-core workflow was ported into the local Codex skill tree.
+
+## Errors & Mistakes
+- The copied `version-detection.md` contained Unicode arrows. That violated the local default of keeping newly created files ASCII unless there is a clear reason, so I converted them to `->` before staging.
+- `git diff HEAD -- codex_skills/repo-explore install.sh` only showed the tracked `install.sh` portion before staging because the new skill files were untracked. I corrected by staging the intended new files and inspecting the cached diff.
+
+## Dead Ends
+- Did not edit `plugins/abatilo-core/skills/repo-explore` in place. The original plugin skill remains unchanged; this commit adds a Codex-native copy under `codex_skills`.
+- Did not bump `plugins/abatilo-core/.claude-plugin/plugin.json` because this commit does not change the Claude plugin. Prior memory says plugin version bumps are separate only when plugin content or manifest changes.
+- Did not add a dependency on a specific Codex sub-agent API. The current Codex environment can vary, so the skill only recommends a sub-agent when available and otherwise falls back to direct repo inspection.
+- Did not include unrelated dirty files (`AGENTS_global.md`, `claude_settings.json`, `codex_config.toml`, `.antigravitycli/`) in this commit.
+
+## Hints for Future Agents
+- The Codex port uses `~/.cache/codex/repos/<owner>/<repo>/`; do not accidentally revert it to the Claude cache path when syncing with the plugin source.
+- The source Claude plugin skill requires `Task(subagent_type=Explore)`, but the Codex port intentionally avoids that hard dependency.
+- If updating this port from the Claude plugin later, check for Claude-only frontmatter (`context`, `allowed-tools`), tool names, and cache paths before committing.
+- `install.sh` now links both `git-commit` and `repo-explore` into `~/.codex/skills`; newly added skills may still require a new Codex session to appear in available skill metadata.
+
+## Codebase Discoveries
+- `skill-creator`'s `generate_openai_yaml.py` can generate the Codex UI metadata file after `SKILL.md` exists, using repeated `--interface key=value` flags.
+- The repo has no separate manifest for local Codex skills; discoverability is through symlinks under `~/.codex/skills/<skill-name>` created by `install.sh`.
+- The original `repo-explore` Claude skill has two reference files: `update-reference.md` and `version-detection.md`. Both remain useful after only cache-path and ASCII normalization changes.
+
+## Open Questions
+None for the requested port. The original plugin skill and unrelated worktree changes remain untouched.
