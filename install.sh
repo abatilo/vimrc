@@ -20,7 +20,8 @@ rm -rf \
   ~/.claude/rules \
   ~/.claude/CLAUDE.md \
   ~/.claude/settings.json \
-  ~/.codex/skills/git-commit
+  ~/.codex/skills/git-commit \
+  ~/.codex/skills/repo-explore
 rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml \
@@ -85,6 +86,7 @@ ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
 ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
 mkdir -p ~/.codex/skills
 ln -s "$PWD/codex_skills/git-commit" ~/.codex/skills/git-commit
+ln -s "$PWD/codex_skills/repo-explore" ~/.codex/skills/repo-explore
 
 # Ensure trailing newline before appending
 [ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc
