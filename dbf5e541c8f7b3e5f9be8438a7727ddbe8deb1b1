@@ -1,0 +1,23 @@
+## Conversation
+Part of `/git-commit and push`. This AGENTS_global.md change was pre-existing in the working tree (not authored this session); the user wanted it committed.
+
+## Actions
+1. Chesterton's Fence check before committing a change I did not write: AGENTS_global.md opens with "assembled from the Markdown files in rules/". rules/codex-mcp.md and rules/gopls-lsp.md still exist on disk, so the removed sections looked like they could be generator drift.
+2. Searched for a generator: `grep` across the repo found only install.sh referencing it. install.sh line 85 just symlinks it: `ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md`. Nothing regenerates AGENTS_global.md from rules/. So the trim is intentional curation, safe to commit (no generator will overwrite it).
+3. Staged and committed the trim.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Briefly suspected this was stale generator output that should be regenerated rather than committed; ruled out once it was clear no assembly script exists in-repo (only a symlink in install.sh).
+
+## Hints for Future Agents
+- AGENTS_global.md is the live Codex AGENTS context (symlinked to ~/.codex/AGENTS.md). Keeping it lean directly reduces Codex's always-on context cost.
+- It is NOT a 1:1 assembly of rules/ anymore. This commit removed the Codex MCP section, the gopls-lsp Go LSP section, the "Consult Codex (Blocking)" subsection, and condensed the Task Tracking intro -- while rules/codex-mcp.md and rules/gopls-lsp.md remain on disk. Treat AGENTS_global.md as a hand-curated subset; do not blindly regenerate it from rules/ or you will re-add the removed sections.
+
+## Codebase Discoveries
+There is no script that assembles AGENTS_global.md from rules/*.md in this repo; the "assembled from" header is descriptive of origin, not an automated pipeline. install.sh only creates the symlink.
+
+## Open Questions
+The rules/ <-> AGENTS_global.md divergence is intentional per the above, but if the user later wants them back in sync there is currently no generator to do it automatically. Flagged to the user in the session summary.
