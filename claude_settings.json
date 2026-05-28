@@ -11,6 +11,7 @@
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "100000",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "128000",
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-opus-4-8",
+    "CLAUDE_CODE_WORKFLOWS": "1",
     "ENABLE_LSP_TOOL": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
@@ -46,21 +47,9 @@
     ]
   },
   "model": "opus[1m]",
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay '/Users/abatilo/.claude/sounds/se000.win32#50.wav' &",
-            "async": true
-          }
-        ]
-      }
-    ]
-  },
+  "hooks": {},
   "worktree": {
-    "baseRef": "fresh"
+    "baseRef": "head"
   },
   "enabledPlugins": {
     "claude-code-wakatime@wakatime": true,
@@ -68,7 +57,8 @@
     "bits@bits-plugins": false,
     "skill-creator@claude-plugins-official": true,
     "support@cw-plugins": true,
-    "abatilo-core@abatilo-plugins": true
+    "abatilo-core@abatilo-plugins": true,
+    "humanize@PolyArch": true
   },
   "extraKnownMarketplaces": {
     "bits-plugins": {
@@ -82,6 +72,12 @@
         "source": "github",
         "repo": "coreweave/cw-claude-code-marketplace"
       }
+    },
+    "PolyArch": {
+      "source": {
+        "source": "github",
+        "repo": "PolyArch/humanize"
+      }
     }
   },
   "alwaysThinkingEnabled": true,
@@ -94,5 +90,6 @@
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
   "skipAutoPermissionPrompt": true,
-  "useAutoModeDuringPlan": false
+  "useAutoModeDuringPlan": false,
+  "fastMode": true
 }
