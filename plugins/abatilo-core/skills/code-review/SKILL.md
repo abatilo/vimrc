@@ -22,7 +22,7 @@ allowed-tools:
 
 # Code Review Agent Team
 
-**YOU MUST SPAWN AN AGENT TEAM.** Do NOT review code yourself. You are the team lead — your job is orchestration, not review.
+**Spawn an agent team to run the review — don't review the code yourself.** You are the team lead; your job is orchestration, not review.
 
 Your workflow:
 1. Gather the diff
@@ -101,7 +101,7 @@ TeamCreate(team_name: "code-review-<short-identifier>")
 
 For each selected agent, call `TaskCreate` with subject, description, and activeForm.
 
-### 3c. Spawn all agents in a SINGLE message
+### 3c. Spawn all agents in a single message
 
 Each specialist has a custom agent definition (in `agents/`) with its review protocol, specialist instructions, and persistent memory. You do NOT need to assemble prompts — the agent's `.md` file provides its system prompt automatically.
 
@@ -117,11 +117,11 @@ Task(
 )
 ```
 
-Repeat for every selected agent — all `Task` calls in ONE message.
+Repeat for every selected agent — issue all `Task` calls in one message so they spawn concurrently. (Opus 4.8 tends to under-delegate, so fan out deliberately rather than spawning agents one at a time.)
 
 After spawning, use `TaskUpdate` to set `owner` on each task to the corresponding agent name.
 
-**CRITICAL**: Each agent's prompt MUST contain the full diff text. Agents cannot see the diff unless you include it in their prompt.
+**Each agent's prompt must contain the full diff text** — agents cannot see the diff unless you include it in their prompt.
 
 ## Step 4: Phase 1 — Collect Hardened Findings
 
@@ -227,7 +227,7 @@ Blurb describing the issue, concrete harm, and suggested fix. Include rationale 
 
 For L0 reviews (no Codex debate), omit the Codex line from each finding.
 
-### Verdict (REQUIRED — must be the LAST section)
+### Verdict (required — must be the last section)
 
 Binary. No "approve with suggestions" — either it's safe to merge or it isn't.
 

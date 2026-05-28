@@ -49,7 +49,7 @@ commits with unrelated changes.
 
 ## Commit Message Format Detection
 
-**IMPORTANT**: Before writing any commits, analyze the recent git history to determine the project's commit style:
+Before writing any commits, analyze the recent git history to determine the project's commit style:
 
 - **Check for Conventional Commits**: Look for patterns like `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `style:`, `perf:`, `ci:`, `build:`
 - **Match the existing style**: If 80% or more of recent commits follow conventional commits, use that format
@@ -158,9 +158,9 @@ For detailed information on conventional commits, see:
 
 ## Notes
 
-- **ALWAYS check recent git history first** to determine if conventional commits are used
-- **Match the project's existing style** - consistency is more important than personal preference
-- DO NOT push to remote unless explicitly asked
+- Check recent git history first to determine whether conventional commits are used
+- Match the project's existing style — consistency is more important than personal preference
+- Don't push to remote unless explicitly asked
 - Always verify authorship and commit details before amending
 - Use `git add -p` for interactive staging when files contain multiple unrelated changes
 - Keep commits focused and atomic - one logical change per commit

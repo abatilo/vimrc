@@ -122,7 +122,7 @@ Diataxis emphasizes continuous, incremental improvement:
 3. **Decide**: Determine one specific improvement that aligns with Diataxis
 4. **Do**: Complete that single improvement and publish immediately
 
-**Important:** Focus on small, immediate improvements rather than large restructuring efforts.
+Focus on small, immediate improvements rather than large restructuring efforts.
 
 ## Key Principles
 
@@ -205,4 +205,4 @@ Diataxis emphasizes continuous, incremental improvement:
 
 ---
 
-**Remember:** The goal is to serve user needs effectively. Use the Diataxis compass to identify what users need, then load the appropriate reference file for detailed guidance on creating that documentation type.
+The goal is to serve user needs effectively. Use the Diataxis compass to identify what users need, then load the appropriate reference file for detailed guidance on creating that documentation type.

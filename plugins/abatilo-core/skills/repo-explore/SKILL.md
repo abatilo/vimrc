@@ -47,7 +47,7 @@ mkdir -p ~/.cache/claude/repos/<owner>
 git clone https://github.com/<owner>/<repo>.git ~/.cache/claude/repos/<owner>/<repo>
 ```
 
-### 4. Version Detection (CRITICAL)
+### 4. Version Detection
 
 **Before exploring, check if this repo is a dependency in the current working directory.**
 
@@ -71,9 +71,7 @@ Common tag formats to try:
 
 ### 5. Explore with Explore Agent
 
-**ALWAYS use the Task tool with `subagent_type=Explore` for answering questions about the repository.**
-
-Do NOT manually browse files when the Explore agent can do it. The Explore agent is optimized for:
+**Use the Task tool with `subagent_type=Explore` to answer questions about the repository — don't manually browse files when the Explore agent can do it.** Opus 4.8 under-delegates by default, so reach for the Explore agent deliberately. The Explore agent is optimized for:
 - Finding files by patterns
 - Searching code for keywords
 - Understanding codebase architecture

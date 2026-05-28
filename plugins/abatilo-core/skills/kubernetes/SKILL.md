@@ -28,7 +28,7 @@ Use this skill when working with:
 
 ### 1. Verify Context and Namespace
 
-**Always start by verifying your current context and namespace:**
+Start by verifying your current context and namespace:
 ```bash
 kubectl config current-context
 kubectl config view --minify
@@ -196,4 +196,4 @@ This skill works well with:
 
 ---
 
-**Remember:** Load the specific reference files only when you need detailed information about kubectl commands, Helm operations, specific workflows, or best practices. This keeps the context manageable and efficient.
+Load the specific reference files only when you need detailed information about kubectl commands, Helm operations, specific workflows, or best practices. This keeps the context manageable and efficient.

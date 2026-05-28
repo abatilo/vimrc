@@ -70,7 +70,7 @@ Format: `[taxonomy-label/P0-P3] file:line — Description`. For blockers/risks, 
 
 ## Finding Qualification
 
-Only flag an issue if ALL of these hold:
+Only flag an issue when all of these hold:
 
 1. Meaningfully impacts accuracy, performance, security, or maintainability
 2. Discrete and actionable — not a general codebase issue or combination of issues
@@ -81,9 +81,10 @@ Only flag an issue if ALL of these hold:
 7. Must identify provably affected code — speculation is insufficient
 8. Not clearly an intentional change by the author
 
-Quantity guidance:
-- Output ALL qualifying findings — don't stop at the first
-- If nothing qualifies, output zero findings
+Quantity guidance — favor coverage over restraint:
+- Report every qualifying finding, including low-severity and low-confidence ones. Don't suppress a real finding because it feels minor or you're not fully sure — flag it, assign an honest priority (P3 for minor), and note your confidence so the lead can rank it.
+- The team lead's synthesis and cross-review are the filter at this stage. Your job is coverage, not self-censorship.
+- If nothing qualifies, output zero findings.
 
 ## Codex Debate (L1/L2 only — skip entirely for L0)
 
@@ -178,7 +179,7 @@ Examine the change as a unit of work:
 - Commit structure: atomic and logical, or one giant squash?
 - Dependencies: depends on other unmerged PRs? Merge order constraint?
 
-SPECIAL: If >1000 lines or multiple unrelated concerns, flag as BLOCKER immediately. Unreviewable changes lead to rubber-stamping.
+**Special:** if >1000 lines or multiple unrelated concerns, flag as a blocker immediately. Unreviewable changes lead to rubber-stamping.
 
 ### Process Context
 
@@ -189,12 +190,12 @@ Examine:
 - Links/references: issues, design docs, prior art linked?
 - Code archaeology: git blame in a year explains why this exists?
 
-KEY QUESTIONS:
+**Key questions:**
 - "At 3 AM, can the on-call engineer diagnose and mitigate this?"
 - "How many distinct concepts does a reviewer need to hold in working memory for this change?"
 
-CLASSIFY using: blocker, risk, suggestion, question.
-FORMAT: Risk assessment (lane, blast radius, rollback, observability), then reviewability meta-assessment (size verdict, cohesion verdict, cognitive load estimate), then specific findings.
+Classify using: blocker, risk, suggestion, question.
+Format: risk assessment (lane, blast radius, rollback, observability), then reviewability meta-assessment (size verdict, cohesion verdict, cognitive load estimate), then specific findings.
 
 ## Codex Debate Opening Questions (L1/L2 only)
 
