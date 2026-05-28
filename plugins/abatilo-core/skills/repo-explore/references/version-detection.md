@@ -2,6 +2,14 @@
 
 When exploring a repository that is a dependency of the current project, check out the specific version being used. This ensures you're looking at the exact code the project depends on.
 
+## Contents
+
+- [Detection Workflow](#detection-workflow)
+- [Dependency Files by Ecosystem](#dependency-files-by-ecosystem)
+- [Tag Lookup Strategy](#tag-lookup-strategy)
+- [Handling Version Ranges](#handling-version-ranges)
+- [Monorepo Considerations](#monorepo-considerations)
+
 ## Detection Workflow
 
 1. Identify the package name from the repo (often matches repo name, but not always)

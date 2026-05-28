@@ -2,6 +2,24 @@
 
 Advanced workflow patterns for managing stacked branches.
 
+## Contents
+
+- [Workflow 1: Building a Feature Stack](#workflow-1-building-a-feature-stack)
+- [Workflow 2: Submitting a Stack for Review](#workflow-2-submitting-a-stack-for-review)
+- [Workflow 3: Updating After Review Feedback](#workflow-3-updating-after-review-feedback)
+- [Workflow 4: Syncing with Upstream](#workflow-4-syncing-with-upstream)
+- [Workflow 5: Handling Merge Conflicts](#workflow-5-handling-merge-conflicts)
+- [Workflow 6: Reorganizing a Stack](#workflow-6-reorganizing-a-stack)
+- [Workflow 7: Cleaning Up After Merge](#workflow-7-cleaning-up-after-merge)
+- [Workflow 8: Working with Draft PRs](#workflow-8-working-with-draft-prs)
+- [Workflow 9: Splitting a Large Branch](#workflow-9-splitting-a-large-branch)
+- [Workflow 10: Squashing Before Merge](#workflow-10-squashing-before-merge)
+- [Workflow 11: Importing Existing Branches](#workflow-11-importing-existing-branches)
+- [Workflow 12: Multiple Stacks](#workflow-12-multiple-stacks)
+- [Workflow 13: Handling Force Push Failures](#workflow-13-handling-force-push-failures)
+- [Best Practices](#best-practices)
+- [Gotchas](#gotchas)
+
 ## Workflow 1: Building a Feature Stack
 
 ### Scenario

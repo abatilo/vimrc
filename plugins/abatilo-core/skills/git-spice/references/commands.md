@@ -2,6 +2,22 @@
 
 Complete reference for `git-spice` commands. Examples use the `git-spice` binary; `git spice` is equivalent through Git's external subcommand dispatch.
 
+## Contents
+
+- [Global Flags](#global-flags)
+- [Repository Commands](#repository-commands)
+- [Branch Commands](#branch-commands)
+- [Stack Commands](#stack-commands)
+- [Upstack Commands](#upstack-commands)
+- [Downstack Commands](#downstack-commands)
+- [Commit Commands](#commit-commands)
+- [Navigation Commands](#navigation-commands)
+- [Log Commands](#log-commands)
+- [Rebase Commands](#rebase-commands)
+- [Authentication Commands](#authentication-commands)
+- [Shell Completion](#shell-completion)
+- [Configuration Options](#configuration-options)
+
 ## Global Flags
 
 All commands support these flags:

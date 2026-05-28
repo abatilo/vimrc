@@ -2,6 +2,17 @@
 
 This reference provides comprehensive details on kubectl operations for managing Kubernetes resources.
 
+## Contents
+
+- [Resource Management](#resource-management)
+- [Application Debugging](#application-debugging)
+- [Deployment Management](#deployment-management)
+- [Context and Namespace Management](#context-and-namespace-management)
+- [Resource Introspection](#resource-introspection)
+- [Advanced Operations](#advanced-operations)
+- [Output Formats](#output-formats)
+- [Permissions and Authorization](#permissions-and-authorization)
+
 ## Resource Management
 
 ### Getting Resources

@@ -2,6 +2,19 @@
 
 This reference provides best practices, tips, troubleshooting guidelines, and integration patterns for working with Kubernetes.
 
+## Contents
+
+- [Safety Best Practices](#safety-best-practices)
+- [Efficiency Best Practices](#efficiency-best-practices)
+- [Debugging Best Practices](#debugging-best-practices)
+- [YAML Management Best Practices](#yaml-management-best-practices)
+- [Performance Optimization](#performance-optimization)
+- [High Availability Patterns](#high-availability-patterns)
+- [Error Handling](#error-handling)
+- [Integration with Other Tools](#integration-with-other-tools)
+- [Tips and Tricks](#tips-and-tricks)
+- [Environment-Specific Practices](#environment-specific-practices)
+
 ## Safety Best Practices
 
 ### Pre-Deployment Validation

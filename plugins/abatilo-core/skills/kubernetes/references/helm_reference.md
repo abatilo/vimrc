@@ -2,6 +2,20 @@
 
 This reference provides comprehensive details on Helm operations for managing Kubernetes applications through charts.
 
+## Contents
+
+- [Overview](#overview)
+- [Installing Charts](#installing-charts)
+- [Upgrading Releases](#upgrading-releases)
+- [Managing Releases](#managing-releases)
+- [Rollback](#rollback)
+- [Repository Management](#repository-management)
+- [Chart Development & Inspection](#chart-development--inspection)
+- [Advanced Operations](#advanced-operations)
+- [Helm with Kustomize](#helm-with-kustomize)
+- [Common Patterns](#common-patterns)
+- [Troubleshooting](#troubleshooting)
+
 ## Overview
 
 Helm is the package manager for Kubernetes that helps you manage Kubernetes applications. Helm charts define, install, and upgrade even the most complex Kubernetes applications.

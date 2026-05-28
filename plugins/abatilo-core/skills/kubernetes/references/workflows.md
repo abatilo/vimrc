@@ -2,6 +2,13 @@
 
 This reference provides step-by-step workflows for common Kubernetes operations and troubleshooting scenarios.
 
+## Contents
+
+- [Debugging Workflows](#debugging-workflows)
+- [Deployment Workflows](#deployment-workflows)
+- [Configuration Management](#configuration-management)
+- [Maintenance Workflows](#maintenance-workflows)
+
 ## Debugging Workflows
 
 ### Debugging a Failing Pod

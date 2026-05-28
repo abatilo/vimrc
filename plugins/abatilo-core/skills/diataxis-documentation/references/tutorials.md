@@ -1,5 +1,18 @@
 # Writing Tutorials
 
+## Contents
+
+- [What is a Tutorial?](#what-is-a-tutorial)
+- [Purpose and Goals](#purpose-and-goals)
+- [Core Principles](#core-principles)
+- [Structure of a Tutorial](#structure-of-a-tutorial)
+- [Writing Style](#writing-style)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
+- [Example: Good Tutorial](#example-good-tutorial)
+- [Checklist for Tutorial Quality](#checklist-for-tutorial-quality)
+- [Common Mistakes](#common-mistakes)
+
 ## What is a Tutorial?
 
 A tutorial is **learning-oriented** documentation that guides a beginner through a complete, practical activity to acquire basic skills and confidence.

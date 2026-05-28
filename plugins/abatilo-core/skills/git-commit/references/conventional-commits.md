@@ -2,6 +2,18 @@
 
 This reference provides detailed guidance on the Conventional Commits specification.
 
+## Contents
+
+- [Specification Overview](#specification-overview)
+- [Commit Types](#commit-types)
+- [Scopes](#scopes)
+- [Breaking Changes](#breaking-changes)
+- [Body Guidelines](#body-guidelines)
+- [Footer Conventions](#footer-conventions)
+- [Detection Heuristics](#detection-heuristics)
+- [Common Mistakes](#common-mistakes)
+- [Tools & Automation](#tools--automation)
+
 ## Specification Overview
 
 Conventional Commits is a specification for adding human and machine readable meaning to commit messages.

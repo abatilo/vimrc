@@ -2,6 +2,21 @@
 
 This reference provides comprehensive details about the Diataxis documentation framework, its principles, and how to apply it effectively.
 
+## Contents
+
+- [What is Diataxis?](#what-is-diataxis)
+- [The Two-Dimensional Model](#the-two-dimensional-model)
+- [The Four Documentation Types](#the-four-documentation-types)
+- [The Compass: Identifying Documentation Type](#the-compass-identifying-documentation-type)
+- [Core Principles](#core-principles)
+- [Maintaining Distinctness](#maintaining-distinctness)
+- [Common Mistakes](#common-mistakes)
+- [Relationships Between Documentation Types](#relationships-between-documentation-types)
+- [Quality Metrics](#quality-metrics)
+- [Applying Diataxis to Your Project](#applying-diataxis-to-your-project)
+- [Integration with Other Systems](#integration-with-other-systems)
+- [Further Learning](#further-learning)
+
 ## What is Diataxis?
 
 Diataxis is a systematic approach to technical documentation authoring that organizes content based on user needs. It identifies four distinct types of documentation, each serving a different purpose in the user's journey.

@@ -1,5 +1,18 @@
 # Writing How-to Guides
 
+## Contents
+
+- [What is a How-to Guide?](#what-is-a-how-to-guide)
+- [Purpose and Goals](#purpose-and-goals)
+- [Core Principles](#core-principles)
+- [Structure of a How-to Guide](#structure-of-a-how-to-guide)
+- [Writing Style](#writing-style)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
+- [Example: Good How-to Guide](#example-good-how-to-guide)
+- [Checklist for How-to Guide Quality](#checklist-for-how-to-guide-quality)
+- [Common Mistakes](#common-mistakes)
+
 ## What is a How-to Guide?
 
 A how-to guide is **goal-oriented** documentation that helps a competent user achieve a specific real-world task or solve a particular problem.

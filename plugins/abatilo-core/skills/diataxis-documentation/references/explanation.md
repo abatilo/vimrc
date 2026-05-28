@@ -1,5 +1,20 @@
 # Writing Explanations
 
+## Contents
+
+- [What is an Explanation?](#what-is-an-explanation)
+- [Purpose and Goals](#purpose-and-goals)
+- [Core Principles](#core-principles)
+- [Structure of an Explanation](#structure-of-an-explanation)
+- [Key Takeaways](#key-takeaways)
+- [Writing Style](#writing-style)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
+- [Example: Good Explanation](#example-good-explanation)
+- [Further Reading](#further-reading)
+- [Checklist for Explanation Quality](#checklist-for-explanation-quality)
+- [Common Mistakes](#common-mistakes)
+
 ## What is an Explanation?
 
 Explanation is **understanding-oriented** documentation that provides context, background, and clarifies concepts to deepen the user's understanding of a subject.

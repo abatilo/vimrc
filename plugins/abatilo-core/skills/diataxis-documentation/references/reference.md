@@ -1,5 +1,18 @@
 # Writing Reference Documentation
 
+## Contents
+
+- [What is Reference Documentation?](#what-is-reference-documentation)
+- [Purpose and Goals](#purpose-and-goals)
+- [Core Principles](#core-principles)
+- [Structure of Reference Documentation](#structure-of-reference-documentation)
+- [Writing Style](#writing-style)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
+- [Example: Good Reference Documentation](#example-good-reference-documentation)
+- [Checklist for Reference Documentation Quality](#checklist-for-reference-documentation-quality)
+- [Common Mistakes](#common-mistakes)
+
 ## What is Reference Documentation?
 
 Reference documentation is **information-oriented** documentation that provides accurate, complete, and reliable technical descriptions of the machinery.

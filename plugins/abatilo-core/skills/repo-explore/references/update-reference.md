@@ -2,6 +2,16 @@
 
 Instructions for updating, refreshing, and managing cached repositories.
 
+## Contents
+
+- [Repository Location](#repository-location)
+- [Common Update Operations](#common-update-operations)
+- [When to Update](#when-to-update)
+- [Checking Current State](#checking-current-state)
+- [Troubleshooting](#troubleshooting)
+- [Cache Management](#cache-management)
+- [Best Practices](#best-practices)
+
 ## Repository Location
 
 All cached repos are stored at:
