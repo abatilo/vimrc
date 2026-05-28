@@ -1,0 +1,71 @@
+## Conversation
+User invoked the claude-code-guide agent to "look for settings related to
+enabling ultracode and workflows and update claude_settings.json with
+anything needed to enable these features." Research (via claude-code-guide
+against the v2.1.154 binary + official docs) found:
+- Workflows: already fully enabled by existing CLAUDE_CODE_WORKFLOWS=1
+  (forces available + default-on). No change needed.
+- Ultracode: NOT a settings.json key. It is a session-only effort mode
+  ("xhigh effort + standing dynamic-workflow orchestration") activated at
+  runtime via `/effort ultracode`. It is explicitly not read from
+  settings.json and "ultracode" is rejected by the effortLevel enum.
+- Critical conflict: the user's existing CLAUDE_CODE_EFFORT_LEVEL=max env
+  var SHADOWS /effort ultracode (binary note: "clear it and ultracode
+  takes over").
+
+Asked the user (AskUserQuestion) how to handle the file given ultracode
+can't be persisted. User chose "Remove max override". I removed the env
+var. The user (or the Claude Code settings UI / linter) then added a
+top-level "effortLevel": "xhigh" key and the file got re-serialized
+(relocating the existing "fastMode": true key, value unchanged). User
+then asked to commit "the changes where we removed the env var for effort
+and set effortLevel to xhigh".
+
+## Actions
+- Spawned claude-code-guide agent (id aa06a4e175f78a362) to research the
+  flags; it inspected the installed binary gating logic and docs.
+- Edited claude_settings.json: removed line `"CLAUDE_CODE_EFFORT_LEVEL":
+  "max",` from the env block.
+- Validated JSON parses (python3 json.load) and confirmed
+  ~/.claude/settings.json is a SYMLINK -> this repo's claude_settings.json
+  (so changes are live next session; no sync step needed).
+- For the commit: git status/diff/log reviewed. Net diff = remove env
+  var, add top-level effortLevel xhigh, relocate fastMode (no value
+  change). Staged whole file (one logical change), committed with
+  conventional `chore(settings):` style matching recent history.
+- includeCoAuthoredBy is false in settings, so NO Co-Authored-By trailer
+  was added.
+
+## Errors & Mistakes
+None. The fastMode key relocation in the diff was NOT made by me; it came
+from the file being re-serialized externally (settings UI/linter). It is
+harmless (same value).
+
+## Dead Ends
+- Considered persisting ultracode directly (e.g. effortLevel=ultracode or
+  an "ultracode": true key) — rejected: the effortLevel enum only accepts
+  low/medium/high/xhigh/max; ultracode is runtime-only.
+- Considered keeping CLAUDE_CODE_EFFORT_LEVEL=max (it's a HIGHER tier than
+  ultracode's xhigh) — user opted to remove it so /effort ultracode works.
+
+## Hints for Future Agents
+- ~/.claude/settings.json is symlinked to vimrc/claude_settings.json.
+  Edits here are the live config; effective on next session start.
+- Effort tier order: low < medium < high < xhigh < max. "max" > ultracode.
+- CLAUDE_CODE_EFFORT_LEVEL env var (if set) overrides/shadows interactive
+  /effort, including /effort ultracode. Removing it lets /effort take over.
+- Workflows gating: CLAUDE_CODE_WORKFLOWS truthy => available+default-on;
+  falsy => off. Disable switches: disableWorkflows / CLAUDE_CODE_DISABLE_
+  WORKFLOWS. No top-level enableWorkflows key needed.
+- Ultracode resets each session; must run /effort ultracode per session.
+  Drop to /effort high for routine work (ultracode is slower/costlier).
+
+## Codebase Discoveries
+- Workflows feature gating function (binary v2.1.154) FX5 confirms the env
+  var force-on behavior described above.
+- effortLevel was newly added as a top-level settings.json key here (the
+  persistable equivalent of CLAUDE_CODE_EFFORT_LEVEL).
+
+## Open Questions
+- Not pushed (user did not ask). refs/notes/commits not pushed either.
+- Whether the fastMode relocation should be normalized later; cosmetic only.
