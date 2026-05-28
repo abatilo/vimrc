@@ -1,55 +1,5 @@
 # AGENT rules
 
-This file is assembled from the Markdown files in `rules/` and is intended to be symlinked as an `AGENTS.md` context file for tools that support it.
-
-Tool-specific instructions apply only when the named tool is available. Path-scoped frontmatter from source rule files is retained as readable guidance; agents that do not support rule frontmatter should still treat the scope text as intent.
-
----
-
-## Source: `rules/codex-mcp.md`
-
-# Codex MCP for Collaborative Planning
-
-Codex MCP provides a collaborative AI partner for planning and problem-solving. Threaded conversations let you think through problems iteratively.
-
-## When to Use Codex
-
-- Planning complex implementations before writing code
-- Exploring trade-offs between approaches
-- Rubber-ducking problems to find gaps in thinking
-- Getting a second opinion on architectural decisions
-
-## Starting a Thread
-
-Use `mcp__codex__codex` to start a new conversation:
-
-```
-mcp__codex__codex(prompt: "Help me plan the authentication system...")
-```
-
-Returns:
-```json
-{
-  "threadId": "019bf5f7-dc9a-7781-8575-c456880b2e2f",
-  "content": "Response here..."
-}
-```
-
-## Continuing a Thread
-
-Use `mcp__codex__codex-reply` with the `threadId` to continue:
-
-```
-mcp__codex__codex-reply(threadId: "019bf5f7-...", prompt: "What about JWT vs sessions?")
-```
-
-## Best Practices
-
-- **Start threads for planning** - Use codex before diving into implementation
-- **Keep threads focused** - One topic per thread for coherent conversations
-- **Share context** - Give codex relevant code snippets or requirements
-- **Iterate** - Use multiple exchanges to refine ideas before committing to an approach
-
 ---
 
 ## Source: `rules/commit-notes.md`
@@ -151,61 +101,6 @@ When pushing, include notes:
 ```bash
 git push origin refs/notes/commits
 ```
-
----
-
-## Source: `rules/gopls-lsp.md`
-
----
-paths:
-  - "**/*.go"
----
-
-# Go LSP (gopls) Usage
-
-The `gopls-lsp` plugin is enabled. Use LSP operations proactively when working in Go codebases — don't rely solely on Grep/Glob/Read for code understanding.
-
-## When to Use LSP
-
-**Before editing a function or type:**
-- `hover` on the symbol to confirm its type signature and docs
-- `findReferences` to understand who depends on it (blast radius)
-- `incomingCalls` to see all callers before changing a function's signature
-
-**Before adding code:**
-- `documentSymbol` on the target file to understand its structure
-- `goToDefinition` on types/functions you'll interact with
-- `workspaceSymbol` to find existing code you might reuse
-
-**During refactors:**
-- `findReferences` on every renamed/modified symbol to catch all call sites
-- `goToImplementation` to find all concrete implementations of an interface
-- `outgoingCalls` to understand a function's dependencies before moving or splitting it
-
-**When exploring unfamiliar code:**
-- `goToDefinition` to trace through call chains instead of guessing file locations
-- `hover` for quick type info without reading entire files
-- `incomingCalls` / `outgoingCalls` to map control flow
-
-## Prefer LSP Over Text Search
-
-- Use `goToDefinition` instead of grepping for a function name — it handles shadowing, packages, and vendored code correctly.
-- Use `findReferences` instead of grepping for usages — it understands scope and won't return false positives from comments or strings.
-- Use `workspaceSymbol` instead of globbing for type/function names — it searches the Go index, not filenames.
-
-## Operations Reference
-
-| Operation | Use for |
-|---|---|
-| `goToDefinition` | Navigate to a symbol's declaration |
-| `findReferences` | All usages of a symbol across the project |
-| `hover` | Type signature and docs at a position |
-| `documentSymbol` | List all symbols in a file |
-| `workspaceSymbol` | Search symbols across the workspace |
-| `goToImplementation` | Find implementations of an interface |
-| `prepareCallHierarchy` | Set up call hierarchy at a position |
-| `incomingCalls` | Functions that call this function |
-| `outgoingCalls` | Functions this function calls |
 
 ---
 
@@ -322,21 +217,6 @@ Before removing or significantly changing code:
 
 ---
 
-## Consult Codex (Blocking)
-
-These require a Codex consultation **before proceeding**:
-
-- Introducing a dependency for convenience
-- Proposing abstraction before 3rd use
-- Heavy mocking (>50%) needed for tests
-- Data flow becomes harder to trace
-- More than 3 abstraction layers without clear domain reason
-- Unclear purpose of existing code being changed
-
-**Behavior:** Start a Codex thread, present the tradeoff, work through the decision collaboratively.
-
----
-
 ## Overrides & Local Conventions
 
 **User authority:** You can override any rule.
@@ -371,8 +251,7 @@ Apply during every PR review and design decision:
 
 # Task Tracking
 
-You LOVE making task lists. Using TaskCreate, TaskUpdate, TaskList, and TaskGet
-has made you very helpful. You should be eager and generous with task tracking
+You LOVE making task lists. You should be eager and generous with task tracking
 — even small, seemingly trivial work benefits from being written down.
 
 ## When to Create Tasks
