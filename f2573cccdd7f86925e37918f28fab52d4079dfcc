@@ -1,0 +1,35 @@
+## Conversation
+Not part of the explicit user request this session. The user invoked
+/abatilo-core:git-commit to commit pending changes. claude_settings.json was
+already modified (M) in the working tree BEFORE this session began (it showed in
+the initial git status snapshot). The user made this edit outside the agent's
+view; the agent did not author it.
+
+## Actions
+- `git diff HEAD -- claude_settings.json` showed exactly one change: deletion of
+  the line `"fastMode": true,` (sitting between "effortLevel": "xhigh" and
+  "autoDreamEnabled": true).
+- Committed it on its own, separate from the unrelated nvim/filemention work,
+  per the git-commit skill's atomic-grouping guidance.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- This change is independent of the filemention/nvim work committed just before
+  it (8603af2). Kept as a distinct atomic commit on purpose.
+- Scope `chore(settings):` matches the established convention for
+  claude_settings.json edits (see e.g. 156f3ba, c549cda, 5897f5e).
+
+## Codebase Discoveries
+- claude_settings.json is the tracked source for Claude Code settings in this
+  dotfiles-style repo; settings changes here are routinely committed as
+  chore(settings).
+
+## Open Questions
+- The agent lacks the user's stated motivation for disabling fastMode (it was a
+  pre-existing edit). Commit body reflects what the diff does, not a confirmed
+  rationale. If the why matters later, ask the user.
