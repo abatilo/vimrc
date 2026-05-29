@@ -53,19 +53,12 @@
   "enabledPlugins": {
     "claude-code-wakatime@wakatime": true,
     "gopls-lsp@claude-plugins-official": true,
-    "bits@bits-plugins": false,
     "skill-creator@claude-plugins-official": true,
     "support@cw-plugins": true,
     "abatilo-core@abatilo-plugins": true,
     "humanize@PolyArch": true
   },
   "extraKnownMarketplaces": {
-    "bits-plugins": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/abatilo/abatilo/bits"
-      }
-    },
     "cw-plugins": {
       "source": {
         "source": "github",
