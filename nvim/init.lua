@@ -78,6 +78,8 @@ vim.pack.add({
   "https://github.com/hrsh7th/cmp-nvim-lsp",
   "https://github.com/hrsh7th/cmp-buffer",
   "https://github.com/hrsh7th/cmp-path",
+  -- @-mention project files as a completion source (replaces telescope-insert-path)
+  "https://github.com/not-manu/filemention.nvim",
 
   -- GitHub UI
   "https://github.com/pwntester/octo.nvim",
@@ -319,6 +321,16 @@ require("mason-tool-installer").setup({
   },
 })
 
+-- filemention.nvim: type `@` in insert mode to fuzzy-insert a project-relative
+-- file path. Replaces telescope-insert-path's picker actions; it registers
+-- itself as the nvim-cmp source wired into cmp.sources below. filetypes = "*"
+-- makes it available in every buffer (matching the old picker, which was
+-- filetype-agnostic); otherwise it only activates in text-ish filetypes like
+-- markdown/gitcommit, which is why `@` did nothing in code files.
+require("filemention").setup({
+  filetypes = "*",
+})
+
 local cmp = require("cmp")
 cmp.setup({
   completion = {
@@ -340,6 +352,7 @@ cmp.setup({
     { name = "vsnip" },
     { name = "buffer", keyword_length = 4 },
     { name = "path" },
+    { name = "filemention" },
   },
 })
 
