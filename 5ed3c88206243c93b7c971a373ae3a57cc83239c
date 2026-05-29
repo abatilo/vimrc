@@ -1,0 +1,25 @@
+## Conversation
+Follow-up to the open question recorded in commit e28139a's note. The claude-code-guide agent had flagged that the five <example> blocks in subtractive-engineering.md roughly double the file length, and since this rule lives in always-on context that is a per-turn token cost. It recommended a lean variant keeping only the highest-value examples (Steps 1, 2, 5). I had surfaced this to the user and left it undecided. User then said: 'trim it to the lean 3-example variant.'
+
+## Actions
+- Removed the <example> block under Step 3 (slow query / cache) via Edit.
+- Removed the <example> block under Step 4 (40-min test suite) via Edit.
+- Kept the Step 1 (PDF receipt requirement), Step 2 (feature flags), and Step 5 (weekly report automation) examples.
+- Committed as its own atomic commit.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- The choice of which examples to keep (1, 2, 5) was the agent's explicit recommendation: those steps carry the most weight (question, delete, automate-last are the load-bearing ideas). Steps 3 (simplify) and 4 (accelerate) are more self-explanatory and Step 3 already defers to rules/simple.md for technique.
+- This resolves the OPEN QUESTION from e28139a's note. No remaining open items on this rule.
+- All other rewrite decisions (positive framing, XML tags, explicit rules/simple.md path) are unchanged — see e28139a note.
+
+## Codebase Discoveries
+None new beyond prior commits.
+
+## Open Questions
+None.
