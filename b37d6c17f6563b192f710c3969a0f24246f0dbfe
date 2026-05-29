@@ -1,0 +1,23 @@
+## Conversation
+Commit 2 of 2 from: "I've deprecated bits and archived the repo, and then I sorted the extra fields in claude settings. please commit and push." This commit is the "sorted the extra fields" part.
+
+## Actions
+- After committing the bits removal (892f018), ran `git add claude_settings.json` to stage the only remaining hunk (the sort), confirmed via `git diff --cached`.
+- Ran `python3 -m json.tool claude_settings.json` to confirm the file is still valid JSON after the reorder — passed.
+- Committed.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- The user described this purely as "sorted the extra fields," but the staged hunk ALSO introduced a brand-new field: `"autoMemoryEnabled": true` (verified absent from HEAD via `git show HEAD:claude_settings.json | grep autoMemoryEnabled`). This is auto-memory being enabled, bundled into the same edit as the sort. Called it out in the commit message body so the change isn't silently buried under "sort".
+- The sorted region is ONLY the flat trailing block of top-level boolean/string settings (from alwaysThinkingEnabled through useAutoModeDuringPlan). The nested objects above it (enabledPlugins, extraKnownMarketplaces) are deliberately NOT alphabetized — do not "fix" their order.
+
+## Codebase Discoveries
+Trailing top-level settings are kept alphabetically sorted. Future edits adding a top-level scalar setting should insert it in alphabetical position to keep diffs minimal.
+
+## Open Questions
+None.
