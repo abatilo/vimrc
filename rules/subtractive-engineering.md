@@ -65,20 +65,12 @@ Only after questioning and deleting do you improve what survives.
 - Keep a whole-system view: optimize for the overall outcome, not a local metric. Shaving cost off one component while the larger system pays for it is a loss, not a win.
 - For the concrete techniques, follow `rules/simple.md`: explicit data, isolated state, reduced coupling, clarity over cleverness, and delayed abstraction.
 
-<example>
-A query is slow. Before adding a cache layer, confirm the query is needed at all (Steps 1–2). It turns out the result is recomputed on every render but only changes daily — so the simplification is to compute it once per day, not to cache an unnecessary recomputation.
-</example>
-
 ### Step 4 — Accelerate cycle time
 
 Once the design is questioned, lean, and simple, speed up the iteration loop.
 
 - Accelerate only after Steps 1–3 are done. Speeding up the wrong design just arrives at the wrong outcome sooner.
 - Shorten feedback loops: faster tests, faster builds, smaller increments, quicker review turnaround.
-
-<example>
-The test suite takes 40 minutes, slowing every change. After confirming the tests are worth keeping, parallelize them and split the slow integration tier so the common path returns feedback in under five minutes.
-</example>
 
 ### Step 5 — Automate
 
