@@ -1,0 +1,65 @@
+## Conversation
+User (via /goal) asked to "replace the usage of telescope insert path" in
+nvim/init.lua with not-manu/filemention.nvim, using the repo-explore skill to
+figure out setup. The literal request was "replace", but the actual outcome
+landed as "add alongside" after two follow-ups:
+  1. After the swap, user reported "It doesn't seem to work?"
+  2. User then (via /goal) said "let's add back the teleport insert path plugin
+     and we'll have both for me to play with" ("teleport" = telescope typo).
+So final intent = run BOTH plugins concurrently, not replace.
+
+## Actions
+- repo-explore skill on https://github.com/not-manu/filemention.nvim. Clone
+  landed at ~/.cache/claude/repos/not-manu/filemention.nvim.
+- Read its config.lua, plugin/filemention.lua, lua/filemention/init.lua,
+  sources/cmp.lua, README.md to confirm the API rather than trust the summary.
+- Edited nvim/init.lua: removed telescope-insert-path pack entry + the
+  path_actions mapping block; added filemention pack entry, setup(), and
+  { name = "filemention" } cmp source.
+- After "doesn't work": ran headless nvim diagnostics (luafile /tmp/fm_diag.lua
+  loaded after init.lua) confirming the cmp source WAS registered and present in
+  configured sources (loaded_filemention=true). Root cause was the filetype
+  gate, not wiring. Set filetypes = \"*\" and re-verified enabled()/is_available()
+  return true in a lua buffer.
+- After "add back": re-added the telescope-insert-path pack entry and restored
+  the exact path_actions mapping block. Headless load confirmed both
+  telescope_insert_path require and filemention cmp registration coexist.
+
+## Errors & Mistakes
+- `timeout` is not on macOS (exit 127, "command not found: timeout"). Dropped it.
+- `nvim --headless -c 'lua << \"LUA\" ... LUA'` failed: E5107 unexpected symbol
+  near '<'. The :lua heredoc form does not work inside -c. Fix: write the script
+  to /tmp/fm_diag.lua and run with -c 'luafile /tmp/fm_diag.lua' -c 'qa!', which
+  also guarantees the user config (init.lua) is loaded first.
+
+## Dead Ends
+- Initial framing as a drop-in "replace" was wrong. filemention is an nvim-cmp
+  completion source (type `@` in insert mode), NOT a telescope picker action.
+  It has zero telescope integration. There is no analog for absolute paths,
+  visual/normal-mode insertion, or relative-to-current-buffer. Surfaced this to
+  the user, who chose to keep both.
+
+## Hints for Future Agents
+- filemention auto-registers as a cmp source via its plugin/filemention.lua shim
+  (pcall require cmp -> cmp.register_source). No manual register needed; just add
+  { name = "filemention" } to cmp.sources. setup() only applies config.
+- The big gotcha: default filetypes are text-ish only (markdown/text/gitcommit/
+  gitrebase/markdown.mdx/mdx/norg). In code buffers `@` is silently inert. We set
+  filetypes = \"*\" to match the old picker's filetype-agnostic behavior. If `@`
+  becomes noisy in code, narrow this to an explicit list.
+- The telescope-insert-path removal+re-add nets to a ZERO diff vs HEAD; this
+  commit's diff is purely the filemention additions. The two plugins are
+  independent and both currently wired.
+
+## Codebase Discoveries
+- nvim/nvim-pack-lock.json is gitignored (.gitignore:2) and untracked since
+  commit 3a3d2f3 "Stop tracking Neovim pack lockfile". vim.pack manages it; do
+  NOT hand-edit or commit it. Both plugins are installed on disk under
+  ~/.local/share/nvim/site/pack/core/opt/.
+- Config targets Neovim 0.12 native vim.pack (vim.pack.add + PackChanged
+  autocmd at init.lua:9). Syntax check via `luajit -bl nvim/init.lua`.
+
+## Open Questions
+- Whether the user ultimately keeps both or drops one after playing with them.
+- filetypes = \"*\" may prove noisy in code (decorators/annotations trigger `@`);
+  user may want to narrow it later.
