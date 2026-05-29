@@ -1,0 +1,23 @@
+## Conversation
+User: 'Let's delete @rules/gopls-lsp.md then let's commit and push.' Straightforward deletion request following the subtractive-engineering rule work. No reason given for removal.
+
+## Actions
+- Read full rules/gopls-lsp.md before deleting (Chesterton's Fence + per instructions to inspect deletion targets). It was a coherent path-scoped rule (frontmatter paths: **/*.go) describing when to use gopls LSP operations (hover, findReferences, goToDefinition, etc.) over text search in Go codebases.
+- Checked git log: file was added in ae9219a (docs(rules): add Go LSP usage guidelines) and scoped in 4fd1d7d (Scope gopls-lsp rule to Go files only).
+- git rm rules/gopls-lsp.md; committed as its own atomic commit, separate from the new rule add.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- Nothing in the file contradicted its description, so no concern was surfaced — deletion was a clean user override. If gopls LSP guidance is wanted again, recover it from commit ae9219a or this commit's parent (b186596^).
+- User did not explain WHY gopls-lsp was removed. Possible reasons: no longer using the gopls-lsp plugin, found it noisy, or consolidating rules. Not confirmed.
+
+## Codebase Discoveries
+- gopls-lsp rule had been recently retuned (scoped to Go files) before removal, so its deletion is a reversal of fairly recent work — worth noting if it gets re-added.
+
+## Open Questions
+- Reason for removal unknown (see Hints).
