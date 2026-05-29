@@ -1,0 +1,60 @@
+## Conversation
+User invoked /abatilo-core:git-commit with no further instruction. The only
+working-tree change was a modified claude_settings.json. Task: produce
+logically grouped atomic commits matching repo conventions.
+
+## Actions
+1. git status / git diff HEAD / git log --oneline -20 (parallel) to read state
+   and detect commit style.
+2. Determined repo uses Conventional Commits; settings.json changes are
+   consistently scoped `chore(settings):` (see b37d6c1, 156f3ba, f2573cc,
+   c549cda), even when enabling features. Matched that.
+3. git add claude_settings.json (whole file — single hunk, see below).
+4. Committed: "chore(settings): enable remote control and push notifs".
+5. Added this note.
+
+## The diff
+Single contiguous hunk (lines ~73-88). Two things happened at once:
+  - Three NEW keys added: remoteControlAtStartup=true,
+    inputNeededNotifEnabled=true, agentPushNotifEnabled=true.
+  - The other ~13 existing keys were REORDERED out of the alphabetical sort
+    that commit b37d6c1 had just established, into the Claude Code app's own
+    internal write order.
+
+## Decision: single commit, not split
+Considered splitting into (a) reorder and (b) add-new-keys. Rejected:
+  - The new keys are interleaved with the reordered keys in ONE hunk, so
+    `git add -p` cannot separate them without edit mode + hand-built
+    intermediate JSON.
+  - Any intermediate file state would be fictional: the app produced the
+    reorder + additions atomically in a single rewrite when the user toggled
+    these options. The user's actual logical change was "turn on remote
+    control + push notifications"; the reorder is an incidental side effect of
+    the app persisting the file, not a separate human intent.
+  - Honest atomic history = one commit. Reorder documented in the commit body.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Splitting reorder from additions (see above) — abandoned as artificial and
+impractical.
+
+## Hints for Future Agents
+- claude_settings.json is rewritten by the Claude Code app itself. Expect the
+  app to reorder ALL top-level keys whenever it saves. The alphabetical sort in
+  b37d6c1 is therefore fragile and will keep getting clobbered — don't bother
+  re-sorting after the app touches it unless the user explicitly wants it, or
+  it'll just churn again on the next toggle.
+- The three new keys relate to remote control / mobile + push notifications.
+- Not pushed (skill says don't push unless asked). Note also not pushed; push
+  with: git push origin refs/notes/commits
+
+## Codebase Discoveries
+b37d6c1 ("sort top-level settings fields") was a manual sort that the app's
+own write order does not preserve — confirmed by this very change undoing it.
+
+## Open Questions
+None. Did not flag the sort-clobber to the user beyond a brief mention; if they
+care about a stable order they'd need a hook or post-process, not a one-off
+manual sort.
