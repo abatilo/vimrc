@@ -1,0 +1,24 @@
+## Conversation
+User said: "I've deprecated bits and archived the repo, and then I sorted the extra fields in claude settings. please commit and push." Two distinct activities were described, so the working-tree change to claude_settings.json was split into two atomic commits. This is commit 1 of 2.
+
+## Actions
+- git status / git diff --stat showed only claude_settings.json modified (7 ins / 13 del).
+- git diff revealed two clean hunks: (1) removal of bits plugin + bits-plugins marketplace; (2) alphabetical re-sort of the top-level settings block.
+- Confirmed the bits dir still exists locally at /Users/abatilo/abatilo/bits (user "archived" it on the remote, not deleted locally).
+- Split the diff with awk into /tmp/hunk1.patch (header + first hunk only), applied via `git apply --cached /tmp/hunk1.patch` to stage ONLY the bits removal (7 deletions), then committed.
+
+## Errors & Mistakes
+None. The two logical changes mapped exactly onto the two diff hunks, so no fuzzy patching was needed.
+
+## Dead Ends
+Considered `git add -p` for splitting but interactive patch mode is unavailable in this harness. Used awk-extracted single-hunk patch + `git apply --cached` instead, applying the top hunk first so HEAD-relative line numbers (@@ -53,19 +53,12 @@) matched the clean index.
+
+## Hints for Future Agents
+- The bits-plugins marketplace was a `directory` source pointing at /Users/abatilo/abatilo/bits — a local plugin repo, now archived. If bits is ever revived, both the enabledPlugins entry and the extraKnownMarketplaces directory source must be restored.
+- The plugin entry was `"bits@bits-plugins": false` (already disabled) before removal.
+
+## Codebase Discoveries
+claude_settings.json's trailing settings block is maintained in alphabetical order (see commit 2). enabledPlugins and extraKnownMarketplaces are NOT alphabetized.
+
+## Open Questions
+None.
