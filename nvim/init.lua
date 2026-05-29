@@ -172,6 +172,9 @@ local path_actions = require("telescope_insert_path")
 require("telescope").setup({
   defaults = {
     mappings = {
+      i = {
+        ["<C-a>"] = path_actions.insert_abspath_a_insert,
+      },
       n = {
         ["["] = path_actions.insert_reltobufpath_visual,
         ["]"] = path_actions.insert_abspath_visual,
