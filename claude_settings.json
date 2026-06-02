@@ -55,20 +55,13 @@
     "gopls-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
     "support@cw-plugins": true,
-    "abatilo-core@abatilo-plugins": true,
-    "humanize@PolyArch": true
+    "abatilo-core@abatilo-plugins": true
   },
   "extraKnownMarketplaces": {
     "cw-plugins": {
       "source": {
         "source": "github",
         "repo": "coreweave/cw-claude-code-marketplace"
-      }
-    },
-    "PolyArch": {
-      "source": {
-        "source": "github",
-        "repo": "PolyArch/humanize"
       }
     }
   },
