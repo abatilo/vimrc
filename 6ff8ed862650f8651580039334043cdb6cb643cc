@@ -1,0 +1,38 @@
+## Conversation
+User invoked `/goal remove all traces of the humanize multi agent plugin from claude configuration, commit and push`. A session Stop hook enforced the goal. Intent: fully decommission the PolyArch `humanize` multi-agent plugin (RLCR loop / gen-plan / gen-idea / ask-codex etc.) from the user's Claude + Codex configuration, then commit and push the version-controlled portion.
+
+CRITICAL DISAMBIGUATION: There are TWO unrelated "humaniz*" things. (1) `humanize@PolyArch` = the multi-agent plugin = the TARGET. (2) `abatilo-core`'s own `humanizer` skill (plugins/abatilo-core/skills/humanizer/SKILL.md, "Remove AI Writing Patterns") = the user's OWN skill = NOT a target. The grep substring "humanize" matches both; the humanizer skill was intentionally left untouched. Do not remove it.
+
+## Actions
+1. Swept repo + ~/.claude for "humanize"/"polyarch". Repo traces: claude_settings.json, codex_config.toml, abatilo-core humanizer SKILL.md (unrelated).
+2. Confirmed symlinks: ~/.claude/settings.json -> repo claude_settings.json; ~/.codex/config.toml -> repo codex_config.toml. So editing repo files == editing live config.
+3. Reviewed bits-deprecation precedent (commit 892f018): user removes plugin+marketplace from claude_settings.json only, keeps clean format, splits unrelated hunks into separate commits.
+4. Checked plugin's config/codex-hooks.json: it WOULD install a Stop hook ({{HUMANIZE_RUNTIME_ROOT}}/hooks/loop-codex-stop-hook.sh) but codex_config.toml has NO [hooks] section -> hook was never installed. Only codex trace was the project trust entry for /Users/abatilo/abatilo/humanize (line 121).
+5. Used official CLI for live cleanup (the non-committable runtime state):
+   - `claude plugin uninstall humanize@PolyArch -y` -> removed install record from installed_plugins.json; also cleanly edited the symlinked claude_settings.json (removed enabledPlugins entry + PolyArch extraKnownMarketplaces block, format preserved).
+   - `claude plugin marketplace remove PolyArch` -> removed from known_marketplaces.json + deleted ~/.claude/plugins/marketplaces/PolyArch.
+6. Manually removed leftovers the CLI did NOT clean: `rm -rf ~/.claude/plugins/cache/PolyArch` (cache dir survived uninstall) and `rm -rf ~/.claude/plugins/data/humanize-PolyArch` (persistent data dir survived uninstall).
+7. Removed codex_config.toml project trust entry for /Users/abatilo/abatilo/humanize (Edit).
+8. Removed ~/.claude.json `githubRepoPaths["polyarch/humanize"] -> ["/Users/abatilo/abatilo/humanize"]` derived mapping (Edit). Validated JSON still parses.
+9. Committed ONLY the humanize removal across claude_settings.json + codex_config.toml. Left the pre-existing unrelated `"tui": "default"` working-tree change UNCOMMITTED.
+
+## Errors & Mistakes
+- First attempt to Edit claude_settings.json failed: "File has been modified since read" — the `claude plugin uninstall` CLI had rewritten the symlinked file after my initial Read. Fix: re-Read it (CLI's edit was clean/format-preserving), then proceeded.
+
+## Dead Ends
+- Considered letting the CLI do everything including the commit-worthy settings edit, but worried it might mass-reformat the JSON. It didn't (minimal diff), so I kept the CLI's settings.json edit and only had to re-Read.
+- Interactive `git add -p` unavailable in harness (same as bits commit note). To stage only humanize lines and exclude the unrelated `tui` line (which shares a diff hunk region), used the back-out/stage/restore trick: Edit out the tui line -> `git add` -> Edit the tui line back in. Result: humanize removal staged, tui addition left unstaged. Verified with `git diff --cached` (humanize only) and `git diff` (tui only).
+
+## Hints for Future Agents
+- ~/.claude/settings.json and ~/.codex/config.toml are SYMLINKS into this repo. `claude plugin` CLI edits the repo file directly. After any CLI plugin op, re-Read repo config before Edit.
+- `claude plugin uninstall` does NOT remove the cache dir (~/.claude/plugins/cache/<marketplace>/<plugin>) or the data dir (~/.claude/plugins/data/<plugin-id>). Remove those manually for a full wipe.
+- The `"tui": "default"` change in claude_settings.json was pre-existing user WIP at session start; deliberately NOT committed. It remains uncommitted in the working tree.
+- ~/.claude.json `githubRepoPaths` is a derived cache (github repo -> local checkout path). Removing the polyarch/humanize entry is best-effort; Claude Code may re-add it if a session runs inside /Users/abatilo/abatilo/humanize again. The local clone directory itself was intentionally NOT deleted (out of scope; it's a separate repo).
+- enabledPlugins and extraKnownMarketplaces in claude_settings.json are NOT alphabetized (per bits note); the trailing top-level settings block IS roughly alpha but tui sits after effortLevel — user's existing ordering, left as-is.
+
+## Codebase Discoveries
+- abatilo-plugins marketplace is a `directory` source pointing at the repo itself (/Users/abatilo/abatilo/vimrc); abatilo-core is the user's own plugin developed in-repo.
+- The PolyArch humanize plugin shipped a large test suite + codex hook installer, but the codex Stop hook was never actually written into codex_config.toml on this machine.
+
+## Open Questions
+- Whether the user also wants the local clone /Users/abatilo/abatilo/humanize deleted. Left intact; flagged in the summary.
