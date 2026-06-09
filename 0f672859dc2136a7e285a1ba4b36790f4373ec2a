@@ -1,0 +1,42 @@
+## Conversation
+Same session as the preceding four commits. After committing the accumulated
+claude_settings.json drift, the user asked to "update everything to bump up a
+tier since fable is now the higher capability model than just opus". The
+ladder is haiku < sonnet < opus < fable; each existing remap moved up one rung.
+
+## Actions
+- Swept the whole repo with rg for claude-(opus|sonnet|haiku|fable) and
+  versioned model IDs: the only hits outside this file were codex_config.toml
+  (OpenAI Codex config, no Claude models — not applicable), so "everything"
+  resolved to exactly the three env vars here
+- ANTHROPIC_DEFAULT_HAIKU_MODEL: claude-sonnet-4-6 -> claude-opus-4-8
+- ANTHROPIC_DEFAULT_SONNET_MODEL: claude-opus-4-8 -> claude-fable-5
+- CLAUDE_CODE_SUBAGENT_MODEL: claude-opus-4-8 -> claude-fable-5
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- Env remaps deliberately use plain model IDs; only the top-level "model" key
+  carries the [1m] 1M-context suffix. Subagents/aliases run the standard
+  context window.
+- No ANTHROPIC_DEFAULT_OPUS_MODEL remap was added: the opus alias is unused in
+  this setup (top-level model pins fable directly), and adding a fourth remap
+  would be speculative. If something starts requesting "opus" and should get
+  Fable, add that remap then.
+- Cost caveat: the haiku alias now resolves to Opus 4.8, so anything that
+  picks haiku for cheap/fast work (background tasks, summarizers) silently
+  runs on Opus pricing/latency.
+
+## Codebase Discoveries
+This is the third iteration of this pattern; 5897f5e did the same bump when
+Opus 4.8 became the ceiling. When a new top model ships, expect this exact
+one-rung shift plus a possible plugin prompt retune (cf. 60d6907 "retune
+prompts for Opus 4.8").
+
+## Open Questions
+Whether the abatilo-core plugin prompts should be retuned for Fable 5 the way
+60d6907 retuned them for Opus 4.8 — not requested, not done.
