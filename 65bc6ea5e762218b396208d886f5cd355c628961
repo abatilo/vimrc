@@ -1,0 +1,66 @@
+## Conversation
+Second half of the Fable 5 prompt retune (rules/ half is 83a9a71; see that
+note for the full request and workflow description). User asked to rewrite
+all prompts/skills per the new Fable 5 prompting guide.
+
+## Actions
+- Same Workflow run as the rules commit (wf_4463b028-e85): rewrite ->
+  adversarial verify -> fix per file; all approved, zero fix rounds
+- Changed: repo-explore (stale "Opus 4.8 under-delegates" note removed, the
+  Explore-delegation instruction itself kept and stated positively; de-shout
+  pass), git-commit (deleted the "When to Use This Skill" section duplicating
+  the frontmatter trigger description, the entire "Implementation Steps"
+  section duplicating Process — its two unique details, verify-with-git-show
+  and final-git-status-sweep, were folded into Process first — and 5 of 7
+  Notes bullets), kubernetes (200 -> 119 lines: deleted General Workflow
+  micro-procedures, the ~40-line Quick Command Reference duplicating
+  references/kubectl_reference.md + helm_reference.md, the Integration
+  Points listicle, and 3 restatements of progressive-disclosure),
+  diataxis-documentation (de-capped DO/UNDERSTAND, deleted closing recap
+  paragraph and one duplicate bullet)
+- Unchanged after verification: git-spice (factual domain reference, no
+  behavioral steering), humanizer (its ALL-CAPS strings are detection
+  CONTENT, not emphasis — do not "fix" them), interview (deep questioning of
+  the user is the skill's purpose, not an early-stopping bug)
+- Bumped plugin.json 0.20.0 -> 0.20.1 (PATCH per plugins/abatilo-core/
+  CLAUDE.md policy: refinement, no new feature)
+
+## Errors & Mistakes
+First Edit to plugin.json failed with "File has not been read yet" — I
+edited it based on a `cat` from an earlier turn instead of a proper Read.
+Read then edit succeeded. Trivial but a real sequencing mistake.
+
+## Dead Ends
+None in this half.
+
+## Hints for Future Agents
+- The kubernetes Quick Command Reference deletion is the most aggressive cut
+  in this retune. Rationale: basic kubectl/helm syntax is default model
+  knowledge AND the skill's own design is progressive disclosure into
+  references/. If someone misses an at-a-glance crib, restore it to
+  references/, not to SKILL.md.
+- repo-explore lesson generalized: never write model-version behavioral
+  notes into skills. 60d6907 added "Opus 4.8 under-delegates" in good faith
+  and it was stale within two model releases. State the desired behavior
+  ("use the Explore agent rather than browsing yourself") directly.
+- humanizer still carries its own frontmatter version: 2.2.0, independent of
+  plugin.json. Untouched here.
+- references/ files and plugins/abatilo-core/CLAUDE.md remain deliberately
+  out of scope (same as 60d6907): references are progressive-disclosure
+  docs, and CLAUDE.md's STOP/MANDATORY shouting around version bumps is
+  intentional guard-rail friction, not a prompt artifact. (It worked on me:
+  the bump-version hook fired when I read plugin.json.)
+
+## Codebase Discoveries
+- The skills diff is strongly net-negative (+23/-100 across 4 files), which
+  matches the Fable guide's claim that prior-model skills are over-
+  prescriptive: most of what these skills "taught" was either duplicated
+  reference material or enumeration of default-competent behavior.
+- codex_skills/ (OpenAI Codex side) and AGENTS_global.md were excluded from
+  this retune on purpose: they prompt GPT models, so a Claude prompting
+  guide does not apply.
+
+## Open Questions
+- Whether the leaner kubernetes/git-commit skills hold up in real use; if a
+  regression appears, check first whether the deleted content was actually
+  load-bearing or whether the reference files cover it.
