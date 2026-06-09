@@ -1,0 +1,29 @@
+## Conversation
+Part of the same /git-commit request splitting accumulated
+claude_settings.json drift into atomic commits. The user had switched their
+session model to Fable 5 via /model during this session ("Set model to Fable 5
+and saved as your default for new sessions"), which is what wrote this value.
+
+## Actions
+- Edited model: "opus[1m]" -> "claude-fable-5[1m]"
+- Added "fastMode": true after effortLevel (position matters: the final file
+  has fastMode before tui, which lands in a later commit)
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- The [1m] suffix selects the 1M-context variant; the env-var model remaps in
+  this file deliberately use plain model IDs without the suffix.
+- fastMode was explicitly disabled in f2573cc; its return here is intentional,
+  not an accidental revert. Fast mode uses Opus with faster output and is
+  toggleable per-session with /fast.
+
+## Codebase Discoveries
+None beyond what prior commits document.
+
+## Open Questions
+None
