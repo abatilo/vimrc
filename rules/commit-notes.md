@@ -1,16 +1,16 @@
 # Commit Notes
 
-Every commit MUST have a `git notes add` attached with extremely verbose,
-agent-oriented context. These notes are written for future AI agents who will
-read them to understand the full history behind a change.
+Every commit gets a `git notes add` attached with verbose, agent-oriented
+context. These notes are written for future AI agents who will read them to
+understand the full history behind a change.
 
 ## Reading Notes
 
 When investigating code — debugging, understanding context, doing Chesterton's
-Fence checks, or picking up prior work — ALWAYS read git notes alongside the
-log. Use `git log --show-notes` or `git notes show <commit>` to surface the
-agent context left by previous sessions. Notes often contain critical hints,
-warnings, and dead-end records that save you from repeating past mistakes.
+Fence checks, or picking up prior work — read git notes alongside the log.
+Use `git log --show-notes` or `git notes show <commit>` to surface the agent
+context left by previous sessions. Notes often contain hints, warnings, and
+dead-end records that save you from repeating past mistakes.
 
 Before modifying code that has notes attached to recent commits, read those
 notes first. They may explain non-obvious constraints, intentional trade-offs,
@@ -78,15 +78,14 @@ EOF
 
 ## Rules
 
-- ALWAYS add notes to every commit, no exceptions.
-- NEVER sanitize or soften mistakes — the raw truth is the point.
-- NEVER skip sections because "nothing interesting happened" — write "None"
-  and move on. The absence of errors is useful signal.
-- DO include specific error messages, stack traces, and command output.
-- DO reference specific file paths and line numbers.
-- DO write as if the reading agent has zero prior context.
-- The note length should be proportional to the complexity of the work, but
-  even trivial commits get notes.
+- Don't sanitize or soften mistakes — the raw truth is the point.
+- Fill in every section; when one is empty, write "None" and move on. The
+  absence of errors is useful signal.
+- Include specific error messages, stack traces, and command output.
+- Reference specific file paths and line numbers.
+- Write as if the reading agent has zero prior context.
+- Note length should be proportional to the complexity of the work, but even
+  trivial commits get notes.
 
 ## Pushing Notes
 

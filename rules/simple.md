@@ -36,8 +36,8 @@ When rules conflict:
 ### Say No by Default
 
 - WHEN asked to add features, abstractions, or dependencies: CONSULT Codex with "Can we ship without this?" before proceeding.
-- RED FLAGS requiring concrete use cases: "we might need...", "in case we want to...", "best practice says..."
-- REJECT speculative code by default.
+- Red flags requiring concrete use cases: "we might need...", "in case we want to...", "best practice says..."
+- Reject speculative code by default.
 
 ### Prototype First
 
@@ -49,8 +49,8 @@ When rules conflict:
 
 Triggers: interface/class introduced, base class/trait created, shared utility extracted, "helper" function proposed.
 
-- WAIT until the 3rd concrete use before abstracting.
-- REJECT "we might reuse this" as justification.
+- Wait until the 3rd concrete use before abstracting.
+- Reject "we might reuse this" as justification.
 - WHEN abstracting: Document what coupling it removes in a one-sentence comment.
 
 Decision tree:
@@ -100,18 +100,18 @@ Decision tree:
 
 Before removing or significantly changing code:
 
-1. CHECK `git blame` — who added it and when?
-2. SEARCH for related issues/commits
+1. Check `git blame` — who added it and when?
+2. Search for related issues/commits
 3. CONSULT Codex if the purpose is unclear
 
-- NEVER delete code just because you don't understand it.
+- Don't delete code just because you don't understand it.
 - WHEN unsure about behavior: CONSULT Codex before editing.
 
 ---
 
 ## Consult Codex (Blocking)
 
-These require a Codex consultation **before proceeding**:
+These require a Codex consultation before proceeding:
 
 - Introducing a dependency for convenience
 - Proposing abstraction before 3rd use
@@ -119,8 +119,6 @@ These require a Codex consultation **before proceeding**:
 - Data flow becomes harder to trace
 - More than 3 abstraction layers without clear domain reason
 - Unclear purpose of existing code being changed
-
-**Behavior:** Start a Codex thread, present the tradeoff, work through the decision collaboratively.
 
 ---
 
