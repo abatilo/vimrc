@@ -11,15 +11,6 @@ allowed-tools:
 
 This skill helps you create well-structured, atomic git commits with properly formatted commit messages.
 
-## When to Use This Skill
-
-Use this skill when:
-- You need to commit changes to a git repository
-- You want to create atomic, logically grouped commits
-- You need to follow commit message best practices
-- You have multiple changes that should be split into separate commits
-- You need to use git partial adds (git add -p) for fine-grained control
-
 ## Task Overview
 
 Based on the current git status and changes, create a set of logically grouped, atomic commits.
@@ -30,12 +21,8 @@ commits with unrelated changes.
 ## Process
 
 1. **Analyze Current State**
-   - Check git status to see staged and unstaged changes
-   - Review git diff to understand what has changed
-   - Check recent commits (`git log --oneline -20`) to understand:
-     - Whether the project uses conventional commits (e.g., `feat:`, `fix:`, `docs:`)
-     - The project's commit message style and conventions
-     - Typical subject line length and formatting patterns
+   - Run `git status` and `git diff HEAD` to see all staged and unstaged changes
+   - Check recent commits (`git log --oneline -20`) to learn the project's commit style: whether it uses conventional commits (e.g., `feat:`, `fix:`, `docs:`), typical subject line length, capitalization, and formatting
 
 2. **Group Changes Logically**
    - Identify related changes that should be committed together
@@ -44,16 +31,14 @@ commits with unrelated changes.
 
 3. **Create Commits**
    - Stage the appropriate changes for each commit
-   - Write commit messages following the best practices below
-   - Verify each commit is atomic and complete
+   - Write commit messages following the best practices below, matching the project's style
+   - Verify each commit with `git show`
+   - After all commits, run `git status` to confirm nothing was missed
 
 ## Commit Message Format Detection
 
-Before writing any commits, analyze the recent git history to determine the project's commit style:
-
-- **Check for Conventional Commits**: Look for patterns like `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `style:`, `perf:`, `ci:`, `build:`
-- **Match the existing style**: If 80% or more of recent commits follow conventional commits, use that format
-- **Be consistent**: Match the capitalization, punctuation, and structure of existing commits
+- If 80% or more of recent commits follow conventional commits, use that format
+- Match the capitalization, punctuation, and structure of existing commits — consistency matters more than personal preference
 
 ### Conventional Commits Format
 
@@ -111,7 +96,7 @@ Follow these seven rules for excellent commit messages (adjust for conventional 
 ### Key Principles
 
 - **Atomic commits**: Each commit should represent one logical change
-- **Context is king**: Explain WHY the change was made, not just what
+- **Context is king**: Explain why the change was made, not just what
 - **Future-proof**: Write for someone (including future you) reading this months later
 - **Consistency**: Maintain uniform style across the project
 
@@ -136,21 +121,6 @@ Follow these seven rules for excellent commit messages (adjust for conventional 
 - `Update file.js`
 - `feat added new feature` (incorrect format - missing colon)
 
-## Implementation Steps
-
-1. Run `git status` to see current state
-2. Run `git diff HEAD` to see all changes
-3. Run `git log --oneline -20` to analyze recent commit style
-   - **Determine if conventional commits are used** (look for `type:` prefix patterns)
-   - Note the typical capitalization and formatting style
-   - Identify any project-specific conventions
-4. Identify logical groupings of changes
-5. For each logical group:
-   - Stage the relevant changes (use `git add -p` if needed)
-   - Create a commit with a well-formatted message **matching the project's style**
-   - Verify the commit with `git show`
-6. After all commits, run `git status` to verify nothing important was missed
-
 ## Reference Documentation
 
 For detailed information on conventional commits, see:
@@ -158,10 +128,5 @@ For detailed information on conventional commits, see:
 
 ## Notes
 
-- Check recent git history first to determine whether conventional commits are used
-- Match the project's existing style — consistency is more important than personal preference
 - Don't push to remote unless explicitly asked
-- Always verify authorship and commit details before amending
-- Use `git add -p` for interactive staging when files contain multiple unrelated changes
-- Keep commits focused and atomic - one logical change per commit
-- If in doubt about whether to use conventional commits, look at the last 20-30 commits for patterns
+- Verify authorship and commit details before amending

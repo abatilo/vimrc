@@ -49,7 +49,7 @@ git clone https://github.com/<owner>/<repo>.git ~/.cache/claude/repos/<owner>/<r
 
 ### 4. Version Detection
 
-**Before exploring, check if this repo is a dependency in the current working directory.**
+Before exploring, check if this repo is a dependency in the current working directory.
 
 Consult `references/version-detection.md` for:
 - Which dependency files to check
@@ -71,7 +71,7 @@ Common tag formats to try:
 
 ### 5. Explore with Explore Agent
 
-**Use the Task tool with `subagent_type=Explore` to answer questions about the repository — don't manually browse files when the Explore agent can do it.** Opus 4.8 under-delegates by default, so reach for the Explore agent deliberately. The Explore agent is optimized for:
+Use the Task tool with `subagent_type=Explore` to answer questions about the repository, rather than browsing files yourself. The Explore agent is optimized for:
 - Finding files by patterns
 - Searching code for keywords
 - Understanding codebase architecture
@@ -93,7 +93,7 @@ Requirements for your response:
 
 ### 6. Response Format Requirements
 
-**When answering questions about the repository, responses MUST include:**
+When answering questions about the repository, include:
 
 #### Code Snippets
 - Include relevant code snippets that directly support the answer
@@ -123,7 +123,7 @@ At the end of every response, include a **"Key Files for Further Exploration"** 
 **Guidelines for file recommendations:**
 - Prioritize files by relevance to the question asked
 - Include 3-7 files (not too few, not overwhelming)
-- Add context on WHY each file is useful
+- Add context on why each file is useful
 - Include "Start Here If..." guidance to help with future exploration
 - Order from most fundamental to most specific
 
@@ -140,9 +140,9 @@ At the end of every response, include a **"Key Files for Further Exploration"** 
 
 For refreshing the repository or switching versions, consult `references/update-reference.md`.
 
-## Important Notes
+## Notes
 
-- Always verify the checkout succeeded before exploring
+- Verify the checkout succeeded before exploring
 - If the user asks about a specific version, checkout that version even if not a dependency
 - For private repos, the clone will work if the user has git credentials configured
 - Large repos may take time to clone; inform the user

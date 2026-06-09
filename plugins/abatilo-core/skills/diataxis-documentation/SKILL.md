@@ -61,7 +61,7 @@ Cognition                       |                    Cognition
 ### 1. Identify the Documentation Type Needed
 
 **Ask these two questions:**
-1. **Action or Cognition?** Does the user need to DO something or UNDERSTAND something?
+1. **Action or Cognition?** Does the user need to *do* something or *understand* something?
 2. **Study or Work?** Is the user learning something new or applying existing knowledge?
 
 **Decision Tree:**
@@ -194,15 +194,10 @@ Focus on small, immediate improvements rather than large restructuring efforts.
 - "How the authentication system works"
 - "Database design decisions"
 
-## Important Notes
+## Notes
 
 - Load specific reference files only when needed to keep context manageable
 - Each documentation type requires different writing styles and structures
 - Avoid mixing purposes - if documentation tries to do multiple things, split it
 - The framework is descriptive, not prescriptive - adapt to your project's needs
-- Iterate continuously rather than attempting complete restructuring
 - Quality comes from alignment with user needs, not from following rigid templates
-
----
-
-The goal is to serve user needs effectively. Use the Diataxis compass to identify what users need, then load the appropriate reference file for detailed guidance on creating that documentation type.

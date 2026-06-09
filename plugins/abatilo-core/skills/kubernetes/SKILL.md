@@ -41,7 +41,7 @@ kubectl config set-context --current --namespace=<namespace>
 
 ### 2. Load Appropriate Reference Files
 
-Based on the task at hand, load the relevant reference documentation:
+The detailed command and workflow documentation lives in the reference files, so load only the ones the task needs:
 
 **For kubectl Operations:**
 Load [kubectl Reference](./references/kubectl_reference.md) when you need detailed information about:
@@ -83,33 +83,10 @@ Load [Best Practices Reference](./references/best_practices.md) when you need gu
 - Integration with other tools
 - Environment-specific practices
 
-### 3. General Workflow
-
-**For Resource Management:**
-1. Verify context and namespace
-2. Use `kubectl get` to list resources
-3. Use `kubectl describe` for detailed information
-4. Apply changes with `kubectl apply` or `kubectl patch`
-5. Monitor with `kubectl rollout status` or `kubectl get events`
-
-**For Debugging:**
-1. Check pod status with `kubectl get pods`
-2. Describe the resource with `kubectl describe`
-3. View logs with `kubectl logs`
-4. Check events with `kubectl get events`
-5. Exec into container if needed with `kubectl exec -it`
-
-**For Deployments:**
-1. Validate manifests with `--dry-run`
-2. Apply manifests with `kubectl apply`
-3. Monitor rollout with `kubectl rollout status`
-4. Verify with `kubectl get` and `kubectl logs`
-5. Rollback if needed with `kubectl rollout undo`
-
 ## Key Principles
 
 ### Safety First
-- Always verify context and namespace before operations
+- Verify context and namespace before operations
 - Use `--dry-run=client` or `--dry-run=server` to validate changes
 - Use `kubectl diff` to preview changes before applying
 - Be cautious with destructive operations (delete, force, drain)
@@ -132,68 +109,11 @@ Load [Best Practices Reference](./references/best_practices.md) when you need gu
 - Check recent events with `kubectl get events --sort-by='.lastTimestamp'`
 - Test connectivity with temporary debug pods
 
-## Quick Command Reference
+## Notes
 
-**Most Common Operations:**
-```bash
-# Get resources
-kubectl get pods
-kubectl get pods -o wide
-kubectl get pods -l app=myapp
-
-# Describe for details
-kubectl describe pod <pod-name>
-
-# View logs
-kubectl logs <pod-name>
-kubectl logs <pod-name> -f
-kubectl logs <pod-name> --previous
-
-# Exec into pod
-kubectl exec -it <pod-name> -- /bin/sh
-
-# Apply manifests
-kubectl apply -f deployment.yaml
-kubectl apply -f ./manifests/
-
-# Scale deployment
-kubectl scale deployment/<name> --replicas=3
-
-# Check rollout
-kubectl rollout status deployment/<name>
-kubectl rollout undo deployment/<name>
-
-# Port forward
-kubectl port-forward service/<name> 8080:80
-
-# Helm operations
-helm install <release> <chart>
-helm upgrade <release> <chart>
-helm list
-helm uninstall <release>
-```
-
-## Important Notes
-
-- Reference files contain comprehensive details - load them as needed to avoid context overhead
-- Always validate configurations before applying to production
 - Use namespaces for resource isolation
 - Set resource requests and limits for all containers
 - Implement health checks (liveness, readiness, startup probes)
 - Use PodDisruptionBudgets for high availability
 - Store sensitive data in Secrets, not ConfigMaps
 - Tag images with specific versions, avoid `:latest` in production
-
-## Integration Points
-
-This skill works well with:
-- **Docker** for container image management
-- **Git** for manifest version control (GitOps)
-- **Terraform** for infrastructure provisioning
-- **CI/CD pipelines** for automated deployments
-- **Monitoring tools** (Prometheus, Grafana) for observability
-- **Logging systems** (EFK stack) for centralized logging
-
----
-
-Load the specific reference files only when you need detailed information about kubectl commands, Helm operations, specific workflows, or best practices. This keeps the context manageable and efficient.
