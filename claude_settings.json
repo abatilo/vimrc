@@ -16,34 +16,7 @@
   },
   "includeCoAuthoredBy": false,
   "permissions": {
-    "allow": [
-      "Bash(./hack/:*)",
-      "Bash(cat:*)",
-      "Bash(cwebp:*)",
-      "Bash(find:*)",
-      "Bash(git:*)",
-      "Bash(go:*)",
-      "Bash(grep:*)",
-      "Bash(helm:*)",
-      "Bash(kubectl:*)",
-      "Bash(kustomize:*)",
-      "Bash(ls:*)",
-      "Bash(mise:*)",
-      "Bash(mkdir:*)",
-      "Bash(mv:*)",
-      "Bash(rg:*)",
-      "Bash(rm:*)",
-      "Bash(sed:*)",
-      "Bash(terraform:*)",
-      "Bash(yarn:*)",
-      "WebFetch(domain:*)",
-      "mcp__deepwiki"
-    ],
-    "defaultMode": "bypassPermissions",
-    "additionalDirectories": [
-      "/Users/abatilo/work",
-      "/Users/abatilo/Documents/notes"
-    ]
+    "defaultMode": "auto"
   },
   "model": "opus[1m]",
   "hooks": {},
@@ -80,5 +53,5 @@
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "useAutoModeDuringPlan": false
+  "useAutoModeDuringPlan": true
 }
