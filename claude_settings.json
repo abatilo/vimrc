@@ -3,7 +3,6 @@
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-sonnet-4-6",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-8",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "40",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -18,7 +17,6 @@
     "defaultMode": "auto"
   },
   "model": "claude-fable-5[1m]",
-  "hooks": {},
   "worktree": {
     "baseRef": "head"
   },
@@ -39,16 +37,17 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
   "fastMode": true,
+  "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "autoDreamEnabled": true,
-  "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
-  "remoteControlAtStartup": true,
+  "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
