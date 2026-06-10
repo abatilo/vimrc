@@ -1,5 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 365,
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-opus-4-8",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-fable-5",
@@ -45,7 +46,6 @@
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,
-  "cleanupPeriodDays": 365,
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
   "remoteControlAtStartup": false,
