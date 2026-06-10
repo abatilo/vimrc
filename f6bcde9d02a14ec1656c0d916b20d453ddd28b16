@@ -1,0 +1,32 @@
+## Conversation
+User asked to "return the auto compact pct override setting to 40% locally",
+then in a follow-up asked to commit it as part of a five-part batch (365 days,
+40pct, marketplace, fastMode removal, Fable revert + push, Fable re-applied
+locally uncommitted).
+
+## Actions
+- Found the env var name via git log -S "PCT": CLAUDE_AUTOCOMPACT_PCT_OVERRIDE,
+  previously added in 9fc516a/8c7006f/3b09125, removed in 1f25c40, and dropped
+  again in a62cad4 ("sync accumulated session preferences").
+- Re-added "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "40" between
+  ANTHROPIC_DEFAULT_SONNET_MODEL and CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR,
+  preserving the env block's alphabetical ordering.
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- This setting has now been added and removed three times (9fc516a -> 1f25c40,
+  3b09125 -> a62cad4, and now this commit). a62cad4's drop looks accidental —
+  the harness rewrote the file from live state and the env var wasn't in it.
+  If it disappears again after a settings sync, that's why.
+- Lower value = compact earlier. 40 means autocompact fires at 40% context.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+None
