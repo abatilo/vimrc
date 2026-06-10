@@ -45,6 +45,7 @@
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,
+  "cleanupPeriodDays": 365,
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
   "remoteControlAtStartup": false,
