@@ -25,14 +25,13 @@
   "enabledPlugins": {
     "claude-code-wakatime@wakatime": true,
     "skill-creator@claude-plugins-official": true,
-    "support@cw-plugins": true,
     "abatilo-core@abatilo-plugins": true
   },
   "extraKnownMarketplaces": {
-    "cw-plugins": {
+    "cw-agent-plugins": {
       "source": {
         "source": "github",
-        "repo": "coreweave/cw-claude-code-marketplace"
+        "repo": "coreweave/agent-plugins"
       }
     }
   },
