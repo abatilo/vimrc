@@ -187,7 +187,7 @@ as found for the owner to resolve.
   `ac67107..8dec787 master -> origin/master`. The local
   `origin/master` tracking ref was stale at ac67107.
 - Divergence after fetch: merge-base = ac67107 (my commit's parent).
-  `git log --oneline HEAD..origin/master` = 36 remote commits I did not
+  `git log --oneline HEAD..origin/master` = 38 remote commits I did not
   have, including many that touch AGENTS_global.md: 520f9be "Add Pi AGENTS
   global setup", dbf5e54 "Trim AGENTS global rules for a leaner Codex
   context", b186596 "docs(rules): remove Go LSP (gopls) usage rule",
@@ -206,11 +206,11 @@ as found for the owner to resolve.
   which the coordinator's scope explicitly prohibits ("stop and report
   instead of editing").
 - Force-push was NOT attempted and must NOT be used: it would discard
-  the 36 remote commits, violating "do not revert unrelated user/
+  the 38 remote commits, violating "do not revert unrelated user/
   coordinator/broker/Pi changes".
 - Notes push (`git push origin refs/notes/commits`) was NOT performed:
   commit bcb9487 is not on the remote, so pushing its note would be
-  premature noise (and the remote notes ref may have diverged given 36
+  premature noise (and the remote notes ref may have diverged given 38
   new commits by other agents).
 - DECISION: STOP and REPORT per the coordinator's scope. Local commit
   bcb9487 + this note are left in place; the dirty index is left
