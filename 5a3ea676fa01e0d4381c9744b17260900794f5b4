@@ -1,0 +1,25 @@
+## Conversation
+User asked to "run the git-commit skill and push this repo". codex_config.toml had two unrelated-looking edits that were already in the working tree when this session began. No in-session context on motivation; grouped them as one config-tweak commit because they touch only this file.
+
+## Actions
+1. git diff HEAD on codex_config.toml showed:
+   - model_instructions_file line commented out (was "/Users/abatilo/abatilo/vimrc/codex_mcp_instructions.md")
+   - Added 14 new [projects."..."] sections, all with trust_level = "trusted"
+2. Staged whole file, committed.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+- Considered splitting the trust_level additions from the instructions-file comment; decided one commit is fine since both are local Codex config tweaks with no behavioral coupling.
+
+## Hints for Future Agents
+- Commenting out model_instructions_file (rather than deleting the line) suggests the user may want to re-enable it later. If you're cleaning up commented-out config, ask first.
+- Trust levels for projects in Codex config control whether Codex auto-trusts that working directory for tool execution. Adding "trusted" is a relaxation; do not add new project paths without explicit user request.
+- The trusted-projects list includes work paths (work/at, work/sglang, work/vllm, etc.) and personal paths (mentallyanimated/ma, abatilo). If a future agent sees an unfamiliar path here, check whether the user actually has that directory before assuming the config is wrong.
+
+## Codebase Discoveries
+- codex_config.toml uses TOML tables keyed by absolute path for per-project config. New paths just append a new [projects."..."] block.
+
+## Open Questions
+- Why model_instructions_file was disabled — possibly the file at codex_mcp_instructions.md was removed or made stale. Did not investigate; user did not ask.

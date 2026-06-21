@@ -1,0 +1,30 @@
+## Conversation
+User said: "I want to delete the auto-loop skill in favor of what we can do with the built in /goal command now". The auto-loop skill was a custom skill in abatilo-core that turned Claude Code into an autonomous loop runner. The user is replacing it with the built-in /goal slash command that ships with Claude Code, which now covers the same use case.
+
+A follow-up turn asked "did you already update the claude plugin version file?" — confirming the version bump is part of the intended change (handled in a separate follow-up commit).
+
+## Actions
+1. find /Users/abatilo/abatilo/vimrc -type d -name "auto-loop" — located the skill at plugins/abatilo-core/skills/auto-loop/ and a cached copy under ~/.claude/plugins/cache/abatilo-plugins/abatilo-core/0.18.0/skills/auto-loop (cache, not edited).
+2. ls plugins/abatilo-core/skills/auto-loop/ — only file was SKILL.md (6123 bytes).
+3. grep -r "auto-loop" across vimrc — no other references in markdown/json/toml besides the SKILL.md itself, so the deletion is self-contained.
+4. Read SKILL.md to confirm what was being deleted (autonomous-loop instructions: goal, loop, never-stop, failure handling, etc.).
+5. rm -rf plugins/abatilo-core/skills/auto-loop, then git status confirmed deletion.
+6. git add of the deleted file, then committed with conventional-commits style matching the plugin's history (chore(abatilo-core): ...).
+
+## Errors & Mistakes
+- git add reported "warning: could not open directory 'plugins/abatilo-core/skills/auto-loop/': No such file or directory" — expected because the directory was already removed by rm -rf; git still picked up the deletion of SKILL.md via the index. Not a real error.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- The plugin manifest at plugins/abatilo-core/.claude-plugin/plugin.json does NOT enumerate individual skills — skills are auto-discovered from plugins/abatilo-core/skills/<name>/SKILL.md. So removing a skill is just removing its directory.
+- The user keeps a cached copy of the installed plugin under ~/.claude/plugins/cache/abatilo-plugins/abatilo-core/<version>/. Do not edit there — it will be replaced on next plugin sync.
+- Plugin version is bumped in a separate commit (matches prior history pattern: b453802 "chore(abatilo-core): bump plugin version to 0.18.0" was its own commit).
+
+## Codebase Discoveries
+- abatilo-core plugin lives at plugins/abatilo-core/ with a .claude-plugin/plugin.json manifest, agents/, skills/, and a CLAUDE.md.
+- Recent abatilo-core commit history uses conventional commits with the (abatilo-core) scope. Non-plugin config edits in the same repo use simple capitalized imperative titles (e.g. "Enable Codex feature flags") — two distinct styles coexist.
+
+## Open Questions
+None — the user explicitly authorized the deletion.

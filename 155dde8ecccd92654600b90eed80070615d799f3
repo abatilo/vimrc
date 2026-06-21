@@ -1,0 +1,29 @@
+## Conversation
+Part of the five-commit batch: user explicitly asked to "commit the fact that
+we've removed fastMode" as its own commit, and wants the public repo to show
+"opus with xhigh and no fastMode".
+
+## Actions
+- Removed the "fastMode": true line. It was added by 0c84f96 ("switch default
+  model to Fable 5") together with the model change.
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- The next commit reverts the model switch from 0c84f96/0f67285. fastMode
+  removal was deliberately split out as its own commit per the user's explicit
+  enumeration, even though 0c84f96 introduced both together — a plain
+  git revert of 0c84f96 would have conflicted here anyway since fastMode is
+  already gone.
+- Per Claude Code docs, fast mode only applies to Opus models; it rode along
+  with the Fable switch historically but is independent of it.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+None

@@ -1,0 +1,24 @@
+## Conversation
+User ran `/git-commit and push` in /Users/abatilo/abatilo/vimrc. Beyond this session's model bump (committed separately), the working tree carried several unrelated Claude Code setting changes that had accumulated uncommitted across prior sessions. This commit captures that backlog.
+
+## Actions
+1. After committing the isolated model bump (commit 5897f5e), ran `git add claude_settings.json` to stage the remaining hunks.
+2. Verified `git diff --cached` showed only: CLAUDE_CODE_WORKFLOWS="1" (enable workflows), fastMode=true, humanize@PolyArch plugin + its PolyArch marketplace entry, removal of the Stop afplay sound hook (hooks now {}), and worktree.baseRef "fresh" -> "head".
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Wanted one-concern-per-commit (skill guidance), but splitting these required either interactive `git add -p` (blocked by harness) or hand-crafted patches threading the JSON enabledPlugins/extraKnownMarketplaces region for humanize+PolyArch. That surgery was judged corruption-prone; per rule priority (Safety & Correctness > Simplicity/atomicity) these independent toggles were grouped into one honestly-labeled commit instead.
+
+## Hints for Future Agents
+- These are five independent toggles, not one logical change. If any needs reverting, do it surgically rather than reverting this whole commit.
+- The Stop hook that was removed played /Users/abatilo/.claude/sounds/se000.win32#50.wav via afplay on each stop; "hooks": {} means no Stop sound now.
+- worktree.baseRef is now "head": new worktrees/agent isolation branch from local HEAD (includes unpushed commits) rather than origin/<default>.
+- humanize@PolyArch is sourced from the github repo PolyArch/humanize (added as the PolyArch marketplace).
+
+## Codebase Discoveries
+claude_settings.json is symlinked/deployed as the live Claude Code user settings; these values had been toggled interactively (e.g. /fast sets fastMode, /plugin adds plugins) and never committed.
+
+## Open Questions
+None.

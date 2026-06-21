@@ -1,0 +1,38 @@
+## Conversation
+User invoked /git-commit scoped explicitly to claude_settings.json (a second
+modified file, codex_config.toml, was deliberately left out of scope). The
+working tree contained weeks of accumulated settings drift; the user asked for
+the standard atomic-commit treatment. These settings changes were made by the
+user over time via /config, /model, etc. — not authored in this session.
+
+## Actions
+- Saved the final working-tree claude_settings.json to /tmp/claude_settings_final.json
+- git checkout -- claude_settings.json to reset to HEAD
+- Re-applied only the permissions-related hunks via Edit: collapsed the
+  permissions block ({allow: [21 Bash/WebFetch/mcp rules], defaultMode:
+  bypassPermissions, additionalDirectories: [~/work, ~/Documents/notes]}) down
+  to {defaultMode: "auto"}, and flipped useAutoModeDuringPlan false->true
+- Remaining accumulated changes (model switch, LSP removal, misc prefs) are
+  split into the following commits
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+git add -p was not usable (interactive flags unsupported in this harness), so
+atomic commits were built by resetting the file and re-applying hunks group by
+group, diffing against the saved final copy at the end to guarantee fidelity.
+
+## Hints for Future Agents
+- useAutoModeDuringPlan belongs to this permissions-posture change even though
+  it sits at the bottom of the file, far from the permissions block.
+- The deleted allowlist entries are recoverable from this commit's parent if
+  auto mode ever needs to be rolled back to bypass+allowlist.
+
+## Codebase Discoveries
+claude_settings.json is symlinked/synced as the user-level Claude Code
+settings; recent history (f4b3341, b37d6c1, c549cda) shows a pattern of
+periodic "sync accumulated preferences" commits in chore(settings) style.
+
+## Open Questions
+None

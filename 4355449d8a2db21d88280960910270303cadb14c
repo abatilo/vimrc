@@ -1,0 +1,22 @@
+## Conversation
+Part of `/git-commit and push`. These codex_config.toml additions were pre-existing in the working tree (auto-accumulated by Codex), not authored this session.
+
+## Actions
+1. Reviewed `git diff --cached -- codex_config.toml`: 48 insertions, all of the form `[projects."<path>"]` / `trust_level = "trusted"`. 16 new trusted-project blocks appended to the end. No edits to existing entries.
+2. Confirmed append-only (16 matches for `^+[projects`), staged the whole file, committed.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- codex_config.toml is symlinked to ~/.codex/config.toml (per prior note on commit 18afca6); it is the live Codex config. These trust entries are added automatically when you trust a directory in Codex, so this file tends to drift with new untracked entries -- expect to commit periodic batches of trusted-project additions.
+- Entries are append-only and low-risk; staging the whole file is safe here because all changes were the same kind (trusted-project additions).
+
+## Codebase Discoveries
+The 16 new trusted paths cover local work/ and abatilo/ project dirs plus a couple of Codex session/state paths, consistent with normal day-to-day use since the last commit.
+
+## Open Questions
+None.

@@ -1,0 +1,35 @@
+## Conversation
+User invoked /plan with: "remove the custom code review agents from this repo, it's plugin, and then don't forget to version bump the plugin". The literal ask was the 7 reviewer agents + version bump. During planning I surfaced that the code-review SKILL.md is tightly coupled — it exists ONLY to spawn the 7 agents by subagent_type and has no fallback path. Asked the user two clarifying questions via AskUserQuestion:
+1. Scope: remove the orphaned orchestrator skill too, or just the agents? -> User chose "Remove skill too" (recommended).
+2. Version bump level (0.19.3 base, pre-1.0): patch / minor / major? -> User chose "Minor -> 0.20.0" (recommended).
+User then approved the plan and said "yes" to commit + push.
+
+## Actions
+- git ls-files to map the repo; identified the 7 agents under plugins/abatilo-core/agents/ and the orchestrator at plugins/abatilo-core/skills/code-review/SKILL.md.
+- Read plugin.json (version 0.19.3), plugins/abatilo-core/CLAUDE.md (mandatory version-bump rule), the full code-review SKILL.md, and .claude-plugin/marketplace.json.
+- Launched an Explore subagent to grep the WHOLE repo for references to the agents/skill. Result: removal is CLEAN. Nothing outside the deleted files references them — not README.md, claude_settings.json, codex_config.toml, CLAUDE_global.md, AGENTS_global.md, install.sh, plugin.json, or marketplace.json. Skills/agents are auto-discovered by directory, so manifests do not enumerate them and needed no edits beyond the version bump.
+- git rm -r plugins/abatilo-core/agents/ plugins/abatilo-core/skills/code-review/ (8 files removed).
+- Edited plugin.json version 0.19.3 -> 0.20.0.
+- Verified: git status shows only intended paths; grep for reviewer/code-review in plugins/abatilo-core/ returns only git-spice's unrelated --reviewer flag docs; plugin.json valid JSON at 0.20.0.
+- Staged ONLY plugin.json + the deletions; deliberately left out two pre-existing working-tree changes (claude_settings.json, codex_config.toml) that were modified before this task and are unrelated.
+- Committed on master (repo convention is direct-to-master; all recent history is on master, no PR workflow).
+
+## Errors & Mistakes
+None. Removal was clean on the first pass; verification confirmed no dangling references.
+
+## Dead Ends
+None. Considered keeping the code-review skill and rewriting it to not use custom agents, but rejected — the skill's entire value was the agent-team orchestration, and the built-in lowercase /code-review skill already covers plain diff review. Removing both was the subtractive-engineering-correct choice (delete the orphan rather than generalize/guard it).
+
+## Hints for Future Agents
+- There are TWO things named 'code-review': the now-DELETED abatilo-core:code-review agent-team skill, and a BUILT-IN lowercase /code-review skill (Anthropic-shipped) that does single-agent diff review. The built-in one still exists and is unaffected.
+- plugins/abatilo-core/CLAUDE.md MANDATES a version bump on ANY plugin change (commands/skills/hooks/.claude-plugin). Don't forget it.
+- Manifests (.claude-plugin/plugin.json, marketplace.json) do NOT list individual skills/agents — they're auto-discovered by directory. Adding/removing a skill or agent needs no manifest edit other than the version bump.
+- The agents had 'memory: local' frontmatter and referenced 'persistent memory directories', but NO committed memory/ dir ever existed — it was a runtime construct inside the deleted files. Nothing extra to clean.
+- git-spice/references/commands.md has a '--reviewer=USER' flag (PR reviewer user) — unrelated false positive when grepping for 'reviewer'.
+
+## Codebase Discoveries
+- The agents/ directory contained ONLY the 7 reviewer files, so removing them removed the whole directory.
+- This is a personal dotfiles repo (vimrc); commit convention is conventional-commits with scope (e.g. chore(settings):, docs(rules):) committed directly to master.
+
+## Open Questions
+None.

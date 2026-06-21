@@ -1,0 +1,42 @@
+## Conversation
+Final commit of the user's five-part batch: "revert the switch to fable and
+push that but then I want the local changes to go back to doing fable with
+xhigh effort level. so that anyone who looks at my repo on github sees opus
+with xhigh and no fastMode but locally I have fable but it's not commited yet."
+The intent is that the public GitHub repo shows an Opus + xhigh + no-fastMode
+config while the user privately runs Fable 5 as uncommitted local drift.
+
+## Actions
+- Identified the Fable switch as two commits: 0c84f96 set model
+  "opus[1m]" -> "claude-fable-5[1m]" (and added fastMode, removed in the
+  previous commit), and 0f67285 bumped the three env remaps a tier.
+- Hand-applied the inverse instead of git revert: fastMode was already gone
+  (previous commit), so reverting 0c84f96 mechanically would conflict.
+- Restored: model "opus[1m]", ANTHROPIC_DEFAULT_HAIKU_MODEL claude-sonnet-4-6,
+  ANTHROPIC_DEFAULT_SONNET_MODEL claude-opus-4-8, CLAUDE_CODE_SUBAGENT_MODEL
+  claude-opus-4-8.
+- effortLevel stayed "xhigh" (already HEAD's value; the session's /effort
+  command had set "high" in the working tree but the user explicitly asked for
+  xhigh, and that change was never staged).
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- IMPORTANT: immediately after this commit was pushed, the Fable settings were
+  re-applied to the working tree as deliberately-uncommitted local drift
+  (model claude-fable-5[1m], haiku->opus-4-8, sonnet->fable-5,
+  subagent->fable-5). If claude_settings.json shows as modified with Fable
+  model IDs, DO NOT commit or revert it without asking — that drift is
+  intentional. The user wants the public repo to show Opus only.
+- The Fable 5 retune commits 65bc6ea (skill prompts) and 83a9a71 (rules) were
+  NOT reverted; the user only asked to revert the model switch.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+None

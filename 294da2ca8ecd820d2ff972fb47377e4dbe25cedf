@@ -1,0 +1,24 @@
+## Conversation
+User asked to "run the git-commit skill and push this repo". .tmux.conf had two lines removed in the working tree — already changed when the session started; no in-session context for the motivation.
+
+## Actions
+1. git diff HEAD on .tmux.conf showed removal of:
+   - set -g extended-keys on
+   - set -g extended-keys-format csi-u
+2. Staged file, committed.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- extended-keys + csi-u in tmux enables modifier-aware key reporting (e.g., distinguishing Ctrl-i from Tab in the terminal). Removing it usually means the user's terminal or editor was misinterpreting CSI-u sequences. If a future agent sees missing modifier-key behavior in Neovim/etc., this may be why.
+- The commit message guess at "input interpretation issues" is speculation — no direct user statement on the reason.
+
+## Codebase Discoveries
+- .tmux.conf in this repo is the canonical source for the user's tmux config (symlinked from ~/.tmux.conf via the dotfiles install).
+
+## Open Questions
+- Confirm with user whether extended-keys was disabled intentionally or as a temporary debug step.

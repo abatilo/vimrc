@@ -1,0 +1,37 @@
+## Conversation
+Final grouping from the /git-commit request that split accumulated
+claude_settings.json drift into atomic commits (after permissions, model, and
+LSP removal). Grab-bag of UI/session preferences the user toggled across
+sessions, matching the repo's established "sync accumulated preferences"
+pattern (c549cda).
+
+## Actions
+- Removed env CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "40" (reverts to default
+  autocompact threshold; autoCompactEnabled stays true)
+- Removed empty "hooks": {} block (dead key)
+- Removed "showThinkingSummaries": true
+- Added "tui": "fullscreen" (after fastMode — ordering chosen to match the
+  user's actual on-disk file)
+- Added "skipWorkflowUsageWarning": true (pairs with CLAUDE_CODE_WORKFLOWS=1)
+- Flipped remoteControlAtStartup true->false (reverts half of f4b3341, which
+  enabled it; push notifications from that commit remain enabled)
+- Verified the rebuilt file byte-for-byte against the saved working-tree copy
+  (/tmp/claude_settings_final.json) with diff: IDENTICAL
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- remoteControlAtStartup=false contradicts f4b3341's message ("enable remote
+  control") — that is intentional churn by the user, not a mistake.
+- These settings were written by the Claude Code TUI (/config and friends),
+  so key ordering in this file is tool-determined, not hand-curated.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+None

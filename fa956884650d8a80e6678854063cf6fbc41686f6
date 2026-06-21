@@ -1,0 +1,167 @@
+## Conversation
+User reported a crash when opening markdown files in Neovim 0.12 after
+the migration in 57747d7:
+
+    vim/treesitter/languagetree.lua:215: vim/treesitter.lua:196:
+    attempt to call method 'range' (a nil value)
+
+Stack showed snacks.scope → Snacks.util.parse → parser:parse →
+languagetree tcall → treesitter.get_range → node:range(true).
+
+User asked "please advise" (exploratory), so I diagnosed and offered
+three options: (1) migrate to nvim-treesitter main branch, (2) drop
+nvim-treesitter entirely, (3) monkey-patch the broken directive.
+
+User leaned toward option 2 long-term and asked if there's an
+ensure_installed equivalent or alternative plugin. I researched and
+found: (a) nvim-treesitter/nvim-treesitter was archived 2026-04-03 —
+the repo itself is read-only, not just master; (b) neovim-treesitter/
+nvim-treesitter exists as a fork (59 stars, new); (c) romus204/
+tree-sitter-manager.nvim (358 stars, actively maintained) preserves
+the ensure_installed ergonomics. I recommended tree-sitter-manager
+first since the API shape matches what we had.
+
+User said "Let's try tree-sitter-manager.nvim." I installed
+tree-sitter-cli via brew, rewrote the treesitter section of init.lua,
+migrated foldexpr, removed the old nvim-treesitter plugin via
+vim.pack.del, and verified markdown parses without error. Then user
+pointed out the lazy-lock.json was previously gitignored and asked to
+do the same for nvim-pack-lock.json before committing.
+
+## Actions
+1. Read init.lua, confirmed treesitter setup at lines 103-158 and
+   foldexpr at line 396. Inspected snacks/scope.lua:404 calling
+   Snacks.util.parse.
+2. Read neovim 0.12's treesitter.lua:196 and query.lua:617 — confirmed
+   the 0.12 directive callback signature alias is
+   `table<integer, TSNode[]>` where it used to be `TSNode[]` (single
+   node per capture).
+3. Read nvim-treesitter query_predicates.lua:135 — confirmed
+   set-lang-from-info-string! still does `local node = match[capture_id]`
+   expecting single node, then passes it to get_node_text which fails.
+4. `gh api repos/nvim-treesitter/nvim-treesitter` confirmed archived=true,
+   pushed_at=2026-04-03. Confirmed the fork at neovim-treesitter org.
+5. Fetched tree-sitter-manager.nvim's repos.lua; extracted 329 registered
+   languages; diffed against user's 49 ensure_installed — all present.
+6. Installed tree-sitter-cli via brew (system dep, 0.26.8). User already
+   had the tree-sitter library but not the CLI formula.
+7. Edited nvim/init.lua: removed nvim-treesitter branch from PackChanged
+   hook; replaced the plugin entry in vim.pack.add; swapped
+   require("nvim-treesitter.configs").setup for require("tree-sitter-manager").setup
+   with auto_install=false, highlight=true; replaced foldexpr with
+   v:lua.vim.treesitter.foldexpr().
+8. Headless nvim run to trigger install: 49 parsers compiled via
+   git clone + tree-sitter build into ~/.local/share/nvim/site/parser/.
+   First run took ~2 minutes.
+9. Ran `vim.pack.del({"nvim-treesitter"}, {force=true})` to remove the
+   old 36MB plugin dir and the lockfile entry.
+10. Verified markdown parse: parser:parse(true) succeeds, injections
+    detected (markdown_inline, lua), highlighter active on markdown
+    buffer, :messages clean.
+11. Added /nvim/nvim-pack-lock.json to .gitignore, git rm --cached'd
+    the tracked version.
+
+## Errors & Mistakes
+- First `nvim --headless -c "lua vim.defer_fn(...)"` attempt: wrapped
+  with GNU `timeout 300`, which doesn't exist on macOS. Retried with
+  just nvim's own defer_fn for quit.
+- Initial grep for parser install-complete output returned 0 matches
+  because --headless suppresses vim.notify output unless explicitly
+  written to io.stderr. Switched to filesystem-level check
+  (ls site/parser/) instead of relying on log output.
+- After installing 48/49 parsers, cpp was the lone holdout. Thought it
+  was a dependency-order issue but ps showed git clone of tree-sitter-cpp
+  was still running — tree-sitter-cpp has very large generated C files
+  in its repo, so clone took ~90s. It eventually finished.
+- First call to scope.get({buf=0}) for verification errored with
+  "attempt to call local 'cb' (a table value)" — that was me using the
+  wrong API (scope.get needs a callback, not an opts table with buf).
+  Not a setup bug; the parser itself worked in isolation.
+- First check of `vim.treesitter.highlighter.active(0)` treated it as
+  a function but it is actually a table keyed by bufnr.
+
+## Dead Ends
+- Thought about patching the set-lang-from-info-string! directive
+  locally to handle both old and new match shapes (option 3 in the
+  diagnosis). Rejected because nvim-treesitter is archived — any
+  patch would just mask more time-bombs inside a frozen codebase.
+- Briefly considered the neovim-treesitter/nvim-treesitter fork as
+  an alternative to tree-sitter-manager. Rejected because (a) 59
+  stars, too new to trust, (b) it still uses the new imperative API
+  with no ensure_installed, so it's not ergonomically closer than
+  just using the archived main branch.
+- Considered going fully native with no plugin. Rejected because
+  Neovim 0.12 ships parsers for only 7 languages (c, lua, vim,
+  vimdoc, query, markdown, markdown_inline); managing ~47 parsers
+  by script would be more complexity than it's worth.
+
+## Hints for Future Agents
+- **tree-sitter-manager has a query-copy bug**: in installer.lua's
+  `copy_queries(lang, location)` it looks for bundled queries at
+  `runtime/queries/<location>/` instead of `<lang>/`. When
+  install_info.location is set (markdown → 'tree-sitter-markdown',
+  helm → 'dialects/helm', terraform → 'dialects/terraform',
+  markdown_inline → 'tree-sitter-markdown-inline'), the queries
+  silently don't get copied. I manually copied the bundled queries
+  from `pack/core/opt/tree-sitter-manager.nvim/runtime/queries/<lang>/`
+  into `~/.local/share/nvim/site/queries/<lang>/` for all four
+  affected langs. If the user ever re-installs one of those parsers
+  via :TSManager (`i` or `u`), the manual copies persist — the bug
+  path silently does nothing rather than overwrite. But if they ever
+  wipe ~/.local/share/nvim/site/queries/ they'll need to redo the
+  copy or switch to `use_repo_queries = true` in the `languages`
+  override. Worth filing upstream at some point.
+- **tree-sitter-cli is required system-wide** (brew formula
+  `tree-sitter-cli`, not `tree-sitter` — the library-only formula).
+  This is a hard dep for any parser install; mason/lazy.nvim
+  previously shipped pre-compiled parsers but the new ecosystem
+  compiles locally.
+- **First-run parser install is slow** (~2 min for 49 parsers on a
+  fast machine with good network). Happens once at the next `nvim`
+  startup after touching `ensure_installed`.
+- **vim.pack does not auto-delete plugins removed from add()**.
+  Need `vim.pack.del({name}, {force=true})` to clean up old plugin
+  dir AND lockfile entry. Documented in pack.txt around line 344.
+- **Neovim 0.12's treesitter directive API change is the root cause
+  of the crash**. The alias changed from `TSNode[]` (single node per
+  capture id) to `table<integer, TSNode[]>` (array of nodes). Any
+  directive that indexes `match[capture_id]` expecting a single node
+  is broken on 0.12. query.lua:617 has the new alias; most old
+  plugins still have the old shape.
+
+## Codebase Discoveries
+- vim.pack's API surface (from `vim.tbl_keys(vim.pack)`): get, update,
+  add, del. The nvim-pack-lock.json at nvim/ gets auto-managed; its
+  entries persist across sessions unless explicitly deleted via
+  vim.pack.del.
+- Neovim 0.12 bundles parsers for: c, lua, vim, vimdoc, query,
+  markdown, markdown_inline. Everything else needs a parser manager.
+- tree-sitter-manager.nvim's filetype aliasing lives in
+  `plugin/filetypes.lua` and uses vim.treesitter.language.register
+  to map e.g. `sh` → `bash`. This is loaded automatically as a plugin
+  file when the package is packadd'd, so filetype resolution works
+  even for buffers where the ft doesn't match the lang name.
+- The plugin prepends `~/.local/share/nvim/site/` to rtp (which is
+  already there by default), so `site/queries/<lang>/` and
+  `site/parser/<lang>.dylib` are auto-discoverable by the native
+  treesitter runtime. That's how parsers/queries become available
+  without any further plumbing.
+- snacks.nvim's scope module calls parser:parse() on cursor move for
+  indent scope computation — this is why the crash surfaced only on
+  markdown (markdown injection triggered the broken directive).
+
+## Open Questions
+- Should the tree-sitter-manager query-copy bug be filed upstream?
+  There's a clear single-line fix (use `lang` not `location` as the
+  query source path) but haven't submitted a PR yet.
+- Are there other parsers beyond markdown/markdown_inline/helm/
+  terraform in the user's list that have install_info.location and
+  might be missing queries? Sampled the list; these 4 are the only
+  location-having ones. But if the user adds more parsers to
+  ensure_installed in the future (e.g. `vue`, `astro`) they may hit
+  the same issue — should check on next parser add.
+- The old nvim-treesitter parser .so files at
+  `~/.local/share/nvim/site/pack/core/opt/nvim-treesitter/parser/`
+  were removed when I ran vim.pack.del. Verified the dir is gone.
+  If anything cached a path to the old parsers, it'll now 404 —
+  hasn't surfaced, but worth watching for.

@@ -1,0 +1,55 @@
+## Conversation
+User asked which setting in claude_settings.json controls how long Claude
+Code keeps old conversation history before deleting it, what the default
+is, and to change it to 365 days. After the edit landed, user said
+"commit and push this" — scope was explicitly just the cleanupPeriodDays
+change, not the other uncommitted modifications in the working tree.
+
+## Actions
+1. Read /Users/abatilo/abatilo/vimrc/claude_settings.json — key was absent,
+   so the user was on the default.
+2. Spawned a claude-code-guide agent to verify against the official docs
+   (https://code.claude.com/docs/en/settings) rather than answering from
+   memory. Confirmed: setting is top-level `cleanupPeriodDays`, default 30
+   days, minimum 1 (0 is rejected by validation).
+3. Edited claude_settings.json to add `"cleanupPeriodDays": 365` after
+   `"autoCompactEnabled": true` (around line 46).
+4. On commit request, ran git status/diff/log. The working tree had TWO
+   files modified with changes predating this session: claude_settings.json
+   also had a marketplace swap (cw-plugins/coreweave/cw-claude-code-marketplace
+   -> cw-agent-plugins/coreweave/agent-plugins, with the support@cw-plugins
+   plugin removed) and a `"fastMode": true` removal; codex_config.toml had a
+   new trusted project entry for /Users/abatilo/abatilo/aiperf.
+5. Because `git add -p` is interactive (unsupported in this harness),
+   partial-staged only the cleanupPeriodDays hunk by writing a single-hunk
+   patch to /tmp/cleanup-period.patch and running `git apply --cached`.
+6. Committed as 1ca9d67, then pushed master and refs/notes/commits.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None. Considered `git add -p` first but it is interactive and unsupported;
+went straight to `git apply --cached` with a hand-built hunk.
+
+## Hints for Future Agents
+- Cleanup runs AT STARTUP of Claude Code, not continuously: session files
+  older than cleanupPeriodDays are deleted when the CLI launches.
+- The same setting also gates automatic removal of orphaned subagent
+  worktrees at startup (per https://code.claude.com/docs/en/worktrees).
+- It controls retention only, not whether transcripts are written
+  (that's CLAUDE_CODE_SKIP_PROMPT_HISTORY / --no-session-persistence).
+- This repo's claude_settings.json must sync to ~/.claude/settings.json
+  (symlink or copy step) before the change takes effect.
+- The marketplace-swap + fastMode-removal changes in claude_settings.json
+  and the codex_config.toml trust entry were deliberately LEFT UNCOMMITTED
+  — the user only asked for the cleanupPeriodDays change. Don't assume
+  they were forgotten; they predate this session.
+
+## Codebase Discoveries
+Repo uses conventional commits with scope `settings` for this file
+(`chore(settings): ...`), subjects ~50 chars, lowercase after colon.
+
+## Open Questions
+Whether the user wants the pre-existing marketplace/fastMode and
+codex_config.toml changes committed — not addressed in this session.

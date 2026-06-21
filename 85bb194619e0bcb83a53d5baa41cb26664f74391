@@ -1,0 +1,26 @@
+## Conversation
+Part of the same /git-commit request splitting accumulated
+claude_settings.json drift into atomic commits.
+
+## Actions
+- Removed env "ENABLE_LSP_TOOL": "1"
+- Removed "gopls-lsp@claude-plugins-official": true from enabledPlugins
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+This pairs with b186596 "docs(rules): remove Go LSP (gopls) usage rule" — the
+rule doc was deleted in an earlier session but the plugin/env settings lagged
+behind until now. If LSP comes back, both the plugin and the env flag (and
+likely a rules doc) need to be restored together.
+
+## Codebase Discoveries
+Settings changes and their corresponding rules-doc changes can land in
+separate commits weeks apart in this repo; check both when auditing a feature.
+
+## Open Questions
+None

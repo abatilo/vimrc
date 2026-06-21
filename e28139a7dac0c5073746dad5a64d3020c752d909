@@ -1,0 +1,30 @@
+## Conversation
+User asked me to read https://modelthinkers.com/mental-model/musks-5-step-design-process and draft a new rule in rules/ that captures the process but does NOT name or attribute Elon Musk, and to give it a different name. Then user wanted the claude-code-guide agent to improve the rule based on the Opus 4.8 prompting guide. This commit is the resulting rule file. In the follow-up turn the user asked to delete gopls-lsp.md and commit+push; I split that into two atomic commits (this one adds the new rule, the next removes gopls-lsp).
+
+## Actions
+- WebFetch on the modelthinkers URL to extract the 5-step process: (1) question requirements, (2) delete part/process, (3) simplify/optimize, (4) accelerate cycle time, (5) automate. Core philosophy: strip to essentials, order is mandatory, add back ~10%.
+- Read rules/simple.md and rules/gopls-lsp.md to match existing rule style (markdown, directive language, optional frontmatter for path-scoping).
+- Drafted rules/subtractive-engineering.md (no frontmatter -> applies globally, like simple.md). Named it 'Subtractive Engineering' to avoid any Musk attribution.
+- Spawned claude-code-guide agent (id a51d04e190a7493e0). It fetched Anthropic's Claude 4.x / Opus 4.8 best-practices doc (platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices) and returned a critique + full rewrite.
+- Applied the rewrite verbatim via Write.
+
+## Errors & Mistakes
+None. Single clean draft, single clean rewrite application.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- The rewrite deliberately uses POSITIVE framing (do X) over negative (NEVER/REJECT) because Opus 4.x follows positive instructions more reliably and all-caps imperatives risk overtriggering. Preserve that if editing.
+- It uses XML tags (<role>, <scope>, <steps>, <example>) intentionally for parse separation. Don't strip them.
+- It references rules/simple.md by explicit path (NOT a [[simple]] wikilink) because Opus 4.8's literalism would treat a dangling wikilink as a dead pointer.
+- The agent flagged a real tradeoff: the five <example> blocks roughly double the file length, and this is always-on context (per-turn token cost). A leaner variant keeping only Steps 1/2/5 examples was offered. User has NOT yet decided; left full version in place. This is an OPEN QUESTION.
+- Hard constraint from user: no attribution to Musk or anyone. Keep it that way.
+
+## Codebase Discoveries
+- rules/ files either have YAML frontmatter with a 'paths:' key (path-scoped, e.g. gopls-lsp.md scoped to **/*.go) or no frontmatter (global, e.g. simple.md). subtractive-engineering.md is intentionally global.
+- Repo uses conventional commit prefixes (feat/chore/docs/refactor with scopes like nvim, rules, settings, abatilo-core).
+- Repo commits directly to master (no feature-branch workflow in recent history); user explicitly wanted push to master.
+
+## Open Questions
+- Whether to trim the rule to the lean 3-example variant to cut always-on token cost. Awaiting user decision.

@@ -1,0 +1,65 @@
+## Conversation
+Same session as the Fable 5 settings bump (0f67285). After switching all
+models to Fable 5, the user asked: "let's go through the entire set of rules,
+prompts, skills and there's a new Fable 5 prompting guide
+(https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5)
+and I want to re-write all prompts and skills, etc with the fable 5 prompting
+guide". This is the rules/ half; the abatilo-core plugin half is the next
+commit. Direct successor to 60d6907, which did the same retune for Opus 4.8.
+
+## Actions
+- Downloaded the raw guide via curl (the .md suffix on platform.claude.com
+  URLs returns raw markdown) to /tmp/fable5-guide.md; 223 lines
+- Ran a Workflow (run wf_4463b028-e85, 26 agents, ~926k subagent tokens):
+  per-file rewrite agent -> fresh-context adversarial verifier -> fixer
+  stage. All 13 verdicts came back approve with zero fix rounds
+- Rules scope: task-tracking, commit-notes, simple, subtractive-engineering
+  changed; codex-mcp and CLAUDE_global verified already-aligned, no edits
+- Key deletions (each justified as compensation for a prior-model weakness):
+  task-tracking's "You LOVE making task lists"/"EVERYTHING"/zero-bar persona
+  hyperbole and the per-completion TaskList re-poll; commit-notes' triple
+  restatement of "always add notes"; simple.md's duplicate Codex Behavior
+  line; subtractive-engineering's 3 redundant gate restatements
+- Orchestrator (me) reviewed every diff in full before committing
+
+## Errors & Mistakes
+One workflow-script wart: the FILES array initially had a malformed
+placeholder path for repo-explore ("skills/task: repo-explore/SKILL.md")
+patched immediately after the literal via FILES[6] = {...}. Worked correctly
+but is ugly; a clean literal would have been better.
+
+## Dead Ends
+None. Considered de-capping the "CONSULT Codex" token in simple.md; kept it
+because it is the file's defined term and subtractive-engineering.md
+cross-references it verbatim — lowercasing requires a coordinated two-file
+change with no clear benefit.
+
+## Hints for Future Agents
+- The Fable 5 guide's core lesson for these files: brief plain instructions
+  beat enumeration; PREFER DELETING an instruction that compensated for an
+  old model's weakness over rewording it; never bake model-version notes
+  ("Opus 4.8 under-delegates") into prompt artifacts — that is exactly how
+  60d6907's now-stale notes accumulated.
+- Flagged judgment calls if behavior regresses: (1) task-tracking's new
+  threshold is "multiple distinct steps, files, or decisions" — loosen if
+  Aaron wants tasks on small two-step fixes; (2) the "Check TaskList after
+  completing each task" deletion assumes status updates suffice — restore if
+  tasks start going stale mid-session.
+- The WHEN/DO/PREFER/AVOID keyword convention in simple.md is structure (a
+  consistent DSL), not emphasis inflation. Leave it.
+- Reasoning-echo audit (Fable 5 refuses reasoning-extraction prompts): all
+  rules files are clean. commit-notes documents the session record (actions,
+  errors, dead ends), which is NOT reasoning transcription — keep it that way
+  when editing.
+
+## Codebase Discoveries
+- CLAUDE_global.md (the 4 communication bullets) already matches the Fable 5
+  guide almost verbatim — no drift since it was written.
+- The guide itself endorses the repo's subtractive-engineering philosophy
+  ("review and consider removing older instructions if default performance
+  is better"), which made this retune unusually deletion-heavy: rules/ diff
+  is +63/-103 across the four files.
+
+## Open Questions
+- The retuned task-tracking threshold should be observed over a few real
+  sessions; it is the highest-variance change in this commit.

@@ -1,0 +1,28 @@
+## Conversation
+Part of a five-commit batch the user requested: commit the marketplace change
+that had been sitting as local drift in claude_settings.json.
+
+## Actions
+- The working tree already carried this change (made by the harness/user in a
+  prior session, not this one): extraKnownMarketplaces renamed cw-plugins ->
+  cw-agent-plugins, repo coreweave/cw-claude-code-marketplace ->
+  coreweave/agent-plugins, and enabledPlugins lost support@cw-plugins.
+- Reproduced exactly that delta on top of the previous commit and committed it.
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- support@cw-plugins was not re-enabled from the new marketplace. If a
+  cw-agent-plugins equivalent exists and is wanted, that's a separate decision;
+  this commit only records the state the user was already running.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+Whether any plugin from coreweave/agent-plugins should be enabled to replace
+the dropped support plugin.

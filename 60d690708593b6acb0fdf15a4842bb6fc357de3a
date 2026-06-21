@@ -1,0 +1,96 @@
+## Conversation
+User invoked the claude-code-guide agent: "please update all of the prompting
+with your new Opus 4.8 prompting guide for all of the prompts in
+plugins/abatilo-core/ then version bump and commit and push". Intent: bring the
+plugin's reusable prompt artifacts (the 7 reviewer subagents + the skills) in
+line with Anthropic's current Opus 4.8 prompt-engineering guidance, then ship it
+(version bump + commit + push). The user's settings pin the subagent model to
+claude-opus-4-8 at xhigh effort with thinking on, which is why this matters: 4.8
+behaves differently from the models these prompts were originally tuned for.
+
+## Actions
+1. Spawned the claude-code-guide subagent (background) to synthesize Anthropic's
+   Opus 4.8 prompting guidance for agent/skill artifacts. It returned a thorough
+   checklist citing four docs: claude-4-best-practices, sub-agents.md, skills.md,
+   and the agent-skills best-practices page. Key takeaways that drove edits:
+   (1.2/§4) strip CAPS/MUST/ALWAYS/NEVER/IMPORTANT/CRITICAL emphasis inflation —
+   it now causes OVER-triggering; (2.3) 4.8 under-delegates and spawns fewer
+   subagents, so forcing fan-out must be explicit; (2.7) conservative review
+   harnesses make 4.8 DROP findings — switch finding stage to coverage-first and
+   filter downstream; positive framing over negative; literal instruction
+   following => state scope explicitly.
+2. Read all 15 prompt artifacts + CLAUDE.md. Discovered the 7 reviewer agents
+   share an IDENTICAL ~125-line boilerplate header (lines ~20-142): Review
+   Phases, Comment Taxonomy, Priority, Comment Framing, Finding Qualification,
+   Codex Debate protocol, Cross-Review, Output. Only the trailing specialist
+   section (after the '---') differs per agent.
+3. Applied edits via the Edit tool:
+   - Shared boilerplate (all 7 agents): "if ALL of these hold" -> "when all of
+     these hold"; rewrote "Quantity guidance" into coverage-first framing (report
+     low-severity/low-confidence findings, assign honest priority + confidence,
+     lead's synthesis is the filter).
+   - Per-agent specialist sections: de-capped pseudo-headers (CODEBASE CONTEXT ->
+     **Codebase context.**, KEY QUESTION(S) -> **Key question(s):**, CLASSIFY ->
+     Classify, FORMAT -> Format, SPECIAL -> **Special:**, SOLE -> sole) and
+     converted negative "DO NOT:" scope lists into positive "Out of scope:"
+     guidance.
+   - Skills: code-review (kept the spawn-the-team + full-diff rules firm but
+     de-shouted them, added an explicit note that 4.8 under-delegates so fan out
+     in one message; de-capped REQUIRED/LAST/SINGLE/ONE), git-commit (dropped
+     IMPORTANT/ALWAYS, kept "Don't push unless asked" as a plain rule),
+     kubernetes (dropped "Always start"/"Remember:" bold inflation),
+     repo-explore (dropped (CRITICAL) and ALWAYS; kept Explore-agent delegation
+     firm + noted 4.8 under-delegation), diataxis (dropped Important:/Remember:).
+4. Bumped plugins/abatilo-core/.claude-plugin/plugin.json 0.19.1 -> 0.19.2.
+5. Reviewed diffs (git diff on correctness-reviewer + repo-explore as
+   representatives) — clean. 13 files, +74/-69.
+6. Committed to master (repo convention: personal config repo, all recent
+   history is direct-to-master; user explicitly asked to commit+push).
+
+## Errors & Mistakes
+None. All Edit old_string matches were unique on first try; no failed edits.
+
+## Dead Ends
+Considered relaxing the 8-item Finding Qualification gate (criteria 1
+"meaningfully impacts" and 5 "author would likely fix" are the severity/
+subjective screens §2.7 warns about). Decided AGAINST gutting the gate: those
+criteria are mostly validity/scope guards (don't flag pre-existing, no
+speculation, not intentional changes) and changing them is a behavioral redesign
+beyond a prompting-style update (Chesterton's Fence). Instead implemented §2.7
+purely in the Quantity guidance: among findings that pass the gate, don't
+self-suppress for severity/confidence — coverage-first, lead filters. This is
+the safe, in-scope application.
+
+## Hints for Future Agents
+- The 7 reviewer agents' boilerplate is duplicated verbatim. Any future change to
+  the shared protocol must be applied to all 7 files identically (same
+  old_string works across all). Consider whether this duplication should become
+  a shared include someday.
+- Files deliberately LEFT UNCHANGED because already 4.8-aligned: git-spice,
+  humanizer, interview. Don't "fix" them just to touch them — humanizer's own
+  skill philosophy (and simple.md) warns against over-editing clean prose.
+- CLAUDE.md (plugin dev guide) and skills/*/references/*.md were NOT touched.
+  CLAUDE.md's STOP/MANDATORY/MUST emphasis around version bumping is intentional
+  friction (a guard rail), not an artifact prompt. Reference files are
+  progressive-disclosure docs, not prompts. Scope was the actual prompt
+  artifacts: agents/*.md and skills/*/SKILL.md.
+- Version policy lives in plugins/abatilo-core/CLAUDE.md: PATCH for tweaks/
+  refinements, MINOR for new skill/command/feature, MAJOR for breaking. This was
+  a refinement -> PATCH.
+
+## Codebase Discoveries
+- humanizer/SKILL.md carries its own frontmatter `version: 2.2.0`, separate from
+  the plugin version in plugin.json. Don't conflate them.
+- The code-review skill already had good fan-out structure ("spawn all in one
+  message"), which happens to counteract 4.8's under-delegation — kept and
+  reinforced rather than rewritten.
+- Reviewer agents use `model: inherit`; the actual opus-4-8 pin comes from the
+  user's settings.json subagent model config, not the agent frontmatter.
+
+## Open Questions
+- Did not run any plugin validation/lint (none apparent for this repo beyond JSON
+  validity, which is intact). If a marketplace/plugin validator exists, worth
+  running.
+- The coverage-first reframing is a behavioral nudge; its real effect should be
+  observed on an actual L1/L2 review run and iterated per the guide's "test on
+  real tasks" advice.

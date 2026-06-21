@@ -1,0 +1,78 @@
+## Conversation
+User said: "at some point @claude_settings.json had a setting to set compact
+percentage to 40%. please look for the same thing and bring it back then
+commit and push". They referenced @claude_settings.json (Read tool invoked
+by the harness before my turn). Intent: locate the historical env-var name,
+restore it at 40%, commit, push.
+
+## Actions
+- Ran `git log --all --oneline -- claude_settings.json` to find historical
+  commits touching the file. Spotted three relevant ones:
+  - 8c7006f "chore(settings): restore opus[1m] with 40% autocompact override"
+  - 41a1278 "chore(settings): increase context compact percent to 60%"
+  - 1f25c40 "chore(settings): remove auto-compact config overrides"
+- `git show 8c7006f -- claude_settings.json` revealed the env var name:
+  `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`.
+- `git show 1f25c40 -- claude_settings.json` confirmed the removal context
+  (commit dated 2026-03-28, message: "Let tools manage their own context
+  compaction defaults instead of overriding them globally."). So I'm undoing
+  that decision per user request.
+- Edit added `"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "40"` between
+  `ANTHROPIC_DEFAULT_SONNET_MODEL` and `CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR`
+  to preserve the alphabetical ordering used throughout the env block.
+
+## Scope decision (important for future agents)
+Working tree at start of session had pre-existing unstaged edits to
+claude_settings.json that I did NOT author:
+  - `CLAUDE_CODE_WORKFLOWS: "1"` env addition
+  - removal of the Stop hook (afplay sound)
+  - worktree.baseRef changed from "fresh" to "head"
+  - `fastMode: true` added at bottom
+Plus an unrelated `codex_config.toml` modification and a `.antigravitycli/`
+untracked dir.
+
+To keep the commit focused on what the user actually asked for, I isolated
+just my autocompact line:
+  1. `cp claude_settings.json /tmp/claude_settings.json.bak`
+  2. `git checkout HEAD -- claude_settings.json`
+  3. Re-applied only the autocompact Edit
+  4. `git add` + commit
+  5. `cp /tmp/claude_settings.json.bak claude_settings.json` to restore the
+     other pre-existing working-tree changes
+Final state: HEAD has the focused commit; working tree retains the user's
+other in-flight edits untouched, ready for them to commit separately.
+
+## Errors & Mistakes
+None during this run. On my first Edit attempt I had applied the change
+on top of the dirty working tree, which would have folded the user's other
+edits into my commit. Caught it before staging by diffing, then used the
+backup-and-restore dance above.
+
+## Dead Ends
+Considered `git add -p`, `git stash -k`, and a hand-rolled patch via
+`git apply --cached` to stage just my hunk, but the backup-revert-edit-
+restore approach was simpler and less error-prone for a single-line addition.
+
+## Hints for Future Agents
+- Env block in claude_settings.json is alphabetically sorted — preserve it.
+- The autocompact override has flip-flopped repeatedly (40 → 60 → removed
+  → 40 again). User has a clear preference for earlier compaction; if you
+  see it missing again, likely an oversight rather than an intentional
+  removal — confirm before re-removing.
+- When the working tree has unrelated dirty edits, default to isolating
+  your commit via the backup-revert-edit-restore pattern instead of folding
+  everything into one commit. Keeps history readable and respects the user's
+  in-flight work.
+
+## Codebase Discoveries
+- `claude_settings.json` is the user's global Claude Code settings, versioned
+  in their `vimrc` dotfiles repo. Schema:
+  https://json.schemastore.org/claude-code-settings.json
+- The `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` env var is read by Claude Code to
+  override the default autocompact threshold (percent of context filled
+  before triggering compaction). Lower value = compact earlier.
+
+## Open Questions
+- The user's other dirty working-tree edits (CLAUDE_CODE_WORKFLOWS,
+  hook removal, baseRef change, fastMode, codex_config.toml) are left
+  for them to handle. Not asked to commit those.

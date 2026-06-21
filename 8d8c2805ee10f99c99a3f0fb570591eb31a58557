@@ -1,0 +1,38 @@
+## Conversation
+The user asked to use `$git-commit` on `codex_skills` itself, then port `plugins/abatilo-core/skills/repo-explore` to the Codex skill format, commit that second change, and push both commits. The first intent was to take the already-present local Codex skill work in the dirty vimrc checkout and make it a focused commit before starting the new repo-explore port.
+
+## Actions
+1. Used the `git-commit` skill because the user explicitly invoked `$git-commit`. Read `/Users/abatilo/abatilo/vimrc/codex_skills/git-commit/SKILL.md`, which requires inspecting status, full diff, recent history with notes, focused staging, commit verification, and git notes in repos that require them.
+2. Checked memory for `/Users/abatilo/abatilo/vimrc`, `codex_skills`, `abatilo-core`, `repo-explore`, and `$git-commit`. Relevant memory confirmed this repo expects narrow commits, verbose git notes, and `git push origin refs/notes/commits` when pushing notes. It also confirmed plugin version bumps are separate commits when the plugin manifest changes.
+3. Ran `git status --short --branch`; the branch was `master...origin/master` with dirty `AGENTS_global.md`, `claude_settings.json`, `codex_config.toml`, `install.sh`, and untracked `.antigravitycli/` plus `codex_skills/`.
+4. Ran `git diff HEAD`; unrelated dirty config edits existed in `AGENTS_global.md`, `claude_settings.json`, and `codex_config.toml`. The relevant first group was `install.sh` adding cleanup/setup for `~/.codex/skills/git-commit` plus the untracked `codex_skills/git-commit/` directory.
+5. Ran `git log --show-notes --oneline -20`; recent notes included the mistaken and later removed `speed-bench-al-eval` vimrc skill, prior Codex config commits, and abatilo-core plugin version bump notes. These confirmed the repo's dirty-worktree hygiene and note requirements.
+6. Inspected `codex_skills/git-commit/SKILL.md`, `codex_skills/git-commit/agents/openai.yaml`, `install.sh`, and the existing plugin source path for the later repo-explore port.
+7. Validated the new skill with `python3 /Users/abatilo/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/abatilo/abatilo/vimrc/codex_skills/git-commit`; it printed `Skill is valid!`.
+8. Ran `git diff --check -- install.sh`; it passed with no output.
+9. Ran `LC_ALL=C grep -RIn '[^ -~]' codex_skills/git-commit`; it exited 1 with no output, meaning no non-ASCII bytes were found.
+10. Staged only `install.sh`, `codex_skills/git-commit/SKILL.md`, and `codex_skills/git-commit/agents/openai.yaml`.
+11. Verified the staged set with `git diff --cached --name-status`, which showed only those three files, and `git diff --cached --check`, which passed.
+12. Committed with subject `Add Codex git-commit skill` and body explaining that the dotfiles setup now installs the local Codex skill.
+
+## Errors & Mistakes
+None. The working tree was already dirty, but I kept the first commit focused and did not stage unrelated config edits.
+
+## Dead Ends
+- Did not include `AGENTS_global.md`, `claude_settings.json`, `codex_config.toml`, or `.antigravitycli/`; they were unrelated to the requested `codex_skills` commit.
+- Did not start the repo-explore port before this commit because the user explicitly asked to `$git-commit` the existing `codex_skills` work first.
+- Did not modify plugin manifests in this commit because this change is for the local Codex skill tree, not the Claude plugin.
+
+## Hints for Future Agents
+- `codex_skills/git-commit` is now tracked in vimrc and wired through `install.sh` into `~/.codex/skills/git-commit`.
+- Skills may still require a new Codex session before they appear in the session's available skill list.
+- This repo commonly has unrelated dirty local config files. Always inspect the cached diff before committing, and do not stage the whole tree unless the user explicitly asks.
+- When pushing commits from this repo, push both the branch and `refs/notes/commits` so the required agent notes travel with the commits.
+
+## Codebase Discoveries
+- The local Codex skill format in this repo is a directory under `codex_skills/<skill-name>/` with `SKILL.md` and optional `agents/openai.yaml` UI metadata.
+- The dotfiles installer removes the old symlink target before recreating it and creates `~/.codex/skills` before linking skills.
+- `quick_validate.py` from the system `skill-creator` skill accepts a skill directory path and successfully validated this skill.
+
+## Open Questions
+None for this commit. The unrelated dirty files remain in the worktree for other tasks.

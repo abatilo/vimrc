@@ -1,0 +1,79 @@
+## Conversation
+Follow-up to commit 60d6907 (Opus 4.8 prompt retune). The user asked "Did you
+review and improve any of the existing skills with feedback from the prompting
+guide?" I answered honestly that the first pass only applied the emphasis-
+calibration lever + verified descriptions, and explicitly deferred the deeper
+§3 skill-authoring guidance (conciseness, progressive-disclosure / reference
+structure, char limits). User replied: "Yes please, fix all skills with the new
+prompt guidance and bump the plugin and push." So this commit is the deeper §3
+pass over the skills' reference files.
+
+## Actions
+1. Surveyed all skill files via bash: line counts, nesting check (grep for
+   references/ inside reference files), header maps (grep '^##/###'), intros
+   (sed first 12 lines). Findings: 14 reference files, 167-839 lines each; NO
+   nested reference chains (one-level-deep §3 rule already satisfied); NONE had
+   a table of contents.
+2. Measured SKILL.md description char counts via python+yaml. All <=470 chars,
+   well under the 1024 cap. No description fixes needed.
+3. Added a "## Contents" TOC (anchor-linked bullet list of top-level sections)
+   to all 14 reference files, inserted immediately before each file's first H2.
+   Method: Edit with old_string = the first H2 line (verified unique per file),
+   new_string = "## Contents\n\n<bullets>\n\n<first H2>".
+4. Bumped plugin.json 0.19.2 -> 0.19.3 (PATCH; navigation refinement).
+5. Committed only the 14 reference files + plugin.json. Verified TOC rendering
+   on kubectl_reference.md. Pushed branch + notes.
+
+## Errors & Mistakes
+- First TOC-insertion batch (5 diataxis files) FAILED: "File has not been read
+  yet. Read it first before writing to it." Root cause: I had surveyed via bash
+  (sed/grep), which does NOT satisfy the Edit tool's read-tracking. Fix: issued
+  small Read calls (limit 5-6 lines, enough to cover the first H2) on each file,
+  then re-ran the edits successfully. Lesson for future agents: the Edit tool
+  requires a Read-TOOL read of a file in-session; bash cat/sed/grep does not
+  count.
+
+## Dead Ends
+- Considered TRIMMING the long reference bodies for conciseness (a §3 theme).
+  Rejected: the guide explicitly says reference files cost zero context until
+  loaded, so comprehensiveness is correct for them and the right fix is a TOC,
+  not deletion. Trimming would also hit Chesterton's Fence on deliberately-
+  authored docs.
+- Considered removing the kubernetes SKILL.md "Quick Command Reference" (~38
+  lines) as duplicating kubectl_reference.md. Rejected: it serves the guide's
+  "make the common case a one-liner" principle; removing it would force a
+  reference load for trivial commands. Left as-is.
+- Considered anchor-link correctness: diataxis reference.md/explanation.md
+  contain illustrative '## ' headers INSIDE example/pattern sections (e.g.
+  "## authenticate(credentials)", "## The Performance Challenge"). I EXCLUDED
+  those from the TOCs and listed only genuine top-level sections, so no
+  duplicate-anchor problems.
+
+## Hints for Future Agents
+- claude_settings.json showed an unrelated 1-line change during this session
+  ("fastMode": true removed) caused by the user running /fast off. I did NOT
+  stage or commit it — it's user settings state. It remains in the working tree.
+  Don't sweep it into an unrelated commit.
+- TOC anchor slugs were hand-computed with GitHub rules (lowercase, spaces ->
+  hyphens, punctuation stripped, '&' removed => double hyphen in "Tools &
+  Automation" -> tools--automation, "Chart Development & Inspection" ->
+  chart-development--inspection). Not runtime-verified against a renderer; the
+  TOC's scope-revealing value holds regardless of whether every anchor resolves.
+- Skills LEFT UNCHANGED in body this pass: all of them (the body emphasis work
+  was done in 60d6907). This commit only touched reference files + version.
+
+## Codebase Discoveries
+- The diataxis reference files reuse a consistent section skeleton (What is X,
+  Purpose and Goals, Core Principles, Structure, Writing Style, Best Practices,
+  Common Patterns, Example, Checklist, Common Mistakes) with example markdown
+  that itself uses '##' headers — which is why naive header extraction over-
+  counts sections.
+- repo-explore SKILL.md has no scripts to mark execution-intent for; the §3
+  "execute vs read" guidance is N/A here.
+
+## Open Questions
+- Anchor links not verified in an actual markdown renderer (see Hints).
+- Whether the diataxis SKILL.md body's inline framework content (quadrant
+  diagram, type selector) should be slimmed since framework-overview.md
+  duplicates it — left for a future judgment call; it aids the no-load common
+  case.

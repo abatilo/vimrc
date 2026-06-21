@@ -1,0 +1,30 @@
+## Conversation
+User asked to "commit the 365 days changes" as part of a batch of five
+requests: commit 365 days, commit 40pct autocompact, commit marketplace
+change, commit fastMode removal, revert the Fable switch and push, then
+restore Fable locally uncommitted.
+
+## Actions
+- git diff showed the only 365-related delta vs HEAD was cleanupPeriodDays
+  moving from the bottom of the file to line 3 — the value itself was
+  already committed in 1ca9d67.
+- Wrote the full file at HEAD content + the key relocation, committed.
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+- Claude Code rewrites the symlinked settings file (~/.claude/settings.json
+  -> claude_settings.json) and reorders keys; expect cosmetic moves like
+  this after the app saves preferences.
+- This batch of commits was built by writing the file through intermediate
+  full states rather than git add -p (not available non-interactively).
+
+## Codebase Discoveries
+None beyond the symlink noted above.
+
+## Open Questions
+None

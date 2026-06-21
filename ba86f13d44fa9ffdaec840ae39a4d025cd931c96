@@ -1,0 +1,32 @@
+## Conversation
+The user corrected the previous skill placement and said the `speed-bench-al-eval` skill belonged in `/Users/abatilo/work/at` under `.codex`, not in the vimrc dotfiles repo. This commit removes the mistakenly committed vimrc copy after the skill was copied into the at repo and committed there.
+
+## Actions
+1. Inspected the current vimrc state with `git status --short --branch`; the branch was `master...origin/master` with unrelated dirty files still present: `AGENTS_global.md`, `claude_settings.json`, `codex_config.toml`, `install.sh`, untracked `.antigravitycli/`, and untracked `codex_skills/git-commit/`.
+2. Read recent vimrc history with notes using `git log --show-notes --oneline -3`, including the mistaken commit `8180194 Add SPEED-Bench acceptance-length skill` and its note.
+3. Confirmed the tracked misplaced skill files with `git -C /Users/abatilo/abatilo/vimrc ls-files codex_skills/speed-bench-al-eval`.
+4. Removed only the misplaced tracked skill directory using `git rm -r codex_skills/speed-bench-al-eval`.
+5. Verified the staged deletion with `git diff --cached --name-status`; it showed only the three speed-bench-al-eval files as deleted.
+6. Ran `git diff --cached --check`; it passed.
+7. Committed with subject `Remove misplaced SPEED-Bench skill`.
+
+## Errors & Mistakes
+- The error being corrected is the previous commit to vimrc: the skill was placed in the dotfiles repo when the user wanted it in the at repo under `.codex`.
+- No additional command failures occurred while making this cleanup commit.
+
+## Dead Ends
+- Did not rewrite or force-push vimrc history. The mistaken commit had already been pushed, so this uses a normal deletion commit that preserves history and notes.
+- Did not touch or stage the unrelated dirty vimrc files or the pre-existing untracked `codex_skills/git-commit/` directory.
+- Did not delete any skill content from the at repo; that repo now owns the correct copy under `.codex/skills/speed-bench-al-eval`.
+
+## Hints for Future Agents
+- Do not re-add `speed-bench-al-eval` to `/Users/abatilo/abatilo/vimrc/codex_skills`. The skill is at-evals-specific and belongs in `/Users/abatilo/work/at/.codex/skills/speed-bench-al-eval`.
+- The wrong-repo commit `8180194` remains in vimrc history with a note for auditability. This commit is the cleanup that removes its tree effect from vimrc.
+- The vimrc worktree is expected to remain dirty after this commit because unrelated changes predated this cleanup.
+
+## Codebase Discoveries
+- `codex_skills/speed-bench-al-eval` had exactly three tracked files in vimrc before removal: `SKILL.md`, `agents/openai.yaml`, and `references/at-evals-dflash-speed-bench.md`.
+- The existing untracked `codex_skills/git-commit/` directory remains untouched and untracked in vimrc.
+
+## Open Questions
+None. The wrong-repo copy has been removed by this commit; the correct at-repo copy is committed separately.

@@ -1,0 +1,29 @@
+## Conversation
+User asked to update the git-spice skill because `gs` became `git-spice` or `git spice`, then bump the plugin version number, commit, and push. This commit is the manifest version bump that accompanies the preceding skill update commit `6d09fe8 fix(git-spice): use git-spice command name`.
+
+## Actions
+1. Confirmed the abatilo-core plugin manifest is `plugins/abatilo-core/.claude-plugin/plugin.json`.
+2. Read the current manifest with `cat`; version was `0.19.0`.
+3. Read recent history and notes for the manifest with `git log --oneline --show-notes -- plugins/abatilo-core/skills/git-spice plugins/abatilo-core/.claude-plugin/plugin.json`; prior notes on commit e6ab584 said version bumps in this plugin are conventionally separate commits.
+4. Used `apply_patch` to update `plugins/abatilo-core/.claude-plugin/plugin.json` from `0.19.0` to `0.19.1`.
+5. Verified JSON/version with `jq -r .version plugins/abatilo-core/.claude-plugin/plugin.json`, which printed `0.19.1`.
+6. Verified the scoped diff with `git diff --stat -- plugins/abatilo-core/.claude-plugin/plugin.json`; it was only the one-line version change.
+7. Staged only `plugins/abatilo-core/.claude-plugin/plugin.json` and committed with subject `chore(abatilo-core): bump plugin version to 0.19.1`.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- This bump is patch-level (`0.19.0` -> `0.19.1`) because the preceding change fixes an existing skill to use the current git-spice command name after `gs` disappeared; it does not add or remove a skill surface.
+- The skill change itself is in the immediately preceding commit `6d09fe8`.
+- Keep this manifest as the only version source unless the plugin layout changes; no lockfile or generated version file was found or touched.
+
+## Codebase Discoveries
+- `plugins/abatilo-core/.claude-plugin/plugin.json` remains a small manifest with only `name`, `version`, and `description`.
+- Existing unrelated dirty files (`claude_settings.json`, `codex_config.toml`, `.antigravitycli/`) were present before this work and intentionally left out of this commit.
+
+## Open Questions
+None.

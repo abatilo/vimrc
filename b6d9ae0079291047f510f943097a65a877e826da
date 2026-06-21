@@ -1,0 +1,46 @@
+## Conversation
+Follow-up in the filemention/telescope-insert-path thread. The user had observed
+that pressing <C-o> in the telescope prompt only triggered Neovim's built-in
+i_CTRL-O (insert-normal mode, shown as "-- (insert) --"), because all
+path_actions mappings were registered under the telescope NORMAL-mode table
+(`n = {...}`) while the prompt opens in INSERT mode. The user then asked:
+"can we try adding c-a as an insert mode binding that triggers insert abspath a
+insert?" Then: "let's commit and push this change, it's small and low risk."
+
+## Actions
+- Added an `i = { ["<C-a>"] = path_actions.insert_abspath_a_insert }` table to
+  telescope defaults.mappings in nvim/init.lua (placed before the existing `n`
+  table, matching telescope's i-then-n convention).
+- Verified: `luajit -bl nvim/init.lua` (SYNTAX OK); headless nvim load confirmed
+  telescope_insert_path requires cleanly and insert_abspath_a_insert is a fn.
+- Committed and pushed (origin/master) including refs/notes/commits, per the
+  user's commit-notes rule.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- <C-a> is NOT in telescope's default insert-mode mappings, so claiming it does
+  not shadow a built-in telescope action. (Native Vim insert-mode <C-a> = repeat
+  last inserted text; overridden only inside the telescope prompt.)
+- insert_abspath_a_insert semantics (see plugin _insert_path, lua/
+  telescope_insert_path/init.lua:100): location "a" => append after cursor,
+  vim_mode "i" => after putting text it calls startinsert and advances the cursor,
+  so you land back in INSERT mode in the buffer you launched the picker from. All
+  actions call `stopinsert` first, so they work fine invoked from insert mode.
+- The other six path mappings remain normal-mode-only; user may later ask to add
+  insert-mode variants for those too.
+
+## Codebase Discoveries
+- path_actions has a metatable whose __index ERRORS on unknown keys (init.lua:6-10
+  of the plugin). So any mistyped action name in the mappings would blow up
+  telescope.setup at config load. A clean headless load therefore also doubles as
+  validation that every mapped action name exists.
+
+## Open Questions
+- Whether the user keeps <C-o> (normal-mode) and <C-a> (insert-mode) both, or
+  consolidates once they settle on a workflow between filemention and
+  telescope-insert-path.
