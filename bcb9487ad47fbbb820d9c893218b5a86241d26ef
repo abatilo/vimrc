@@ -1,0 +1,185 @@
+## Conversation
+The coordinator asked Pi (this agent) to perform a narrowly scoped git
+operation in workspace /Users/aaron/abatilo/vimrc: commit and push ONLY the
+change to `AGENTS_global.md`, and nothing else.
+
+Explicit permissions granted to Pi:
+- stage and commit ONLY `AGENTS_global.md`;
+- add a `git notes add` note to the new commit;
+- push the current branch;
+- push `refs/notes/commits`.
+
+Explicit prohibitions:
+- do NOT stage or commit any other file;
+- do NOT revert unrelated user/coordinator/broker/Pi changes;
+- do NOT modify file contents unless a clearly necessary trivial fix is
+  required, and if so STOP and report rather than edit.
+
+The coordinator also dictated the exact note sections required
+(Conversation, Actions, Errors & Mistakes, Dead Ends, Hints for Future
+Agents, Codebase Discoveries, Open Questions) and required an honest,
+extremely verbose note that records the fact the coordinator delegated
+this scoped commit/push to Pi.
+
+Required output from Pi: thread id (if any), branch name, commit hash +
+message, files staged/committed, commands run + results, push results,
+note verification result, final git status, remaining risks.
+
+No thread id was provided to Pi.
+
+Inferred intent: the working tree had accumulated several unrelated
+in-flight changes — a conflicted `codex_config.toml`, already-staged
+`.gitconfig_global` and `claude_settings.json`, and an unstaged rewrite of
+`AGENTS_global.md`. The coordinator wanted ONLY the `AGENTS_global.md`
+rewrite committed and pushed, leaving the rest of the messy state exactly
+as found for the owner to resolve.
+
+## Actions
+1. `git log --show-notes --oneline -5` — recent history: ac67107
+   chore(codex): default TUI to Vim mode; 3b09125 chore(settings): restore
+   autocompact override at 40%; 847d500 chore(abatilo-core): bump plugin
+   version to 0.19.1; 6d09fe8 fix(git-spice): use git-spice command name;
+   62f9535 Bump Pi changelog version to 0.73.0. None of these five had
+   notes attached.
+2. `git status`, `git diff -- AGENTS_global.md`, `git diff --staged --
+   AGENTS_global.md`, `git branch --show-current`. Branch: `master`, up to
+   date with `origin/master`. Found: `AGENTS_global.md` modified but
+   unstaged (" M"); `.gitconfig_global` and `claude_settings.json`
+   already staged (M in index); `codex_config.toml` unmerged (UU, both
+   modified).
+3. Critical check: determined whether a merge/rebase/cherry-pick was in
+   progress, because committing DURING a merge would create a merge
+   commit that sweeps in ALL staged changes. Ran `git rev-parse --verify
+   MERGE_HEAD` (none), checked `.git/rebase-merge` / `.git/rebase-apply`
+   (none), `.git/CHERRY_PICK_HEAD` (none), `.git/sequencer` (none). Only
+   `.git/ORIG_HEAD` present. Conclusion: no in-progress
+   merge/rebase/cherry-pick → git `whence == FROM_COMMIT` — BUT the index
+   still contained leftover unmerged stages for `codex_config.toml`.
+4. `git ls-files -u` confirmed: codex_config.toml has stage 1 (base
+   19cd74a), stage 2 (ours 7dc22c5), stage 3 (theirs b640f21).
+   AGENTS_global.md was stage 0 (clean in index, old blob cb4c1b1).
+   `git --version` → 2.50.1 (Apple Git-155).
+5. Read `rules/commit-notes.md` to align the note with the repo convention
+   (every commit MUST have an extremely verbose `git notes add`).
+   `ls rules/` → codex-mcp.md, commit-notes.md, gopls-lsp.md, simple.md,
+   task-tracking.md. Inspected an existing note (`git notes show 57747d7`)
+   for style — a long, honest, agent-memory-style note about a Neovim
+   0.12 vim.pack migration.
+6. Staged ONLY `AGENTS_global.md`: `git add -- AGENTS_global.md`.
+   `git diff --staged --stat -- AGENTS_global.md` → 1 file changed, 92
+   insertions(+), 131 deletions(-). The other staged files were already
+   staged before this task and were NOT touched by Pi.
+7. Wrote the commit message to `/tmp/commit_msg_agents.txt` and created a
+   pathspec-scoped PARTIAL commit:
+   `git commit -F /tmp/commit_msg_agents.txt -- AGENTS_global.md`
+   Result on stderr: "codex_config.toml: needs merge" (informational
+   warning — see Errors & Mistakes), then the commit was created
+   successfully: `[master bcb9487] docs(agents): adopt Pi delegation
+   model, drop Codex/gopls sections — 1 file changed, 92 insertions(+),
+   131 deletions(-)`, exit code 0.
+8. Verified scope: `git show --stat HEAD` and
+   `git diff --name-only HEAD~1 HEAD` → ONLY `AGENTS_global.md` in the
+   commit. `git status` after commit: `.gitconfig_global` and
+   `claude_settings.json` STILL staged (uncommitted), `codex_config.toml`
+   STILL unmerged (3 stages). Unrelated state fully preserved.
+9. Per coordinator: attach this note, then push `master`, then push
+   `refs/notes/commits`, then verify. (Push results are appended in the
+   "Push Results (appended)" section below after execution.)
+
+## Errors & Mistakes
+- The partial commit printed `codex_config.toml: needs merge` on stderr.
+  This was NOT an error — it is git's informational notice that the real
+  index contains unmerged entries, which git skipped because a partial
+  commit builds its tree from HEAD + the pathspec only. The commit
+  succeeded (exit 0). Pi confirmed via `git show` / `git diff --name-only
+  HEAD~1 HEAD` that the commit contained ONLY `AGENTS_global.md`.
+- Pi was initially uncertain whether the unmerged `codex_config.toml`
+  entries would block a partial commit (`git commit -- <pathspec>`).
+  Reasoning that resolved it: the "cannot do a partial commit during a
+  merge" guard fires only when `whence != FROM_COMMIT` (i.e., a MERGE_HEAD
+  exists). Here no MERGE_HEAD existed, so the guard did not fire, and the
+  partial commit's HEAD-based tree write was unaffected by the unmerged
+  entries living in the real index. Confirmed empirically by the
+  successful commit.
+- No file contents were modified. No files other than AGENTS_global.md
+  were staged or committed.
+
+## Dead Ends
+- Considered `git commit -m "..."` WITHOUT a pathspec (committing the
+  whole index). Rejected immediately: it would have swept in the
+  already-staged `.gitconfig_global` and `claude_settings.json`,
+  violating the "only AGENTS_global.md" scope, and would also have failed
+  at write-tree time due to unmerged `codex_config.toml`.
+- Considered resolving the `codex_config.toml` conflict to unblock a
+  normal commit. Rejected: out of scope (coordinator prohibited touching
+  other files / reverting unrelated changes) and unnecessary since the
+  partial commit succeeded cleanly.
+- Considered stopping to report because of the dirty/conflicted index.
+  Decided NOT to stop: the scoped commit could be made cleanly via a
+  pathspec partial commit without disturbing the unrelated state, which is
+  exactly what the coordinator asked for.
+
+## Hints for Future Agents
+- The repo index currently contains a LEFTOVER unmerged `codex_config.toml`
+  (stages 1/2/3) with NO `MERGE_HEAD` — a conflicted index from an
+  interrupted/aborted merge that was never cleaned up. This task
+  deliberately left it untouched per scope. Whoever owns that file must
+  resolve it (`git add` / `git checkout --theirs|--ours` / etc.). Do NOT
+  assume the tree is clean just because no merge is "in progress".
+- `.gitconfig_global` and `claude_settings.json` are staged but
+  uncommitted and were left as-is. They are NOT part of commit bcb9487.
+- To commit a SINGLE file when the index has unrelated staged and/or
+  unmerged entries, use `git commit -- <pathspec>` (a partial commit).
+  It builds the commit tree from HEAD + the pathspec only and does NOT
+  record other staged changes. A plain `git commit` (no pathspec) would
+  commit everything staged AND would fail on unmerged entries.
+- `master` tracks `origin/master`. Git notes live on `refs/notes/commits`
+  and must be pushed SEPARATELY (`git push origin refs/notes/commits`);
+  they are NOT included in a normal `git push`.
+- The `codex_config.toml: needs merge` line on stderr during a partial
+  commit is informational, not fatal — verify the actual commit contents
+  with `git show --stat HEAD` / `git diff --name-only HEAD~1 HEAD`.
+
+## Codebase Discoveries
+- `AGENTS_global.md` declares it is "assembled from the Markdown files in
+  `rules/`" (codex-mcp.md, commit-notes.md, gopls-lsp.md, simple.md,
+  task-tracking.md) and is intended to be symlinked as an `AGENTS.md`
+  context file for tools that support it. HOWEVER, the change committed
+  here (bcb9487) edited `AGENTS_global.md` DIRECTLY and did NOT update the
+  corresponding `rules/*.md` sources. Consequence: `AGENTS_global.md` has
+  now diverged from its stated assembly source. If anyone re-runs the
+  assembly/regeneration step, this commit's changes could be overwritten.
+  The `rules/` source files still contain the OLD Codex-centric content
+  (e.g., `rules/codex-mcp.md`, `rules/gopls-lsp.md` still exist with
+  their original content).
+- `rules/commit-notes.md` mandates an extremely verbose `git notes add`
+  on EVERY commit, yet the five most recent master commits (ac67107,
+  3b09125, 847d500, 6d09fe8, 62f9535) have NO notes. Only one inspected
+  commit (57747d7, the Neovim 0.12 vim.pack migration) had a note. The
+  notes convention is followed sparsely in practice.
+- The committed rewrite replaces the Codex MCP planning workflow with a
+  "Pi Delegation Operating Model" (coordinator + Pi workers; direct vs
+  brokered delegation; prompt shape; final responsibility), changes
+  "CONSULT Codex" → "run a planning check", removes the "Consult Codex
+  (Blocking)" section, and drops the tool-specific Codex MCP and gopls
+  LSP sections (and their `## Source:` frontmatter markers). The
+  `rules/` sources were NOT updated to match.
+- git version: 2.50.1 (Apple Git-155). Local notes ref
+  `refs/notes/commits` exists (8095ceb).
+
+## Open Questions
+- Should the `rules/*.md` source files be updated to match the new
+  `AGENTS_global.md` content, and is `AGENTS_global.md` regenerated from
+  `rules/` by a script? If so, bcb9487's direct edit may need to be
+  mirrored into `rules/` or it will be lost on regeneration. (Not
+  addressed — out of scope.)
+- Who owns/resolves the unmerged `codex_config.toml` and the
+  staged-but-uncommitted `.gitconfig_global` / `claude_settings.json`?
+  Left as-is per the coordinator's scope.
+- Is `refs/notes/commits` on the remote shared/force-pushed by other
+  agents? If so, future notes pushes might require `--force` or
+  coordination. (This push was attempted as a normal fast-forward; see
+  the appended push results.)
+
+## Push Results (appended)
+(populated after the push commands are executed — see verification)
