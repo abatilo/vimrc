@@ -182,4 +182,44 @@ as found for the owner to resolve.
   the appended push results.)
 
 ## Push Results (appended)
-(populated after the push commands are executed — see verification)
+- Branch push `git push origin master` → REJECTED (non-fast-forward),
+  exit 1. The remote had advanced: `git fetch origin` showed
+  `ac67107..8dec787 master -> origin/master`. The local
+  `origin/master` tracking ref was stale at ac67107.
+- Divergence after fetch: merge-base = ac67107 (my commit's parent).
+  `git log --oneline HEAD..origin/master` = 36 remote commits I did not
+  have, including many that touch AGENTS_global.md: 520f9be "Add Pi AGENTS
+  global setup", dbf5e54 "Trim AGENTS global rules for a leaner Codex
+  context", b186596 "docs(rules): remove Go LSP (gopls) usage rule",
+  85bb194 "chore(settings): remove gopls LSP plugin", plus Codex/Pi/
+  settings/nvim changes. `git log --oneline origin/master..HEAD` = only
+  my bcb9487.
+- My committed AGENTS_global.md (blob 3162990, 381 lines, with the "Pi
+  Delegation Operating Model") DIFFERS from the remote's (blob 81b1330,
+  299 lines — remote went a "leaner Codex context" direction). My change
+  is NOT on the remote; a rebase onto origin/master would CONFLICT on
+  AGENTS_global.md.
+- Rebase/merge is BLOCKED by the dirty index: unmerged codex_config.toml
+  (stages 1/2/3) plus staged .gitconfig_global & claude_settings.json.
+  Git refuses to rebase/merge with unresolved index entries. Resolving
+  the AGENTS_global.md conflict would also require editing the file,
+  which the coordinator's scope explicitly prohibits ("stop and report
+  instead of editing").
+- Force-push was NOT attempted and must NOT be used: it would discard
+  the 36 remote commits, violating "do not revert unrelated user/
+  coordinator/broker/Pi changes".
+- Notes push (`git push origin refs/notes/commits`) was NOT performed:
+  commit bcb9487 is not on the remote, so pushing its note would be
+  premature noise (and the remote notes ref may have diverged given 36
+  new commits by other agents).
+- DECISION: STOP and REPORT per the coordinator's scope. Local commit
+  bcb9487 + this note are left in place; the dirty index is left
+  untouched. The owner must decide how to integrate: (a) clean the dirty
+  index (resolve codex_config.toml + decide on .gitconfig_global /
+  claude_settings.json), then `git rebase origin/master` and resolve the
+  AGENTS_global.md conflict (my Pi-delegation model vs the remote's
+  leaner-Codex-context version); (b) drop bcb9487 (`git reset --hard
+  origin/master`) if the remote's leaner version is preferred and the
+  Pi-delegation-model content is no longer wanted; or (c) cherry-pick
+  bcb9487 onto origin/master after rebasing/cleaning. None of these are
+  in Pi's permitted scope, so they are deferred to the owner.
