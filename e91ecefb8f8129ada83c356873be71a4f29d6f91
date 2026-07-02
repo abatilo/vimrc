@@ -1,0 +1,55 @@
+## Conversation
+User noticed CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=40 in claude_settings.json had
+stopped working (auto-compaction no longer triggering at 40%). Asked whether
+the setting changed. Also asked whether the string value "40" could be the
+problem (it isn't — settings.json env values must be strings). After the
+diagnosis, user asked to remove the line and commit/push ONLY that removal,
+leaving the other uncommitted changes (model bumps to claude-fable-5,
+effortLevel xhigh->high, codex_config.toml trust entries) untouched.
+
+## Actions
+- Read claude_settings.json; confirmed override at env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE="40".
+- Spawned claude-code-guide agent to check docs/changelog. Finding: the env
+  var was NOT renamed or removed. Per https://code.claude.com/docs/en/env-vars
+  it only lowers the threshold when Claude Code compacts PROACTIVELY: when
+  CLAUDE_CODE_AUTO_COMPACT_WINDOW is set, in cloud sessions, and on Sonnet 4.6
+  / Opus 4.6 without extended context. Fable 5 (this repo's session model)
+  always runs a native 1M window, so local sessions compact at the model's
+  context limit and the override is silently ignored.
+- Removed the line with Edit; first attempt failed with "File has been
+  modified since read" (likely user/linter touch) — re-read and retried fine.
+- Partial staging: git add -p is unavailable (non-interactive). Staged
+  exactly "HEAD minus the override line" via
+  `git show HEAD:claude_settings.json | grep -v ... | git hash-object -w` +
+  `git update-index --cacheinfo`. Verified with git diff --cached, committed,
+  pushed with notes.
+
+## Errors & Mistakes
+- One Edit failure due to stale read state; resolved by re-reading. No other
+  errors.
+
+## Dead Ends
+- Considered isolating the hunk with a hand-crafted `git apply --cached`
+  patch; rejected because the adjacent ANTHROPIC_DEFAULT_SONNET_MODEL change
+  merges into the same hunk under default context. The hash-object/
+  update-index approach is deterministic.
+
+## Hints for Future Agents
+- To restore a 40% threshold on a 1M-window model, set
+  CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000 (single var; PCT override then
+  unnecessary). Caveats: threshold decouples from status line
+  used_percentage, and the window applies to subagents too.
+- autoCompactEnabled: true in settings is unrelated — it only toggles whether
+  auto-compact runs at all (env counterpart: DISABLE_AUTO_COMPACT).
+- Commit f6bcde9 "restore autocompact override at 40%" is the counterpart
+  this commit reverts, for different reasons than whatever removed it before.
+
+## Codebase Discoveries
+- claude_settings.json in this repo IS the user's ~/.claude/settings.json
+  (dotfiles repo); working tree also carried unrelated model/effort changes
+  left deliberately uncommitted here.
+
+## Open Questions
+- User has not yet decided whether to add CLAUDE_CODE_AUTO_COMPACT_WINDOW to
+  regain early compaction on Fable 5; the removed override alone changes no
+  behavior (it was already inert).
