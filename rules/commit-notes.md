@@ -1,71 +1,52 @@
 # Commit Notes
 
-Every commit gets a `git notes add` attached with verbose, agent-oriented
-context. These notes are written for future AI agents who will read them to
-understand the full history behind a change.
+Attach a `git notes add` note to every commit. Notes are agent memory: they
+give the next agent (or a future session of you) the context that never makes
+it into a diff or a commit message, so mistakes aren't repeated and
+non-obvious constraints aren't rediscovered the hard way.
 
 ## Reading Notes
 
-When investigating code — debugging, understanding context, doing Chesterton's
-Fence checks, or picking up prior work — read git notes alongside the log.
-Use `git log --show-notes` or `git notes show <commit>` to surface the agent
-context left by previous sessions. Notes often contain hints, warnings, and
-dead-end records that save you from repeating past mistakes.
-
-Before modifying code that has notes attached to recent commits, read those
-notes first. They may explain non-obvious constraints, intentional trade-offs,
-or open questions that directly affect your work.
+When investigating code — debugging, Chesterton's Fence checks, or picking up
+prior work — read the notes alongside the log (`git log --show-notes`,
+`git notes show <commit>`). Read the notes on recent commits before modifying
+the code they touch; they often record constraints, trade-offs, and dead ends
+that directly affect your work.
 
 ## Commit Messages vs. Notes
 
-- **Commit messages** answer **why** — the motivation, the intent, the reason
-  this change exists. Written for humans scanning `git log`.
-- **Git notes** are **agent memory** — the raw, unfiltered process log that
-  gives a future agent full context to pick up where you left off, understand
-  constraints, and avoid repeating mistakes.
+Commit messages answer **why the change exists**, written for humans scanning
+`git log`. Notes record **how the work actually went**, written for agents:
+what the user really asked for, what was tried, what failed, and what the
+next agent needs to know.
 
 ## What Goes in the Note
 
-Write the note as if briefing another agent who will work on this code next.
-Be extremely verbose. Include everything that isn't obvious from the diff:
-
-- **Conversation history** — What did the user ask for? How did the request
-  evolve? What clarifications were given? What was the user's actual intent
-  vs. the literal words?
-- **Actions taken** — Files read, commands run, searches performed, tools
-  used. A step-by-step replay of the work.
-- **Errors & mistakes** — What failed? What was misunderstood? What had to be
-  retried or redone? Include actual error messages and output. Be brutally
-  honest — this is the most valuable part.
-- **Dead ends & rejected approaches** — What was tried and didn't work? What
-  looked promising but was abandoned? Why?
-- **Hints & warnings** — Gotchas a future agent should know. Non-obvious
-  constraints. Things that look wrong but are intentional. Fragile areas.
-- **Codebase discoveries** — What was learned about the codebase during this
-  work that isn't documented elsewhere? Surprising behaviors, implicit
-  dependencies, undocumented conventions.
-- **Open questions** — Anything unresolved, deferred, or uncertain.
+Brief the next agent as if they have zero prior context. Report the work
+honestly, grounded in what actually happened in the session — including
+missteps, actual error output, and approaches that were abandoned.
+Unflattering detail is the most valuable part; don't sanitize it. Reference
+specific files and line numbers. Length should track the complexity of the
+work, but every commit gets a note.
 
 ## Format
-
-Use `git notes add` after the commit:
 
 ```bash
 git notes add -m "$(cat <<'EOF'
 ## Conversation
-<what the user asked, how the request evolved, their intent>
+<what the user asked for, how the request evolved, their actual intent>
 
 ## Actions
-<step-by-step log: files read, commands run, edits made>
+<what was done: files read, commands run, edits made>
 
 ## Errors & Mistakes
-<what went wrong, what was misunderstood, actual error output>
+<what went wrong or was misunderstood, with actual error output>
 
 ## Dead Ends
 <approaches tried and abandoned, with reasons>
 
 ## Hints for Future Agents
-<gotchas, non-obvious constraints, things that look wrong but aren't>
+<gotchas, non-obvious constraints, things that look wrong but are intentional>
 
 ## Codebase Discoveries
 <what was learned that isn't documented elsewhere>
@@ -76,20 +57,12 @@ EOF
 )"
 ```
 
-## Rules
-
-- Don't sanitize or soften mistakes — the raw truth is the point.
-- Fill in every section; when one is empty, write "None" and move on. The
-  absence of errors is useful signal.
-- Include specific error messages, stack traces, and command output.
-- Reference specific file paths and line numbers.
-- Write as if the reading agent has zero prior context.
-- Note length should be proportional to the complexity of the work, but even
-  trivial commits get notes.
+Fill in every section; write "None" when a section is empty — the absence of
+errors is useful signal.
 
 ## Pushing Notes
 
-When pushing, include notes:
+Include notes when pushing:
 
 ```bash
 git push origin refs/notes/commits
