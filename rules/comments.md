@@ -1,5 +1,18 @@
 ## Consolidated rules for high-value code comments
 
+### 0. The default is no comments at all
+
+**This is the most important rule; everything below is subordinate to it.**
+Write zero comments by default. A comment's existence is already a code
+smell: it means the code failed to express something on its own, and it adds
+prose that must be kept true forever. Every comment starts guilty — it exists
+only if it survives the justifications in the rules below (a contract, an
+invariant, a why, a risk, a workaround). When in doubt, delete it and make
+the code say it instead.
+
+**Rule:** No comment is the goal. A comment is the exception that must earn
+its place.
+
 ### 1. Refactor before you comment
 
 When you feel the urge to explain confusing code, first try better names, smaller functions, extracted variables, simpler control flow, stronger types, or assertions. Google’s engineering practices say that if a reviewer does not understand code, the first response should be to clarify the code itself; only add a code comment when the code cannot be made clear enough. Refactoring.Guru makes the same point: explanatory comments often signal code that should be renamed, extracted, or restructured. ([Google GitHub][2])
