@@ -141,8 +141,22 @@ No thread id was provided to Pi.
   origin/master tracking ref -> b9bda2c; local master -> b9bda2c. Match.
 
 ## Notes Results (appended)
-- Pending: the notes merge (union) and `git push origin refs/notes/commits`
-  are executed immediately AFTER this note is added; the real result is
-  appended in the FINAL revision of this note (delivered by a second
-  notes push). See that revision for the exact merge/push commands and
-  exit codes.
+- Local refs/notes/commits (0739f54, after adding v1 notes for commits A
+  and B) had DIVERGED from the remote notes ref (0162e83).
+- `git fetch origin refs/notes/commits:refs/notes/origin/commits` ->
+  exit 0 (new ref fetched at 0162e83).
+- `git notes merge --strategy=union refs/notes/origin/commits` -> exit 0.
+  Union strategy concatenates any same-commit notes and never conflicts;
+  no conflicts occurred. Merge result notes commit =
+  ee8458c0f8f492599f21c3851b8215155c24b4af (parents include both the
+  local notes tip 0739f54 and the remote notes tip 0162e83, so the push
+  is a fast-forward). Notes for A (a550848) and B (b9bda2c) survived the
+  merge (verified with `git notes show`).
+- Removed the temp ref refs/notes/origin/commits after the merge.
+- 1st `git push origin refs/notes/commits` -> SUCCESS, fast-forward:
+  `0162e83..ee8458c  refs/notes/commits -> refs/notes/commits`, exit 0.
+  NO force-push. That push delivered v1 of this note (with the "Pending"
+  placeholder).
+- A 2nd `git push origin refs/notes/commits` delivers THIS final revision
+  (v2) with the real merge/push results filled in. (That second push is a
+  fast-forward over ee8458c.)
