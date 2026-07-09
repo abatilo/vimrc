@@ -1,0 +1,30 @@
+## Conversation
+User set a /goal in a prior turn: "Update @comments.md to replace javascript or typescript examples with golang examples." comments.md already existed as an untracked file in rules/ containing consolidated code-comment guidelines with examples in js/ts/python/cpp/java/kotlin/rust. After the edits, the user asked (in a compound instruction) to commit and push "this comments change" directly, alongside separate work rephrasing commit-notes.md per the Fable 5 prompting guide (that rephrase is NOT part of this commit).
+
+## Actions
+- Read rules/comments.md in full.
+- Six JS/TS fenced blocks replaced with Go via parallel Edit calls, sections 1, 5, 8, 10, 14, 16:
+  - S1: `let d;` → `var d int`; `daysSinceLastRefresh` kept as the rename example.
+  - S5: TS JSDoc block → Go doc comment on `func DisplayPrice(order Order) (Money, error)`; "Throws" rephrased to "returns an error" since Go has no exceptions.
+  - S8: JSDoc-style `/* isPrimary= */ true` → Go convention `true /* isPrimary */`; options-object alternative → `ButtonOptions` struct literal.
+  - S10: Safari/WebKit browser workaround → database/sql idle-conns workaround referencing golang/go#12345 (a browser quirk has no Go analogue; issue number carried over from the original fictional WebKit bug 12345).
+  - S14 & S16: comment text unchanged, only fence language js → go.
+- Staged only rules/comments.md; committed; pushed with notes.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- Python/C++/Java/Kotlin/Rust examples were deliberately left in their original languages — the goal covered only JS/TS.
+- Prose still cites JSDoc / Google JavaScript style guide in sections 6, 8, 16 and the reference-link list. These are source citations, not examples; user was offered a rework toward Go conventions and did not request it (yet).
+- golang/go#12345 in section 10 is a placeholder issue number inherited from the original example's fictional "WebKit bug 12345" — it does not reference a real Go issue.
+- claude_settings.json and codex_config.toml were dirty in the worktree at commit time and intentionally excluded.
+
+## Codebase Discoveries
+rules/*.md files in this repo are injected globally as user instructions into Claude Code sessions (visible in claudeMd context), so comments.md is a live prompt artifact, not documentation.
+
+## Open Questions
+Whether the JSDoc/Google-JavaScript prose citations should also be re-sourced to Go-centric references.

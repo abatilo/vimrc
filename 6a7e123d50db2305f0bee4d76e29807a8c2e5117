@@ -1,0 +1,38 @@
+## Conversation
+User: "at some point in git history we switched claude_settings.json to
+using auto mode for permissions. I'd like to revert that and remove usage
+of auto mode and switch back to bypassPermissions." Then via /git-commit:
+"this small change then push."
+
+## Actions
+- git log/blame on claude_settings.json; found commit bc88813
+  "chore(settings): switch from bypass to auto permissions" (3 weeks ago).
+- That commit made TWO auto-mode changes plus dropped an allow list and
+  additionalDirectories: defaultMode bypassPermissions->auto, and
+  useAutoModeDuringPlan false->true.
+- Reverted only the two mode fields:
+    permissions.defaultMode: auto -> bypassPermissions
+    useAutoModeDuringPlan: true -> false
+- Committed claude_settings.json only.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- Did NOT restore the allow list bc88813 removed: under bypassPermissions
+  the allow list is moot (all prompts skipped), so re-adding it is noise.
+- Did NOT restore additionalDirectories (~/work, ~/Documents/notes) that
+  bc88813 also removed — unrelated to auto mode; user didn't ask. Offered
+  to restore on request. Revisit if directory-access prompts reappear.
+- codex_config.toml was dirty at session start (added trust_level project
+  entries). Left it uncommitted/unstaged — unrelated to this change.
+
+## Codebase Discoveries
+- claude_settings.json is the source for the user's ~/.claude settings;
+  history is a long series of chore(settings)/revert(settings) commits.
+
+## Open Questions
+None.

@@ -1,0 +1,29 @@
+## Conversation
+User asked (compound instruction, previous turn): use the claude-code-guide agent to find the Fable 5 prompting guide, then rephrase commit-notes.md per its recommendations. After reviewing the rephrase, user said "commit and push the commit-notes change too" — this commit.
+
+## Actions
+- claude-code-guide subagent fetched https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5 (the .md-suffix raw-markdown trick works on platform.claude.com doc URLs).
+- Rewrote rules/commit-notes.md via Write (full replacement, 79 → 52 lines):
+  - Each section now leads with why the rule exists (notes are agent memory) per the guide's "give the reason, not only the request".
+  - Collapsed the seven-bullet "What Goes in the Note" enumeration into one paragraph — the bash template already carries the structure.
+  - Folded the standalone "Rules" list into prose; every item duplicated something already stated.
+  - Rephrased "raw, unfiltered process log" → "grounded in what actually happened in the session": the guide warns that echo-your-reasoning phrasing can trigger reasoning_extraction refusals, so honesty requirements are anchored to observable work (commands, errors, output), not internal reasoning.
+- Committed only rules/commit-notes.md; pushed with notes.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- The note template (Conversation/Actions/Errors/Dead Ends/Hints/Discoveries/Open Questions) was deliberately kept verbatim — it is a format contract, not prior-model compensation. Don't trim it in future "simplification" passes.
+- The "fill every section, write None when empty" rule survives in prose; the absence-of-errors-is-signal rationale is the reason it exists.
+- This file is injected as live user instructions into Claude Code sessions; changes here alter agent behavior globally, not just documentation.
+- Related retune history: commits 83a9a71 (rules) and 65bc6ea (skills) from June 2026 applied the same Fable 5 principles, with verbose notes attached.
+
+## Codebase Discoveries
+None beyond what prior notes (83a9a71) already record about rules/ being prompt artifacts.
+
+## Open Questions
+Whether other rules/ files (simple.md, subtractive-engineering.md) still carry pre-Fable enumerated CONSULT-Codex trigger lists worth the same treatment.

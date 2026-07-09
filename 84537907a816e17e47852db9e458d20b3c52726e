@@ -1,0 +1,23 @@
+## Conversation
+User asked to improve rules/comments.md by making "no comments at all" the explicit default — comments existing is already a code smell — and to place that at the top as the most critical part of the rule. Then, in a follow-up message, asked to commit and push it.
+
+## Actions
+- Single Edit inserting a new "### 0. The default is no comments at all" section between the H2 title and rule 1. It states: zero comments by default, existence of a comment is a code smell, every comment starts guilty and must earn its place via the justifications in rules 1-16 (contract, invariant, why, risk, workaround).
+- Committed only rules/comments.md and pushed with notes.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Considered also strengthening the closing "no-noise checklist" and the final team-rule sentence to echo Rule 0; skipped — the user scoped the change to the top of the file, and the checklist already ends with "everything else is suspect."
+
+## Hints for Future Agents
+- Rule 0 deliberately reframes the rest of the file: rules 1-16 are now exceptions to a no-comments default, not comment-writing guidance. Keep that framing intact if editing individual rules.
+- Numbering starts at 0 on purpose so the existing 1-16 numbering (and any external references to it) stayed stable.
+- This file is live prompt material injected into Claude Code sessions; Rule 0 will make the agent measurably more reluctant to write comments everywhere, which is the user's intent.
+
+## Codebase Discoveries
+None.
+
+## Open Questions
+Whether the file's H2 title ("Consolidated rules for high-value code comments") should be reworded to reflect the no-comments-default framing.
