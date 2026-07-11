@@ -31,6 +31,7 @@ rm -rf \
   ~/.codex/skills/repo-explore
 rm -f \
   ~/.config/ghostty/config \
+  ~/.pi/agent/AGENTS.md \
   ~/.config/gh-dash/config.yml \
   ~/.codex/AGENTS.md \
   ~/.codex/config.toml
@@ -97,6 +98,7 @@ ln -s "$PWD/codex_skills/repo-explore" ~/.codex/skills/repo-explore
 
 # Set up Pi configuration while preserving credentials and runtime state
 mkdir -p ~/.pi/agent/npm
+ln -s "$PWD/PI_global.md" ~/.pi/agent/AGENTS.md
 [ -f ~/.pi/agent/settings.json ] || echo '{}' >~/.pi/agent/settings.json
 tmp=$(mktemp)
 jq -s '.[0] * .[1]' ~/.pi/agent/settings.json "$PWD/pi/settings.json" >"$tmp" && mv "$tmp" ~/.pi/agent/settings.json
