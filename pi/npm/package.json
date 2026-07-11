@@ -1,0 +1,14 @@
+{
+  "name": "pi-extensions",
+  "private": true,
+  "dependencies": {
+    "@juicesharp/rpiv-ask-user-question": "1.20.0",
+    "@quintinshaw/pi-dynamic-workflows": "2.12.1",
+    "pi-btw": "0.4.1",
+    "pi-goal": "0.1.7",
+    "pi-hermes-memory": "0.7.17",
+    "pi-subagents": "0.34.0",
+    "pi-vim": "0.12.1",
+    "pi-web-access": "0.13.0"
+  }
+}

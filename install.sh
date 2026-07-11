@@ -1,6 +1,13 @@
+#!/usr/bin/env bash
+set -eu
+
 # Preflight checks
 command -v jq >/dev/null 2>&1 || {
   echo "jq is required but not found"
+  exit 1
+}
+command -v mise >/dev/null 2>&1 || {
+  echo "mise is required but not found"
   exit 1
 }
 
@@ -87,6 +94,15 @@ ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
 mkdir -p ~/.codex/skills
 ln -s "$PWD/codex_skills/git-commit" ~/.codex/skills/git-commit
 ln -s "$PWD/codex_skills/repo-explore" ~/.codex/skills/repo-explore
+
+# Set up Pi configuration while preserving credentials and runtime state
+mkdir -p ~/.pi/agent/npm
+[ -f ~/.pi/agent/settings.json ] || echo '{}' >~/.pi/agent/settings.json
+tmp=$(mktemp)
+jq -s '.[0] * .[1]' ~/.pi/agent/settings.json "$PWD/pi/settings.json" >"$tmp" && mv "$tmp" ~/.pi/agent/settings.json
+cp "$PWD/pi/npm/package.json" ~/.pi/agent/npm/package.json
+cp "$PWD/pi/npm/package-lock.json" ~/.pi/agent/npm/package-lock.json
+mise exec -- npm ci --prefix ~/.pi/agent/npm
 
 # Ensure trailing newline before appending
 [ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc
