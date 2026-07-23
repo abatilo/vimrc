@@ -32,3 +32,6 @@ The commit push succeeded as a fast-forward: `2e136a9..7514229 HEAD -> master`. 
 
 ## Post-Push Local State
 After the successful commit and notes push, local `master` was advanced with `git update-ref` to match the remote without changing the conflicted index or working file. The `codex_config.toml` working-file blob remained `df3f644f52398683fcef556922b9135e40a68c61`, and all unmerged index stages remained byte-identical. The active local table was then renamed from `[mcp_servers.pi]` to `[mcp_servers.claude]`. `tomlq` parsed the result, `codex mcp get claude` resolved the pinned bridge with the expected working directory, and `codex mcp get pi` reported that no server named `pi` exists. This rename remains uncommitted by design because the user requested it only after the first commit was pushed.
+
+## Errors Addendum
+A combined cleanup command was rejected before execution because it included `rm -f /tmp/codex-mcp-pi-check.out`; the execution layer reported that `rm -f` style commands are not permitted and recommended a safer approach. No repository or temporary-worktree state changed during the rejected call. The cleanup was retried without `rm`; `git worktree remove /tmp/vimrc-pi-mcp-commit.pWTcSM` succeeded. The small temporary MCP lookup output file was left under `/tmp` rather than bypassing the safety restriction.
