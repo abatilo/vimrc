@@ -1,0 +1,28 @@
+## Conversation
+The user first asked to configure Pi as an MCP bridge for Codex, using `/Users/abatilo/abatilo/vimrc` as the working root. That setup selected `abatilo/pi-mcp-bridge` only after GitHub search, pinned bridge commit `21a5ca4d146c89f72271186a8da02fdf9f63d1c5`, and validated the bridge through an MCP initialize plus tools/list exchange. The user then asked what changed inside the vimrc repository. The response identified only the new `[mcp_servers.pi]` table in `codex_config.toml`. The user explicitly asked to commit and push that Codex configuration change. The user also requested a later rename from MCP server name `pi` to `claude`, but explicitly placed that rename after this push. Therefore this commit intentionally records the server as `pi`; the post-push local rename is separate work and is not part of this commit.
+
+## Actions
+1. Read `/Users/abatilo/abatilo/vimrc/codex_skills/git-commit/SKILL.md` completely.
+2. Inspected `git status --short --branch`, `git diff HEAD -- codex_config.toml`, `git diff --cached -- codex_config.toml`, `git ls-files -u`, recent `git log --show-notes`, local and remote branch tips, and local and remote notes refs.
+3. Confirmed the main worktree had unrelated dirty files plus an unresolved `codex_config.toml` index conflict with stages 1, 2, and 3. A normal commit in that worktree could not safely isolate the requested table.
+4. Created detached worktree `/tmp/vimrc-pi-mcp-commit.pWTcSM` at commit `2e136a957c1dbf3f4275d3c34bb0440e29825845`, which matched `origin/master` at inspection time.
+5. Added only five lines to `codex_config.toml`: the `[mcp_servers.pi]` table, `command = "npx"`, pinned GitHub bridge arguments, and `cwd = "/Users/abatilo/abatilo/vimrc"`.
+6. Ran `tomlq` against the edited file, `git diff --check`, `git diff --stat`, and the full file diff. Validation showed one file changed with five insertions and no whitespace errors.
+7. Staged only `codex_config.toml` and created commit `75142297060d8d488bde49e479c69414d3ebf40c` with subject `feat(codex): add Pi MCP bridge`.
+8. Verified the commit with `git show --stat` and a full commit diff. The commit changes only `codex_config.toml` and adds only the intended MCP table.
+9. This note was attached before the branch push. Push results are reported to the user after execution and can be verified from the remote ref.
+
+## Errors & Mistakes
+None. The isolated worktree avoided the unresolved main-index conflict, and all validation commands succeeded.
+
+## Dead Ends
+A normal `git add` plus `git commit` in `/Users/abatilo/abatilo/vimrc` was rejected as unsafe because `codex_config.toml` is unmerged and `claude_settings.json` plus `.gitignore_global` contain unrelated user changes. Committing the working-tree file wholesale was also rejected because it would include extensive unrelated Codex configuration drift. A detached isolated worktree was the smallest safe method.
+
+## Hints for Future Agents
+The main worktree remains intentionally dirty and conflicted. Do not resolve, stage, reset, or overwrite its unrelated state. The public commit contains `[mcp_servers.pi]`. The user asked to rename the active local table to `[mcp_servers.claude]` only after this commit reaches the remote, so the main working tree may show that name as later uncommitted drift. The bridge command is deliberately pinned to full commit `21a5ca4d146c89f72271186a8da02fdf9f63d1c5` for reproducibility. The `cwd` value is deliberate because Pi session lookup is working-directory scoped.
+
+## Codebase Discoveries
+`codex_config.toml` is the tracked source for the symlink at `~/.codex/config.toml`. The repository uses Conventional Commit subjects. Recent history confirms that isolated worktrees or isolated indexes are the established way to commit one Codex configuration hunk while preserving the unresolved main index. Git notes are mandatory for every commit and must be pushed through `refs/notes/commits`.
+
+## Open Questions
+The post-push rename to `[mcp_servers.claude]` is intentionally outside this commit. The user did not explicitly ask to create and push a second commit for that rename, so it should remain a local configuration change unless the user later requests another commit and push.
