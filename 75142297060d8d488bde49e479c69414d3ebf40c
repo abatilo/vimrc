@@ -26,3 +26,9 @@ The main worktree remains intentionally dirty and conflicted. Do not resolve, st
 
 ## Open Questions
 The post-push rename to `[mcp_servers.claude]` is intentionally outside this commit. The user did not explicitly ask to create and push a second commit for that rename, so it should remain a local configuration change unless the user later requests another commit and push.
+
+## Push Results
+The commit push succeeded as a fast-forward: `2e136a9..7514229 HEAD -> master`. Remote `refs/heads/master` was verified at full commit `75142297060d8d488bde49e479c69414d3ebf40c`. The first notes push succeeded as a fast-forward: `55ef958..cb049f0 refs/notes/commits -> refs/notes/commits`. After the user-requested post-push local rename was validated, this addendum was appended and the updated notes ref was pushed again.
+
+## Post-Push Local State
+After the successful commit and notes push, local `master` was advanced with `git update-ref` to match the remote without changing the conflicted index or working file. The `codex_config.toml` working-file blob remained `df3f644f52398683fcef556922b9135e40a68c61`, and all unmerged index stages remained byte-identical. The active local table was then renamed from `[mcp_servers.pi]` to `[mcp_servers.claude]`. `tomlq` parsed the result, `codex mcp get claude` resolved the pinned bridge with the expected working directory, and `codex mcp get pi` reported that no server named `pi` exists. This rename remains uncommitted by design because the user requested it only after the first commit was pushed.
