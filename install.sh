@@ -6,10 +6,6 @@ command -v jq >/dev/null 2>&1 || {
   echo "jq is required but not found"
   exit 1
 }
-command -v mise >/dev/null 2>&1 || {
-  echo "mise is required but not found"
-  exit 1
-}
 
 # Delete old stuff
 rm -rf \
@@ -26,15 +22,10 @@ rm -rf \
   ~/.claude/skills \
   ~/.claude/rules \
   ~/.claude/CLAUDE.md \
-  ~/.claude/settings.json \
-  ~/.codex/skills/git-commit \
-  ~/.codex/skills/repo-explore
+  ~/.claude/settings.json
 rm -f \
   ~/.config/ghostty/config \
-  ~/.pi/agent/AGENTS.md \
-  ~/.config/gh-dash/config.yml \
-  ~/.codex/AGENTS.md \
-  ~/.codex/config.toml
+  ~/.config/gh-dash/config.yml
 
 # Create nvim directory
 mkdir -p ~/.config/
@@ -87,24 +78,6 @@ jq \
       "url": "https://docs.coreweave.com/mcp"
     }
   }' ~/.claude.json >"$tmp" && mv "$tmp" ~/.claude.json
-
-# Set up codex cli configuration
-mkdir -p ~/.codex
-ln -s "$PWD/AGENTS_global.md" ~/.codex/AGENTS.md
-ln -s "$PWD/codex_config.toml" ~/.codex/config.toml
-mkdir -p ~/.codex/skills
-ln -s "$PWD/codex_skills/git-commit" ~/.codex/skills/git-commit
-ln -s "$PWD/codex_skills/repo-explore" ~/.codex/skills/repo-explore
-
-# Set up Pi configuration while preserving credentials and runtime state
-mkdir -p ~/.pi/agent/npm
-ln -s "$PWD/PI_global.md" ~/.pi/agent/AGENTS.md
-[ -f ~/.pi/agent/settings.json ] || echo '{}' >~/.pi/agent/settings.json
-tmp=$(mktemp)
-jq -s '.[0] * .[1]' ~/.pi/agent/settings.json "$PWD/pi/settings.json" >"$tmp" && mv "$tmp" ~/.pi/agent/settings.json
-cp "$PWD/pi/npm/package.json" ~/.pi/agent/npm/package.json
-cp "$PWD/pi/npm/package-lock.json" ~/.pi/agent/npm/package-lock.json
-mise exec -- npm ci --prefix ~/.pi/agent/npm
 
 # Ensure trailing newline before appending
 [ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc

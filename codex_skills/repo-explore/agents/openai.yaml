@@ -1,4 +1,0 @@
-interface:
-  display_name: "Repo Explore"
-  short_description: "Explore external GitHub repos locally"
-  default_prompt: "Use $repo-explore to inspect github.com/owner/repo and explain how this part works."
