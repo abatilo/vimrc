@@ -1,0 +1,41 @@
+## Conversation
+The user wanted the messy working tree consolidated. This file had BOTH
+staged and unstaged changes (status "MM") that disagreed with each other,
+because the settings had passed through an intermediate claude-fable-5
+state before landing on claude-opus-5. The staged copy said fable-5, the
+unstaged copy said opus-5.
+
+## Actions
+Committed the final on-disk state. Verified valid JSON before staging.
+
+## Errors & Mistakes
+None in this commit, but see the warning below about effortLevel.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- IMPORTANT: `effortLevel` in this commit is "low", but the user
+  explicitly answered "Keep medium" when asked. Between that answer and
+  this commit, Claude Code rewrote the file and set it to "low". I
+  committed the live value rather than fighting the app, and flagged the
+  discrepancy to the user. If you see effortLevel churn, it is the UI, not
+  a person editing JSON.
+- This file is a symlink target (~/.claude/settings.json). It changed
+  three times unprompted during a single session. Treat any diff here as
+  potentially app-authored. Re-read immediately before staging.
+- The `voice` object and top-level `voiceEnabled` key appeared in the
+  worktree mid-session and were removed at the user's request. Expect them
+  to come back if voice is toggled in the UI.
+- Both `model` (top-level) and ANTHROPIC_DEFAULT_SONNET_MODEL now say
+  claude-opus-5. They are different mechanisms; changing one does not
+  change the other.
+
+## Codebase Discoveries
+The env block aliases HAIKU -> claude-sonnet-5 and SONNET -> claude-opus-5,
+so the model tier names in this config do not mean what they say. A
+request for "sonnet" gets opus 5.
+
+## Open Questions
+Whether effortLevel should be pinned to "medium" per the user's stated
+preference, which would mean re-editing after every UI change. Unresolved.
