@@ -1,0 +1,76 @@
+## Conversation
+Aaron asked to read two Anthropic docs (the Claude 5 context-engineering blog
+post and the Opus 5 prompting guide) and then ultraloop a simplification of
+rules/. His framing: "We've accumulated a lot of cruft in rules/ over the last
+few months... There's also likely to be several contradictions across the
+different rule files."
+
+The request evolved twice mid-work, both times pushing back on over-deletion:
+1. "I fear that you have removed much of the content that emphasizes a mindset
+   of simplification and a mindset of minimal work and reduction."
+2. Later, the same complaint about the Simplified Technical English document.
+
+## Actions
+Fetched both guidance docs. Confirmed the `.md` raw-fetch trick on
+platform.claude.com still works (see memory fable5-prompting-guide).
+
+Ran four parallel analysis agents (contradictions / obsolete / redundant /
+keepers), then wrote the reduced set, then two adversarial critique rounds
+(4 agents, then 3 agents + an adjudicator).
+
+This commit: deleted comments.md (256 lines), simple.md (151),
+subtractive-engineering.md (94), task-tracking.md (32), codex-mcp.md (41);
+added rules/engineering.md (96 lines).
+
+## Errors & Mistakes
+I over-cut on the first pass. engineering.md was 29 lines and reduced the
+entire subtraction stance to three sentences. Aaron caught it. Root cause: I
+followed an adversarial "still-too-much" critic agent that scored every
+sentence against "would a competent model do the wrong thing without this."
+That test deletes deliberate personal stance, because a competent model does
+something merely acceptable instead of what Aaron wants. Restored in a second
+pass.
+
+Second mistake, caught by a critic: "Say no by default" has no addressee. In a
+session the only party to say no to is the user, and the harness prompt
+requires delivering the requested scope. The Do less section now opens with
+"This governs what you propose, not what you are asked for," which is
+load-bearing. Do not reorder it away from the top.
+
+Third: I wrote "Give a requirement more scrutiny when it comes from someone
+senior or respected." In an agent session the user IS the senior requester, so
+that line aimed maximum suspicion at Aaron's own instructions. Deleted.
+
+## Dead Ends
+- Considered moving commit-notes.md into the git-commit skill (two critics
+  recommended it). Rejected: notes get attached on commits made without
+  invoking the skill, so the ritual would silently lapse.
+- Considered restoring simple.md's rule-priority table and user-override
+  policy. Rejected: the harness system prompt already covers both.
+- Considered restoring task-tracking.md. One critic argued the Task tools are
+  DEFERRED in this harness so their descriptions are not loaded. True, but the
+  harness emits its own task system-reminder, which fired twice during this
+  session. If task tracking degrades in practice, this is the file to restore.
+
+## Hints for Future Agents
+The adjudicator pattern is what made the critique usable. Four critics
+produced 40+ findings; the adjudicator rejected 7 of 10 serious ones as
+misquotes, because those critics had read the file before a revision landed.
+Always adjudicate against the CURRENT file before acting on critic output.
+
+Adversarial critic agents reliably over-cut prompt artifacts. Weight Aaron's
+stated preference above their scoring. See memory
+compression-loses-substance.
+
+## Codebase Discoveries
+~/.claude/rules/*.md auto-loads into every session INDEPENDENTLY of
+~/.claude/CLAUDE.md. Verified: CLAUDE_global.md had zero @import lines, yet
+all seven rules files appeared in the session context. This is what made
+deleting CLAUDE_global.md safe in a later commit.
+
+Git history shows these rules were last tuned for Fable 5 (83a9a71, f0ef5f1).
+That tuning was stale for Opus 5.
+
+## Open Questions
+None blocking. Aaron wants to "try out the setup" before further changes, so
+expect empirical feedback rather than more analysis.
