@@ -1,0 +1,27 @@
+## Conversation
+This change was already sitting unstaged in the working tree when the user
+asked to consolidate the repo. It was unrelated to the rtk and
+codex/pi work, so it was split into its own commit.
+
+## Actions
+Single two-line addition to .gitignore_global, which is symlinked to
+~/.gitignore and referenced as core.excludesfile.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+The entry is `.worktrees/` with no leading slash, so it matches at any
+depth, not just repo root. That is intentional -- agent worktrees can be
+nested.
+
+## Codebase Discoveries
+.gitignore_global is a separate file from the repo's own .gitignore. The
+former is the user's global excludes; the latter only covers this repo.
+Do not confuse them: this commit touched the global one.
+
+## Open Questions
+None.
