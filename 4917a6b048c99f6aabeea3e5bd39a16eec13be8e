@@ -1,0 +1,42 @@
+## Conversation
+This directory was sitting untracked through the whole repo-consolidation
+session. I flagged it twice as unrelated and left it alone. The user then
+said "git-commit ultraloop as well", so it got its own commit rather than
+being folded into the cleanup work.
+
+## Actions
+- Read plugins/abatilo-core/skills/ultraloop/SKILL.md. Single file, 18
+  lines, frontmatter plus prompt body. Uses $ARGUMENTS.
+- Bumped .claude-plugin/plugin.json from 0.20.1 to 0.21.0.
+- Matched the existing commit style: past skill additions use
+  `feat(abatilo-core): add <name> skill` (see 468092a).
+
+## Errors & Mistakes
+I nearly committed the skill without the version bump. The mandate lives
+in plugins/abatilo-core/CLAUDE.md, which only surfaced as context AFTER I
+read the SKILL.md file inside that directory. If you touch anything under
+plugins/abatilo-core/, read that CLAUDE.md first -- the version bump is
+non-optional and easy to miss.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- Version increment rules are in plugins/abatilo-core/CLAUDE.md: PATCH for
+  fixes, MINOR for a new skill/command, MAJOR for breaking changes. A new
+  skill is MINOR, hence 0.20.1 -> 0.21.0 rather than 0.20.2.
+- There is prior art for a similar skill: 468092a added "autonomous-loop",
+  36254b1 renamed it to "auto-loop", and 7f64698 removed it entirely.
+  ultraloop covers adjacent ground. If it also gets removed, check those
+  commits for what did not work last time.
+- The skill references /loop and ultracode, both of which are harness
+  features rather than anything defined in this repo.
+
+## Codebase Discoveries
+plugins/abatilo-core/CLAUDE.md is a directory-scoped instruction file that
+only loads when you touch files in that subtree. Easy to miss when
+planning work from the repo root.
+
+## Open Questions
+The skill body is prompt text, so there is nothing to lint or test. Its
+behavior is unverified -- it has not been run.
