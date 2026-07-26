@@ -1,0 +1,48 @@
+## Conversation
+User asked to consolidate a messy working tree. During review I found the
+worktree copy of claude_settings.json had silently lost its `hooks` block
+(the rtk PreToolUse hook) and `extraKnownMarketplaces`. I flagged both as
+likely-unintentional app rewrites and restored them. The user then said
+they actually wanted both gone, and separately asked to remove the rtk
+import and binary. So this commit reverses my restoration on purpose.
+
+## Actions
+- Removed the `hooks` key entirely from claude_settings.json (not set to
+  `{}` -- the key is deleted).
+- Removed the `@RTK.md` line from CLAUDE_global.md.
+- Ran `cargo uninstall rtk`, which reported removing
+  /Users/abatilo/.cargo/bin/rtk. Verified `rtk` is off PATH and absent
+  from `cargo install --list`.
+
+## Errors & Mistakes
+My first summary of the working tree missed that `hooks` had been emptied
+and that `extraKnownMarketplaces` was dropped. I reported only the model
+churn. Both losses were only caught when I diffed HEAD against the
+worktree directly instead of reading the summarized `git diff` output.
+Lesson: the diff-rendering tool elides context lines, so a deleted key can
+look like unchanged context. Read whole files when auditing config.
+
+## Dead Ends
+Briefly restored both `hooks` and `extraKnownMarketplaces` into the file
+before the user said to remove them. That restoration was reverted in this
+same commit, so it never landed in history.
+
+## Hints for Future Agents
+- claude_settings.json is a SYMLINK TARGET: ~/.claude/settings.json points
+  at it. Claude Code rewrites it live. It changed under me twice during
+  this session (effortLevel went xhigh -> medium -> low, voice keys
+  appeared then were removed). Always re-read before staging.
+- rtk was installed from git+https://github.com/rtk-ai/rtk at v0.42.2, not
+  from crates.io. Reinstalling needs the git URL.
+- The wakatime plugin supplies its own hooks from
+  ~/.claude/plugins/marketplaces/wakatime/hooks/hooks.json. Deleting the
+  `hooks` key here does not affect it.
+
+## Codebase Discoveries
+`grep -rl "rtk hook" ~/.claude/plugins/` returns nothing, confirming the
+hook was only ever registered in this settings file.
+
+## Open Questions
+Whether ~/.claude/RTK.md and ~/Library/Application Support/rtk should also
+be deleted. The data directory was modified the same day, so it may hold
+tracking history. Left alone pending user direction.
