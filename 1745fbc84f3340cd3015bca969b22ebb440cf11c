@@ -1,0 +1,65 @@
+## Conversation
+After the first consolidation, Aaron pushed back: "The simplified technical
+english rule was a stylistic tone document which I feel is still good to
+follow. I'd like to ultraloop consider keeping more of it."
+
+He then asked whether to delete CLAUDE_global.md entirely and said "we'll
+depend on ste rules instead of the generic 'Be concise'", which is why
+reporting.md now carries the length calibration.
+
+He later asked why this became a skill rather than a rule. I explained the
+progressive-disclosure reasoning and named its weakness honestly: a skill
+fires on semantic match and can silently fail to fire, whereas a rule always
+fires. I offered to move the two generally-applicable sections (Sentences,
+Words and terminology) back into always-on context. He accepted the split
+as-is: "Actually, this makes sense to me."
+
+## Actions
+Ran a 4-agent workflow: inventory / minimalist adversary / placement analyst,
+then a synthesizer that wrote both final files. The synthesizer produced the
+file contents used here nearly verbatim.
+
+Created plugins/abatilo-core/skills/technical-writing/SKILL.md (82 lines),
+rewrote rules/reporting.md (20 -> 43 lines), deleted
+rules/simplified-technical-english.md, bumped abatilo-core 0.21.0 -> 0.22.0.
+
+## Errors & Mistakes
+My original justification for deleting this file was thin. I cited one
+contradiction ("prefer clear writing over compressed writing" versus
+CLAUDE_global.md's "Be concise") and treated it as grounds for deleting 219
+lines. That argues for editing one sentence. Aaron was right to push back.
+
+I nearly shipped the skill without the plugin version bump again. The mandate
+lives in plugins/abatilo-core/CLAUDE.md, which is DIRECTORY-SCOPED and only
+enters context after you read a file inside that subtree. Same trap as
+commit 4917a6b.
+
+## Dead Ends
+- Considered putting all 219 lines back into rules/. Rejected as recreating
+  the overconstraint.
+- Considered naming the skill simplified-technical-english. Rejected: the
+  description has to match requests about runbooks and READMEs, not a
+  standard Aaron will never type.
+
+## Hints for Future Agents
+reporting.md line 6-8 contains an explicit instruction to load the
+technical-writing skill when authoring a document. That sentence exists
+because a semantic description match misses the common case where the model
+decides mid-task to write a README section. Do not delete it as redundant
+with the skill description; it is the mitigation for skills not firing.
+
+The skill states precedence against humanizer explicitly (procedural text ->
+this file wins; narrative prose -> humanizer wins). Two skills with opposite
+voice guidance will otherwise fight over a runbook.
+
+## Codebase Discoveries
+Skill frontmatter convention in this plugin is inconsistent: humanizer has a
+`version` key, most others do not; several use `context: fork`;
+diataxis-documentation uses `allowed-tools` with Read/Write/Edit, which is
+what this skill matches.
+
+## Open Questions
+Whether the technical-writing skill actually fires in practice. Aaron said he
+wants to try the setup. If it does not fire when he writes docs, move the
+Sentences and Words sections into rules/reporting.md; that was the offered
+alternative and it stays available.
