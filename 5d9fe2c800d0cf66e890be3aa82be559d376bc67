@@ -1,0 +1,39 @@
+## Conversation
+Fell out of the same working-tree audit as the rtk removal. Both keys had
+been dropped by a Claude Code rewrite of settings.json. I restored them,
+the user said remove them, so this commit makes the removal deliberate
+rather than accidental.
+
+## Actions
+Deleted two keys from claude_settings.json via a Python json round-trip
+(preserving key order with object_pairs_hook=OrderedDict) rather than a
+text edit, so the result is guaranteed valid JSON.
+
+## Errors & Mistakes
+None in this commit.
+
+## Dead Ends
+Considered using `git add -p` to split claude_settings.json across the
+three commits it participates in. Interactive git flags are unavailable in
+this harness. Instead I reconstructed intermediate versions of the file
+with Python, staged each, and committed -- effectively a manual hunk
+split. That technique works well and is worth reusing.
+
+## Hints for Future Agents
+- install.sh line ~66 has a jq block that writes `.mcpServers` into
+  ~/.claude.json. It does NOT reference marketplaces, so removing
+  extraKnownMarketplaces here needed no install.sh change. The comment at
+  install.sh:66 claiming "plugins configured via extraKnownMarketplaces in
+  claude_settings.json" is now stale but was left alone.
+- abatilo-core@abatilo-plugins resolves from the in-repo
+  .claude-plugin/marketplace.json, not a remote marketplace. It is
+  unaffected.
+
+## Codebase Discoveries
+~/.claude/plugins/marketplaces/ contains ~27 `temp_*` directories
+alongside the real ones. Appears to be uncleaned scratch state from plugin
+installs. Not touched, but it is noise if you go looking there.
+
+## Open Questions
+Whether the coreweave/agent-plugins marketplace will be wanted again for
+work purposes. Easy to restore from this commit if so.
