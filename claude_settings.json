@@ -3,13 +3,13 @@
   "cleanupPeriodDays": 365,
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-sonnet-5",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-8",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "100000",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "128000",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-opus-4-8",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-opus-5",
     "CLAUDE_CODE_WORKFLOWS": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
@@ -17,6 +17,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
+  "model": "claude-opus-5",
   "worktree": {
     "baseRef": "head"
   },
@@ -25,18 +26,21 @@
     "abatilo-core@abatilo-plugins": true
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
+  "effortLevel": "low",
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "theme": "dark",
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,
+  "switchModelsOnFlag": false,
+  "showTurnDuration": true,
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
-  "remoteControlAtStartup": false,
+  "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
