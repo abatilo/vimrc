@@ -1,0 +1,41 @@
+## Conversation
+Part of the rules/ consolidation Aaron requested. These fixes were not asked
+for; they surfaced from a critic agent that actually executed the template
+instead of reading it.
+
+## Actions
+Extracted the fenced bash block with python, ran it under /bin/bash 3.2.57 and
+under zsh in a scratch git repo. Confirmed bash fails with exit 2 and zsh
+succeeds.
+
+Separately verified the notes-fetch claim end to end: created an origin repo
+with a note, cloned it, ran `git log --show-notes` (note absent), ran
+`git fetch origin 'refs/notes/*:refs/notes/*'`, re-ran (note present).
+
+## Errors & Mistakes
+None in this commit. Worth recording that I initially reported the heredoc bug
+as something I might have introduced, then checked HEAD and found the
+apostrophe present since the file was written. Check provenance before
+apologizing for a bug.
+
+## Dead Ends
+Considered dropping the seven-section template entirely and moving it to the
+git-commit skill. Rejected for the same reason as the file itself: notes get
+attached outside the skill.
+
+## Hints for Future Agents
+The Bash tool in this harness may run zsh or bash depending on invocation. A
+snippet that works when you test it is not proof it works for the user. Test
+shell snippets under /bin/bash explicitly on macOS, where /bin/bash is 3.2.57
+from 2007 and lacks modern parsing behavior.
+
+The template is intentionally verbose with seven mandatory sections and "None"
+filler. That is Aaron's deliberate choice, not bloat. Two critic agents
+recommended cutting it; both were overruled.
+
+## Codebase Discoveries
+macOS ships bash 3.2.57 as /bin/bash. Aaron's login shell is zsh, so
+shell-snippet bugs of this class hide from him.
+
+## Open Questions
+None.
