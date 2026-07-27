@@ -1,27 +1,46 @@
 ## Conversation
 Second half of the user's request: teach the ultraloop skill to use codex for
-adversarial but collaborative debate and for alternative perspectives, not just
-for critique.
+adversarial but collaborative debate and for alternative perspectives.
+
+First attempt got the intent wrong. The user corrected: "I don't want to replace
+the existing critic workflow, I wanted to ADD codex as part of the flow." Codex
+joins the loop as an additional participant; the harsh critic sub-agent stays
+exactly as authoritative as it was.
 
 ## Actions
 Read plugins/abatilo-core/skills/ultraloop/SKILL.md (13 lines of body before
-this change). Added two paragraphs before the closing "Don't stop" paragraph,
-and amended that paragraph so the stop condition now also requires codex to
-have failed to land a hit. Bumped .claude-plugin/plugin.json 0.22.0 -> 0.22.1
-per plugins/abatilo-core/CLAUDE.md, which makes the bump mandatory on any
-plugin change.
+this change). Added two paragraphs after the critic paragraph and amended the
+closing "Don't stop" paragraph. Bumped .claude-plugin/plugin.json 0.22.0 ->
+0.22.1 per plugins/abatilo-core/CLAUDE.md, which makes the bump mandatory on any
+plugin change. Rewrote the addition after the user's correction, then amended
+the commit and re-attached this note.
 
 ## Errors & Mistakes
-None.
+The first draft opened with "Your sub-agents share your context and your
+assumptions, so they will happily agree with a bad plan" and called codex "the
+adversary". No text was deleted, but that framing delegitimized the critic
+sub-agent and set codex up as its replacement, which is not what was asked for.
+The rewrite opens with "Alongside the critic, bring in mcp__codex__codex" and
+describes it as "independent signal rather than another voice from inside your
+own context" -- a different source of signal, not a better judge. Codex now runs
+on "whatever the critic has passed" rather than in place of the critic's pass.
 
 ## Dead Ends
 None.
 
 ## Hints for Future Agents
-The framing chosen deliberately: sub-agents share the orchestrator's context and
-therefore its assumptions, so they are agreement machines. Codex is the adversary
-precisely because it does not share context. That is the load-bearing idea in
-the addition; do not "simplify" it into a generic "also ask codex" line.
+"Add X to a workflow" is not satisfied by leaving the old text on the page while
+rewriting the frame around it so the old step reads as untrustworthy. Additive
+means the existing step keeps its authority. Watch for this when the natural
+motivation for the new step is a weakness in the old one.
+
+The load-bearing distinction that survived the rewrite: codex does not share the
+orchestrator's context, so it is a different source of signal. Do not
+"simplify" that into a generic "also ask codex" line.
+
+The closing stop condition ends "until codex has run out of alternatives worth
+taking" rather than "failed to land a hit" (the first draft), because the user
+asked for alternative perspectives, not only refutation.
 
 Kept the file's existing voice, which uses contractions ("Don't stop", "it's"),
 rather than the expanded-contraction rule from rules/reporting.md. That rule
@@ -42,7 +61,10 @@ plugins/abatilo-core/CLAUDE.md carries a mandatory version-bump rule with a
 change-type-to-increment table; .claude-plugin/plugin.json is the single source
 of truth for the version.
 
+This repo has notes rewriting enabled: `git commit --amend` carried the old note
+forward to the new SHA on its own, so re-attaching needs `git notes add -f`
+rather than a plain add, which fails with "Found existing notes for object".
+
 ## Open Questions
-Whether the added stop condition ("until codex has failed to land a hit") makes
-the loop too expensive in practice, since it puts a codex round trip after every
-sub-agent completion. Unmeasured.
+Whether the added stop condition makes the loop too expensive in practice, since
+it puts a codex round trip after every critic pass. Unmeasured.
