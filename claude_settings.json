@@ -13,7 +13,11 @@
     "CLAUDE_CODE_WORKFLOWS": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
-  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
