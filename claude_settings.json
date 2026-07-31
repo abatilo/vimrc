@@ -9,7 +9,6 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "100000",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "128000",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-opus-5",
     "CLAUDE_CODE_WORKFLOWS": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
@@ -21,7 +20,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "claude-opus-5",
+  "model": "opus[1m]",
   "worktree": {
     "baseRef": "head"
   },
