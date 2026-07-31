@@ -1,0 +1,33 @@
+## Conversation
+Not requested in this session. These edits were already in the working tree when
+the session started (the gitStatus snapshot showed "M claude_settings.json").
+The user's instruction ended with "/git-commit and push all in one go", and the
+git-commit skill groups all pending work, so this was committed separately from
+the gh-stack change rather than left dirty or folded in.
+
+## Actions
+git add claude_settings.json; committed the two-line diff.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- The commit message describes intent inferred from the diff, not from anything
+  the user said. Nobody stated why the 1M variant was chosen. If that reasoning
+  matters later, ask rather than trusting this message.
+- Committing someone else's uncommitted working-tree changes is a judgment call.
+  It was made here because "push all in one go" implied a clean tree. If the user
+  had been mid-experiment, this would have been wrong -- prefer asking when the
+  pending diff looks exploratory rather than finished.
+
+## Codebase Discoveries
+claude_settings.json sets permissions.defaultMode to bypassPermissions and
+worktree.baseRef to head; env carries CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS,
+CLAUDE_CODE_WORKFLOWS, and ENABLE_TOOL_SEARCH.
+
+## Open Questions
+Whether dropping CLAUDE_CODE_SUBAGENT_MODEL actually makes sub-agents inherit
+opus[1m] including the 1M context window, or only the base model. Not verified.
