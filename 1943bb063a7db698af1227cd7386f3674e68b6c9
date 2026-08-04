@@ -1,0 +1,36 @@
+## Conversation
+User pointed at plugins/abatilo-core/skills/ultraloop/, said to look at the
+working diff in the SKILL.md, rename the skill accordingly, bump the plugin
+version, and push. The diff had already rewritten the frontmatter name to
+"speed-of-light" and replaced the /loop + ultracode body with a commit-then-
+fan-out-critics prompt; the only thing left implicit was the directory rename.
+
+## Actions
+- Read the working diff and the file.
+- grep -rn ultraloop across the repo (excluding .git): zero hits, so no cross
+  references needed updating.
+- git mv plugins/abatilo-core/skills/ultraloop -> .../speed-of-light.
+- Bumped .claude-plugin/plugin.json 0.24.0 -> 0.25.0.
+- Committed, attached this note, pushed both master and refs/notes/commits.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+Skill directory name and the frontmatter `name:` must agree; editing only the
+frontmatter leaves the skill invocable under the old path-derived name. Version
+bumps for this plugin live only in .claude-plugin/plugin.json, and
+plugins/abatilo-core/CLAUDE.md makes bumping mandatory for any change under
+commands/, skills/, hooks/, or .claude-plugin/.
+
+## Codebase Discoveries
+Version-bump precedent: a9e44c1 replaced the git-spice skill with gh-stack and
+took a MINOR bump, so a skill rename/replacement is treated as minor here rather
+than as the "breaking change" MAJOR row in the CLAUDE.md table.
+
+## Open Questions
+Untracked .pi-subagents/ sits in the working tree and is neither committed nor
+gitignored; left alone since it is unrelated to this change.
