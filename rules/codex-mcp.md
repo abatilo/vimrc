@@ -1,41 +1,19 @@
-# Codex MCP for Collaborative Planning
+# Codex
 
-Codex MCP provides a collaborative AI partner for planning and problem-solving. Threaded conversations let you think through problems iteratively.
+`mcp__codex__codex` reaches a different model, so it is independent signal
+rather than an echo of your own reasoning. Reach for it more readily than
+feels necessary.
 
-## When to Use Codex
+Use it when you are choosing between approaches, when a decision is expensive
+to reverse, when you are about to write a lot of code from a plan you have not
+tested, or when you are stuck and want the problem interrogated rather than
+answered. It is also the fastest way to find the hole in your own argument:
+state your reasoning and ask for the strongest case against it.
 
-- Planning complex implementations before writing code
-- Exploring trade-offs between approaches
-- Rubber-ducking problems to find gaps in thinking
-- Getting a second opinion on architectural decisions
+Codex does not share your context. Paste in the code, the constraint, and the
+actual question, because a vague prompt earns a generic answer.
 
-## Starting a Thread
-
-Use `mcp__codex__codex` to start a new conversation:
-
-```
-mcp__codex__codex(prompt: "Help me plan the authentication system...")
-```
-
-Returns:
-```json
-{
-  "threadId": "019bf5f7-dc9a-7781-8575-c456880b2e2f",
-  "content": "Response here..."
-}
-```
-
-## Continuing a Thread
-
-Use `mcp__codex__codex-reply` with the `threadId` to continue:
-
-```
-mcp__codex__codex-reply(threadId: "019bf5f7-...", prompt: "What about JWT vs sessions?")
-```
-
-## Best Practices
-
-- **Start threads for planning** - Use codex before diving into implementation
-- **Keep threads focused** - One topic per thread for coherent conversations
-- **Share context** - Give codex relevant code snippets or requirements
-- **Iterate** - Use multiple exchanges to refine ideas before committing to an approach
+Treat it as a conversation rather than a lookup. Continue a thread with
+`mcp__codex__codex-reply` and its `threadId`, keep one topic per thread, and
+expect the second and third exchanges to be where the useful part arrives.
+Bring back what changed your mind, not a transcript.
