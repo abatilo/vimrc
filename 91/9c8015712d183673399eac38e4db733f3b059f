@@ -1,0 +1,80 @@
+## Conversation
+Aaron: "look through old git history for when we had more rules in ./rules like
+the simplified technical english. I want to revert back to those rules."
+
+The scope was genuinely ambiguous, because two separate commits had shrunk the
+directory and the phrasing could have meant either one. I presented four
+options with file-tree previews and he chose the widest: full revert of both
+commits, including deletion of the technical-writing skill.
+
+## Actions
+Found the two commits with `git log --oneline --name-status -- rules/`:
+a416b36 (five files -> engineering.md) and 1745fbc (STE -> reporting.md plus
+the technical-writing skill), both dated Jul 26 2026 about one minute apart.
+Read both full diffs and both git notes.
+
+Restored with `git checkout a416b36^ -- <six paths>` rather than `git revert`.
+Deliberate: reverting 1745fbc would also have rolled plugin.json from 0.25.0
+back to 0.22.0, since that commit carried a version bump and three later bumps
+have landed since. A path checkout avoids that conflict entirely.
+
+Then `git rm` on rules/engineering.md, rules/reporting.md, and
+plugins/abatilo-core/skills/technical-writing/, and bumped abatilo-core
+0.25.0 -> 0.26.0.
+
+Verified the restore with `git diff a416b36^ -- <six paths>`, which came back
+empty, and cross-checked line counts against the deletion stats in the two
+commit messages. Both matched.
+
+## Errors & Mistakes
+None. No command failed.
+
+## Dead Ends
+Considered `git revert --no-commit 1745fbc a416b36`. Rejected over the
+plugin.json version conflict described above.
+
+## Hints for Future Agents
+~/.claude/rules is a SYMLINK to /Users/abatilo/abatilo/vimrc/rules, so editing
+files in this repo changes Aaron's live global context immediately, with no
+install step. Confirmed with `ls -la ~/.claude/`.
+
+commit-notes.md was deliberately NOT reverted to its pre-consolidation form. It
+survived both consolidation commits and later got a real fix in eafb96d
+(repaired template and read path). Reverting it would have reintroduced a
+broken template. If someone later claims this revert was incomplete, this is
+why.
+
+The restored files carry contradictions that a416b36 documented in detail and
+that this revert knowingly reinstates. comments.md says "Write zero comments by
+default. This is the most important rule" and then spends 250 lines mandating
+comments for API contracts, invariants, sentinel values, and units.
+subtractive-engineering.md orders aggressive deletion while simple.md forbids
+deleting code you do not understand. Do not "fix" these unprompted; Aaron chose
+the tradeoff with the contradictions stated in front of him.
+
+These files were last tuned for Fable 5 in 83a9a71, not for Opus 5. That
+staleness was part of a416b36's rationale and it is back. Relevant if prompt
+quality problems show up.
+
+## Codebase Discoveries
+plugins/abatilo-core/CLAUDE.md carries a MANDATORY version-bump rule, and it is
+DIRECTORY-SCOPED, so it only enters context after reading a file inside that
+subtree. Two prior notes (1745fbc, 4917a6b) record agents nearly missing it. I
+read it explicitly before committing.
+
+Its version table has no row for removing an active skill. Adding a skill is
+MINOR and "removal of deprecated code" is PATCH. I treated removing a live
+skill as the inverse of adding one and went MINOR.
+
+Nothing outside the deleted files referenced them. reporting.md and the
+technical-writing SKILL.md only referenced each other, verified by grep across
+*.md and *.json.
+
+## Open Questions
+Whether Aaron wants CLAUDE_global.md back too. It was deleted in 4f4f473 "in
+favor of rules", and 1745fbc's note records that reporting.md absorbed the
+length calibration CLAUDE_global.md used to carry. That calibration now lives
+in the restored STE Communication style section instead, so there is no gap,
+but I did not raise the question with him.
+
+Not pushed. No remote push was requested, so refs/notes/commits is local only.
