@@ -1,0 +1,121 @@
+## Conversation
+Aaron asked me to read https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models
+and "understand it very deeply," then walk the rules files "one by one...
+together." He approved each file before or just after it was applied.
+
+The arc of this session matters for anyone reading later: 919c801 REVERTED the
+consolidation that this same blog post had justified (a416b36), and then this
+commit re-applied the post's lessons file by file. That is not a contradiction.
+The first attempt was a bulk automated sweep that over-cut and Aaron pushed back
+twice; this one moved one file at a time with him deciding. We landed at 276
+lines versus the 190 the bulk sweep produced, and the 86-line difference is
+entirely his two explicit calls.
+
+Mid-walk he raised a problem that was NOT in the blog post and is the most
+valuable thing in this commit. After long sessions, the model leaves comments
+referencing earlier iterations of the same session. The final diff only contains
+the final state, and a squash merge destroys the intermediate commits, so the
+comment points at code that exists nowhere. He asked how to express avoiding it
+"in such a way that conveys the intention instead of the direction or rules."
+
+## Actions
+Fetched the post with curl (see Errors for the .md trick failing on this host),
+stripped HTML with a python one-liner into scratchpad/post.txt, read all 945
+lines. Article body is lines 321-473.
+
+Then per file: read it, mapped each section against the post's principles, wrote
+a proposal with a verdict table, applied on approval, verified with wc and grep.
+
+Used AskUserQuestion exactly once, for the STE structural choice, because that
+decision determined whether a skill got created. Worth it: he answered with a
+reason I had not anticipated.
+
+## Errors & Mistakes
+Write failed once on rules/simplified-technical-english.md: "File has not been
+read yet." I had the file's content in context from the 1745fbc diff and assumed
+that satisfied the read requirement. It does not — the tool tracks reads by PATH.
+Had to Read the current path first. Cheap but avoidable.
+
+Earlier in the session (before this commit) I launched 5 named subagents via the
+Agent tool's prompt field and they all sat idle without doing the work. See
+d7caa28's note for the full writeup: named agents in this harness receive their
+task via SendMessage, not via the spawn prompt.
+
+## Dead Ends
+- Tried appending .md to the claude.com/blog URL for raw markdown. Returns HTTP
+  404. That trick works on platform.claude.com only (memory fable5-prompting-guide
+  is correct but host-specific; do not generalize it).
+- Considered trimming commit-notes.md's bash heredoc to a plain heading list.
+  Rejected: saves 8 lines, costs copy-paste correctness on a template whose
+  quoting is fiddly.
+- Considered moving "Where a repo has already settled on a different convention,
+  follow the repo" out of comments.md once simple.md also got it. Left both;
+  one sentence of overlap was not worth re-editing a file Aaron had approved.
+
+## Hints for Future Agents
+The filter is the point, not the line count. "Would a competent model do the
+wrong thing without this" over-cuts, because a competent model does something
+merely acceptable instead of what Aaron wants — a416b36 learned this the hard
+way. The test that worked: does this encode a particular opinion, or is it
+generic advice the model already has? Generic goes even when correct. Stance
+stays even when a good model would manage without it.
+
+comments.md's final paragraph is the only genuinely new content in this commit,
+and it is the thing Aaron actually came for. Do not compress it away as
+redundant with "write no comments by default." It solves a different problem:
+comments that reference the session's own history rather than the code's state.
+The design decision inside it is a REDIRECT, not a prohibition — session history
+goes to the commit note. That wording was chosen because a prohibition leaves the
+impulse looking for another outlet (variable names like newHandler, tests named
+after fixed bugs, dead code kept "for reference"), and those are named explicitly
+for the same reason.
+
+The ownership rule in that paragraph resolves a real conflict: "do not strip
+existing comments as a side effect of unrelated work" (inherited comments are
+Chesterton's Fences) versus "delete the ones you wrote earlier in the session"
+(yours to clean up). The distinguishing question is who wrote it, and it is
+checkable. Do not collapse the two halves.
+
+Aaron chose ONE always-on writing file over the rule-plus-skill split, with the
+reason: "I want the writing style to be consistent no matter what, not only
+conditionally applied." The 1745fbc split is therefore settled against, not
+merely untried. Do not propose it a third time without new evidence.
+
+subtractive-engineering.md:28 references `rules/simple.md` for the fence
+procedure. simple.md's fence paragraph exists to satisfy that reference. If you
+compress simple.md further, check that reference first.
+
+## Codebase Discoveries
+~/.claude/rules is a symlink to this repo's rules/, so every edit in this session
+was live in Aaron's global context before it was committed. There is no way to
+stage a rules change for review without it being active.
+
+The harness system prompt for this session already contains the post's
+replacement sentence verbatim: "Write code that reads like the surrounding code:
+match its comment density, naming, and idiom." That is why comments.md opens with
+the repo-convention deference — the two can conflict in a comment-heavy repo, and
+the deference resolves it.
+
+The harness task reminder fires on its own and names TaskCreate, TaskUpdate, and
+the in_progress/completed lifecycle. That is what made task-tracking.md
+deletable despite the Task tools being deferred, which was a416b36's stated
+reason for keeping it.
+
+Line accounting: 919c801 restored 844 lines, d7caa28 added 2, this commit leaves
+276. Against the 190-line consolidated set: +86, all from Aaron's two calls
+(always-on writing craft, and the new session-artifact paragraph).
+
+## Open Questions
+Wording alone is a weak fix for the comment-artifact problem, and I told Aaron
+so. The failure is that the model does not revisit its own comments late in a
+long session, and a sentence read at the start loses to recency. The durable fix
+is a check at the end — a verification skill or a stop hook that rereads the
+session's added comments against the final diff. He has not asked for it. If he
+raises the problem again, build that rather than rewording the paragraph.
+
+Whether 97 lines of always-on writing guidance is the right size. It is the
+largest file left and most of it is inert on sessions with no writing in them.
+That was a deliberate choice, not an oversight.
+
+Not pushed. Three commits are now unpushed: 919c801, d7caa28, ba52303. Push
+notes in the same step: git push <remote> refs/notes/commits
