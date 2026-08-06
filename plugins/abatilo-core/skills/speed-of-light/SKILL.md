@@ -11,7 +11,7 @@ sub-agents that are to act as harsh, but fair and reasonable critic agents.
 
 These agents are to tackle things from multiple perspectives, but namely, we
 care very deeply about not introducing any additional complexity while we
-iterate on the problem. Focus on looking for places to prune and stripe
+iterate on the problem. Focus on looking for places to prune and strip
 implementation code in such a way that we're left with the smallest amount of
 code changes possible, all while maintaining functional equivalence.
 
