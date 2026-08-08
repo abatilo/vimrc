@@ -1,0 +1,76 @@
+## Conversation
+User asked the claude-code-guide agent to audit the nine env vars in
+claude_settings.json and say which were already the default and could be
+removed. Explicitly said "don't remove, but check for me". After the report
+they chose to remove three, then asked a second question: how to make the
+effective context window 400000 before auto-compact, saying they believed
+there were open issues about it being broken. Their instinct was right but
+pointed at the wrong knob.
+
+## Actions
+Spawned claude-code-guide (agentId a8f8b649dad458e2e), then resumed the same
+agent via SendMessage for the follow-up rather than spawning a second one. The
+agent decompiled /Users/aaron/.local/share/claude/versions/2.1.226 with strings
+and byte-offset search and cross-checked against code.claude.com docs and the
+anthropics/claude-code issue tracker. Two Edit calls on claude_settings.json.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+Two distinct auto-compact knobs exist and they are easy to confuse:
+
+  CLAUDE_AUTOCOMPACT_PCT_OVERRIDE   - percentage of window, BROKEN
+  CLAUDE_CODE_AUTO_COMPACT_WINDOW   - absolute tokens, works
+
+The percentage one has open bugs #52390, #63186, #70477, and #82761. #82761 is
+filed against claude-opus-5[1m] specifically and reports it silently stopped
+working after v2.1.220. Do not reach for it.
+
+The env var only accepts a plain integer. "400k" will not parse. Range is
+100000 to 1000000.
+
+Actual compaction fires around 380000, not 400000. The bundle computes
+  o - Math.min(sbr(e), lZu)   where lZu = 20000
+so it reserves output-token budget capped at 20000. If the user ever complains
+the number is off by ~20k, this is why, and it is not a bug.
+
+Corollary worth remembering: because that reservation saturates at 20000,
+CLAUDE_CODE_MAX_OUTPUT_TOKENS=128000 does NOT cost context before compaction.
+min(128000,20000) == min(64000,20000). The docs' general caveat that raising
+output tokens shrinks the effective context window is true in principle but
+already saturated at the model default, so it does not compound. It still
+raises the real output cap, so it is not dead weight.
+
+Live risk not resolved: #85031 reports auto-compact simply not firing on
+Opus 5 near the top of a 1M window. That sits downstream of whatever window
+value resolves, so this setting does not immunize against it. If compaction
+stops happening entirely, suspect that before suspecting the config.
+
+Also #78318: switching models mid-session with /model leaves the window stale
+until restart.
+
+## Codebase Discoveries
+The resolver is Nq(e,t,r) in the bundle. Precedence, highest first: the env
+var, then the autoCompactWindow settings key, then a model-tuned default of
+500000. The env var was chosen over the settings key for that reason, and
+because this file already keeps its knobs in the env block.
+
+hC(e,r) resolves the raw model window. It tests the model string with a
+literal /\[1m\]/i, so "opus[1m]" gets 1000000. Per issue #74562, sonnet[1m]
+and fable[1m] do NOT currently receive the 1M window - only opus[1m] does.
+
+On the three removals: CLAUDE_CODE_WORKFLOWS is read by nw_(), but the truthy
+branch and the unset branch both fall through to the same tengu_workflows_enabled
+gate, which itself defaults true. It only changes behavior when set falsy. The
+supported way to turn workflows off is CLAUDE_CODE_DISABLE_WORKFLOWS or the
+disableWorkflows key. CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING is ANDed with
+f.includes("opus-4-6") || f.includes("sonnet-4-6"), so it is inert on
+everything this config points at.
+
+## Open Questions
+Whether #85031 will bite this user in practice. Nobody has root-caused it.
+If it does, the only workaround is manual /compact discipline.
