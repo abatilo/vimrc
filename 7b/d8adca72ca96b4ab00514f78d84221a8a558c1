@@ -1,0 +1,42 @@
+## Conversation
+User asked to revert the ultraloop codex step, roll the version forward rather
+than back, then commit and push. No ambiguity in the request; no clarification
+needed.
+
+## Actions
+Read `git show 455f9fb` (the commit being reverted, including its note) to get
+the exact prior text. Removed the two codex paragraphs from
+plugins/abatilo-core/skills/ultraloop/SKILL.md and restored the closing "Don't
+stop" paragraph to its pre-455f9fb wording. Bumped
+.claude-plugin/plugin.json 0.22.1 -> 0.22.2. Verified with `git diff` that the
+SKILL.md hunk is the exact inverse of 455f9fb's, so the file is byte-identical
+to blob 7add40d.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Did not use `git revert 455f9fb`. A revert would have taken plugin.json back to
+0.22.0, which is the opposite of the roll-forward the user asked for, and would
+have needed a follow-up edit anyway. Hand-editing both files was fewer steps.
+
+## Hints for Future Agents
+"Revert but roll the version forward" means a manual inverse edit, not
+`git revert`. Confirm the reverted file matches the old blob by checking that
+the diff hunk is the exact inverse of the original commit's.
+
+Version bump was PATCH: removal of a feature from an existing skill, per the
+"removal of deprecated code" row in plugins/abatilo-core/CLAUDE.md.
+
+455f9fb's own note flagged the open question that motivated this revert --
+whether a codex round trip after every critic pass makes the loop too
+expensive. It is still unmeasured; the step was dropped on judgment, not data.
+If codex ever returns to this skill, that cost question is the thing to answer
+first.
+
+## Codebase Discoveries
+None beyond what 455f9fb's note already records.
+
+## Open Questions
+Whether codex belongs in ultraloop in some cheaper form, such as once per task
+tree instead of once per critic pass. Not explored.

@@ -1,0 +1,99 @@
+## Conversation
+After 919c801 restored the seven pre-consolidation rule files, Aaron asked:
+"Between simple and subtractive engineering, are there any contradictions that
+are inconsistent between the two? use 5 independent reviewers." Then: "Make a
+proposal to me for what the diff would be to fix these." Then: "Apply the
+changes, including the optional ones. Then commit but don't push yet."
+
+He explicitly requested the 5 reviewers, which is why subagents were used at
+all. He also explicitly opted into the optional third hunk after I flagged it
+as the one I would drop for a smaller diff.
+
+## Actions
+Read both files in full FIRST so critic output could be adjudicated against the
+real text rather than taken on trust. Spawned 5 subagents with deliberately
+different methods: exhaustive pairwise, behavioral simulation over invented
+scenarios, precedence/scope/control-flow, hostile skepticism, terminology drift.
+55 raw findings total. Adjudicated to 3 real defects, applied 3 hunks
+(+4/-2 lines), all in rules/subtractive-engineering.md.
+
+Verified the applied diff against the proposal with git diff, and confirmed the
+seniority line is gone from every rules file with grep.
+
+## Errors & Mistakes
+No failed commands, but the subagent launch was wrong and cost a round trip.
+I passed prompts via the Agent tool's `prompt` field with run_in_background
+false. The agents spawned as NAMED BACKGROUND TEAMMATES that ignored the prompt
+and sat idle, returning only idle_notification with idleReason "available". The
+spawn result said "will receive instructions via mailbox," which is the tell.
+I had to re-send every task via SendMessage. If you spawn named agents in this
+harness, assume the prompt is not the task and send it through SendMessage.
+
+reviewer-semantics also sent its full report twice, the second time labelled
+a resend claiming the first "may not have been delivered." It had been. Do not
+re-adjudicate a resend; diff it and move on.
+
+## Dead Ends
+- Considered rewriting the seniority line to keep its insight instead of
+  deleting it. Rejected: line 37 already says "regardless of who it came from,"
+  so the seniority ranking was both redundant and internally contradictory.
+  Delete rather than improve.
+- Considered adding a cross-reference in Step 2 pointing back at the fence.
+  Rejected as redundant: the steps are ordered, so a rule stated in Step 1
+  already gates Step 2.
+- Considered widening simple.md:9 to cover build/CI/tooling. Rejected for now:
+  a real fix also needs simple.md:101 widened past "code," and simple.md's
+  techniques are code-shaped regardless. Two files for a 3-of-5 finding.
+
+## Hints for Future Agents
+The sentence added to the <role> block is NOT new prose. It is restored
+verbatim from the rules/engineering.md that 919c801 deleted, whose own commit
+note (a416b36) called it load-bearing and said not to reorder it away from the
+top. Same instruction applies here. If you find yourself deleting it as
+redundant with the harness system prompt, read a416b36's note first.
+
+The seniority line has now been deleted TWICE for the same reason: in a416b36
+(where Claude had written it into engineering.md and a critic caught it) and
+here. If a future consolidation or revert reinstates it, this is the third
+occurrence, not a new finding.
+
+The single most useful analytical result was not a contradiction. It was that
+subtractive-engineering.md:18 and :64 delegate exactly five topics to
+simple.md — explicit data, isolated state, reduced coupling, clarity over
+cleverness, delayed abstraction — leaving Say No by Default, Prototype First,
+Design for Failure, Testing Strategy, API Design, and Chesterton's Fence
+UNDELEGATED. Every genuine conflict lives in the undelegated six; delegated
+topics compose by construction. Two reviewers reached this independently. Use
+it to triage any future claim of conflict between these files before spending
+effort on it.
+
+That test refuted three findings that four reviewers had rated HARD
+CONTRADICTION: logging at simple.md:92 (under "### Code Clarity Over
+Cleverness"), boundary validation at :66 (under "### Explicit Data & Isolated
+State"), and third-use extraction (under "### Delay Abstraction"). Majority
+vote across critics is not evidence; check the section heading.
+
+## Codebase Discoveries
+~/.claude/rules is a SYMLINK to /Users/abatilo/abatilo/vimrc/rules, so these
+edits changed Aaron's live global context the moment they were written, before
+the commit. No install step, and no way to stage a rules change for review
+without it being live.
+
+rules/ sits outside plugins/abatilo-core, so the MANDATORY version bump in
+plugins/abatilo-core/CLAUDE.md does not apply to this commit. It did apply to
+919c801, which removed a skill.
+
+The two files' cross-referencing is one-directional: subtractive-engineering.md
+names rules/simple.md twice, simple.md never names subtractive-engineering.md.
+That asymmetry is why the precedence defect had no textual resolution.
+
+## Open Questions
+Whether the five minor conflicts left unfixed matter in practice. The two most
+likely to bite: subtractive-engineering.md claims build/CI/tooling in its scope
+while simple.md's restraining rules stop at "code," so deletion runs with the
+brakes off on CI config; and Steps 4 and 5 delegate to simple.md, which has no
+material on cycle time or automation at all.
+
+Not pushed. Aaron said "commit but don't push yet," so refs/notes/commits is
+local. When pushing, send the notes in the same step:
+git push <remote> refs/notes/commits

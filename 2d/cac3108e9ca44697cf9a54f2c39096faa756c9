@@ -1,0 +1,25 @@
+## Conversation
+User asked to commit the already-staged switch of `effortLevel` from "medium" to
+"high" in claude_settings.json, then separately to teach the ultraloop skill to
+use codex for adversarial debate. This commit is only the first half.
+
+## Actions
+Read `git diff` to confirm the working change was exactly the one-line
+effortLevel flip, staged claude_settings.json, committed.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+This reverses commit 104ef99 ("chore(settings): set default effort to medium")
+from the same day. The default has now flip-flopped once, so treat it as a
+preference under active tuning rather than a settled value.
+
+## Codebase Discoveries
+None.
+
+## Open Questions
+None.

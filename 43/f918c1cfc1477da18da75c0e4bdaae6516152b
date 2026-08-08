@@ -1,0 +1,86 @@
+## Conversation
+User: "I actually want to stop managing it in this repository completely,
+and the same goes for Pi. I want to remove all things that make those two
+tools portable. Look for any of the symlinks that link to this directory,
+and clean up any of the setup or configuration steps in the install.sh
+script."
+
+Before acting I asked three scoping questions. The answers were:
+1. KEEP the mcpServers.codex entry in install.sh (Claude-side config).
+2. KEEP all three Codex-referencing rules files.
+3. For AGENTS_global.md: "Move this file to ~/.codex/AGENTS.md instead of
+   it being a symlink" -- i.e. materialize, do not just delete.
+
+That third answer set the pattern for the whole commit: preserve live
+config on the machine, then remove it from the repo.
+
+## Actions
+1. Enumerated symlinks with `find ~ -type l` + readlink, filtering for
+   paths containing "vimrc". Found 4 codex symlinks. Found ZERO pi
+   symlinks -- ~/.pi/agent/AGENTS.md did not exist despite install.sh
+   creating it (commit 82e7932), so it had been removed at some point.
+2. Copied working-tree content to real files at ~/.codex/{config.toml,
+   AGENTS.md} and cp -R for the two skills dirs, then verified each with
+   `diff -q` / `diff -rq`. All four reported identical.
+3. `git rm -f codex_config.toml` (the -f was needed because the path was
+   in an unmerged UU state), plus git rm for the rest.
+4. Edited install.sh: removed the codex block, the pi block, their entries
+   in the rm -rf / rm -f cleanup lists, and the now-dead mise preflight.
+5. Removed the "## Pi" section from README.md, the pi-coding-agent tool
+   from .mise.toml, and two dead .gitignore entries.
+6. rm -rf .pi-subagents (124K of untracked scout transcripts) and pi/.
+7. Verified with `mise exec -- shellcheck install.sh` (clean) and
+   `bash -n install.sh` (ok).
+
+## Errors & Mistakes
+The big one: codex_config.toml SHRANK from 10.6K to 4409 bytes between my
+initial analysis and the moment I materialized it. Codex rewrote the file
+mid-session, pruning ~30 [projects.*] trust entries, the `notify` key, and
+the [mcp_servers.node_repl] and [mcp_servers.computer-use] blocks. I only
+noticed because the byte count in my verification output did not match
+what I had reported to the user minutes earlier.
+
+This was NOT data loss caused by me -- `diff -q` confirmed the copy
+matched the live file exactly -- but it is a sharp lesson: a symlinked
+config owned by a running app is a moving target. Re-read immediately
+before any copy, and verify sizes, not just diff exit codes. The
+pre-prune version is recoverable from this commit's parent.
+
+## Dead Ends
+Initially planned to also strip the "CONSULT Codex" directives from
+rules/simple.md and rules/subtractive-engineering.md, and to delete
+rules/codex-mcp.md. Asked first; user said keep all three. Good thing --
+those rules are Claude-facing and still functional, because the codex MCP
+server remains configured in ~/.claude.json.
+
+## Hints for Future Agents
+- The `codex` MCP server for Claude Code is written by the jq block in
+  install.sh into ~/.claude.json. That file is NOT tracked here. If codex
+  MCP stops working, look there, not in this repo.
+- ~/.codex/config.toml is now a REAL FILE. Do not re-symlink it. That is
+  the entire point of this commit.
+- ~/.codex/skills/ also contains a `.system` directory that Codex manages.
+  Do not delete the whole skills dir.
+- Pi credentials, sessions, and memory live in ~/.pi/agent (auth.json,
+  trust.json, sessions/, projects-memory/, pi-hermes-memory/). None of it
+  was ever tracked and none of it was touched.
+- The Pi binary is still installed. Removing it from .mise.toml stops mise
+  from managing it but does not uninstall it.
+- install.sh:66 still has a stale comment referencing extraKnownMarketplaces,
+  which was removed in commit 5d9fe2c. Harmless, but wrong.
+
+## Codebase Discoveries
+- README.md's "## Pi" section documented exact pinned plugin versions
+  (pi-vim@0.12.1, pi-hermes-memory@0.7.17, and six others) and the upgrade
+  procedure. All of that is now only in git history.
+- codex_skills/git-commit and codex_skills/repo-explore duplicated skills
+  that also ship in plugins/abatilo-core/skills/. The Codex copies had
+  extra agents/openai.yaml files; the plugin copies do not.
+- A grep for "rtk" hit pi/npm/package-lock.json, but it was a coincidental
+  base64 substring inside an integrity hash, not a reference.
+
+## Open Questions
+- Whether to uninstall the Pi binary the way rtk was uninstalled.
+- Whether the pruning Codex did to its own config was intentional
+  housekeeping or a bug. The lost node_repl/computer-use MCP servers might
+  matter to the user.

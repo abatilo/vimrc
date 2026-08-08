@@ -1,0 +1,79 @@
+## Conversation
+User asked to read the local gh-stack skill, run /repo-explore against
+https://github.com/github/gh-stack/tree/main/skills/gh-stack, then replace the
+plugin's skill with "the exact contents of the official one", bump the version,
+/git-commit and push -- all in one turn, no confirmation stops.
+
+"Exact contents" was taken literally: the file is a byte-for-byte copy of
+upstream, verified with diff. That means our frontmatter was discarded too (see
+Hints).
+
+## Actions
+- Read plugins/abatilo-core/skills/gh-stack/SKILL.md (242 lines) and listed
+  references/commands.md (382) + references/workflows.md (286).
+- Ran the repo-explore skill; it cloned to ~/.cache/claude/repos/github/gh-stack
+  at HEAD 8c9c8331309529e2114d4c34e77f4edea543f9fa (2026-07-30, latest tag
+  v0.1.0) and read upstream skills/gh-stack/SKILL.md (891 lines, metadata
+  version 0.0.9, no reference files).
+- cp'd upstream SKILL.md over ours, git rm -r'd references/, verified with
+  diff (identical).
+- Bumped .claude-plugin/plugin.json 0.23.0 -> 0.24.0.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Considered merging upstream's agent rules into our file instead of replacing it.
+Rejected: the user said "exact contents", and a verbatim copy makes the next
+upstream refresh a plain cp instead of a three-way merge.
+
+## Hints for Future Agents
+- This file is now VENDORED. Do not hand-edit it. To update: re-clone
+  github/gh-stack and cp skills/gh-stack/SKILL.md over it. Upstream tracks its
+  own version in frontmatter metadata.version (currently 0.0.9) -- that is
+  independent of the plugin version in plugin.json.
+- The verbatim copy DROPPED three frontmatter keys our version had:
+  context: fork, allowed-tools (Bash(gh:*), Bash(git:*), Read, Edit), and
+  argument-hint. The skill therefore no longer runs forked or restricts tools,
+  and the description no longer lists trigger phrases like "/gh-stack",
+  "stacked PR", "create branch". This was flagged to the user as a deliberate
+  consequence of "exact contents", not an oversight. If invocation regresses,
+  re-adding those keys is the fix -- and it makes the file no longer verbatim,
+  so record that here.
+- Version bump was MINOR (0.23.0 -> 0.24.0) to match the precedent set by
+  a9e44c1, which replaced the whole git-spice skill with gh-stack and went
+  0.22.2 -> 0.23.0. The plugin CLAUDE.md table would arguably call a wholesale
+  skill rewrite a "major restructure"; the repo's own history says otherwise.
+
+## Codebase Discoveries
+- Upstream's organizing thesis is that every gh stack invocation must be
+  non-interactive. It omits `gh stack modify`, `switch`, and `alias` entirely
+  because all three hard-error without a tty:
+    cmd/switch.go:46-49 and cmd/modify.go:276-279 both check
+    !cfg.IsInteractive() and return ErrSilent.
+  Our old skill taught `gh stack modify` as the PRIMARY restructuring workflow
+  (old SKILL.md:167-184). Upstream teaches unstack + re-init as the only one.
+  Anything that relied on our modify guidance will now find nothing.
+- Upstream exit code 10 says "This skill does not use modify, so agents should
+  not produce this."
+- One upstream claim is contradicted by its own source. The skill states "If a
+  command would prompt for input, it will hang indefinitely." Interactivity is
+  actually decided by internal/config/config.go:129-131
+  (ForceInteractive || Terminal.IsTerminalOutput()), and every prompt site
+  degrades rather than hangs: view.go:80 skips the TUI, submit.go:203 acts as
+  --auto, merge.go:162 skips confirmation, init.go:132 errors on missing args,
+  checkout.go:441 prints the divergence hint and exits 3. In a piped shell
+  nothing hangs. The "always pass the flag" rules are still correct habit --
+  they make behavior identical with or without a pty -- but do not trust the
+  hang claim when debugging.
+- Exit codes in cmd/utils.go:27-38 matched both the old and new skill exactly,
+  including 9 (ErrStacksUnavailable) and 10 (ErrModifyRecovery). The 100-PR
+  limit and unsupported auto-merge/rule-bypass are confirmed in
+  docs/src/content/docs/faq.md:38 and :184.
+
+## Open Questions
+- Whether to restore context: fork / allowed-tools / the richer trigger-phrase
+  description. Left to the user; it trades verbatim-ness for invocation
+  reliability.
+- No test exercised the new skill end to end. gh stack was not run against a
+  real repo in this session, so the vendored guidance is unverified in practice.

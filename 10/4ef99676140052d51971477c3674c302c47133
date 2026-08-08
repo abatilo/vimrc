@@ -1,0 +1,30 @@
+## Conversation
+Aaron ran /effort and selected medium, then asked to commit and push.
+
+## Actions
+Single-key diff in claude_settings.json: effortLevel "low" -> "medium".
+Committed and pushed with notes.
+
+## Errors & Mistakes
+None this turn. Worth recording the earlier failure this fixes: in commit
+ce5da03 (same session series) effortLevel landed as "low" even though Aaron
+had answered "Keep medium" to an AskUserQuestion. Claude Code rewrote
+claude_settings.json between his answer and the commit, and I committed the
+live on-disk value rather than his stated preference. I flagged it and offered
+to amend; he did not respond at the time. Now resolved forward rather than by
+rewriting published history.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+claude_settings.json is symlinked to ~/.claude/settings.json and the running
+app rewrites it continuously. Any value you read can change under you mid-turn.
+Before committing it, re-read the file rather than trusting a diff taken
+earlier in the session. This bit me once already in this repo.
+
+## Codebase Discoveries
+None new.
+
+## Open Questions
+None.

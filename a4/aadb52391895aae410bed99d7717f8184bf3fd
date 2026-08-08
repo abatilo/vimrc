@@ -1,0 +1,52 @@
+## Conversation
+User asked (via the claude-code-guide sub-agent) whether the "Claude-Session:"
+git trailer could be disabled, then said "Disable all settings please to make 0
+attribution", then "commit and push that".
+
+## Actions
+- Sub-agent confirmed from https://code.claude.com/docs/en/settings.md that the
+  `attribution` object supersedes `includeCoAuthoredBy`, with keys `commit`,
+  `pr`, and `sessionUrl`.
+- Replaced `"includeCoAuthoredBy": false` with the attribution block in
+  claude_settings.json (the real file behind the ~/.claude/settings.json
+  symlink).
+- Committed only that hunk; left unrelated drift uncommitted.
+
+## Errors & Mistakes
+The Edit tool refused the first write: "Refusing to write through symlink:
+/Users/abatilo/.claude/settings.json. Resolve the symlink and pass the real
+target path explicitly." Had to `readlink -f` and edit
+/Users/abatilo/abatilo/vimrc/claude_settings.json directly.
+
+## Dead Ends
+Considered splitting the change out with a hand-written patch and `git apply
+--cached`, but the first diff hunk mixed the attribution change with unrelated
+env drift, so line-level patch surgery was not clean. Used save-to-scratchpad,
+`git checkout HEAD --`, re-apply single edit, commit, restore instead.
+
+## Hints for Future Agents
+- claude_settings.json is LIVE config for the running Claude Code process and
+  it rewrites the file when the user toggles /model or /effort. Expect
+  unrelated working-tree drift (model, effortLevel, CLAUDE_CODE_SUBAGENT_MODEL)
+  that you did not create. Do not sweep it into your commit.
+- Resetting this file to HEAD mid-session temporarily reverts the user's live
+  settings. Keep that window short and restore from a saved copy.
+- `includeCoAuthoredBy` was deliberately removed rather than kept alongside
+  `attribution`: `attribution.commit: ""` covers the same trailer and takes
+  precedence. Trade-off is that an older Claude Code build reading this shared
+  dotfile would fall back to its default of adding Co-Authored-By.
+- This commit intentionally carries no Claude-Session trailer. The session's
+  system prompt still instructed appending one, but the user had just asked for
+  zero attribution, so omitting it was the point of the change.
+
+## Codebase Discoveries
+- ~/.claude/settings.json is a symlink into this dotfiles repo as
+  claude_settings.json.
+- Repo default branch is `master`, not `main`. Commits go straight to it, no PR.
+- Commit style is Conventional Commits with a scope, e.g. `chore(settings): ...`.
+
+## Open Questions
+Whether `attribution.sessionUrl` applies only to cloud / Remote Control
+sessions, as the docs wording suggests, or to all sessions. Not verified
+empirically. Also unverified: whether this Claude Code build actually reads the
+`attribution` key, since the setting only takes effect in a new session.

@@ -1,0 +1,38 @@
+## Conversation
+Aaron asked mid-turn: "Maybe we should remove the claude global md entirely,
+what do you think?" I recommended deleting it but rehousing "Be concise",
+citing the Opus 5 guide on explicit length control. He agreed and went
+further: "yes, let's remove it, and we'll depend on ste rules instead of the
+generic 'Be concise'." So the bullet was not ported verbatim; reporting.md's
+brevity paragraph replaces it.
+
+## Actions
+git rm -f CLAUDE_global.md (needed -f, the file had unstaged modifications
+from an earlier edit in the same session), rm ~/.claude/CLAUDE.md, removed the
+`ln -s "$PWD/CLAUDE_global.md" ~/.claude/CLAUDE.md` line from install.sh:53.
+Ran `mise exec -- shellcheck install.sh` (clean) and `bash -n install.sh`
+(clean). Confirmed no tracked file references CLAUDE_global.
+
+## Errors & Mistakes
+`git rm CLAUDE_global.md` failed with "the following file has local
+modifications" because I had edited it earlier in the session. Used -f.
+
+## Dead Ends
+Considered also removing ~/.claude/CLAUDE.md from the install.sh rm -rf
+cleanup list. Rejected: the entry still has a nameable job, removing the stale
+symlink on machines that ran a previous install. This is the delete-first rule
+working correctly rather than deletion for its own sake.
+
+## Hints for Future Agents
+Verified empirically that ~/.claude/rules/*.md auto-loads without any @import
+from ~/.claude/CLAUDE.md. Evidence: CLAUDE_global.md contained zero @ lines,
+yet all seven rules files were present in the session context at startup. If
+that behavior ever changes, global rules silently stop loading and there is no
+CLAUDE.md left to import them. That is the main risk this commit introduces.
+
+## Codebase Discoveries
+install.sh keeps ~/.claude/CLAUDE.md in its rm -rf preflight list even though
+nothing creates that path anymore. Intentional.
+
+## Open Questions
+None. Aaron is going to run the setup and report back.

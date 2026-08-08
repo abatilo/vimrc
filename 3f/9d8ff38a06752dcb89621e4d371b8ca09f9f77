@@ -1,0 +1,48 @@
+## Conversation
+Second half of the user's request: teach the ultraloop skill to use codex for
+adversarial but collaborative debate and for alternative perspectives, not just
+for critique.
+
+## Actions
+Read plugins/abatilo-core/skills/ultraloop/SKILL.md (13 lines of body before
+this change). Added two paragraphs before the closing "Don't stop" paragraph,
+and amended that paragraph so the stop condition now also requires codex to
+have failed to land a hit. Bumped .claude-plugin/plugin.json 0.22.0 -> 0.22.1
+per plugins/abatilo-core/CLAUDE.md, which makes the bump mandatory on any
+plugin change.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+The framing chosen deliberately: sub-agents share the orchestrator's context and
+therefore its assumptions, so they are agreement machines. Codex is the adversary
+precisely because it does not share context. That is the load-bearing idea in
+the addition; do not "simplify" it into a generic "also ask codex" line.
+
+Kept the file's existing voice, which uses contractions ("Don't stop", "it's"),
+rather than the expanded-contraction rule from rules/reporting.md. That rule
+governs reported work and technical documents, not this prompt text, and
+rules/engineering.md says to follow the convention already in place.
+
+The codex guidance here intentionally restates parts of rules/engineering.md's
+Codex section (threadId continuation, one topic per thread, paste the real code,
+bring back what changed your mind). The duplication is deliberate: the skill has
+to stand on its own when invoked, but if that rule changes, this file should be
+updated to match.
+
+Version bump was PATCH, not MINOR: this refines an existing skill rather than
+adding a new one.
+
+## Codebase Discoveries
+plugins/abatilo-core/CLAUDE.md carries a mandatory version-bump rule with a
+change-type-to-increment table; .claude-plugin/plugin.json is the single source
+of truth for the version.
+
+## Open Questions
+Whether the added stop condition ("until codex has failed to land a hit") makes
+the loop too expensive in practice, since it puts a codex round trip after every
+sub-agent completion. Unmeasured.
