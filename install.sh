@@ -22,7 +22,9 @@ rm -rf \
   ~/.claude/skills \
   ~/.claude/rules \
   ~/.claude/CLAUDE.md \
-  ~/.claude/settings.json
+  ~/.claude/settings.json \
+  ~/.codex/skills/repo-explore \
+  ~/.codex/skills/speed-of-light
 rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml
@@ -54,6 +56,26 @@ ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
 ln -s "$PWD/rules" ~/.claude/rules # rules must stay as symlink (not supported in plugins)
 # commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
+
+# Set up Codex instructions from the portable rules. The Codex MCP rule only
+# applies when Claude calls Codex as a separate model, so exclude it here.
+mkdir -p ~/.codex
+codex_agents_tmp=$(mktemp)
+for rule in \
+  rules/simple.md \
+  rules/subtractive-engineering.md \
+  rules/comments.md \
+  rules/simplified-technical-english.md \
+  rules/commit-notes.md; do
+  cat "$rule"
+  echo
+done >"$codex_agents_tmp"
+mv "$codex_agents_tmp" ~/.codex/AGENTS.md
+
+# Install personal Codex skills from the abatilo-core plugin.
+mkdir -p ~/.codex/skills
+cp -R plugins/abatilo-core/skills/repo-explore ~/.codex/skills/
+cp -R plugins/abatilo-core/skills/speed-of-light ~/.codex/skills/
 
 # Set global MCP servers in ~/.claude.json (authoritative)
 [ -f ~/.claude.json ] || echo '{}' >~/.claude.json
