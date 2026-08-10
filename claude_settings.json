@@ -16,7 +16,7 @@
     "sessionUrl": false
   },
   "permissions": {
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "auto"
   },
   "model": "opus[1m]",
   "worktree": {
@@ -43,7 +43,5 @@
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "useAutoModeDuringPlan": false
+  "agentPushNotifEnabled": true
 }
