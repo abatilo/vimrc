@@ -1,0 +1,49 @@
+## Conversation
+User asked to set the default permission mode to auto in claude_settings.json,
+and explicitly asked for the claude-code-guide agent to be invoked. After the
+first edit they asked to remove skipAutoPermissionPrompt and
+useAutoModeDuringPlan so both return to their defaults, then commit and push.
+
+## Actions
+- Read claude_settings.json.
+- Spawned claude-code-guide to verify "auto" is a valid permissions.defaultMode
+  and to explain the interacting settings.
+- Changed permissions.defaultMode from bypassPermissions to auto.
+- Grepped for claude_settings.json, found install.sh:55 symlinks it to
+  ~/.claude/settings.json.
+- Removed skipAutoPermissionPrompt and useAutoModeDuringPlan.
+- Validated with python3 -m json.tool, committed on master, pushed with notes.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+Claude Code ignores defaultMode: "auto" when it comes from project
+(.claude/settings.json) or local (.claude/settings.local.json) settings. It is
+honored only in user or managed settings. This repo's claude_settings.json is
+symlinked to ~/.claude/settings.json by install.sh:55, which is the user
+location, so auto takes effect. Do not copy this file into a project's
+.claude/ directory and expect auto to work.
+
+skipDangerousModePermissionPrompt: true is still in the file and was left
+alone deliberately. It no longer affects startup now that the default mode is
+auto, but it still applies when launching with --dangerously-skip-permissions.
+
+## Codebase Discoveries
+install.sh:55 symlinks claude_settings.json to ~/.claude/settings.json.
+install.sh:58 notes that plugins are configured via extraKnownMarketplaces in
+the same file.
+
+## Open Questions
+skipAutoPermissionPrompt is not documented on the official settings reference
+page and is not in the published claude-code-settings.json JSON schema. Its
+behavior was never confirmed, only guessed from its name next to
+skipDangerousModePermissionPrompt. It has now been removed. /config in a live
+session is the authoritative source for keys missing from the public docs.
+
+Auto mode becomes the default permission mode for new sessions on Pro, Max, and
+Team plans starting 2026-08-14, per the permission-modes docs. An explicitly set
+defaultMode takes precedence, so this commit's value wins either way.
