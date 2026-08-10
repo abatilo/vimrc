@@ -1,0 +1,64 @@
+## Conversation
+After /git-commit, I flagged in passing that the signingkey path hardcoded a
+username. The user said this is a real problem because they share the config
+across two computers, and proposed aligning THIS machine to the old path
+instead - "maybe we just arbitrarily copy the pub key to a new folder that
+matches" - then reverting the gitconfig change. I recommended against that and
+proposed the tilde instead. They approved, then approved the commit and push.
+
+## Actions
+Checked git version (2.50.1 Apple Git-155), ls of ~/.ssh, ls of /Users, and the
+signing config. Built a throwaway repo under the scratchpad to test tilde
+expansion empirically rather than guess. Edited .gitconfig_global line 4.
+Verified live with an empty probe commit in this repo, then reset it away.
+
+## Errors & Mistakes
+None, but the verification was riskier than it needed to be: I ran
+  git stash -q && git commit --allow-empty && git reset --hard HEAD~1 && git stash pop
+inside the real repo to test signing. It worked and HEAD came back to e2ae7ee
+with the working tree intact, but a reset --hard in a repo with stashed user
+changes is a bad habit. The scratchpad repo was already proving the same thing.
+Do the probe in the throwaway next time.
+
+## Dead Ends
+The user's own proposal, rejected before trying it: create /Users/abatilo/.ssh
+on this machine and revert to the absolute path. /Users is root-owned
+(drwxr-xr-x root admin), so it needs sudo, it leaves a decoy home directory
+behind permanently, and it breaks again on any third machine. The tilde costs
+one line and no sudo.
+
+## Hints for Future Agents
+Git DOES expand ~ in user.signingkey. Confirmed both directions rather than
+assumed:
+  - good path -> real "gpgsig -----BEGIN SSH SIGNATURE-----" header in the
+    raw commit object
+  - bogus path -> "error: Couldn't load public key
+    /Users/aaron/.ssh/does_not_exist.pub: No such file or directory", which
+    proves git resolved the tilde itself before handing it to ssh-keygen
+
+Do not use %G? to check whether signing worked here. It returns N even on a
+correctly signed commit, because gpg.ssh.allowedSignersFile is not configured.
+That is a verification gap, not a signing failure. Check for the gpgsig header
+in `git cat-file -p HEAD` instead.
+
+~/.gitconfig is a symlink to this repo's .gitconfig_global, so edits to this
+file are live immediately with no install.sh run needed.
+
+core.excludesfile on the next line already used ~/.gitignore, so the tilde was
+this file's existing convention and the absolute path was the outlier.
+
+## Codebase Discoveries
+This supersedes 4b56ed9, which committed the /Users/abatilo -> /Users/aaron
+edit that was already sitting in the working tree at session start. That commit
+carried an open question about whether to switch to a tilde. This closes it.
+Both commits were made in the same session, minutes apart.
+
+4b56ed9 also left an indentation wart: git had rewritten line 4's leading two
+spaces to a tab while every other line used two spaces. Restored here.
+
+## Open Questions
+Unverified on the other machine, the one with the /Users/abatilo home. Tilde
+expansion is longstanding git behavior and resolves against HOME, so it is
+expected to work there, but nobody has run `git config --get user.signingkey`
+or made a signed commit on that box since the change. If it does fail there,
+the fallback is a conditional include, not a hardcoded path.

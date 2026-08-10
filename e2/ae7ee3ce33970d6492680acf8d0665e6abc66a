@@ -1,0 +1,39 @@
+## Conversation
+Not requested in this session. This edit was already in the working tree at
+session start; /git-commit grouped it on its own.
+
+## Actions
+Committed the existing diff unchanged. Did not run install.sh to verify.
+
+## Errors & Mistakes
+None encountered, but note the limitation above: this commit is UNVERIFIED.
+The script was read, not executed.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+The rule list in the for loop is maintained by hand and deliberately omits
+rules/codex-mcp.md, since that rule tells Claude when to call Codex and means
+nothing to Codex reading its own AGENTS.md. Adding a new file under rules/ does
+NOT automatically reach Codex - you must add it to this loop. A glob would pick
+up codex-mcp.md again, which is why this is not a glob.
+
+The two skills are copied with cp -R, not symlinked, because Codex does not
+read Claude Code plugin directories. That means they go stale when the plugin
+version in the cache path changes. The rm -rf block at the top clears both
+before copying so a reinstall is idempotent.
+
+Source path is plugins/abatilo-core/skills/, i.e. the in-repo copy, not the
+~/.claude/plugins/cache/ install.
+
+## Codebase Discoveries
+Commit 43f918c ("chore: stop managing codex and pi configuration") removed
+Codex configuration from this repo previously. This commit reintroduces it in a
+narrower form - generated from the shared rules rather than maintained
+separately - so the earlier reasoning for dropping it may or may not still
+apply. Worth reading 43f918c before extending this further.
+
+## Open Questions
+Whether the cp -R copies drift from the plugin over time and need a staleness
+check. Unverified whether install.sh runs clean with these additions.

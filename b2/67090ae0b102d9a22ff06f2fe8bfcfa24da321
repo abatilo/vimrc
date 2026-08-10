@@ -1,0 +1,31 @@
+## Conversation
+The user asked to check and then commit the existing changes in AGENTS_global.md. The working-tree change removes the top-level Agent rules header and the complete Pi Delegation Operating Model, including direct/brokered delegation instructions, prompt shape examples, and final-responsibility guidance. The remaining commit-note, simplicity-first, and task-tracking instructions are unchanged.
+
+## Actions
+- Inspected git status and the complete AGENTS_global.md diff before staging.
+- Compared headings in HEAD and the working tree to confirm the change removes only the Pi delegation section and preserves the remaining rule sections.
+- Read recent AGENTS_global.md history and attached notes, including commit 3761f97 that originally added the Pi delegation model and commit dbf5e54 documenting AGENTS_global.md as a hand-curated global context.
+- Confirmed the removal is coherent with the repository's new separate PI_global.md artifact: install.sh now links PI_global.md to ~/.pi/agent/AGENTS.md while AGENTS_global.md remains linked to ~/.codex/AGENTS.md.
+- Ran git diff --check -- AGENTS_global.md successfully.
+- Staged and committed only AGENTS_global.md.
+- Verified the commit diff contains no other files.
+
+## Errors & Mistakes
+- The commit itself succeeded, but the first attempt to attach this note inside a large shell command ended with `/bin/bash: -c: line 52: unexpected EOF while looking for matching \`''`. The failure happened after commit creation and before note attachment/status verification. The note was therefore written to a temporary file and attached in a separate command.
+
+## Dead Ends
+- Considered preserving the Pi delegation section because commit 3761f97 intentionally introduced it. Rejected after checking current repository state: the newly committed PI_global.md and install.sh now provide Pi its own global instructions, so AGENTS_global.md no longer needs to encode a Pi delegation operating model for another agent harness.
+- Considered combining this with unrelated configuration changes. Rejected because the user explicitly scoped the commit to AGENTS_global.md.
+
+## Hints for Future Agents
+- AGENTS_global.md is now the global context linked to ~/.codex/AGENTS.md and no longer contains instructions to delegate implementation to Pi.
+- PI_global.md is the separate self-contained global context linked to ~/.pi/agent/AGENTS.md.
+- Do not regenerate AGENTS_global.md blindly from rules/*; prior notes establish that it is hand-curated and intentionally diverges from those files.
+- The remaining AGENTS_global.md content begins directly with Commit Notes, followed by Simplicity-First Engineering and Task Tracking.
+
+## Codebase Discoveries
+- The separation introduced by commit b388b77 resolves the prior coupling where one AGENTS_global.md artifact had to serve both Codex and Pi.
+- install.sh currently installs AGENTS_global.md for Codex and PI_global.md for Pi as distinct symlinks.
+
+## Open Questions
+None.

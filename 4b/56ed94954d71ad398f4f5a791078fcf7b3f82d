@@ -1,0 +1,30 @@
+## Conversation
+Not requested. This edit was already sitting uncommitted in the working tree
+when the session started; the user ran /git-commit with "then push" and it got
+grouped into its own commit.
+
+## Actions
+Committed the existing diff unchanged.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+The signingkey is an absolute path with a hardcoded username, which is what
+broke when the home directory changed from /Users/abatilo to /Users/aaron. A
+~/ path would not have this problem. Deliberately NOT changed here, because the
+user did not ask and this file may be shared with machines where the old layout
+still holds. Raised in the reply instead. If it breaks a third time, that is
+the fix.
+
+Note that git also rewrote the leading whitespace on that line from two spaces
+to a tab. Every other line in the file uses two spaces. Cosmetic, left alone.
+
+## Codebase Discoveries
+None.
+
+## Open Questions
+Whether to switch the path to ~/.ssh/id_ed25519.pub. Left to the user.

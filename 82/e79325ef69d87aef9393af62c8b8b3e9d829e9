@@ -1,0 +1,40 @@
+## Conversation
+The user asked how Pi configures agent and rule files, then requested migration of the repository's rules into a Pi-compatible global instruction file. They subsequently refined the artifact: remove Codex/MCP and external rules/* references, make it self-contained, remove Communication, retain code-comment and Git guidance, and combine simplicity-first and subtractive engineering guidance. Finally, the user requested the git-commit workflow.
+
+## Actions
+- Read Pi documentation for context files, settings, skills, and prompt templates.
+- Created PI_global.md as a self-contained global Pi instruction artifact.
+- Preserved the complete code-comment guidance under Code Comments.
+- Preserved commit-note behavior under Git Workflow.
+- Combined simplicity-first guidance and the ordered question/delete/simplify/accelerate/automate process under Engineering Principles.
+- Retained Task Tracking with Pi-neutral task/goal wording.
+- Removed Communication and all references to rules/*, Codex, MCP, Claude, and harness-specific TaskCreate/TaskUpdate/TaskList/TaskGet APIs.
+- Updated install.sh to remove an existing ~/.pi/agent/AGENTS.md safely, create ~/.pi/agent, and symlink PI_global.md as the global AGENTS.md.
+- Ran bash -n install.sh, git diff --check, heading audits, forbidden-reference searches, and a temporary-directory symlink test.
+- Staged and committed only install.sh and PI_global.md. Existing unrelated changes in .gitconfig_global, AGENTS_global.md, claude_settings.json, and codex_config.toml were left unstaged and unchanged.
+
+## Errors & Mistakes
+- Three dynamic workflow attempts failed before the final direct edit. Two configured-tier runs returned null for every agent. A third retry incorrectly forced Gemini and failed with HTTP 429 RESOURCE_EXHAUSTED because prepaid credits were depleted. No files were changed by those workflow attempts.
+- An early forbidden-reference audit matched the intentional provenance sentence mentioning rules/codex-mcp.md; later user feedback clarified that even provenance references should be removed, and the artifact was made fully self-contained.
+
+## Dead Ends
+- A .pi/rules directory was rejected because Pi does not auto-load Claude-style rule fragments from that location.
+- Skills were rejected for these standing instructions because skills are progressively disclosed and task-specific rather than always loaded.
+- APPEND_SYSTEM.md was not used because the documented global AGENTS.md context file is the direct semantic match for global agent instructions.
+- The failed workflow runs were abandoned after provider/runtime failures; the requested edit was subsequently performed directly.
+
+## Hints for Future Agents
+- PI_global.md is deliberately self-contained. Do not add provenance links to rules/* or references to other harnesses.
+- Pi loads this file through the install.sh symlink at ~/.pi/agent/AGENTS.md.
+- Keep top-level sections limited to Code Comments, Git Workflow, Engineering Principles, and Task Tracking unless the user explicitly changes the desired scope.
+- Engineering Principles intentionally contains both general simplicity rules and the ordered subtractive process in one section.
+- Do not run install.sh casually: it removes and recreates numerous global dotfile links beyond Pi configuration.
+
+## Codebase Discoveries
+- Pi's documented global context file is ~/.pi/agent/AGENTS.md; project context uses AGENTS.md or CLAUDE.md discovered from the working directory upward.
+- Pi has no documented .pi/rules/*.md auto-discovery mechanism.
+- The repository already had unrelated unstaged modifications in .gitconfig_global, AGENTS_global.md, claude_settings.json, and codex_config.toml. They were not part of this commit.
+
+## Open Questions
+- Whether Task Tracking should remain in PI_global.md; the user explicitly chose code comments, Git workflow, and merged engineering guidance but did not request removing Task Tracking.
+- Whether the 589-line PI_global.md should later be condensed further while preserving the selected guidance.
