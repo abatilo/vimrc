@@ -52,24 +52,6 @@ If the project uses conventional commits, follow this structure:
 [optional footer(s)]
 ```
 
-**Common types:**
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, missing semicolons, etc.)
-- `refactor`: Code changes that neither fix bugs nor add features
-- `perf`: Performance improvements
-- `test`: Adding or updating tests
-- `build`: Changes to build system or dependencies
-- `ci`: Changes to CI configuration
-- `chore`: Other changes that don't modify src or test files
-
-**Examples:**
-- `feat: add user authentication`
-- `fix: resolve null pointer in login handler`
-- `docs: update API documentation`
-- `refactor(auth): simplify token validation logic`
-
 ## Git Commit Message Best Practices
 
 Follow these seven rules for excellent commit messages (adjust for conventional commits if used):
