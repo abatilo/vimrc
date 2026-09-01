@@ -1,0 +1,20 @@
+## Conversation
+User asked to run /git-commit on the unstaged claude_settings.json change and push.
+
+## Actions
+Second of two commits split out of one working-tree diff. Carries the model change (claude-fable-5[1m] -> fable[1m]) and the empty modelSettings entries for claude-opus-5 and claude-fable-5-1.
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+The empty modelSettings entries are written by Claude Code when a model is selected via /model; they are not hand-authored.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+None
