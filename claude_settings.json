@@ -18,7 +18,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "fable[1m]",
   "worktree": {
     "baseRef": "head"
   },
@@ -29,7 +29,9 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "modelSettings": {
-    "claude-fable-5": {}
+    "claude-fable-5": {},
+    "claude-opus-5": {},
+    "claude-fable-5-1": {}
   },
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
