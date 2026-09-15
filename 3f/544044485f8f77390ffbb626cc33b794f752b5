@@ -1,0 +1,35 @@
+## Conversation
+User asked what the Claude Code startup hint "tmux detected - scroll with
+PgUp/PgDn - or add 'set -g mouse on' to ~/.tmux.conf for wheel scroll" meant,
+then asked to add that setting to the tmux config in this repo, then asked to
+push it.
+
+## Actions
+Read .tmux.conf, inserted `set -g mouse on` after the history-limit line with a
+comment recording the Shift-to-select tradeoff, committed .tmux.conf only, added
+this note, pushed main plus refs/notes/commits to origin.
+
+## Errors & Mistakes
+`cat -A` is not valid on macOS (BSD cat): "cat: illegal option -- A". Use
+`cat -e` or `cat -v` here.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+~/.tmux.conf is a symlink to /Users/abatilo/abatilo/vimrc/.tmux.conf, so edits in
+this repo are live for the user's running tmux after `tmux source-file
+~/.tmux.conf`. The working tree also had unrelated modifications to
+claude_settings.json (model key removed, feedbackDrafts added,
+remoteControlAtStartup flipped to false); those were deliberately left
+uncommitted. Do not `git add -A` in this repo.
+
+## Codebase Discoveries
+Commit subjects here follow conventional commits with a lowercase summary, e.g.
+"feat(tmux): send 24-bit color to xterm-256color clients". install.sh symlinks
+~/.tmux.conf and ~/.tmux/; tmux.sh installs tpm.
+
+## Open Questions
+Whether the user wants mouse selection to still reach the system clipboard
+without holding Shift. A tmux-yank plugin or a copy-mode binding to pbcopy would
+do that; not added, because it was not requested.
