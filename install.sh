@@ -57,8 +57,7 @@ ln -s "$PWD/rules" ~/.claude/rules # rules must stay as symlink (not supported i
 # commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
 
-# Set up Codex instructions from the portable rules. The Codex MCP rule only
-# applies when Claude calls Codex as a separate model, so exclude it here.
+# Set up Codex instructions from the portable rules.
 mkdir -p ~/.codex
 codex_agents_tmp=$(mktemp)
 for rule in \
@@ -82,14 +81,6 @@ cp -R plugins/abatilo-core/skills/speed-of-light ~/.codex/skills/
 tmp=$(mktemp)
 jq \
   '.mcpServers = {
-    "codex": {
-      "type": "stdio",
-      "command": "codex",
-      "args": [
-        "mcp-server"
-      ],
-      "env": {}
-    },
     "jira": {
       "type": "http",
       "url": "https://mcp.atlassian.com/v1/mcp"
