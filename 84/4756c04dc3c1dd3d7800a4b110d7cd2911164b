@@ -1,0 +1,54 @@
+## Conversation
+The user ran /debug asking "what's up with codex mcp?" after Claude Code
+reported the codex MCP server as CONNECTION_CLOSED. After the diagnosis they
+asked to remove the codex MCP server from ~/.claude.json and remove any rules
+or references to using it from claude config files in this repo, then commit
+and push. They chose removal over the pin-to-0.153.4 workaround I recommended.
+
+## Actions
+Diagnosed from the ma repo, then /cd'd to vimrc.
+- Reproduced: `codex mcp-server` exits with "Error: stdin is not a terminal"
+  because 0.154.0 forwards the unknown subcommand to the interactive TUI.
+- Confirmed 0.153.4 still has the subcommand and completes an MCP initialize
+  handshake; found upstream removal commit 531f3836a1 in the local clone at
+  /Users/abatilo/abatilo/codex.
+- Backed up ~/.claude.json to the session scratchpad, then removed
+  .mcpServers.codex plus the stale .toolUsage["mcp__codex__codex"] and
+  ["mcp__codex__codex-reply"] counters with jq.
+- install.sh: removed the codex entry from the jq .mcpServers block and
+  reworded the AGENTS.md comment, which had explained why codex-mcp.md was
+  excluded from the loop.
+- git rm rules/codex-mcp.md.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+Looked for an in-tree MCP replacement. `codex app-server` speaks Codex's own
+JSON-RPC protocol, not MCP, and the removal commit names no successor.
+`codex mcp` is only for managing external servers Codex connects to.
+
+## Hints for Future Agents
+- The repo had a pre-existing unmerged index entry for claude_settings.json
+  (UU) with no MERGE_HEAD and no conflict markers in the file, plus unrelated
+  .tmux.conf edits. `git commit -- <paths>` still works in that state: it
+  prints "claude_settings.json: needs merge" but commits the named paths. Do
+  not resolve or commit those files; they are the user's in-flight work.
+- install.sh sets .mcpServers wholesale with jq, so any server removed from
+  ~/.claude.json by hand comes back on the next install.sh run unless it is
+  also removed there.
+- ~/.claude.json is rewritten by running Claude Code sessions. Hand edits can
+  be clobbered; restart is required for MCP changes to take effect anyway.
+
+## Codebase Discoveries
+- rules/ is symlinked to ~/.claude/rules, while commands, skills, and agents
+  come from the abatilo-core plugin. install.sh concatenates a hand-listed
+  subset of rules/*.md into ~/.codex/AGENTS.md, so adding a rule file does not
+  reach Codex unless the loop is edited too.
+- The Codex CLI install stays: AGENTS.md generation and the repo-explore and
+  speed-of-light skills copied into ~/.codex/skills.
+
+## Open Questions
+Whether to replace the MCP path with a stdio shim over `codex exec`. The user
+removed the rule rather than pinning 0.153.4, so cross-model consultation has
+no configured path right now.
