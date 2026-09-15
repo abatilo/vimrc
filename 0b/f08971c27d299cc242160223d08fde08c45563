@@ -1,0 +1,20 @@
+## Conversation
+User asked to run /git-commit on the unstaged claude_settings.json change and push.
+
+## Actions
+Split the single-file diff with git add -p: this commit carries only the defaultMode change (auto -> bypassPermissions), reverting d4e1614. The model switch and modelSettings additions went into a separate commit.
+
+## Errors & Mistakes
+None
+
+## Dead Ends
+None
+
+## Hints for Future Agents
+The defaultMode and model lines sit in the same diff hunk; use `s` in git add -p to split them.
+
+## Codebase Discoveries
+None
+
+## Open Questions
+The user did not say why auto mode was abandoned after d4e1614.

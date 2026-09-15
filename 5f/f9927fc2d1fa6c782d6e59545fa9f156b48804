@@ -1,0 +1,20 @@
+## Conversation
+After mosh access from the phone worked, the user noticed colors looked slightly wrong on the phone, both over mosh and over plain SSH before it.
+
+## Actions
+Found the phone's tmux client reported features without RGB because Termux and mosh identify as xterm-256color. Added `set -as terminal-features ',xterm-256color:RGB'`, reloaded, reattached the phone, and confirmed `#{client_termfeatures}` now includes RGB. Separately installed a Dracula ~/.termux/colors.properties on the phone (Ghostty's built-in Dracula palette values) and Inconsolata Nerd Font Mono as ~/.termux/font.ttf; those live on the phone, not in this repo.
+
+## Errors & Mistakes
+None.
+
+## Dead Ends
+A merged font adding missing symbols (U+23F5, U+23BF) from JuliaMono was investigated and declined by the user; no Android font has those glyphs.
+
+## Hints for Future Agents
+Two causes produced the wrong colors: tmux downsampling truecolor (this commit) and Termux's default 16-color palette (fixed on the phone). mosh 1.4.0 passes 24-bit color through. Any other terminal reporting xterm-256color without truecolor would now get wrong colors.
+
+## Codebase Discoveries
+The Dracula tmux plugin and window-style lines set truecolor backgrounds (#282a36, #1e2029), which is where the downsampling was most visible.
+
+## Open Questions
+None.

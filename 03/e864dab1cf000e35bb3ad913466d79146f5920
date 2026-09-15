@@ -1,0 +1,20 @@
+## Conversation
+The user asked how to reduce tmux and SSH redraw flicker, especially when attaching from an Android phone (Termux) over cellular through Tailscale SSH. They wanted something like a debounce and said one frame per second would be acceptable. Later in the session they asked to commit the tmux config changes.
+
+## Actions
+Added `set -as terminal-features ',xterm*:sync'` after default-terminal and reloaded tmux on the MacBook. Checked the Ghostty client (xterm-ghostty terminfo has the Sync capability). Queried Termux with `printf '\e[?2026$p'`; it answered `;0$`, meaning unsupported.
+
+## Errors & Mistakes
+None in the config itself. The feature only helps terminals that support mode 2026, and Termux is not one of them, so it did not fix the phone's flicker.
+
+## Dead Ends
+Termux has no mode 2026 support on master, the 0.119 betas, or the Play Store build, and no redraw rate setting. ConnectBot and Haven lack it too. The phone's flicker was addressed with mosh (server-side screen diffing), which needed no Tailscale ACL change because the policy has no acls section.
+
+## Hints for Future Agents
+tmux reads terminal features when a client attaches, so detach and reattach after reloading. `source-file` appends the feature again on each reload; the duplicate entries are harmless. tmux 3.4 has no frame rate or coalescing option.
+
+## Codebase Discoveries
+The cw Mac has its own checkout of this repo with the same .tmux.conf symlink; the edit was applied there by hand and is uncommitted.
+
+## Open Questions
+None.

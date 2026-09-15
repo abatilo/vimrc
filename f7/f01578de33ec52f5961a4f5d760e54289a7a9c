@@ -1,0 +1,66 @@
+## Conversation
+Aaron ran `/claude-api prompt-audit` with no arguments. I produced the audit
+report and a proposed diff (7 hunks, all medium confidence). He replied "make
+these changes, bump version, commit and push", so this commit applies the
+proposed diff verbatim, nothing more.
+
+## Actions
+- Read shared/prompt-audit.md and the Fable 5.1 behavioral-shift sections of
+  shared/model-migration.md from the bundled claude-api skill.
+- Inventoried rules/, plugins/abatilo-core/CLAUDE.md, all 8 SKILL.md files,
+  claude_settings.json, install.sh; signal-grepped the 12 reference files.
+- Provenance from git log and notes on ba52303, 65bc6ea, 83a9a71, 60d6907,
+  f0ef5f1, e355739 (the three prior retunes).
+- Applied hunks: CLAUDE.md rewritten to one sentence plus the table; removed
+  diataxis lines 151-195, git-commit lines 55-71, interview lines 53-60,
+  kubernetes lines 111-120; repo-explore Task->Agent (frontmatter, prose,
+  example) and two numeric caps reworded. plugin.json 0.26.1 -> 0.26.2.
+- Committed only plugins/abatilo-core; claude_settings.json was already dirty
+  in the working tree (fable[1m] alias, bypassPermissions) and was left alone.
+
+## Errors & Mistakes
+- Three Bash calls used `echo ====` as a separator; zsh treats a leading `=`
+  as an equals expansion and aborted with "=== not found". Quote separators.
+- A grep call passed paths through an unquoted `$S` variable; zsh does not
+  word-split, so ugrep saw one nonexistent path. Reran with literal paths.
+- Large reads (the audit guide, the SKILL.md batch) got persisted to files
+  instead of returned; re-read them with the Read tool.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+- Target model assumed: Claude Fable 5.1, from the uncommitted settings diff
+  (model "fable[1m]" plus a claude-fable-5-1 modelSettings entry). HEAD at the
+  time still said claude-fable-5.
+- Rules (rules/*.md) came back clean. They also feed ~/.codex/AGENTS.md via
+  install.sh, so any rule edit reaches Codex too. repo-explore and
+  speed-of-light are copied to ~/.codex/skills, so this commit's repo-explore
+  edit reaches Codex too (Agent tool does not exist there either way).
+- The Task->Agent rename in repo-explore frontmatter allowed-tools is based
+  only on this session exposing a tool named Agent. Whether Claude Code still
+  accepts "Task" as an alias in allowed-tools was NOT verified. Under
+  bypassPermissions it makes no difference.
+- Deliberately kept: gh-stack (vendored verbatim, every prohibition has a
+  reason), humanizer (ALL CAPS is detection content), speed-of-light's "Don't
+  stop until..." (matches Fable 5.1 autonomy guidance), codex-mcp's "reach for
+  it more readily" (author preference with reason).
+- Low-confidence flags left unapplied: "When to Use This Skill" sections that
+  duplicate frontmatter in diataxis/interview/kubernetes; the 80% threshold in
+  git-commit; README-epic-drain.md documents a plugin that no longer exists.
+- interview's Key Principles removal reverses a judgment the June retune
+  (65bc6ea) made to keep it; restore if interviews get shallow.
+- No behavioral probes were run. Every removal is a hypothesis.
+
+## Codebase Discoveries
+- plugins/abatilo-core has no commands/ or hooks/ directory; CLAUDE.md named
+  both. Only skills/ and .claude-plugin/ exist.
+- The audit guide's keep-list item 8 (working redundancy is not cruft) and
+  Group 2 (verbose SKILL.md restating trained defaults) pull in opposite
+  directions on the duplicated sections; the tiebreaker used was ba52303's
+  recorded test for this repo: generic advice goes even when correct.
+
+## Open Questions
+- Whether the whole-file-rewrite nudge from the Fable 5.1 migration guide
+  should be added to rules/simple.md; not added because no such behavior has
+  been observed here.
