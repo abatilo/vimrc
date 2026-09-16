@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 set -eu
 
+source lib/codex.sh
+
 # Preflight checks
 command -v jq >/dev/null 2>&1 || {
   echo "jq is required but not found"
+  exit 1
+}
+command -v uv >/dev/null 2>&1 || {
+  echo "uv is required but not found"
   exit 1
 }
 
@@ -22,9 +28,7 @@ rm -rf \
   ~/.claude/skills \
   ~/.claude/rules \
   ~/.claude/CLAUDE.md \
-  ~/.claude/settings.json \
-  ~/.codex/skills/repo-explore \
-  ~/.codex/skills/speed-of-light
+  ~/.claude/settings.json
 rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml
@@ -57,24 +61,7 @@ ln -s "$PWD/rules" ~/.claude/rules # rules must stay as symlink (not supported i
 # commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
 
-# Set up Codex instructions from the portable rules.
-mkdir -p ~/.codex
-codex_agents_tmp=$(mktemp)
-for rule in \
-  rules/simple.md \
-  rules/subtractive-engineering.md \
-  rules/comments.md \
-  rules/simplified-technical-english.md \
-  rules/commit-notes.md; do
-  cat "$rule"
-  echo
-done >"$codex_agents_tmp"
-mv "$codex_agents_tmp" ~/.codex/AGENTS.md
-
-# Install personal Codex skills from the abatilo-core plugin.
-mkdir -p ~/.codex/skills
-cp -R plugins/abatilo-core/skills/repo-explore ~/.codex/skills/
-cp -R plugins/abatilo-core/skills/speed-of-light ~/.codex/skills/
+setup_codex
 
 # Set global MCP servers in ~/.claude.json (authoritative)
 [ -f ~/.claude.json ] || echo '{}' >~/.claude.json
