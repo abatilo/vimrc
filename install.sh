@@ -57,7 +57,7 @@ ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 # Set up Claude Code configuration
 mkdir -p ~/.claude
 ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
-ln -s "$PWD/rules" ~/.claude/rules # rules must stay as symlink (not supported in plugins)
+ln -s "$PWD/AGENTS.md" ~/.claude/CLAUDE.md
 # commands, skills, and agents are now provided via plugins
 # plugins configured via extraKnownMarketplaces in claude_settings.json
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 setup_codex() {
-  local codex_agents_tmp rule
-
   uv run --no-project --with tomlkit==0.13.2 python - ~/.codex/config.toml <<'PY'
 import sys
 from pathlib import Path
@@ -67,19 +65,9 @@ PY
     ~/.codex/skills/repo-explore \
     ~/.codex/skills/speed-of-light
 
-  # Set up Codex instructions from the portable rules.
   mkdir -p ~/.codex
-  codex_agents_tmp=$(mktemp)
-  for rule in \
-    rules/simple.md \
-    rules/subtractive-engineering.md \
-    rules/comments.md \
-    rules/simplified-technical-english.md \
-    rules/commit-notes.md; do
-    cat "$rule"
-    echo
-  done >"$codex_agents_tmp"
-  mv "$codex_agents_tmp" ~/.codex/AGENTS.md
+  rm -f ~/.codex/AGENTS.md
+  ln -s "$PWD/AGENTS.md" ~/.codex/AGENTS.md
 
   # Install personal Codex skills from the abatilo-core plugin.
   mkdir -p ~/.codex/skills
