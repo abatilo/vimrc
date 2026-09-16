@@ -1,0 +1,46 @@
+## Conversation
+The user first asked whether this setup repo managed Codex config.toml,
+then asked for idempotent TOML edits from Bash. They requested a sourced
+lib/ script with setup_codex(), then supplied exact settings to manage
+and approved using uv. They finally invoked git-commit. No push requested.
+
+## Actions
+Read install.sh and the notes on its recent commits. Extracted Codex skill
+cleanup, instruction generation, and skill copying into lib/codex.sh.
+Added a uv preflight check and a pinned tomlkit 0.13.2 Python heredoc that
+recursively merges the exact supplied TOML and writes only on changes.
+Bash syntax, ShellCheck, and git diff --check passed. Ran the actual Python
+heredoc against temporary files: verified creation, all settings, nested
+unrelated fields, comments, existing mode 0600, unchanged bytes and mtime
+on a second run, and invalid TOML rejection without changing the file.
+Staged only install.sh and lib/codex.sh; left claude_settings.json alone.
+Did not run the full installer or modify the live Codex configuration.
+
+## Errors & Mistakes
+The system git wrapper failed with: You have not agreed to the Xcode
+license agreements. Used /Library/Developer/CommandLineTools/usr/bin/git
+successfully. An initial command lookup failed with: zsh:1: command not
+found: -v. Replaced it with which -a git. Searching .github failed because
+that directory does not exist. The first recent-history output truncated;
+read the subjects separately to confirm Conventional Commit style.
+
+## Dead Ends
+None.
+
+## Hints for Future Agents
+Run install.sh from the repository root, as existing source paths assume.
+The specified context_management.experimental_mode key is dotted TOML
+inside [features], so merge recursively to preserve its sibling keys.
+The installer enforces only the listed fields and preserves other config.
+The full installer removes and recreates unrelated home configuration;
+validate the Python heredoc with a temporary destination instead.
+
+## Codebase Discoveries
+Codex rules are concatenated from an explicit five-file list. The two
+skills are copies from plugins/abatilo-core/skills, not symlinks. Their
+cleanup must stay with copying to prevent nested copies on repeated runs.
+The current ~/.codex/config.toml is a regular file, not a repo symlink.
+
+## Open Questions
+The user-provided settings were preserved exactly; runtime support in
+Codex was not tested. The full installer was not executed.
