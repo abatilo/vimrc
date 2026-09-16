@@ -40,3 +40,7 @@ Install the repository-pinned tools and link or generate the tracked configurati
 mise install
 ./install.sh
 ```
+
+The installer symlinks `AGENTS.md` to `~/.codex/AGENTS.md` and
+`~/.claude/CLAUDE.md`. Both tools use the same instructions. Edits to
+`AGENTS.md` are available through both links without rerunning the installer.
