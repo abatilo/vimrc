@@ -61,10 +61,7 @@ if updated != original:
     path.write_text(updated)
 PY
 
-  rm -rf \
-    ~/.codex/skills/gh-stack \
-    ~/.codex/skills/repo-explore \
-    ~/.codex/skills/speed-of-light
+  rm -rf ~/.codex/skills/*
 
   mkdir -p ~/.codex
   rm -f ~/.codex/AGENTS.md
@@ -73,6 +70,6 @@ PY
   # Install personal Codex skills from the abatilo-core plugin.
   mkdir -p ~/.codex/skills
   cp -R plugins/abatilo-core/skills/gh-stack ~/.codex/skills/
+  cp -R plugins/abatilo-core/skills/git-commit ~/.codex/skills/
   cp -R plugins/abatilo-core/skills/repo-explore ~/.codex/skills/
-  cp -R plugins/abatilo-core/skills/speed-of-light ~/.codex/skills/
 }
