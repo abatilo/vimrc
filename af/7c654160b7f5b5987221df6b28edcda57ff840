@@ -52,13 +52,20 @@ requested model/nested setting, skill content, no nested duplicate copies, and
 identical regular-file content after second run. No permanent test added.
 Fresh-context Codex and Claude reviewers inspected draft instructions. Addressed
 specific ambiguities; Codex reviewer approved final instructions and integration.
+Published with gh stack submit --auto --remote origin and pushed Git notes.
+Created draft PR #5 (Codex configuration) based on master and draft PR #6
+(shared instructions) based on agent-setup/codex-config, linked in GitHub stack
+#7. GitHub reports exactly one commit on each PR and both remain draft. Updated
+PR titles and descriptions to explain behavior and validation.
 Unrelated claude_settings.json edits remain untouched and uncommitted.
 
 ## Errors & Mistakes
 Attempted git branch -f master origin/master while moving the previously local
 Codex-config commit into its own stack layer. Git refused:
 fatal: cannot force update the branch 'master' used by worktree at '/Users/abatilo/abatilo/vimrc/.git/beads-worktrees/master'
-No master ref changed. Kept that worktree intact. Stack adoption succeeded for
+No master ref changed. Kept that worktree intact. Do not rebase the config
+layer using its adopted local trunk SHA as a fork point: that SHA already
+contains its change. The published PR correctly compares against remote master. Stack adoption succeeded for
 agent-setup/codex-config and agent-setup/shared-instructions. Local master still
 points at the earlier config commit, while origin/master is its parent.
 The initial draft said the note template was below STE although it was above;
