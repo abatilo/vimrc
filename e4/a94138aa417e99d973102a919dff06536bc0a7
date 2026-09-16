@@ -1,0 +1,52 @@
+## Intent & Decisions
+The user explicitly requested removing all other skills from Codex and their
+Claude Code plugin except repo-explore, gh-stack, and git-commit. Asked whether
+managed Codex system and plugin skills were included; user clarified personal
+skills only and to retain managed system/plugin skills. This is an authorized
+removal, not an inference that removed skills are useless. Keep one logical
+commit in a new draft PR layer and retain unrelated Claude settings edits.
+
+## Actions & Verification
+Backed up removed personal Codex skills, the plugin source snapshot, and the
+Claude plugin registry under ~/.codex/backups/essential-skills-20260916T075626Z.
+Moved hatch-pet, herdr, and speed-of-light out of ~/.codex/skills. Left the three
+retained installed personal skills and .system intact. Deleted diataxis-
+documentation, humanizer, interview, kubernetes, and speed-of-light (including
+references) from the repository plugin. Bumped 0.26.3 to 0.27.0.
+Updated setup_codex to clear non-hidden personal skill entries and copy exactly
+the three retained skills from the plugin; documented that replacement behavior.
+Refreshed the installed plugin using claude plugin update
+abatilo-core@abatilo-plugins --scope user --json. It reported update from 0.26.2
+to 0.27.0, restart required. Verified enabled plugin cache at
+~/.claude/plugins/cache/abatilo-plugins/abatilo-core/0.27.0 has exactly the three
+skills and matches source. Verified personal Codex inventory and .system.
+Bash syntax, ShellCheck, and diff checks passed. Plugin validation passed with
+existing warnings. Actual setup_codex code, with only ~/ destinations redirected
+to temporary paths, ran twice: removed known and arbitrary extra personal skills,
+preserved managed .system marker files, copied all three directories exactly,
+and removed injected stale files on reinstall. No permanent test added.
+Verified claude_settings.json SHA256 unchanged throughout the work.
+
+## Errors & Mistakes
+None. Plugin validator emitted existing warnings: no author information and
+root CLAUDE.md is not loaded as plugin project context. Validation passed.
+
+## Attempts & Outcomes
+Inventory distinguished personal ~/.codex/skills entries from .system and
+plugin-provided skills before removal. Used the official Claude plugin updater
+rather than editing its installed cache or registry. Existing removed plugin
+cache versions may remain as inactive caches; the active version contains only
+three skills. No unrelated plugin was disabled or removed.
+
+## Findings & Constraints
+Codex skill cleanup uses a normal shell glob, which leaves hidden .system
+intact; managed plugin skills live outside that personal directory. Personal
+skills added later are intentionally removed on setup to enforce the selected
+set. Claude's abatilo-plugins marketplace resolves to this local repository,
+so updating installs the working source without waiting for PR merge.
+The repo's existing retained skills are copied verbatim; this does not retune
+their prompts or remove their established tool-specific metadata.
+
+## Open Questions
+Claude Code must restart to use the refreshed plugin in existing sessions.
+Already loaded skill instructions in running agents are not retroactively erased.
