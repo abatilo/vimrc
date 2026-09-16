@@ -1,0 +1,88 @@
+## Intent & Decisions
+The user requested reviewing all five rules one at a time, consulting the
+GPT-6 Astra and Claude Fable prompting guidance, then consolidating into one
+repository file symlinked for both Codex and Claude rather than Claude rules.
+We interviewed each meaningful decision boundary before drafting.
+
+Accepted decisions: prefer representations that eliminate special cases
+(Torvalds linked-list example); autonomously restructure across callers and
+investigate/delete unrelated unnecessary code, separated into logical gh-stack
+changes or independent stacks. Unexplained purpose no longer vetoes deletion:
+use independent fresh-context reviewers, continue discovery to a clear majority
+on current evidence, but demonstrated functional/behavioral failure overrides
+votes. Tests may protect implementation details; determine whether the asserted
+behavior actually contributes to correctness before changing them. Reproduce
+bugs before fixes; automated regression preferred, repeatable script/controlled
+experiment accepted. Duplication may reveal the right abstraction; third-use
+is a heuristic. Follow local patterns and note tradeoffs. Broad history/code/PR/
+review/issue/Slack/Git-note research is opportunistic, never a required checklist.
+
+Errors: validate boundaries, enforce invariants explicitly, bounded observable
+recovery only when correct. Fail isolated work; terminate when shared state may
+be corrupted unless safe continuation is established. Challenge/interview the
+ask, then honor settled choices unless new evidence appears. Brief design for
+costly choices, simple disposable experiments preferred. Performance optimization
+requires explicit ask; incidental automation stays temporary commands.
+
+Comments default none, including package/function docs unless requested or
+repo-required. Exceptional comments can protect non-obvious correctness
+constraints. Remove extraneous comments, separately if needed for focused PRs.
+History belongs in commit messages/notes. Frequent autonomous local commits;
+notes on every commit; consolidate notes and commits to exactly one commit per
+PR base. Autonomous pushes/draft PRs allowed, human decides readiness.
+
+Claude MCP and I debated the note template: keep Errors separate from Attempts
+to preserve candor; merge Hints and Discoveries; include consequential external
+actions and verification. User accepted all six headings with None for empties.
+STE otherwise stays unchanged; user explicitly removed humanizer dependency.
+
+## Actions & Verification
+Live action: backed up the prior ~/.codex/AGENTS.md and the old rule files to
+~/.codex/backups/shared-instructions-20260916T074924Z. Recorded the old Claude
+rules symlink target there. Replaced ~/.codex/AGENTS.md and ~/.claude/CLAUDE.md
+with symlinks to /Users/abatilo/abatilo/vimrc/AGENTS.md; removed ~/.claude/rules.
+Verified both links resolve to the same file. Did not run the full installer
+against the real home directory or change live config.toml.
+
+Bash syntax, ShellCheck, and git diff --check passed. Executed the actual
+installer with only source-script and ~/ destinations redirected to temporary
+paths, twice. Verified migration from generated Codex file and old Claude rules
+link, both shared instruction symlinks, preservation of an unrelated TOML field,
+requested model/nested setting, skill content, no nested duplicate copies, and
+identical regular-file content after second run. No permanent test added.
+Fresh-context Codex and Claude reviewers inspected draft instructions. Addressed
+specific ambiguities; Codex reviewer approved final instructions and integration.
+Unrelated claude_settings.json edits remain untouched and uncommitted.
+
+## Errors & Mistakes
+Attempted git branch -f master origin/master while moving the previously local
+Codex-config commit into its own stack layer. Git refused:
+fatal: cannot force update the branch 'master' used by worktree at '/Users/abatilo/abatilo/vimrc/.git/beads-worktrees/master'
+No master ref changed. Kept that worktree intact. Stack adoption succeeded for
+agent-setup/codex-config and agent-setup/shared-instructions. Local master still
+points at the earlier config commit, while origin/master is its parent.
+The initial draft said the note template was below STE although it was above;
+review caught it and removed the positional reference.
+
+## Attempts & Outcomes
+Claude proposed loosening reproduction-first and notes-per-checkpoint to reduce
+process overhead. Rejected because both are explicit user decisions. Accepted
+review findings to scope automation to incidental work, clarify termination as
+implemented error behavior rather than an operational command, count current
+reviewer conclusions, and remove duplicated note mechanics. Did not silently
+weaken the gh-stack requirement when a reviewer suggested an optional fallback.
+
+## Findings & Constraints
+AGENTS.md is both the repository instruction file and the sole source of global
+instructions. Editing it affects both tools through symlinks; runtime reload
+behavior remains tool-specific. The obsolete ~/.claude/rules cleanup remains in
+install.sh intentionally to avoid double-loading old guidance on reinstall.
+The removed five rule files are preserved in Git history and the live backup.
+The STE body is preserved except removing humanizer, replacing a file reference
+with the consolidated section name, and adjusting heading levels.
+The humanizer skill itself remains in the plugin; only its rule dependency was
+removed. The existing gh-stack skill is already available in this environment.
+
+## Open Questions
+None in the agreed instruction content. This verifies installation and file
+contents, not a behavioral evaluation of models following the instructions.
