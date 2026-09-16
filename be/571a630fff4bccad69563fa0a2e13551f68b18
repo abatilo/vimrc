@@ -1,0 +1,43 @@
+## Intent & Decisions
+The user asked for the new Codex setup to bring a copy of
+https://github.com/github/gh-stack/tree/main/skills/gh-stack. Reused the
+existing shared vendor location rather than maintaining a second copy or
+adding a network download to installation. The explicit main URL selected
+the current upstream revision. Kept this logical change in a new gh-stack
+layer above the shared-instructions layer, with one commit and a draft PR.
+
+## Actions & Verification
+Refreshed the complete vendored skill from github/gh-stack main at
+2bd699a544a09cb5c45a013d03416e0894b0454e. Upstream skill metadata version is
+0.1.0; previous vendored skill was 0.0.9. All four files match upstream
+byte-for-byte. Added gh-stack to setup_codex cleanup and copy operations.
+Bumped abatilo-core from 0.26.2 to 0.26.3 per its plugin instructions.
+Bash syntax, ShellCheck, and git diff --check passed. Ran setup_codex with
+only home destinations redirected to temporary paths, first fresh and then
+again after injecting a stale skill file. Verified all four installed files,
+stale-file removal, no nested gh-stack directory, and preservation of an
+unrelated skill. No permanent test added.
+Backed up the installed skill to ~/.codex/backups/gh-stack-20260916T075425Z,
+then installed the complete vendor copy into ~/.codex/skills/gh-stack and
+verified its bytes. Did not rerun the full home-directory installer.
+Unrelated claude_settings.json remains uncommitted.
+
+## Errors & Mistakes
+The expected repo-explore cache did not yet exist; the initial ls reported
+No such file or directory. Cloned upstream into that cache successfully.
+
+## Attempts & Outcomes
+Copying only the existing vendored SKILL.md would omit current upstream
+reference files. Refreshed the complete directory and kept a single shared
+source for both tools. No runtime download was added.
+
+## Findings & Constraints
+The vendor policy is verbatim upstream, recorded in commit 45fd692. Upstream
+now splits the former large file into SKILL.md and three references:
+commands.md, stack-design.md, and troubleshooting.md. Copy the directory,
+not only SKILL.md. Upstream metadata and the local plugin release version
+are independent. This commit changes the skill, not the installed gh-stack
+CLI extension. Installer replacement is limited to explicitly managed skills.
+
+## Open Questions
+None.
