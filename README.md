@@ -44,3 +44,7 @@ mise install
 The installer symlinks `AGENTS.md` to `~/.codex/AGENTS.md` and
 `~/.claude/CLAUDE.md`. Both tools use the same instructions. Edits to
 `AGENTS.md` are available through both links without rerunning the installer.
+
+Codex setup replaces personal skills with `repo-explore`, `gh-stack`, and
+`git-commit`. It preserves managed system and plugin skills. The Claude Code
+plugin supplies the same three skills.
