@@ -45,6 +45,12 @@ The installer symlinks `AGENTS.md` to `~/.codex/AGENTS.md` and
 `~/.claude/CLAUDE.md`. Both tools use the same instructions. Edits to
 `AGENTS.md` are available through both links without rerunning the installer.
 
+The installer merges `claude_settings.json` into `~/.claude/settings.json`.
+The merge sets the tracked keys and keeps all other keys, such as the model
+that Claude Code saves on each machine. The merge does not remove a key from
+`~/.claude/settings.json` when the key leaves `claude_settings.json`. Run the
+installer again after an edit to `claude_settings.json`.
+
 Codex setup replaces personal skills with `repo-explore`, `gh-stack`, and
 `git-commit`. It preserves managed system and plugin skills. The Claude Code
 plugin supplies the same three skills.

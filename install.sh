@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
+source lib/claude.sh
 source lib/codex.sh
 
 # Preflight checks
@@ -26,9 +27,7 @@ rm -rf \
   ~/.claude/commands \
   ~/.claude/agents \
   ~/.claude/skills \
-  ~/.claude/rules \
-  ~/.claude/CLAUDE.md \
-  ~/.claude/settings.json
+  ~/.claude/rules
 rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml
@@ -54,13 +53,7 @@ ln -s "$PWD/ghostty_config" ~/.config/ghostty/config
 mkdir -p ~/.config/gh-dash
 ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 
-# Set up Claude Code configuration
-mkdir -p ~/.claude
-ln -s "$PWD/claude_settings.json" ~/.claude/settings.json
-ln -s "$PWD/AGENTS.md" ~/.claude/CLAUDE.md
-# commands, skills, and agents are now provided via plugins
-# plugins configured via extraKnownMarketplaces in claude_settings.json
-
+setup_claude
 setup_codex
 
 # Set global MCP servers in ~/.claude.json (authoritative)
