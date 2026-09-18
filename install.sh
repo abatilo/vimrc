@@ -52,21 +52,6 @@ ln -s "$PWD/gh-dash-config.yml" ~/.config/gh-dash/config.yml
 setup_claude
 setup_codex
 
-# Set global MCP servers in ~/.claude.json (authoritative)
-[ -f ~/.claude.json ] || echo '{}' >~/.claude.json
-tmp=$(mktemp)
-jq \
-  '.mcpServers = {
-    "jira": {
-      "type": "http",
-      "url": "https://mcp.atlassian.com/v1/mcp"
-    },
-    "coreweave": {
-      "type": "http",
-      "url": "https://docs.coreweave.com/mcp"
-    }
-  }' ~/.claude.json >"$tmp" && mv "$tmp" ~/.claude.json
-
 # Ensure trailing newline before appending
 [ -z "$(tail -c1 ~/.zshrc)" ] || echo "" >>~/.zshrc
 grep -q "# vim related" ~/.zshrc || echo "# vim related" >>~/.zshrc
