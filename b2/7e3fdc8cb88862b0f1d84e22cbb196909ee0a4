@@ -1,0 +1,17 @@
+## Intent & Decisions
+The user chose to delete the MCP block instead of changing it to an additive merge. Each machine now adds its servers with `claude mcp add`.
+
+## Actions & Verification
+Ran the complete install.sh two times with HOME set to a scratchpad directory that held a .claude.json with one server, a settings.json with a local model key, and a real skills directory. Both runs exited 0. Checksums and mtimes of .claude/settings.json, .claude.json, and .codex/config.toml were identical after the second run. The server, the model key, and the skills directory survived. The installer was not run against the real HOME at this commit.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+On the machine where this was written, ~/.claude.json held six servers that the old block would have deleted, one of them with a plain-text service token. The user had said earlier that this machine does not want jira or coreweave. Running Claude Code sessions rewrite ~/.claude.json, so an installer that does not touch it also avoids a write race. A machine that wants jira or coreweave keeps its existing entries; a new machine must add them by hand.
+
+## Open Questions
+None
