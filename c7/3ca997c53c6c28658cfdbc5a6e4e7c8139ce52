@@ -1,0 +1,17 @@
+## Intent & Decisions
+Apply the ce0d59e Codex pattern to Claude Code: a sourced setup function, a merge of managed settings that keeps unrelated keys, and no write when nothing changes. jq does the merge because jq is already a prerequisite and JSON has no comments to preserve, so uv and tomlkit are not needed.
+
+## Actions & Verification
+Ran setup_claude with HOME set to a scratchpad directory. From a symlink: the link became a real file with the tracked content, and the repository file stayed unchanged. With a compact one-line file that had extra keys: model and env.LOCAL survived and theme returned to the tracked value. A rerun left inode and mtime unchanged. With invalid JSON: jq failed with exit 5 and the file was left untouched. shellcheck 0.11.0 reports nothing for install.sh and lib/*.sh.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+Considered a text comparison of jq output against the file. Chose the semantic check `.[0] * .[1] == .[0]` so that a file Claude Code reformats does not cause a rewrite.
+
+## Findings & Constraints
+The merge cannot remove keys, the same limit as the Codex merge. mktemp creates the written file with mode 0600. jq `*` replaces arrays and scalars and merges objects recursively.
+
+## Open Questions
+None
