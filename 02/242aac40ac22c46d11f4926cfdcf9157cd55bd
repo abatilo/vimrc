@@ -1,0 +1,17 @@
+## Intent & Decisions
+The user asked to make the Claude setup idempotent in the same way as the Codex setup (ce0d59e). They accepted the recommendation that model, modelSettings, and effortLevel leave the tracked settings so /model choices stay per machine, and that the uncommitted typesafe plugin and marketplace additions get committed.
+
+## Actions & Verification
+Removed the three keys with jq del. Verified the diff by reading it. No runtime check.
+
+## Errors & Mistakes
+At this commit ~/.claude/settings.json is still a symlink to this file, so the edit also removed the keys from the live settings of this machine. The next commit in the stack replaces the symlink with a merged real file.
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+Fifteen earlier commits to this file were mostly Claude Code writing model changes through the symlink.
+
+## Open Questions
+None
