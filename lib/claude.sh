@@ -3,8 +3,14 @@
 setup_claude() {
   local settings=~/.claude/settings.json
   local merged
+  local legacy_link
 
   mkdir -p ~/.claude
+  for legacy_link in commands agents skills rules; do
+    if [ -L ~/.claude/"$legacy_link" ]; then
+      rm ~/.claude/"$legacy_link"
+    fi
+  done
   ln -sfn "$PWD/AGENTS.md" ~/.claude/CLAUDE.md
 
   if [ -L "$settings" ]; then

@@ -23,11 +23,7 @@ rm -rf \
   ~/.local/share/nvim \
   ~/.tmux.conf \
   ~/.tmux/ \
-  ~/.vsnip \
-  ~/.claude/commands \
-  ~/.claude/agents \
-  ~/.claude/skills \
-  ~/.claude/rules
+  ~/.vsnip
 rm -f \
   ~/.config/ghostty/config \
   ~/.config/gh-dash/config.yml
