@@ -1,0 +1,17 @@
+## Intent & Decisions
+Part of making the Claude setup safe to rerun. The user accepted removing only legacy symlinks instead of rm -rf.
+
+## Actions & Verification
+Ran setup_claude with HOME set to a scratchpad directory that held a real skills/remote directory and a rules symlink. The skills directory and its file survived, the rules symlink was removed, and the symlink target directory still existed. shellcheck 0.11.0 reports nothing.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+On the machine where this was written, ~/.claude/skills holds remote and synced, which do not come from this repository; the old rm -rf would have deleted them. Older installers linked these four paths into the repository (84e44bc added the skills link; rules was linked until 17bf559).
+
+## Open Questions
+None
