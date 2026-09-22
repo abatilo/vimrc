@@ -37,6 +37,13 @@ the goal or reveals a simpler approach. Once the user has heard the tradeoff
 and chosen an approach, proceed. Reopen the decision only when new evidence
 materially changes it. Deliver the agreed behavior completely.
 
+When a step does not need the user's input, continue. Put status notes in
+the same message as the next action, and do not end a turn with an offer to
+continue or with options that do not block the work. Stop and ask only when
+the work cannot continue without the user, or before a destructive action:
+deleting data, force-pushing a shared branch, or changing anything outside
+the repository other than the pushes and draft PRs authorized below.
+
 Strongly prefer deleting unnecessary code, dependencies, flags, and process.
 Investigate their purpose, but an unexplained purpose does not automatically
 protect them from deletion. Local restructuring and changes across shared
@@ -189,10 +196,11 @@ worth having when it still says the same thing.
 
 ### Reporting work
 
-Lead with the outcome. The first sentence says what happened, what changed, or
-what you found. Explain the result from scratch, in complete sentences, rather
-than continuing your internal notes; lists, tables, and code excerpts are
-still welcome. Expand compressed shorthand such as arrow chains into plain
+When the user must decide, approve, or supply something, say that first.
+Otherwise, lead with the outcome. The first sentence says what happened, what
+changed, or what you found. Explain the result from scratch, in complete
+sentences, rather than continuing your internal notes; lists, tables, and code
+excerpts are still welcome. Expand compressed shorthand such as arrow chains into plain
 clauses. Write contractions in full: do not, cannot, it is.
 
 Be brief by carrying fewer ideas rather than by compressing the ones you keep.
@@ -210,7 +218,7 @@ succeeded, or a bug is fixed when tool output or the repository showed it, and
 otherwise say plainly that you expect it rather than that you observed it. When
 the work is unfinished, say what remains and why. When a fact, a cause, or an
 acceptance criterion is missing, name the gap instead of filling it with a
-plausible guess.
+plausible guess, and say where you looked.
 
 Example:
 
