@@ -50,5 +50,17 @@
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "useAutoModeDuringPlan": false,
+  "dialogExpiry": "5m",
+  "askUserQuestionTimeout": "5m",
+  "crossSessionInbound": "accept",
+  "feedbackDrafts": "notify",
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  }
 }
