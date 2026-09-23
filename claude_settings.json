@@ -34,7 +34,25 @@
       }
     }
   },
+  "feedbackDrafts": "notify",
   "alwaysThinkingEnabled": true,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "low"
+    }
+  },
+  "askUserQuestionTimeout": "5m",
+  "dialogExpiry": "5m",
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  },
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "autoDreamEnabled": true,
@@ -49,18 +67,8 @@
   "terminalProgressBarEnabled": false,
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
+  "crossSessionInbound": "accept",
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "useAutoModeDuringPlan": false,
-  "dialogExpiry": "5m",
-  "askUserQuestionTimeout": "5m",
-  "crossSessionInbound": "accept",
-  "feedbackDrafts": "notify",
-  "pluginConfigs": {
-    "agents-md@builtin": {
-      "options": {
-        "instructionFiles": "claude-md-or-agents-md"
-      }
-    }
-  }
+  "useAutoModeDuringPlan": false
 }
