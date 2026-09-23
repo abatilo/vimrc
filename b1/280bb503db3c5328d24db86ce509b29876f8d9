@@ -2,10 +2,10 @@
 Disable token budgeting and experimental context management in the vimrc installer so Codex uses normal summarizing compaction. The user requested a direct push to the main branch; the repository default is master and main does not exist.
 
 ## Actions & Verification
-Applied only the two requested flags to the live ~/.codex/config.toml, preserving all unrelated parsed values. Ran the installer embedded Python against a temporary copy of the live config. The generated TOML parsed successfully, both flags were false, and a second run left content and mtime unchanged. bash -n and git diff --check passed. The installed Codex CLI reports both features disabled. No end-to-end compaction was run.
+Pushed the commit directly to origin/master, the existing default branch, after checking the single outgoing commit. Merged the remote Git notes before publishing notes. Applied only the two requested flags to the live ~/.codex/config.toml, preserving all unrelated parsed values. Ran the installer embedded Python against a temporary copy of the live config. The generated TOML parsed successfully, both flags were false, and a second run left content and mtime unchanged. bash -n and git diff --check passed. The installed Codex CLI reports both features disabled. No end-to-end compaction was run.
 
 ## Errors & Mistakes
-The initial commit body contained a literal backslash-n. Amended the unpushed commit using a message file with real newlines.
+The initial commit body contained a literal backslash-n. Amended the unpushed commit using a message file with real newlines. An ancestry check used a remote notes commit that was not present locally; fetched remote notes into a separate ref and merged them without conflicts.
 
 ## Attempts & Outcomes
 Executed only the config merge for validation. Applied a narrow live update because the full installer also removes skills and changes other machine settings.
