@@ -1,0 +1,17 @@
+## Intent & Decisions
+The user asked to find the settings keys that disable auto mode in plan mode and set dialog and question timeouts to 5m, then adopt them into the repo. The user then chose to also track crossSessionInbound, feedbackDrafts, and pluginConfigs. The user explicitly rejected tracking effortLevel and modelSettings because they change often and do not belong in git history.
+
+## Actions & Verification
+Pushed master and refs/notes/commits to origin at the user's request. Checked that `jq -s '.[0] * .[1] == .[0]'` of the live ~/.claude/settings.json and claude_settings.json returns true, so setup_claude is a no-op on this machine. The only live keys left untracked are effortLevel and modelSettings.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+The keys live in ~/.claude/settings.json, not ~/.claude.json; ~/.claude.json only holds UI state such as hasSeenAutoModeEntryWarning. pluginConfigs."agents-md@builtin".options.instructionFiles = "claude-md-or-agents-md" matters for this repo, which has AGENTS.md and no CLAUDE.md; the session loaded project instructions from AGENTS.md.
+
+## Open Questions
+None
