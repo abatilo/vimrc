@@ -1,0 +1,17 @@
+## Intent & Decisions
+The user asked to set the Sonnet agent model in the Claude settings to Opus 5.5, then commit and push directly to the default branch (master).
+
+## Actions & Verification
+Changed ANTHROPIC_DEFAULT_SONNET_MODEL from claude-opus-5 to claude-opus-5-5 in claude_settings.json. Validated the file with jq. Pushed to origin master at the user's explicit request.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+The "sonnet" alias, which subagents that request sonnet use, resolves through ANTHROPIC_DEFAULT_SONNET_MODEL. The Haiku alias maps to claude-sonnet-5 and was left unchanged.
+
+## Open Questions
+None
