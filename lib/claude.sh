@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
 
+merge_json() {
+  local target=$1
+  local source=$2
+  local merged
+
+  [ -f "$target" ] || echo '{}' >"$target"
+
+  if ! jq -e -s '.[0] * .[1] == .[0]' "$target" "$source" >/dev/null; then
+    merged=$(mktemp)
+    jq -s '.[0] * .[1]' "$target" "$source" >"$merged"
+    mv "$merged" "$target"
+  fi
+}
+
 setup_claude() {
   local settings=~/.claude/settings.json
-  local merged
   local legacy_link
 
   mkdir -p ~/.claude
@@ -16,11 +29,6 @@ setup_claude() {
   if [ -L "$settings" ]; then
     rm "$settings"
   fi
-  [ -f "$settings" ] || echo '{}' >"$settings"
-
-  if ! jq -e -s '.[0] * .[1] == .[0]' "$settings" claude_settings.json >/dev/null; then
-    merged=$(mktemp)
-    jq -s '.[0] * .[1]' "$settings" claude_settings.json >"$merged"
-    mv "$merged" "$settings"
-  fi
+  merge_json "$settings" claude_settings.json
+  merge_json ~/.claude.json claude_global_config.json
 }
