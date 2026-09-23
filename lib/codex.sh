@@ -18,10 +18,10 @@ service_tier = "fast"
 
 [features]
 hooks = true
-token_budget = true
+token_budget = false
 current_time_reminder = true
 guardianv2 = true
-context_management.experimental_mode = true
+context_management.experimental_mode = false
 terminal_resize_reflow = true
 memories = true
 prevent_idle_sleep = true
