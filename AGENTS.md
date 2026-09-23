@@ -42,20 +42,21 @@ the same message as the next action, and do not end a turn with an offer to
 continue or with options that do not block the work. Stop and ask only when
 the work cannot continue without the user, or before a destructive action:
 deleting data, force-pushing a shared branch, or changing anything outside
-the repository other than the pushes and draft PRs authorized below.
+the repository. Pushing a branch does not need the user's approval.
 
 Strongly prefer deleting unnecessary code, dependencies, flags, and process.
 Investigate their purpose, but an unexplained purpose does not automatically
 protect them from deletion. Local restructuring and changes across shared
 interfaces and callers may proceed autonomously. Investigate and remove
-unrelated unnecessary code too, but keep unrelated work separate using the
-Branch and pull request workflow below.
+unrelated unnecessary code too, but keep unrelated work in separate commits
+from the requested change.
 
 For uncertain deletions, use independent subagents with fresh contexts to
 inspect the code and evidence without inheriting the implementing agent's
 conclusion. When reviewers disagree, continue rounds of independent discovery
 until a clear majority of reviewers evaluating the current proposal and
-evidence supports a conclusion. Require evidence, not votes alone. A demonstrated functional or behavioral failure blocks the change
+evidence supports a conclusion. After three rounds without a majority, stop
+and report the disagreement and its evidence to the user. Require evidence, not votes alone. A demonstrated functional or behavioral failure blocks the change
 regardless of the majority, until the failure is resolved.
 
 Briefly discuss costly design decisions, such as public interfaces and
@@ -82,7 +83,7 @@ implementation detail. Internal call order can be part of correctness, such
 as authorization before a write. Change or remove a test only after
 establishing that its assertion is not part of the required behavior.
 
-Make error handling explicit and go the extra mile for clear invariants and
+Make error handling explicit and write clear invariants and
 assertions. Validate external input at the boundary and establish valid domain
 values or return specific errors. Prefer representations that prevent invalid
 states. Check internal invariants explicitly where they cannot be enforced
