@@ -1,0 +1,17 @@
+## Intent & Decisions
+The user asked for an audit of AGENTS.md against the "Getting the most out of Opus 5.5" guide (claude.dev blog, 2026-09-22). Three changes were agreed: a keep-going/stop rule, needs-from-user first in reports, and "say where you looked" for gaps. The user chose to stop only before force-pushing shared branches, not every force-push. The user explicitly asked to push directly to master instead of the usual branch + draft PR workflow.
+
+## Actions & Verification
+Pushed the commit and refs/notes/commits directly to origin master at the user's request. Verification was limited to reading the diff; prose instructions have no automated checks.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+The blog has no .md raw variant (https://claude.dev/blog/getting-the-most-out-of-opus-5-5.md returned 404); the article was extracted from HTML with curl + a Python tag strip.
+
+## Findings & Constraints
+AGENTS.md is symlinked to both ~/.claude/CLAUDE.md (lib/claude.sh) and ~/.codex/AGENTS.md (lib/codex.sh), so GPT models read it too; the new wording avoids Opus-specific references. The guide's "think hard" and reasoning-echo warnings needed no change: the file had neither. Rejected guide items: a standing TASKS.md rule (the guide frames it as per-task advice, and it would leave files in repositories), design-style exclusions, and fast mode (not relevant to this file). The guide's destructive-stop list says "changing anything outside this repository"; the rule excepts the pushes and draft PRs the workflow section already authorizes.
+
+## Open Questions
+None
