@@ -117,22 +117,6 @@ code, not the work that produced it. Remove comments about earlier iterations,
 along with names such as newHandler and code kept only for reference. Name
 tests after the behavior they protect, not the history of fixing it.
 
-## Branch and pull request workflow
-
-Use the gh-stack skill to keep work logically and atomically separated.
-Group related dependent changes in one stack; use parallel or separate stacks
-for independent work. Establish correctness and keep concerns separately
-reviewable before publishing.
-
-Commit autonomously and often on local branches. Attach a Git note to every
-commit. Before pushing or opening PRs, reassess the logical boundaries and
-squash or fix up checkpoints so each PR contains exactly one logical commit
-relative to its base branch. Consolidate notes as described in Commit notes.
-
-Push branches and open draft PRs autonomously. Keep PRs in draft; the human
-decides whether to mark them ready. Do not mark them ready or merge them
-without an explicit user instruction.
-
 ## Commit notes
 
 A commit message explains why the change exists. A Git note preserves useful
