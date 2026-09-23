@@ -1,0 +1,20 @@
+## Intent & Decisions
+The user wanted to move the left arrow 'send session to agents' shortcut to another key. The docs (code.claude.com/docs/en/agent-view) say that key cannot be rebound; only the leftArrowOpensAgents setting in /config turns it off. The user chose to turn it off in the repo setup, apply it locally, and use /bg instead.
+
+## Actions & Verification
+- Backed up ~/.claude.json to the job tmp dir, ran merge_json on a copy: jq -S diff showed only the added "leftArrowOpensAgents": false.
+- Applied merge_json to the real ~/.claude.json; jq shows false. A second run left the mtime unchanged (idempotent).
+- Ran merge_json with claude_settings.json on a copy of ~/.claude/settings.json: output identical to the input, so the refactor kept the settings merge behavior.
+- Did not run full setup_claude from the worktree, because it would symlink ~/.claude/CLAUDE.md to the worktree AGENTS.md.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+Considered adding the key to claude_settings.json like remoteControlAtStartup. Rejected after reading the 2.1.280 binary (see Findings).
+
+## Findings & Constraints
+In Claude Code 2.1.280, global config keys are listed in an array that includes leftArrowOpensAgents. Only keys in a second list (ube: theme, editorMode, remoteControlAtStartup, teammateMode, notification flags, and a few others) are read from settings.json. leftArrowOpensAgents is not in that list, so it must live in ~/.claude.json. ~/.claude.json is also written by running Claude Code sessions; the jq merge rewrites it only when the key is missing or different.
+
+## Open Questions
+A future Claude Code release may move leftArrowOpensAgents into settings.json; if so, move it into claude_settings.json and delete claude_global_config.json.
