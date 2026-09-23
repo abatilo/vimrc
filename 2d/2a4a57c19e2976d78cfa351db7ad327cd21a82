@@ -1,0 +1,17 @@
+## Intent & Decisions
+User asked to commit the settings changes, with claude-opus-5-5 effort at medium (Claude Code had written low). User said not to commit "fastMode": true; it stays in the local file only.
+
+## Actions & Verification
+Staged a copy without the fastMode line through git update-index, so the working tree keeps fastMode. Pushed master and notes to origin.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+Claude Code rewrites this file and reorders keys, so most of the diff is key moves with unchanged values. Expect fastMode to appear again as a local-only diff.
+
+## Open Questions
+None
