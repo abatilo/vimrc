@@ -1,0 +1,17 @@
+## Intent & Decisions
+User asked to reread https://cbea.ms/git-commit/ and update the git-commit skill, then bump the version, commit, and push. Minor version bump (0.28.0 to 0.29.0), matching the previous skill change. references/conventional-commits.md was left unchanged because the article does not cover conventional commits.
+
+## Actions & Verification
+Pushed master and refs/notes/commits to origin. No automated tests exist for skill prompts.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+The article says to write bodies in an editor, not with -m. The skill uses `git commit -F -` with a heredoc as the agent equivalent. claude_settings.json had an unrelated uncommitted change and was left out.
+
+## Open Questions
+None
