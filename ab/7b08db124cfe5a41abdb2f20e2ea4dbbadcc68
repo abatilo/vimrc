@@ -1,0 +1,17 @@
+## Intent & Decisions
+User wanted git-commit to trigger more consistently. Adopted the plugin-dev skill-reviewer's proposed description (dropped its git-notes clause because the body has no notes step yet). User chose to allow autonomous pushes and to make subject capitalization conditional (capitalize by default, lowercase only where the repo uses lowercase conventional commits) rather than removing the rule.
+
+## Actions & Verification
+Reloaded plugins; the new description appeared in the skill list. Triggering improvement not measured (no skill-creator evals run). PyYAML unavailable; checked description line has no ': ' sequences instead.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+claude_settings.json had an unrelated key reorder from the /fast toggle; left out of this commit. Skill still lacks git notes steps and notes push.
+
+## Open Questions
+Whether to add git notes and amend/fixup procedures to the skill body.
