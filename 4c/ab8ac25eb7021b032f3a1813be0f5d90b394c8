@@ -1,0 +1,17 @@
+## Intent & Decisions
+User asked to review the git-commit skill with plugin-dev:skill-development, then bump, commit, and push. Minor bump 0.29.0 to 0.30.0. Kept "git add -p" as a trigger phrase in the description because users say it.
+
+## Actions & Verification
+Tested the patch flow in a throwaway repo: two edits far apart in one file, awk kept only the first hunk, git apply --cached staged only that change. Pushed master and refs/notes/commits to origin.
+
+## Errors & Mistakes
+The previous commit (bb485b1) kept the git add -p instruction without noticing it cannot run in this harness.
+
+## Attempts & Outcomes
+First draft wrote patches to /tmp, then to the working tree; settled on $TMPDIR so patch files cannot be committed.
+
+## Findings & Constraints
+git apply tolerates hunk offsets after deleting earlier hunks from a patch. SKILL.md is about 790 words, so no content moved to references/.
+
+## Open Questions
+None
