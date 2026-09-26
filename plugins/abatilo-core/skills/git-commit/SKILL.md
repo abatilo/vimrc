@@ -9,14 +9,9 @@ allowed-tools:
 
 # Git Commit Skill
 
-This skill helps you create well-structured, atomic git commits with properly formatted commit messages.
-
-## Task Overview
-
-Based on the current git status and changes, create a set of logically grouped, atomic commits.
-Be specific with each grouping, and keep scope minimal. Leverage partial adds to
-make sure that multiple changes within a single file aren't batched into
-commits with unrelated changes.
+Create a set of logically grouped, atomic commits from the current changes.
+Keep each commit's scope minimal. Stage parts of a file separately when it
+contains changes that belong to different commits.
 
 ## Process
 
@@ -27,7 +22,19 @@ commits with unrelated changes.
 2. **Group Changes Logically**
    - Identify related changes that should be committed together
    - Separate unrelated changes into different commits
-   - Use `git add -p` for partial adds when a file contains multiple logical changes
+   - When a file contains more than one logical change, stage only the hunks
+     for the current commit. `git add -p` is interactive and does not work in
+     this environment, so stage hunks through a patch instead:
+
+     ```bash
+     git diff -- path/to/file > "$TMPDIR/full.patch"
+     # Copy full.patch to part.patch and delete the hunks for other commits
+     git apply --cached "$TMPDIR/part.patch"
+     git diff --cached -- path/to/file
+     ```
+
+     When hunks are too tangled to split by patch, temporarily edit the file
+     to the intermediate state, `git add` it, then restore the final state
 
 3. **Create Commits**
    - Stage the appropriate changes for each commit
@@ -40,19 +47,9 @@ commits with unrelated changes.
 - If 80% or more of recent commits follow conventional commits, use that format
 - Match the capitalization, punctuation, and structure of existing commits — consistency matters more than personal preference
 
-### Conventional Commits Format
-
-If the project uses conventional commits, follow this structure:
-
-```
-<type>[(optional scope)]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-The type and scope count toward the subject length limits below.
+For conventional commits, see `references/conventional-commits.md` for
+types, scopes, and breaking-change syntax. The type and scope count toward
+the subject length limits below.
 
 ## Git Commit Message Best Practices
 
@@ -116,11 +113,6 @@ matching the trailer style that the project already uses.
 - `Update file.js`
 - `feat added new feature` (missing colon)
 - `Added the login handler.` (past tense, trailing period)
-
-## Reference Documentation
-
-For detailed information on conventional commits, see:
-- [Conventional Commits Reference](references/conventional-commits.md) - Complete specification and examples
 
 ## Notes
 
