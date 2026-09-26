@@ -52,35 +52,50 @@ If the project uses conventional commits, follow this structure:
 [optional footer(s)]
 ```
 
+The type and scope count toward the subject length limits below.
+
 ## Git Commit Message Best Practices
 
-Follow these seven rules for excellent commit messages (adjust for conventional commits if used):
+A diff shows what changed; only the message can say why. Follow these
+seven rules from https://cbea.ms/git-commit/, adjusted for the project's
+conventions:
 
-1. **Separate subject from body with a blank line** - Critical for readability
-2. **Limit subject line to 50 characters** - Forces concise summaries
-3. **Capitalize the subject line by default** - Use lowercase when the project uses lowercase conventional commits
-4. **Do not end subject line with a period** - It's a title, not a sentence
-5. **Use imperative mood in subject** - "Add feature" not "Added feature"
-   - Test: Subject should complete "If applied, this commit will _____"
-6. **Wrap body at 72 characters** - Ensures readability in terminals
-7. **Use body to explain what and why vs. how** - Code shows how, commit explains why
+1. **Separate subject from body with a blank line** - `git log --oneline`,
+   `shortlog`, and `rebase` treat the first line as the subject
+2. **Limit the subject line to 50 characters** - A rule of thumb; 72 is the
+   hard limit, where GitHub truncates the subject
+3. **Capitalize the subject line** - Use lowercase when the project uses
+   lowercase conventional commits
+4. **Do not end the subject line with a period**
+5. **Use the imperative mood in the subject line** - The subject completes
+   "If applied, this commit will _____". The imperative applies only to the
+   subject; the body can use normal prose
+6. **Wrap the body at 72 characters** - Git does not wrap text, so wrap it
+   by hand
+7. **Use the body to explain what and why, not how** - Describe the problem,
+   the previous behavior, why the change fixes it, and any side effects or
+   consequences a reader would not expect. The code already shows how
 
-### Message Structure
+Not every commit needs a body. When the subject says everything, such as
+`Fix typo in user guide introduction`, omit the body. When the change needs
+context, write the body.
 
+Pass a multi-line message through a heredoc so that the blank line and the
+wrapping stay exact:
+
+```bash
+git commit -F - <<'MSG'
+Summarize the change in about 50 characters
+
+Explain the problem that this commit solves and why this approach
+solves it. Wrap lines at 72 characters.
+
+Resolves: #123
+MSG
 ```
-<subject: concise summary, imperative, capitalized unless the project uses lowercase, no period>
 
-<body: explain the motivation for the change and contrast with previous behavior>
-
-<footer: references to issues, breaking changes, etc.>
-```
-
-### Key Principles
-
-- **Atomic commits**: Each commit should represent one logical change
-- **Context is king**: Explain why the change was made, not just what
-- **Future-proof**: Write for someone (including future you) reading this months later
-- **Consistency**: Maintain uniform style across the project
+Put issue and pull request references in trailers at the end of the body,
+matching the trailer style that the project already uses.
 
 ### Examples
 
@@ -88,20 +103,19 @@ Follow these seven rules for excellent commit messages (adjust for conventional 
 - `Refactor subsystem X for readability`
 - `Remove deprecated methods from UserService`
 - `Fix null pointer exception in login handler`
-- `Add user authentication middleware`
 
 **Good Examples (Conventional Commits):**
 - `feat: add user authentication middleware`
 - `fix: resolve null pointer exception in login handler`
 - `refactor: improve subsystem X readability`
-- `chore: remove deprecated methods from UserService`
 
 **Bad Examples:**
 - `fixed stuff`
 - `Changes`
 - `wip`
 - `Update file.js`
-- `feat added new feature` (incorrect format - missing colon)
+- `feat added new feature` (missing colon)
+- `Added the login handler.` (past tense, trailing period)
 
 ## Reference Documentation
 
