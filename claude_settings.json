@@ -18,6 +18,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
+  "model": "opus",
   "worktree": {
     "baseRef": "head"
   },
@@ -38,12 +39,13 @@
   "alwaysThinkingEnabled": true,
   "modelSettings": {
     "claude-opus-5-5": {
-      "effortLevel": "medium"
+      "effortLevel": "low"
     },
     "claude-fable-5-1": {
       "effortLevel": "low"
     }
   },
+  "fastMode": true,
   "askUserQuestionTimeout": "5m",
   "dialogExpiry": "5m",
   "pluginConfigs": {
