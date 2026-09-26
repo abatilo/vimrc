@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: Create logically grouped, atomic git commits with well-formatted commit messages following best practices. Use when user says "/commit", "commit changes", "create commits", asks about conventional commits format, needs to split changes into multiple commits, or wants help with git add -p partial staging.
+description: This skill should be used whenever a git commit is about to be created, including when Claude decides on its own to commit at the end of a task. Use it instead of running `git commit` directly with Bash. Trigger phrases include "commit", "commit this", "commit these changes", "make a commit", "commit and push", "save my work", "check this in", "wrap this up", "split this into commits", "amend the last commit", "fixup", "squash", "reword the commit message", and "/commit". Also use it for staging decisions (git add -p, partial staging) and writing or matching conventional-commit messages.
 allowed-tools:
   - Bash(git:*)
   - Read
@@ -58,7 +58,7 @@ Follow these seven rules for excellent commit messages (adjust for conventional 
 
 1. **Separate subject from body with a blank line** - Critical for readability
 2. **Limit subject line to 50 characters** - Forces concise summaries
-3. **Capitalize the subject line** - Consistent formatting
+3. **Capitalize the subject line by default** - Use lowercase when the project uses lowercase conventional commits
 4. **Do not end subject line with a period** - It's a title, not a sentence
 5. **Use imperative mood in subject** - "Add feature" not "Added feature"
    - Test: Subject should complete "If applied, this commit will _____"
@@ -68,7 +68,7 @@ Follow these seven rules for excellent commit messages (adjust for conventional 
 ### Message Structure
 
 ```
-<subject: concise summary, imperative, capitalized, no period>
+<subject: concise summary, imperative, capitalized unless the project uses lowercase, no period>
 
 <body: explain the motivation for the change and contrast with previous behavior>
 
@@ -110,5 +110,4 @@ For detailed information on conventional commits, see:
 
 ## Notes
 
-- Don't push to remote unless explicitly asked
 - Verify authorship and commit details before amending
