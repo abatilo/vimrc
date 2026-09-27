@@ -134,11 +134,13 @@ commit identities: preserve and consolidate the useful context, then attach
 it to the resulting commits. Preserve decisions and mistakes that still
 explain the work, and distinguish superseded facts from the final state.
 
-Include all six sections below. Write "None" for an empty section. Record
+Include all seven sections below. Write "None" for an empty section. Record
 consequential external actions before verification results; omit routine
 read/search diaries. Separate mistakes the agent made from approaches that
 were reasonably tried and did not work. Keep intentional oddities and their
-rationale in Findings & Constraints.
+rationale in Findings & Constraints. In Relevant Files & Commits, list files
+outside the diff and earlier commits that the next agent should read first,
+each with the reason it matters.
 
 ```bash
 git notes add -m "$(cat <<'EOF'
@@ -156,6 +158,9 @@ git notes add -m "$(cat <<'EOF'
 
 ## Findings & Constraints
 <facts, constraints, evidence, and reasons unusual code is intentional>
+
+## Relevant Files & Commits
+<the files and earlier commits most useful for understanding this work, and why>
 
 ## Open Questions
 <unresolved uncertainty and deferred decisions>
