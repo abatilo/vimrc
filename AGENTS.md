@@ -12,12 +12,32 @@ special case, consider whether changing the representation would make that
 case ordinary. Judge simplicity by how much a reader must understand and
 keep track of, not by familiarity or line count alone.
 
-Model the domain as values. Minimize mutable state, keep it in one obvious
-place, and make mutations visible. Push side effects to the edges. Prefer
-small functions with explicit inputs and outputs and narrow interfaces.
-Make common operations straightforward to use, with unsurprising defaults.
-Break complex expressions into named intermediate values that a reader can
-step through in a debugger.
+Model the domain as values. Put decisions in a functional core: pure
+functions that take values and return values, including values that describe
+the effects to perform. Put effects in an imperative shell that gathers the
+inputs, calls the core, and carries out the result. Time and randomness are
+effects. The shell calls the core, and the core never calls the shell,
+because a core that needs no infrastructure can be read, tested, and changed
+as plain logic. The core receives data, not clients or connections. When a
+decision appears in the shell, move the decision into the core and pass the
+facts that the decision needs as values.
+
+Minimize mutable state, keep it in one obvious place, and make mutations
+visible. Prefer small functions with explicit inputs and outputs and narrow
+interfaces. Make common operations straightforward to use, with unsurprising
+defaults. Break complex expressions into named intermediate values that a
+reader can step through in a debugger.
+
+Keep behavior local. A reader should be able to tell what a unit of code
+does by reading that unit, because every behavior defined elsewhere is
+something the reader must find and remember. Make the behavior visible at
+the place where it occurs. The implementation can live elsewhere: a
+well-named function called with explicit arguments is local, and a handler
+registered in another file is not. Prefer locality over removing duplication
+and over separating concerns into different files. When they conflict, weigh
+the distance: behavior a few lines away costs little, and behavior in
+another file costs much more. The split between the core and the shell keeps
+locality when the shell calls the core explicitly.
 
 Let concrete uses reveal abstractions. Some duplication is acceptable, and
 repeating the work can reveal which parts actually belong together. A third
@@ -76,6 +96,8 @@ Establish a suspected bug with a reproducible failure before implementing
 a fix. Prefer an automated regression test; a repeatable script or
 controlled experiment is also acceptable. Use the reproduction to check the behavior after the fix.
 Prefer integration tests over unit tests built on mocked collaborators.
+Test the functional core with plain values, and test the imperative shell
+with integration tests.
 
 Preserve functional and behavioral correctness. When a test blocks a simpler
 implementation, determine whether it protects required behavior or merely an
