@@ -1,0 +1,21 @@
+## Intent & Decisions
+The user named two principles they care about: locality of behaviour (https://htmx.org/essays/locality-of-behaviour/) and functional core, imperative shell (https://functional-architecture.org/functional_core_imperative_shell/). They asked for proposed additions, then asked for the phrasing to be balanced against the Claude Fable 5 prompting guides, then approved all three additions. The user did not answer the question of a firm default versus "weigh the distance" for locality; the committed text states the default first and the distance criterion second.
+
+## Actions & Verification
+No tests exist for this file. Verified that ~/.claude/CLAUDE.md is a symbolic link to AGENTS.md in this repository, so one edit changes both. Committed directly on master, which matches the existing history of this repository. Nothing was pushed.
+
+## Errors & Mistakes
+The first draft listed mechanisms to avoid (hooks, decorators, monkey patches, global configuration, implicit ordering, inheritance). That list was removed after reading the prompting guides, because current models follow instructions literally and the list could stop uses that a framework or repository requires.
+
+## Attempts & Outcomes
+Dropped from the first draft: "Keep the shell thin, with few branches" (covered by the sentence about moving decisions into the core) and "A test that needs a mock usually shows that a decision lives in the shell" (strategy coaching; the mock preference is already stated in the preceding sentence).
+
+## Findings & Constraints
+The sentence "Push side effects to the edges" was replaced, not kept, to avoid two wordings of one rule. The Claude Fable 5 guide recommends an instruction against cleanup beyond the task; the "Scope and subtraction" section deliberately says otherwise and was left unchanged. The user mentioned "speed of light" as an existing principle, but no such term appears in AGENTS.md.
+
+## Relevant Files & Commits
+- https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5 and .../prompting-claude-fable-5-1: source of the phrasing rules (give the reason, avoid prohibition lists, say each thing once).
+- 72b907c: the previous change to this file.
+
+## Open Questions
+Whether the user wants a stronger or weaker default for locality against removing duplication.
