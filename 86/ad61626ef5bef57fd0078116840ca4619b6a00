@@ -1,0 +1,17 @@
+## Intent & Decisions
+User ran /claude-api prompt-audit on AGENTS.md (target Opus 5.5) and asked to apply all four findings. User decided pushes need no approval; draft PRs were not mentioned, so only pushing is authorized.
+
+## Actions & Verification
+Pushed master and refs/notes/commits to origin. ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md are symlinks to AGENTS.md (lib/claude.sh, lib/codex.sh), so local env picks up the change without reinstall. No behavioral probe was run.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+The three-round cap on subagent review is an agent-chosen bound; the prior text had no limit. 'go the extra mile' was replaced with plain wording.
+
+## Open Questions
+Whether draft PRs should also be autonomous.
