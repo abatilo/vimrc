@@ -1,0 +1,21 @@
+## Intent & Decisions
+The user asked to commit and push the removal of the ANTHROPIC_DEFAULT_HAIKU_MODEL and ANTHROPIC_DEFAULT_SONNET_MODEL env overrides in claude_settings.json.
+
+## Actions & Verification
+Pushed the branch and refs/notes/commits to origin.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+Commit 9db4f3f earlier mapped the sonnet alias to claude-opus-5-5. This commit removes that mapping.
+
+## Relevant Files & Commits
+claude_settings.json: the only file changed.
+9db4f3f: added the sonnet alias mapping that this commit removes.
+
+## Open Questions
+None
