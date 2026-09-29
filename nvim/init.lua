@@ -62,7 +62,6 @@ vim.pack.add({
   "https://github.com/nvim-telescope/telescope-fzf-native.nvim",
   "https://github.com/nvim-telescope/telescope-ui-select.nvim",
   { src = "https://github.com/nvim-telescope/telescope.nvim", version = "0.1.x" },
-  "https://github.com/kiyoon/telescope-insert-path.nvim",
 
   -- LSP
   "https://github.com/neovim/nvim-lspconfig",
@@ -78,8 +77,6 @@ vim.pack.add({
   "https://github.com/hrsh7th/cmp-nvim-lsp",
   "https://github.com/hrsh7th/cmp-buffer",
   "https://github.com/hrsh7th/cmp-path",
-  -- @-mention project files as a completion source (replaces telescope-insert-path)
-  "https://github.com/not-manu/filemention.nvim",
 
   -- GitHub UI
   "https://github.com/pwntester/octo.nvim",
@@ -168,25 +165,6 @@ require("nvim-tree").setup({
   live_filter = { always_show_folders = false },
 })
 
-local path_actions = require("telescope_insert_path")
-require("telescope").setup({
-  defaults = {
-    mappings = {
-      i = {
-        ["<C-a>"] = path_actions.insert_abspath_a_insert,
-      },
-      n = {
-        ["["] = path_actions.insert_reltobufpath_visual,
-        ["]"] = path_actions.insert_abspath_visual,
-        ["{"] = path_actions.insert_reltobufpath_insert,
-        ["}"] = path_actions.insert_abspath_insert,
-        ["-"] = path_actions.insert_reltobufpath_normal,
-        ["="] = path_actions.insert_abspath_normal,
-        ["<C-o>"] = path_actions.insert_abspath_a_insert,
-      },
-    },
-  },
-})
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
 
@@ -324,16 +302,6 @@ require("mason-tool-installer").setup({
   },
 })
 
--- filemention.nvim: type `@` in insert mode to fuzzy-insert a project-relative
--- file path. Replaces telescope-insert-path's picker actions; it registers
--- itself as the nvim-cmp source wired into cmp.sources below. filetypes = "*"
--- makes it available in every buffer (matching the old picker, which was
--- filetype-agnostic); otherwise it only activates in text-ish filetypes like
--- markdown/gitcommit, which is why `@` did nothing in code files.
-require("filemention").setup({
-  filetypes = "*",
-})
-
 local cmp = require("cmp")
 cmp.setup({
   completion = {
@@ -355,7 +323,6 @@ cmp.setup({
     { name = "vsnip" },
     { name = "buffer", keyword_length = 4 },
     { name = "path" },
-    { name = "filemention" },
   },
 })
 
