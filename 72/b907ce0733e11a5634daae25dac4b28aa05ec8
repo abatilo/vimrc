@@ -1,0 +1,21 @@
+## Intent & Decisions
+The user asked for a section in the commit note template that covers the most relevant files and/or commits for the work. The section is named "Relevant Files & Commits" and sits before Open Questions so that Open Questions stays last.
+
+## Actions & Verification
+Searched the repository for other copies of the template. Only AGENTS.md holds it; ~/.claude/CLAUDE.md is a symlink to AGENTS.md. Not pushed.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+The guidance sentence asks for files outside the diff, because git already records the files inside the diff. The section count in the prose changed from six to seven.
+
+## Relevant Files & Commits
+- AGENTS.md: the only copy of the template.
+- .claude/worktrees/sonnet-opus-5-5/AGENTS.md: a worktree copy that still has the six-section template; not changed.
+
+## Open Questions
+None
