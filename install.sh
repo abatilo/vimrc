@@ -72,7 +72,7 @@ grep -q "SAVEHIST=" ~/.zshrc || echo "SAVEHIST=1000000" >>~/.zshrc
 grep -q "setopt appendhistory" ~/.zshrc || echo "setopt appendhistory" >>~/.zshrc
 
 grep -qF "octo()" ~/.zshrc || echo "octo() { vim -c \"Octo pr edit \$1\" }" >>~/.zshrc
-grep -qF "ask()" ~/.zshrc || echo "ask() { gh models run gpt-4.1 \$1 }" >>~/.zshrc
+grep -qF "ask()" ~/.zshrc || echo "ask() { claude --model claude-sonnet-5-5 --effort low --print \$1 }" >>~/.zshrc
 grep -q "export PAGER=" ~/.zshrc || echo "export PAGER=" >>~/.zshrc
 grep -qF "tmpdir()" ~/.zshrc || cat <<'EOF' >>~/.zshrc
 tmpdir() {
