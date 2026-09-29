@@ -1,0 +1,20 @@
+## Intent & Decisions
+The user asked to replace the ask() helper, which called gh models, with claude --model claude-sonnet-5-5 --effort --print, both in install.sh and directly in ~/.zshrc. The request omitted an effort value; the agent chose low because ask() is for quick questions, and told the user they can pick another level.
+
+## Actions & Verification
+Outside the diff, the agent edited ~/.zshrc line 103 from `ask() { gh models run openai/gpt-4.1 $1 }` to the new definition, after saving a backup in the session scratchpad. bash -n install.sh passed. The line that install.sh appends was printed and matched ~/.zshrc. In a new interactive zsh, ask "Reply with only the word pong" returned pong.
+
+## Errors & Mistakes
+None.
+
+## Attempts & Outcomes
+Running claude with --effort and no value printed: "Warning: Unknown --effort value '--print' — ignoring it and using the default effort. Valid values: low, medium, high, xhigh, max." That output is why the level is explicit.
+
+## Findings & Constraints
+install.sh only appends ask() when ~/.zshrc has no ask() yet, so existing machines keep their old definition until ~/.zshrc is edited by hand. The user's claude alias wraps the CLI in caffeinate -dims, and zsh expands that alias inside ask() at definition time. $1 is unquoted to match octo(); zsh does not word-split it.
+
+## Relevant Files & Commits
+~/.zshrc holds the live ask() definition that install.sh does not overwrite.
+
+## Open Questions
+The effort level is the agent's choice, not the user's.
