@@ -1,0 +1,20 @@
+## Intent & Decisions
+User chose to drop both path-insertion plugins (filemention.nvim and telescope-insert-path.nvim) after trying them side by side in 8603af2 and b6d9ae0.
+
+## Actions & Verification
+luajit -bl nvim/init.lua reported OK. Headless nvim loaded init.lua and require("telescope") succeeded. The plugin directories under ~/.local/share/nvim/site/pack/core/opt were not deleted.
+
+## Errors & Mistakes
+None.
+
+## Attempts & Outcomes
+None.
+
+## Findings & Constraints
+The telescope.setup() call held only the path_actions mappings, so it was deleted rather than left empty. load_extension("fzf") and ("ui-select") work without it.
+
+## Relevant Files & Commits
+8603af2 and b6d9ae0 show the removed wiring and its notes.
+
+## Open Questions
+Stale installed plugins can be removed with :lua vim.pack.del({"filemention.nvim","telescope-insert-path.nvim"}).
