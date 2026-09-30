@@ -1,0 +1,23 @@
+## Intent & Decisions
+The user requested gpt-6.1-sol as the default model, high reasoning effort, and the fast service tier, then a commit and push. Updated the tracked installer defaults and the live configuration. The existing service_tier = "fast" already matched the request.
+
+## Actions & Verification
+Backed up the live ~/.codex/config.toml and applied the embedded installer merge without running the unrelated machine setup or skill cleanup. Pushed b9967ef to origin/master. Merged remote Git notes before attaching this note.
+The installer merge produced valid TOML and changed only the requested defaults compared with the live starting values. Every unrelated parsed setting survived. A second merge on a temporary copy left content and modification time unchanged. Verified the live model, effort, and tier. bash -n, ShellCheck with both sourced libraries supplied, and git diff --check passed. No model request was made. The desktop app must reload configuration to use the new defaults.
+
+## Errors & Mistakes
+The first ShellCheck command omitted lib/claude.sh from its input, so it reported SC1091. Reran ShellCheck with both sourced libraries; it passed.
+
+## Attempts & Outcomes
+Executed the embedded config merge against a temporary copy before applying it to the live file. The candidate exactly matched the original parsed configuration with the requested defaults replaced.
+
+## Findings & Constraints
+install.sh calls setup_codex in lib/codex.sh. The full setup function removes personal skills, so only its configuration merge was needed here. The fast service tier was already tracked and required no diff. Official OpenAI documentation confirms gpt-6.1-sol supports high effort and shows service_tier = "fast" for the model.
+
+## Relevant Files & Commits
+install.sh: sources lib/codex.sh and invokes setup_codex.
+b1280bb: disables token budgeting and experimental context management; these settings remain unchanged.
+~/.codex/config.toml: live merged configuration; unrelated values are preserved.
+
+## Open Questions
+None
