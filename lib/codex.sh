@@ -11,8 +11,9 @@ settings = tomlkit.parse('''
 model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 file_opener = "none"
-sandbox_mode = "danger-full-access"
-approval_policy = "never"
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 web_search = "live"
 service_tier = "fast"
 
