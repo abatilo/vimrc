@@ -33,6 +33,7 @@ enabled = true
 
 [tui]
 animations = false
+fullscreen_transcript = false
 whimsy = false
 vim_mode_default = true
 
