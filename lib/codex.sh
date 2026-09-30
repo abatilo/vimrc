@@ -8,8 +8,8 @@ from pathlib import Path
 import tomlkit
 
 settings = tomlkit.parse('''
-model = "gpt-6-astra"
-model_reasoning_effort = "low"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
 file_opener = "none"
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
