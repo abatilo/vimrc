@@ -22,16 +22,7 @@
   },
   "enabledPlugins": {
     "claude-code-wakatime@wakatime": true,
-    "abatilo-core@abatilo-plugins": true,
-    "typesafe@typesafe-ai": true
-  },
-  "extraKnownMarketplaces": {
-    "typesafe-ai": {
-      "source": {
-        "source": "github",
-        "repo": "typesafe-ai/skills"
-      }
-    }
+    "abatilo-core@abatilo-plugins": true
   },
   "feedbackDrafts": "notify",
   "alwaysThinkingEnabled": true,
