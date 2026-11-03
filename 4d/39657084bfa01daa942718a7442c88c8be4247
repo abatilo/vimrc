@@ -1,0 +1,27 @@
+## Intent & Decisions
+User wanted a new review skill inspired by the deleted code-review agent team (removed in f62a979), but scoped to code style only, since built-in /code-review handles correctness. Named `cs-review`. Two agents: one meticulously validating Functional Core, Imperative Shell (https://functional-architecture.org/functional_core_imperative_shell/), one validating Locality of Behaviour (https://htmx.org/essays/locality-of-behaviour/) in design and layout.
+Decisions made by the agent (not asked): agent names fcis-reviewer and locality-reviewer; no Codex debate, no agent teams, no risk lanes (the old skill's complexity was deliberately not carried over); agents run the diff commands themselves rather than receiving pasted diffs; the lead verifies every finding before reporting; severities must-fix / should-fix / consider; no --fix mode. Minor bump 0.30.1 -> 0.31.0.
+
+## Actions & Verification
+Pushed master and refs/notes/commits to origin.
+Trial run: built a throwaway Python repo in the session scratchpad with planted violations (clock and env reads in domain logic, injected db, interleaved SMTP send, argument mutation, import-time monkeypatch of orders.total). Ran each agent body through a general-purpose subagent (the plugin agents could not be loaded mid-session). fcis found R4, R1, R2, R5, R8, R9, R7 with a correct effect inventory; locality found L1 (D3 monkeypatch), L3 (D4 env/clock), L9 (process name). Both outputs followed the specified format.
+Not verified: invoking /cs-review end to end with the real subagent_type names abatilo-core:fcis-reviewer and abatilo-core:locality-reviewer, which needs a plugin reload.
+
+## Errors & Mistakes
+None.
+
+## Attempts & Outcomes
+None.
+
+## Findings & Constraints
+The two principles can conflict (FCIS separates, LoB co-locates). Both agent prompts and the skill resolve it the same way as AGENTS.md: a shell calling a well-named core function with explicit arguments is local and correct. Keep that rule in all three files if editing.
+lib/codex.sh copies only gh-stack, git-commit, repo-explore to Codex; cs-review is Claude Code only because it depends on plugin agents. README says so.
+Pre-existing uncommitted changes to claude_settings.json and lib/codex.sh were left unstaged; they are the user's.
+
+## Relevant Files & Commits
+f62a979 and its parent: the previous code-review agent team, useful only as history.
+plugins/abatilo-core/CLAUDE.md: mandatory version bump rule.
+AGENTS.md: the user's own FCIS and locality wording, which the agent rules mirror.
+
+## Open Questions
+Whether the lead's verification step is enough, or whether a separate verifier agent is wanted. Whether a --fix mode is wanted.
