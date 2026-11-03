@@ -1,0 +1,27 @@
+## Intent & Decisions
+User asked for deep research on blog posts about implicit state machines, to ground a new cs-review perspective that finds implicit state machines that should be explicit. User approved the agent's proposed source set ("start with your suggestions, I can adjust later").
+Settled: new agent state-machine-reviewer, primary sources Wlaschin "Designing with types: Making state explicit" and Khourshid "The FaceTime Bug and the Dangers of Implicit State Machines"; supporting sources Minsky, Pocock, Dodds, Khourshid (disabling a button), Harper, King, Sachs, Clayton, DevIQ, Biffle, Hobden, statecharts.dev, Misamore, Wayne. Rules S1-S11 plus a "When not to flag" section built on Wlaschin's "when not to use this approach" and Clayton/Sachs limits. Proposed explicit form is a pure transition function returning next state plus effect description, so it agrees with fcis-reviewer. Minor bump 0.31.0 -> 0.32.0.
+
+## Actions & Verification
+Pushed master and refs/notes/commits to origin.
+Research: read every cited source through web-fetch subagents. Jason Sachs's article was only half verbatim; the second half came from a model summary.
+Trial: built a Go Upload type in the session scratchpad with three status booleans, phase-marking nullable fields, an unguarded event method, a Connect-before-Start ordering requirement, and an if-chain label. Ran the agent body through a general-purpose subagent (new plugin agents need /reload-plugins). It reported S5, S1, S3, S9 (must-fix) and S7 (should-fix) with correct reachable invalid states and a sealed-interface Go proposal with a pure Transition(s, e) (State, error).
+Not verified: /cs-review end to end with all three real agent types.
+
+## Errors & Mistakes
+First skill edit missed two "both agents" phrases; fixed before commit.
+
+## Attempts & Outcomes
+Searched for Martin Fowler "Replace Type Code with State/Strategy" (refactoring.com returned 404), Mark Seemann and matklad posts on state machines (none found). Jane Street and TigerBeetle engineering posts were not checked.
+
+## Findings & Constraints
+No single essay makes the implicit-state-machine argument as cleanly as the FCIS and LoB essays, so the agent cites two primary sources and many single-rule sources. Some rules, such as S4 lifecycle inferred from nullable timestamps and row presence, combine several sources rather than quoting one.
+S9 deliberately allows a default branch that fails loudly as an invariant check; only silent catch-alls are flagged.
+The conflict rule in cs-review SKILL.md (shell calls a named pure core function) must stay consistent across all three agent files.
+
+## Relevant Files & Commits
+4d39657: added cs-review with fcis-reviewer and locality-reviewer; read its note for the original design decisions.
+plugins/abatilo-core/agents/fcis-reviewer.md and locality-reviewer.md: sibling agents whose structure and output format the new agent mirrors.
+
+## Open Questions
+The user may adjust the source list later. Rust typestate sources (Biffle, Hobden) are cited but language-specific.
