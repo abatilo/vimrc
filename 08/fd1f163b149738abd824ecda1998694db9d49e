@@ -1,0 +1,23 @@
+## Intent & Decisions
+The user requested the --approve-for-me equivalent in the vimrc-managed Codex configuration, a commit and push, and a matching local config update. Set sandbox_mode to workspace-write, approval_policy to on-request, and approvals_reviewer to auto_review.
+
+## Actions & Verification
+Applied only the three requested keys to ~/.codex/config.toml using tomlkit 0.13.2. Parsed the before and after TOML and confirmed that all unrelated values were preserved. Executed the installer embedded Python against a temporary copy of the live config; it produced the expected settings and valid TOML. A second run preserved both content and mtime. bash -n lib/codex.sh, git diff --check, and git diff --cached --check passed. The commit contains only the requested approval settings. Runtime approval behavior was not exercised in a new session.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+Used a narrow live config merge because setup_codex also changes skills and instruction links. Constructed the staged patch from HEAD so unrelated working-tree changes could not be included.
+
+## Findings & Constraints
+The initial working tree contained model and reasoning changes. Those became the separate commit b9967ef before staging this change. The local Codex CLI implementation maps --approve-for-me to exactly these three config settings. Existing sessions do not reload the changed startup settings; start a new session to use them.
+
+## Relevant Files & Commits
+install.sh sources lib/codex.sh and calls setup_codex.
+/Users/aaron/abatilo/codex/codex-rs/utils/cli/src/shared_options.rs defines take_auto_review_config_overrides and the exact flag mapping.
+b1280bb explains the managed config merge and why narrow local updates preserve unrelated machine settings.
+b9967ef contains the independently committed model and reasoning settings immediately before this change.
+
+## Open Questions
+None

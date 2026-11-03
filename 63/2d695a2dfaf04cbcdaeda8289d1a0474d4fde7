@@ -1,0 +1,25 @@
+## Intent & Decisions
+The user selected Scrollback TUI mode locally and requested that the same preference be included in the tracked install/setup configuration, then committed and pushed. Added fullscreen_transcript = false to the existing [tui] settings in lib/codex.sh.
+
+## Actions & Verification
+The live ~/.codex/config.toml already contains [tui] fullscreen_transcript = false; no live configuration changes were needed. Fetched origin/master and remote Git notes and merged the notes before committing. Executed the actual embedded installer config merge against temporary fresh, fullscreen-enabled, and live-copy configurations. All produced valid TOML with fullscreen_transcript = false and the expected merged settings; unrelated values were preserved. Repeating each merge left content and modification time unchanged. bash -n lib/codex.sh, shellcheck lib/codex.sh, git diff --check, and git diff --cached --check passed. No interactive TUI session was launched to verify rendering.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+Initial sandboxed validation could not access the existing uv cache, and the initial fetch could not write .git/FETCH_HEAD. Both succeeded with authorized escalated execution. The official configuration-reference page could not be fetched; local Codex implementation and schema established the exact setting. Tested only the embedded config merge because the full setup function also replaces skills and instruction links.
+
+## Findings & Constraints
+The local Codex /tui picker maps Scrollback to false and Fullscreen to true, then persists the value at tui.fullscreen_transcript. The picker says restart is required and launch overrides still apply. No alternate_screen setting is needed to reproduce the user's selected preference. The working tree was clean before this change.
+
+## Relevant Files & Commits
+install.sh sources lib/codex.sh and invokes setup_codex.
+~/.codex/config.toml contains the user's saved Scrollback preference.
+/Users/aaron/abatilo/codex/codex-rs/tui/src/chatwidget/tui_mode_picker.rs maps Scrollback to false.
+/Users/aaron/abatilo/codex/codex-rs/tui/src/app/tui_mode_picker.rs persists tui.fullscreen_transcript and reports the restart requirement.
+/Users/aaron/abatilo/codex/codex-rs/config/src/types.rs defines fullscreen_transcript, which defaults to true.
+08fd1f1 and b1280bb explain the existing managed configuration merge and narrow validation approach.
+
+## Open Questions
+None

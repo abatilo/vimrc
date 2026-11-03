@@ -1,0 +1,20 @@
+## Intent & Decisions
+The user asked to check whether upstream github/gh-stack changed its gh-stack skill after a recent release and, if so, replace the vendored copy, commit, and push. The copy stays verbatim, as decided in 45fd692 and 8d7cec5.
+
+## Actions & Verification
+Cloned github/gh-stack to ~/.cache/claude/repos/github/gh-stack at origin/main d4ab7ab47e5b3e3708a27c8c42abcdf4bc321419 (2026-10-02). Latest tag is v0.2.0; `git diff v0.2.0 origin/main -- skills/gh-stack` is empty. Replaced the vendored directory with rsync --delete; `diff -r` against upstream reports no differences. Skill metadata.version moved 0.1.0 to 0.2.0. Plugin version bumped 0.30.0 to 0.30.1. Pushed master and refs/notes/commits.
+
+## Errors & Mistakes
+None.
+
+## Attempts & Outcomes
+None.
+
+## Findings & Constraints
+Upstream files are unchanged in set (SKILL.md plus references/commands.md, stack-design.md, troubleshooting.md). Changes are all about worktree support and Git 2.36+. lib/codex.sh copies this directory into ~/.codex/skills, so Codex picks it up on the next setup run.
+
+## Relevant Files & Commits
+8d7cec5 and 45fd692: earlier vendoring commits; their notes explain why the copy is verbatim and the dropped frontmatter keys. lib/codex.sh: installs this skill into Codex.
+
+## Open Questions
+None.
