@@ -82,7 +82,9 @@ Supporting sources, cited by the rules that use them:
    over the life of one entity or one process. These include booleans,
    status strings and enums, nullable or optional fields, lifecycle
    timestamps, counters used as phases, and local variables that a loop
-   carries between iterations.
+   carries between iterations. Also list every function that the change
+   adds or modifies and that returns a boolean, and every boolean
+   expression that a branch tests, because rule S10 applies to them.
 2. For each group of values that changes together, reconstruct the
    implicit machine: the states, the events that change them, the
    transitions the code allows, and the states that the representation
