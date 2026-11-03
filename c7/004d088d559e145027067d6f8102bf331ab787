@@ -1,0 +1,22 @@
+## Intent & Decisions
+User built a fixture repo (/Users/abatilo/abatilo/shipyard, branch add-shipments) and ran /cs-review in a separate session to avoid context bias. This session scored the result against an answer key. The only planted issue missed was S10 boolean blindness in isValidPostcode. The agent decided, without asking, to fix the procedure gap rather than the rule text. Patch bump 0.32.0 -> 0.32.1.
+
+## Actions & Verification
+Received the review over a cross-session message from session review-findings-fcis-lob-webhook. All three agents ran. 10 merged findings survived. The base branch resolved through the fallback to main because the fixture has no origin remote. All other planted FCIS, locality, and state-machine issues were caught, and no control was flagged. Pushed master and notes.
+Not verified: that the fix makes the agent catch isValidPostcode. That needs another fixture run in a fresh session.
+
+## Errors & Mistakes
+None in this commit.
+
+## Attempts & Outcomes
+None.
+
+## Findings & Constraints
+Cause of the miss: procedure step 1 built the inventory only from lifecycle values, so a pure bool-returning helper was never examined. The review session also hit a zsh "no matches found" on grep --include=*.go, and fcis-reviewer printed one malformed path that lead verification caught. Neither needed a prompt change.
+
+## Relevant Files & Commits
+b06b77a: added state-machine-reviewer.
+The answer key lived in this session's scratchpad (shipyard-answer-key.md) and may not persist.
+
+## Open Questions
+Whether S10 fits better in fcis-reviewer or a separate lens, since boolean blindness is about information loss rather than lifecycle state.
