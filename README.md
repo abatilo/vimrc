@@ -54,5 +54,5 @@ installer again after an edit to `claude_settings.json`.
 Codex setup replaces personal skills with `repo-explore`, `gh-stack`, and
 `git-commit`. It preserves managed system and plugin skills. The Claude Code
 plugin supplies the same three skills. The plugin also supplies `cs-review`
-and its `fcis-reviewer` and `locality-reviewer` agents, which are Claude
-Code only.
+and its `fcis-reviewer`, `locality-reviewer`, and `state-machine-reviewer`
+agents, which are Claude Code only.
