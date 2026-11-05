@@ -74,14 +74,47 @@ the recommendation that reaches that shape.
 
 ## 4. Report
 
-Start with one sentence that states the result: how many findings
-survived, and the most important one. Then list the findings grouped by
-severity (`must-fix`, `should-fix`, `consider`). Merge findings from several
-agents that name the same code into one item that cites every rule. Keep
-each agent's fields: rule id, location, evidence, why, and change.
+Write the report for a reader who has not read the changed code and does
+not know the three principles. Each finding must make sense on its own,
+without the diff open. Write the explanations as prose paragraphs, not as
+field lists. Do not use the agents' rule ids or distance labels without
+saying in words what they mean.
 
-End with the FCIS effect inventory and the state inventory for the changed
-units, and a short list of the findings you dropped in step 3 with the
-reason for each.
+Start with a short paragraph that says how many findings survived and
+which one matters most, and why.
+
+Then give each finding its own section, `must-fix` first, then
+`should-fix`, then `consider`. Merge findings from several agents that name
+the same code into one section that explains every principle involved.
+Write each section in this order:
+
+1. A heading that states the problem in plain words, followed by the
+   severity.
+2. A paragraph that orients the reader: the file, the function or type,
+   what it does, and what role it plays in the change.
+3. The current code as a fenced code block with a language tag. Put the
+   reference `path:start-end` on the line above the block. Copy the lines
+   from the file you read in step 3, not from the agent output, so that
+   the code and the line numbers are exact. Include enough surrounding
+   lines that the snippet reads on its own. When the problem spans several
+   places, such as a locality source or the writers of a state field, show
+   each place in its own block with its own reference.
+4. A paragraph that teaches the principle and applies it: what the
+   principle asks for, which part of the current code breaks it, and what
+   that costs in practice, such as a test that needs a fake client, a
+   reader who would draw the wrong conclusion, or an invalid state that the
+   code can reach.
+5. The proposed code as a fenced code block. Show the new signatures and
+   the call site that uses them. When the block leaves out details, say so
+   in the sentence before it.
+6. A paragraph that walks through the change: what moved where, why the
+   new shape follows the principle, and what the change makes easier to
+   test or read. Name any tradeoff, such as a pattern that the rest of the
+   repository uses.
+
+After the findings, give the FCIS effect inventory and the state inventory
+for the changed units as tables. End with the findings you dropped in step
+3, one sentence each, that say what the agent claimed and why the claim
+did not hold.
 
 Do not edit code unless the user asks.

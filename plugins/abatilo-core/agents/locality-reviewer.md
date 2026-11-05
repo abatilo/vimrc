@@ -152,7 +152,7 @@ Return findings ordered by severity, then by file. For each finding, write:
 - Severity: must-fix | should-fix | consider
 - Evidence: <the exact lines at both places, at most 5 total>
 - Why: <what a reader of the unit would wrongly believe, in one or two sentences>
-- Change: <the concrete restructuring or move>
+- Change: <the concrete restructuring or move, as a code sketch in the language of the change that shows the unit after the change>
 ```
 
 Use `must-fix` for D3 or D4 behavior that a reader of the unit cannot

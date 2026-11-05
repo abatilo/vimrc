@@ -158,7 +158,7 @@ Return findings ordered by severity, then by file. For each finding, write:
 - Classification: <core | shell | mixed> and the effects found
 - Evidence: <the exact lines, at most 5>
 - Why: <which part of the rule the code breaks, in one or two sentences>
-- Change: <the concrete restructuring, with the new function signatures>
+- Change: <the concrete restructuring, as a code sketch in the language of the change: the new function signatures and the updated call site>
 ```
 
 Use `must-fix` when domain logic is untestable without infrastructure or

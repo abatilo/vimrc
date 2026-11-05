@@ -221,7 +221,7 @@ Return findings ordered by severity, then by file. For each finding, write:
 - Invalid states: <combinations the representation allows and the domain forbids, and whether the code can reach them>
 - Evidence: <the exact lines, at most 5>
 - Why: <which part of the rule the code breaks, in one or two sentences>
-- Change: <the explicit form: state type, events, and transition function signature>
+- Change: <the explicit form, as a code sketch in the language of the change: the state type, the events, the transition function signature, and one updated writer>
 ```
 
 Use `must-fix` when the code can reach an invalid state or handle an event
