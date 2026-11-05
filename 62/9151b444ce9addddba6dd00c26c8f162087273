@@ -1,0 +1,22 @@
+## Intent & Decisions
+User asked that the cs-review agents (fcis-reviewer, locality-reviewer, state-machine-reviewer) use Opus 5.5 on high effort, with a version bump, commit, and push. The agent used the full model ID claude-opus-5-5 rather than the alias opus, so a future Opus release does not silently change the reviewers. Minor bump 0.32.1 -> 0.33.0 because the change alters runtime behavior.
+
+## Actions & Verification
+Replaced "model: inherit" with "model: claude-opus-5-5" and added "effort: high" in each agent's frontmatter. Pushed master and notes.
+Not verified: that a live /cs-review run starts the agents on Opus 5.5 at high effort. That needs a fresh session after the plugin update.
+
+## Errors & Mistakes
+None.
+
+## Attempts & Outcomes
+None.
+
+## Findings & Constraints
+No other plugin agent in the repository sets model or effort. SKILL.md does not pass a model or effort when it spawns the agents, so the frontmatter controls both.
+
+## Relevant Files & Commits
+plugins/abatilo-core/skills/cs-review/SKILL.md: spawns the three agents.
+c7004d0, b06b77a, 4d39657: earlier cs-review work.
+
+## Open Questions
+None.
