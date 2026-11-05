@@ -1,7 +1,8 @@
 ---
 name: fcis-reviewer
 description: "Reviews a code change against the Functional Core, Imperative Shell pattern. Use from the cs-review skill, or when asked to check purity, effect placement, dependency direction between core and shell, or whether decisions live in the shell."
-model: inherit
+model: claude-opus-5-5
+effort: high
 tools:
   - Read
   - Glob
