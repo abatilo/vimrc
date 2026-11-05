@@ -1,0 +1,22 @@
+## Intent & Decisions
+User found the cs-review output hard to use because it read as if they had already read the surrounding code. They asked for prose findings with code snippets, file references, and a walkthrough of the change and why it follows the guide better. The agent kept the agents' structured field output, because the lead verifies each finding field by field in step 3, and moved all prose into the lead's step 4 report. Minor bump 0.33.0 -> 0.34.0.
+
+## Actions & Verification
+Rewrote SKILL.md step 4. Changed the Change field in all three agents to ask for a code sketch. Pushed master and notes.
+Not verified: no /cs-review run with the new format. The next fixture run in a fresh session should check that snippets are copied from files with exact line ranges and that sections stand alone.
+
+## Errors & Mistakes
+The previous commit 629151b used a minor bump for a model and effort change. plugins/abatilo-core/CLAUDE.md classes that as a minor tweak, which is a patch. It was already pushed and was left as is.
+
+## Attempts & Outcomes
+None.
+
+## Findings & Constraints
+Step 4 tells the lead to copy current code from the files read during verification, not from agent Evidence, because agent Evidence is capped at five lines and may have wrong line numbers. Rule ids and distance labels stay in agent output for verification but must be explained in words in the report.
+
+## Relevant Files & Commits
+629151b: pinned the agents to claude-opus-5-5 at high effort.
+c7004d0: last fixture-driven fix, with notes on the shipyard fixture repo used to test cs-review.
+
+## Open Questions
+Whether the report becomes too long for reviews with many findings. No length cap was added.
