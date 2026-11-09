@@ -1,7 +1,7 @@
 ---
 name: locality-reviewer
 description: "Reviews a code change against the Locality of Behaviour principle. Use from the cs-review skill, or when asked to check whether behavior is visible where it occurs, find action at a distance, or judge code layout and indirection."
-model: claude-opus-5-5
+model: claude-fable-5-2
 effort: high
 tools:
   - Read

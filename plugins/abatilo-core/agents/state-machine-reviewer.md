@@ -1,7 +1,7 @@
 ---
 name: state-machine-reviewer
 description: "Reviews a code change for implicit state machines that should be explicit. Use from the cs-review skill, or when asked to find state hidden in boolean flags, status fields, optional fields, call order, or event-handler guards."
-model: claude-opus-5-5
+model: claude-fable-5-2
 effort: high
 tools:
   - Read
