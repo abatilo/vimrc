@@ -1,0 +1,20 @@
+## Intent & Decisions
+The user asked to look up experimental Code Mode for Claude Code, set its env var in this repo, commit, and push. The agent added only CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 to the env block of claude_settings.json. The agent did not remove CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS, because dropping a feature the user has enabled is the user's decision.
+
+## Actions & Verification
+Staged one hunk through git apply --cached so unrelated uncommitted edits in claude_settings.json (model, modelSettings, autoMode) and lib/codex.sh stayed out of the commit. Not verified: that a new session actually starts in Code Mode. The docs predict it will not while agent teams is set.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+None
+
+## Findings & Constraints
+Source: https://code.claude.com/docs/en/code-mode.md and env-vars.md, read by a claude-code-guide subagent. Requires Claude Code v2.1.323+; installed CLI was 2.1.325 and its binary contains the variable name. Docs say the variable is ignored in project settings files and must be in ~/.claude/settings.json; that file is a symlink to claude_settings.json in this repo, so the setting applies. Docs list these as blocking Code Mode startup: agent teams, API key helper, custom ANTHROPIC_BASE_URL, OpenTelemetry export, DISABLE_TELEMETRY. Remote Control, Claude in Chrome, and computer use are unavailable in Code Mode; this settings file has remoteControlAtStartup true. Code Mode sessions can be resumed only with the variable set to 1. First session shows an opt-in prompt.
+
+## Relevant Files & Commits
+lib/claude.sh: installer that merges claude_settings.json into ~/.claude/settings.json.
+
+## Open Questions
+Whether to remove CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS so Code Mode can start, and whether losing Remote Control in Code Mode sessions is acceptable.
