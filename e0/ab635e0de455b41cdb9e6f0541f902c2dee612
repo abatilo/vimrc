@@ -1,0 +1,20 @@
+## Intent & Decisions
+The user asked to disable Code Mode shortly after 357e256 enabled it: "never mind I don't want it". The agent removed the variable instead of setting it to 0, because off is the default and an absent key is less to maintain.
+
+## Actions & Verification
+Staged only the removal hunk through git apply --cached; unrelated uncommitted edits in claude_settings.json and lib/codex.sh stayed out. Confirmed the staged diff was the single removed line. ~/.claude/settings.json is a symlink to claude_settings.json, so the removal applies to new sessions without rerunning the installer.
+
+## Errors & Mistakes
+None
+
+## Attempts & Outcomes
+Did not use git revert because claude_settings.json had unrelated uncommitted edits.
+
+## Findings & Constraints
+Code Mode never started under 357e256 as far as the docs predict, because CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS blocks it. See the note on 357e256 for the documented tradeoffs.
+
+## Relevant Files & Commits
+357e256: the commit this one undoes; its note records the Code Mode research.
+
+## Open Questions
+None
